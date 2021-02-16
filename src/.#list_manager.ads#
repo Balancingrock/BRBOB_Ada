@@ -1,0 +1,4 @@
+generic type Ptr is private;
+package List_Manager is
+
+end List_Manager;
