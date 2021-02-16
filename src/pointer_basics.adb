@@ -1,6 +1,6 @@
 with GNAT.Byte_Swapping;
 
-with BRBON.Internal_Types; use BRBON.Internal_Types;
+with Pointer_Math; use Pointer_Math;
 
 
 package body Pointer_Basics is

@@ -1,5 +1,3 @@
-with Interfaces; use Interfaces;
-
 with BRBON; use BRBON;
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 
@@ -34,12 +32,12 @@ package Item_Operations is
 
    -- Sets the flags of an item
    --
-   procedure Set_Item_Flags (Item_Ptr: Unsigned_8_Ptr; Value: Unsigned_8);
+   procedure Set_Item_Flags (Item_Ptr: Unsigned_8_Ptr; Value: Bits_8);
 
 
    -- Returns the flags of an item
    --
-   function Get_Item_Flags (Item_Ptr: Unsigned_8_Ptr) return Unsigned_8;
+   function Get_Item_Flags (Item_Ptr: Unsigned_8_Ptr) return Bits_8;
 
 
 end Item_Operations;

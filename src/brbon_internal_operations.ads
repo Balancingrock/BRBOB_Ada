@@ -1,6 +1,7 @@
-with Interfaces; use Interfaces;
-with BRBON_Basic_Types; use BRBON_Basic_Types;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
+with BRBON_Basic_Types; use BRBON_Basic_Types;
+
 
 package BRBON_Internal_Operations is
 

@@ -1,5 +1,4 @@
 with BRBON_Basic_Types; use BRBON_Basic_Types;
-with BRBON.Internal_Types; use BRBON.Internal_Types;
 
 
 package BRBON.Item_Manager_Operations is

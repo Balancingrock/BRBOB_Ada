@@ -3,6 +3,8 @@ with Pointer_Operations;
 
 package body Item_Operations is
 
+   procedure test is begin null; end test;
+
    procedure Set_Item_Type (Item_Ptr: Unsigned_8_Ptr; Value: Item_Type) is
    begin
       Pointer_Operations.Set_Item_Type (Ptr => Item_Ptr, Value => Unsigned_8 (Item_Type'Pos (Value)));
@@ -22,17 +24,17 @@ package body Item_Operations is
 
    function Get_Item_Options (Item_Ptr: Unsigned_8_Ptr) return Item_Options is
    begin
-      return To_Bits_8 (Pointer_Operations.Get_Item_Options (Ptr => Item_Ptr));
+      return To_Item_Options (Pointer_Operations.Get_Item_Options (Ptr => Item_Ptr));
    end Get_Item_Options;
 
-   procedure Set_Item_Flags (Item_Ptr: Unsigned_8_Ptr; Value: Unsigned_8) is
+   procedure Set_Item_Flags (Item_Ptr: Unsigned_8_Ptr; Value: Bits_8) is
    begin
-      Pointer_Operations.Set_Item_Flags (Ptr   => Item_Ptr, Value => Value);
+      Pointer_Operations.Set_Item_Flags (Ptr   => Item_Ptr, Value => To_Unsigned_8 (Value));
    end Set_Item_Flags;
 
-   function Get_Item_Flags (Item_Ptr: Unsigned_8_Ptr) return Unsigned_8 is
+   function Get_Item_Flags (Item_Ptr: Unsigned_8_Ptr) return Bits_8 is
    begin
-      return Pointer_Operations.Get_Item_Flags (Ptr => Item_Ptr);
+      return To_Bits_8 (Pointer_Operations.Get_Item_Flags (Ptr => Item_Ptr));
    end Get_Item_Flags;
 
 end Item_Operations;

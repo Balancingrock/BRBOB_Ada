@@ -1,6 +1,3 @@
-with Interfaces; use Interfaces;
-with Ada.Strings.UTF_Encoding; use Ada.Strings.UTF_Encoding;
-with Ada.Strings.Bounded;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Bounded_Vectors;
 with Unchecked_Conversion;
@@ -45,6 +42,8 @@ package BRBON is
    -- Option associated with stored items (currently unused)
    --
    type Item_Options is new Bits_8;
+   function To_Item_Options is new Unchecked_Conversion(Unsigned_8, Item_Options);
+   function To_Unsigned_8 is new Unchecked_Conversion (Item_Options, Unsigned_8);
 
 
    -- ===================
@@ -85,7 +84,7 @@ package BRBON is
    -- @value Root_Type The storage type at the top of the hierarchy.
    --
    function Item_Manager_Factory(
-                                 Endianness: in Brbon.Endianness := Machine_Endianness;
+                                 Use_Endianness: in Brbon.Endianness := Machine_Endianness;
                                  Byte_Count: in Unsigned_32 := 10 * 2**10;
                                  Root_Type: in Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr;

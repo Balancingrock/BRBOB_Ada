@@ -4,7 +4,7 @@ package body BRBON is
    -- =======================
 
    function Item_Manager_Factory(
-                                 Endianness: in Brbon.Endianness := Machine_Endianness;
+                                 Use_Endianness: in Brbon.Endianness := Machine_Endianness;
                                  Byte_Count: in Unsigned_32 := 10 * 2**10;
                                  Root_Type: in Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr is
@@ -31,7 +31,7 @@ package body BRBON is
       -- Create the item manager record.
 
       Im := new Item_Manager'(
-             Endianness,
+             Use_Endianness,
              Byte_Count,
              Storage,
              new Portal'(

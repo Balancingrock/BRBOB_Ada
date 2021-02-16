@@ -1,5 +1,4 @@
-with BRBON.Internal_Types; use BRBON.Internal_Types;
-
+with Pointer_Math; use Pointer_Math;
 
 package body BRBON_Internal_Operations is
 
@@ -7,6 +6,8 @@ package body BRBON_Internal_Operations is
    -- ******************
    -- Private
    -- ******************
+
+
 
    -- ==================
    -- Data Sources
@@ -44,9 +45,9 @@ package body BRBON_Internal_Operations is
       while Source.Next(Byte) loop
          for I in 1 .. 8 loop
             A := Unsigned_8 (Accumulator and 16#0001#);
-            Accumulator := Interfaces.Shift_Right (Accumulator, 1);
+            Accumulator := Shift_Right (Accumulator, 1);
             B := Byte and 16#01#;
-            Byte := Interfaces.Shift_Right (Byte, 1);
+            Byte := Shift_Right (Byte, 1);
             if ((A xor B) = 1) then
                Accumulator := Accumulator xor Polynomial;
             end if;
@@ -100,7 +101,7 @@ package body BRBON_Internal_Operations is
       Byte: Unsigned_8;
    begin
       while Source.Next(Byte) loop
-         A := Crc_32_Table (Integer ((A and 16#FF#) xor Unsigned_32 (Byte))) xor (Interfaces.Shift_Right (A, 8));
+         A := Crc_32_Table (Integer ((A and 16#FF#) xor Unsigned_32 (Byte))) xor (Shift_Right (A, 8));
       end loop;
       return A xor 16#FFFF_FFFF#;
    end Crc_32;
