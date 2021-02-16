@@ -1,6 +1,0 @@
-package Brbon.Portal_Operations is
-
-   procedure Set_Item_Name(Portal_Ptr: in out Brbon.Portal_Ptr;
-                           Name: in Item_Name);
-
-end Brbon.Portal_Operations;
