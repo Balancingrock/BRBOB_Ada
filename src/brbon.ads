@@ -1,5 +1,6 @@
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Bounded_Vectors;
+with Ada.Strings.UTF_Encoding; use Ada.Strings.UTF_Encoding;
 with Unchecked_Conversion;
 
 with BRBON_Basic_Types; use BRBON_Basic_Types;
@@ -65,7 +66,16 @@ package BRBON is
 
    -- Returns the size of the unused area in the storage area of the item manager
    --
-   function Unused_Storage(Manager_Ptr: in Item_Manager_Ptr) return Unsigned_32;
+   function Unused_Storage(Manager: in Item_Manager_Ptr) return Unsigned_32;
+
+   -- Converts a UTF-8-string to an item name.
+   -- Can raise the Item_Name_Too_Long exception.
+   --
+   function To_Item_Name (Manager: in Item_Manager_Ptr; Value: in UTF_8_String) return Item_Name;
+
+   -- Converts an Item name to an UTF_8_String.
+   --
+   function To_UTF_8_String (Manager: in Item_Manager_Ptr; Value: in Item_Name) return UTF_8_String;
 
 
    -- The endianness to be used to store data.
@@ -113,8 +123,16 @@ package BRBON is
 
    -- Raised when the storage area runs out of space.
    --
-   Brbon_Storage_Error: exception;
+   Storage_Error: exception;
+
+   -- Raised when a BRBON structure contains an illegal type pattern.
+   --
    Illegal_Item_Type: exception;
+
+   -- Raised when a string to Item_Name conversion failed.
+   --
+   Item_Name_Too_Long: exception;
+
 
 private
 
@@ -162,6 +180,7 @@ private
       Storage_Ptr: Storage_Area_Ptr;
       Root_Ptr: Portal_Ptr;
       Portal_Mgr: Portal_Manager;
+      Zero_Content: Boolean;
    end record;
 
 
@@ -183,5 +202,10 @@ private
    end record;
 
    Zero_Storage: constant boolean := True; -- Used during testing, should be False for deployment.
+
+
+   procedure Increase_Storage_Byte_Count (Mgr: Item_Manager_Ptr; Value: Unsigned_32);
+
+
 
 end BRBON;

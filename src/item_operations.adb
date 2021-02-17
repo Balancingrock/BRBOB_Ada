@@ -3,8 +3,6 @@ with Pointer_Operations;
 
 package body Item_Operations is
 
-   procedure test is begin null; end test;
-
    procedure Set_Item_Type (Item_Ptr: Unsigned_8_Ptr; Value: Item_Type) is
    begin
       Pointer_Operations.Set_Item_Type (Ptr => Item_Ptr, Value => Unsigned_8 (Item_Type'Pos (Value)));
@@ -36,5 +34,6 @@ package body Item_Operations is
    begin
       return To_Bits_8 (Pointer_Operations.Get_Item_Flags (Ptr => Item_Ptr));
    end Get_Item_Flags;
+
 
 end Item_Operations;
