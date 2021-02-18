@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 
 
-package BRBON_Internal_Operations is
+package BRBON_Support is
 
 
    -- Returns the CRC-16 over the given string.
@@ -76,4 +76,4 @@ private
    function Next (Source: in out Crc_Unsigned_8_Ptr; Byte: out Unsigned_8) return Boolean;
 
 
-end BRBON_Internal_Operations;
+end BRBON_Support;

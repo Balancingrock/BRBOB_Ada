@@ -3,10 +3,10 @@ with Ada.Containers.Bounded_Vectors;
 with BRBON; use BRBON;
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 
-with Pointer_Basics; use Pointer_Basics;
+with Pointer_Generics; use Pointer_Generics;
 
 
-package Pointer_Operations is
+package Pointer_Access is
 
 
    -- Item header access
@@ -79,4 +79,4 @@ package Pointer_Operations is
    procedure Set_Value_Float_64 is new Set_Float_64_At_Ptr_With_Offset (0);
    function Get_Value_Float_64 is new Get_Float_64_From_Ptr_With_Offset (0);
 
-end Pointer_Operations;
+end Pointer_Access;

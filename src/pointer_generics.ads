@@ -2,7 +2,7 @@ with BRBON; use BRBON;
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 
 
-package Pointer_Basics is
+package Pointer_Generics is
 
    generic
       Offset: Unsigned_32;
@@ -84,4 +84,4 @@ package Pointer_Basics is
       Offset: Unsigned_32;
    function Get_Float_64_From_Ptr_With_Offset (Ptr: Unsigned_8_Ptr; Using_Endianness: Endianness) return Float_64;
 
-end Pointer_Basics;
+end Pointer_Generics;

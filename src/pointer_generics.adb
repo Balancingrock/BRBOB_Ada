@@ -4,7 +4,7 @@ with BRBON_Configure; use BRBON_Configure;
 with Pointer_Math; use Pointer_Math;
 
 
-package body Pointer_Basics is
+package body Pointer_Generics is
 
 
    -- ========================
@@ -189,4 +189,4 @@ package body Pointer_Basics is
    end Get_Float_64_From_Ptr_With_Offset;
 
 
-end Pointer_Basics;
+end Pointer_Generics;

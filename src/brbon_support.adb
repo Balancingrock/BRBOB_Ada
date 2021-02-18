@@ -1,12 +1,6 @@
 with Pointer_Math; use Pointer_Math;
 
-package body BRBON_Internal_Operations is
-
-
-   -- ******************
-   -- Private
-   -- ******************
-
+package body BRBON_Support is
 
 
    -- ==================
@@ -141,4 +135,4 @@ package body BRBON_Internal_Operations is
    end Crc_32;
 
 
-end BRBON_Internal_Operations;
+end BRBON_Support;
