@@ -12,7 +12,7 @@ package Portal is
    type Portal is
       record
          Is_Valid: Boolean := False;
-         Item_Offset: Unsigned_32;
+         Item_Ptr: Unsigned_8_Ptr;
          Index: Integer := -1;
          Column: Integer := -1;
          Reference_Count: Integer := 0;

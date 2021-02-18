@@ -1,5 +1,6 @@
 with Ada.Containers.Doubly_Linked_Lists;
 
+with BRBON; use BRBON;
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 with Portal; use Portal;
 
@@ -24,5 +25,10 @@ package Portal_Manager is
    -- Updates the pointers in all of the portals under control of the manager.
    --
    procedure Update_Portal_Pointers (Mgr: Portal_Manager; At_And_Above: Unsigned_8_Ptr; Below: Unsigned_8_Ptr; To_New_Base: Unsigned_8_Ptr);
+
+
+   -- Create a new portal
+   --
+   function New_Portal_Manager return Portal_Manager;
 
 end Portal_Manager;
