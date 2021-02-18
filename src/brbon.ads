@@ -1,7 +1,6 @@
-with Ada.Containers.Doubly_Linked_Lists;
-with Ada.Containers.Bounded_Vectors;
-with Ada.Strings.UTF_Encoding; use Ada.Strings.UTF_Encoding;
-with Unchecked_Conversion;
+
+with Ada.Strings.Bounded;
+with Ada.Unchecked_Conversion;
 
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 
@@ -43,79 +42,17 @@ package BRBON is
    -- Option associated with stored items (currently unused)
    --
    type Item_Options is new Bits_8;
-   function To_Item_Options is new Unchecked_Conversion(Unsigned_8, Item_Options);
-   function To_Unsigned_8 is new Unchecked_Conversion (Item_Options, Unsigned_8);
+   function To_Item_Options is new Ada.Unchecked_Conversion(Unsigned_8, Item_Options);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Options, Unsigned_8);
 
 
-   -- ===================
    -- Item Name
-   -- ===================
-
+   --
    subtype Item_Name_Index is Integer range 1..245;
-   package Item_Name_Vector_245 is new Ada.Containers.Bounded_Vectors (Item_Name_Index, Unsigned_8);
-   subtype Item_Name is Item_Name_Vector_245.Vector;
-
-   No_Item_Name: constant Item_Name := Item_Name_Vector_245.To_Vector(0);
-
-
-   -- All BRBON data is stored in and controlled by an Item Manager.
+   package Item_Name_Bounded_String is new Ada.Strings.Bounded.Generic_Bounded_Length (Item_Name_Index'Last);
+   subtype Item_Name is Item_Name_Bounded_String.Bounded_String;
    --
-   type Item_Manager is limited private;
-   type Item_Manager_Ptr is access Item_Manager;
-
-
-   -- Returns the size of the unused area in the storage area of the item manager
-   --
-   function Unused_Storage(Manager: in Item_Manager_Ptr) return Unsigned_32;
-
-   -- Converts a UTF-8-string to an item name.
-   -- Can raise the Item_Name_Too_Long exception.
-   --
-   function To_Item_Name (Manager: in Item_Manager_Ptr; Value: in UTF_8_String) return Item_Name;
-
-   -- Converts an Item name to an UTF_8_String.
-   --
-   function To_UTF_8_String (Manager: in Item_Manager_Ptr; Value: in Item_Name) return UTF_8_String;
-
-
-   -- The endianness to be used to store data.
-   --
-   type Endianness is (Big, Little);
-
-
-   -- Returns the endianness used by the current machine
-   --
-   Machine_Endianness: Endianness := Little;
-
-
-   -- Creates a new item manager
-   -- @value Endianness The endianness of the data as it was created.
-   -- @value Byte_Count The initial size of the storage area in bytes.
-   -- @value Root_Type The storage type at the top of the hierarchy.
-   --
-   function Item_Manager_Factory(
-                                 Use_Endianness: in Brbon.Endianness := Machine_Endianness;
-                                 Byte_Count: in Unsigned_32 := 10 * 2**10;
-                                 Root_Type: in Item_Type := Br_Dictionary
-                                ) return Item_Manager_Ptr;
-
-
-   -- Portals can be used to shortcut access to the value of items in the storage area.
-   -- Use Portals when speed is essential, but beware that using portals will slow down making item size changes in the storage area.
-   -- (Because of the need to update the value pointers in all the portals)
-   --
-   type Portal is limited private;
-
-
-   -- All portals except 1 are allocated on the heap and will only be referenced through their pointer. The only exception is the root portal into the storage area of an item manager.
-   --
-   type Portal_Ptr is access Portal;
-
-
-   -- Stores or updates the given value at the specified path.
-   --
-   procedure Store(Value: in Integer_8; At_Path: String);
-   procedure Store(Value: in Integer_16; At_Path: String);
+   No_Item_Name: constant Item_Name := Item_Name_Bounded_String.To_Bounded_String("");
 
 
    -- Possible exceptions
@@ -133,79 +70,9 @@ package BRBON is
    --
    Item_Name_Too_Long: exception;
 
-
-private
-
-
-
-
-   -- ====================
-   -- Portal Manager
-   -- ====================
-
-   -- For the list of portals managed by the portal manager.
+   -- Raised when an attempt is made to execute an incompletely coded routine
    --
-   package List_Of_Portals is new Ada.Containers.Doubly_Linked_Lists(Element_Type => Portal_Ptr);
-   type Portal_List_Ptr is access List_Of_Portals.List;
-
-
-
-   -- The portal manager is used to ensure portal integrity for all user created portals.
-   -- Only the root portal in the Item Manager is not maneaged by the portal manager.
-   --
-   type Portal_Manager is record
-      Portal_List: Portal_List_Ptr;
-   end record;
-
-
-   -- ===================
-   -- Item Manager
-   -- ===================
-
-   type Storage_Area is array (Unsigned_32 range <>) of aliased Unsigned_8;
-   for Storage_Area'Alignment use 32;
-
-   type Storage_Area_Ptr is access Storage_Area;
-
-
-   function "=" (Left: Item_Manager; Right: Item_Manager) return Boolean is (False);
-
-
-   -- The item manager controls access to the storage area. All interactions between the client and Brbon are controlled
-   -- by the item manager except for the Portals which can be used as a shortcut.
-   --
-   type Item_Manager is record
-      Endianness: Brbon.Endianness;
-      Storage_Increments: Unsigned_32;
-      Storage_Ptr: Storage_Area_Ptr;
-      Root_Ptr: Portal_Ptr;
-      Portal_Mgr: Portal_Manager;
-      Zero_Content: Boolean;
-   end record;
-
-
-   -- ===================
-   -- Portals
-   -- ===================
-
-   -- A portal functions as an intermediate access mechanism to the actual value in storage.
-   -- Since all access to the data in the storage area is pointer based, the pointers must be adjusted in response to
-   -- insert/delete/modify operations. This is done by the portal manager.
-   --
-   type Portal is record
-      Manager_Ptr: Item_Manager_Ptr;
-      Is_Valid: Boolean := False;
-      Item_Offset: Unsigned_32;
-      Index: Integer := -1;
-      Column: Integer := -1;
-      Reference_Count: Integer := 0;
-   end record;
-
-   Zero_Storage: constant boolean := True; -- Used during testing, should be False for deployment.
-
-
-   procedure Increase_Storage_Byte_Count (Mgr: Item_Manager_Ptr; Value: Unsigned_32);
-
+   Incomplete_Code: exception;
 
 
 end BRBON;
