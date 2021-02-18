@@ -1,5 +1,6 @@
 with GNAT.Byte_Swapping;
 
+with BRBON_Configure; use BRBON_Configure;
 with Pointer_Math; use Pointer_Math;
 
 

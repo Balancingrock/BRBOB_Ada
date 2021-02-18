@@ -1,4 +1,5 @@
 with BRBON_Basic_Types; use BRBON_Basic_Types;
+with BRBON; use BRBON;
 
 
 package Portal is
@@ -22,5 +23,9 @@ package Portal is
    --
    type Portal_Ptr is access Portal;
 
+
+   -- Read the type of the item associated with this portal.
+   --
+   function Get_Item_Type (Ptr: Portal_Ptr) return Item_Type;
 
 end Portal;
