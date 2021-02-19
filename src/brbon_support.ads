@@ -51,7 +51,7 @@ private
    -- @value Provider A pointer to a function that supplies the bytes over which the CRC must be calculated.
    -- @value Initialization The initial value usually set to 0 (default) or 16#FFFF_FFFF#. Setting to 0 will skip leading zero's in the data provider.
    --
-   function Crc_32 (Source: in out Crc_Data'Class; Initalization: Unsigned_32 := 0) return Unsigned_32;
+   function Crc_32 (Source: in out Crc_Data'Class; Initalization: Unsigned_32 := 16#FFFF_FFFF#) return Unsigned_32;
 
 
    --

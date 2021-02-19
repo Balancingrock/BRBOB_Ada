@@ -74,5 +74,8 @@ package BRBON is
    --
    Incomplete_Code: exception;
 
+   -- This exception is raised when a bit pattern in the raw data could not be mapped to a corresponding enum.
+   --
+   Enum_Mapping_Failed: exception;
 
 end BRBON;

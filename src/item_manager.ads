@@ -4,24 +4,27 @@ with Ada.Unchecked_Conversion;
 with BRBON; use BRBON;
 with BRBON_Basic_Types; use BRBON_Basic_Types;
 with BRBON_Configure; use BRBON_Configure;
-with Portal; use Portal;
+
+with Storage_Area; use Storage_Area;
 with Portal_Manager;
 
 
 package Item_Manager is
 
+   type Item_Manager;
 
+   -- All Item_Managers are dynamically allocated.
+   --
+   type Item_Manager_Ptr is access Item_Manager;
 
    -- The item manager controls access to the storage area. All interactions between the client and Brbon are controlled
    -- by the item manager except for the Portals which can be used as a shortcut.
    --
    type Item_Manager is new Limited_Controlled with
       record
-         Use_Endianness: Endianness;
+         Storage: Storage_Area.Storage_Area;
          Increments: Unsigned_32;
-         Storage_Ptr: Unsigned_8_Ptr;
-         Root_Ptr: Portal_Ptr;
-         Portal_Mgr: Portal_Manager.Portal_Manager;
+         Portals: Portal_Manager.Portal_Manager;
       end record;
 
    -- Override the initialization
@@ -43,11 +46,6 @@ package Item_Manager is
    -- Returns the size of the unused area in the storage area of the item manager
    --
    function Unused_Storage (Mgr: in  Item_Manager) return Unsigned_32;
-
-
-   -- All Item_Managers are dynamically allocated.
-   --
-   type Item_Manager_Ptr is access Item_Manager;
 
    -- Creates a new item manager
    -- @value Use_Endianness The endianness of the data as it was created.

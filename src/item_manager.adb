@@ -1,5 +1,4 @@
 
-
 package body Item_Manager is
 
 
@@ -14,9 +13,8 @@ package body Item_Manager is
                                 ) return Item_Manager_Ptr is
 
 
-
       Im: Item_Manager_Ptr;
-      St: Storage_area_Ptr;
+      St: Storage_Area;
       Rp: Portal.Portal;
       Pm: Portal_Manager.Portal_Manager;
 
@@ -26,7 +24,8 @@ package body Item_Manager is
 
       Pm := Portal_Manager.New_Portal_Manager;
 
-      St := new Storage_Area (1 .. Bc);
+      St := New_Storage_With_Size (Byte_Count       => Bc,
+                                   Using_Endianness => Use_Endianness);
 
       Rp := Portal.Portal'(Is_Valid        => True,
                     Item_Ptr        => St.all(0)'Access,
@@ -37,6 +36,9 @@ package body Item_Manager is
       Pm := Portal_Manager.New_Portal_Manager;
 
       Im := new Item_Manager;
+
+      Im.Storage := St;
+
 
 
         --'(Limited_Controlled'() with
