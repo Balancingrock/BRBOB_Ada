@@ -90,7 +90,7 @@ package body BRBON_Support is
       16#bdbdf21c#, 16#cabac28a#, 16#53b39330#, 16#24b4a3a6#, 16#bad03605#, 16#cdd70693#, 16#54de5729#, 16#23d967bf#,
       16#b3667a2e#, 16#c4614ab8#, 16#5d681b02#, 16#2a6f2b94#, 16#b40bbe37#, 16#c30c8ea1#, 16#5a05df1b#, 16#2d02ef8d#);
 
-   function Crc_32 (Source: in out Crc_Data'Class; Initalization: Unsigned_32 := 0) return Unsigned_32 is
+   function Crc_32 (Source: in out Crc_Data'Class; Initalization: Unsigned_32 := 16#FFFF_FFFF#) return Unsigned_32 is
       A: Unsigned_32 := Initalization xor 16#FFFF_FFFF#;
       Byte: Unsigned_8;
    begin

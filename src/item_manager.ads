@@ -10,13 +10,7 @@ with Portal_Manager;
 
 package Item_Manager is
 
-   -- The area in which items are stored.
-   -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
-   --
-   type Storage_Area is array (Unsigned_32 range <>) of aliased Unsigned_8;
-   for Storage_Area'Alignment use 32;
-   --
-   type Storage_Area_Ptr is access Storage_Area;
+
 
    -- The item manager controls access to the storage area. All interactions between the client and Brbon are controlled
    -- by the item manager except for the Portals which can be used as a shortcut.
@@ -24,15 +18,11 @@ package Item_Manager is
    type Item_Manager is new Limited_Controlled with
       record
          Use_Endianness: Endianness;
-         Storage_Increments: Unsigned_32;
+         Increments: Unsigned_32;
          Storage_Ptr: Unsigned_8_Ptr;
          Root_Ptr: Portal_Ptr;
          Portal_Mgr: Portal_Manager.Portal_Manager;
       end record;
-
-   -- All Item_Managers are dynamically allocated.
-   --
-   type Item_Manager_Ptr is access Item_Manager;
 
    -- Override the initialization
    --
@@ -54,6 +44,11 @@ package Item_Manager is
    --
    function Unused_Storage (Mgr: in  Item_Manager) return Unsigned_32;
 
+
+   -- All Item_Managers are dynamically allocated.
+   --
+   type Item_Manager_Ptr is access Item_Manager;
+
    -- Creates a new item manager
    -- @value Use_Endianness The endianness of the data as it was created.
    -- @value Byte_Count The initial size of the storage area in bytes. Default = 10KByte.
@@ -62,6 +57,7 @@ package Item_Manager is
    function Item_Manager_Factory(
                                  Use_Endianness: in Endianness := Machine_Endianness;
                                  Byte_Count: in Unsigned_32 := 10 * 2**10;
+                                 Increment: in Unsigned_32 := 10 * 2**10;
                                  Root_Type: in Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr;
 

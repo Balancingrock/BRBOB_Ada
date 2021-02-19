@@ -9,6 +9,7 @@ package body Item_Manager is
    function Item_Manager_Factory(
                                  Use_Endianness: in Endianness := Machine_Endianness;
                                  Byte_Count: in Unsigned_32 := 10 * 2**10;
+                                 Increment: in Unsigned_32 := 10 * 2**10;
                                  Root_Type: in Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr is
 
@@ -36,6 +37,7 @@ package body Item_Manager is
       Pm := Portal_Manager.New_Portal_Manager;
 
       Im := new Item_Manager;
+
 
         --'(Limited_Controlled'() with
           --                                 Use_Endianness => Use_Endianness,
