@@ -1,3 +1,5 @@
 This should become a new BRBON API written in ADA.
 
 Current status: Used for backups of our local project, not even close to usable!
+
+For a specification of the BRBON format see: [BalancingRock Binary Object Notation](https://github.com/Balancingrock/BRBON)
