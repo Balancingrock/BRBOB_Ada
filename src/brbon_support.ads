@@ -3,7 +3,6 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Interfaces; use Interfaces;
 with BRBON; use BRBON;
 
-with BRBON; use BRBON;
 
 package BRBON_Support is
 
@@ -29,6 +28,7 @@ package BRBON_Support is
 
 
 private
+
 
    -- A data source should supply bytes and return True as long as a valid byte is supplied.
    -- When no valid byte can be supplied it should return False. Once False is returned it will not be called again.
@@ -56,8 +56,8 @@ private
    function Crc_32 (Source: in out Crc_Data'Class; Initalization: Unsigned_32 := 16#FFFF_FFFF#) return Unsigned_32;
 
 
+   -- A data source for String CRC's
    --
-
    type Crc_Unbounded_String is new Crc_Data with
       record
          Str: Unbounded_String;
@@ -66,8 +66,8 @@ private
    overriding
    function Next (Source: in out Crc_Unbounded_String; Byte: out Unsigned_8) return Boolean;
 
+   -- A data source for binary CRC's
    --
-
    type Crc_Array_Of_Unsigned_8_Ptr is new Crc_Data with
       record
          Ptr: Array_Of_Unsigned_8_Ptr;

@@ -8,15 +8,19 @@ with Item_Manager; use Item_Manager;
 
 package Item is
 
-   type Item;
 
-   type Item_Ptr is access Item;
-
-   type Item is new Limited_Controlled with
+   -- The Item type
+   --
+   type Item is
       record
-         Manager: Item_Manager.Item_Manager;
+         Manager: Item_Manager_Ptr;
          Offset: Unsigned_32;
       end record;
+
+
+   -- Create a new Item Type
+   --
+   function New_Item (Manager: Item_Manager_ptr; Offset: Unsigned_32) return Item;
 
 
    -- Sets the type of an item.
