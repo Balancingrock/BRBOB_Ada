@@ -1,5 +1,3 @@
-with Pointer_Math; use Pointer_Math;
-
 package body BRBON_Support is
 
 
@@ -15,12 +13,10 @@ package body BRBON_Support is
       return True;
    end Next;
 
-   function Next (Source: in out Crc_Unsigned_8_Ptr; Byte: out Unsigned_8) return Boolean is
-      Ptr: Unsigned_8_Ptr;
+   function Next (Source: in out Crc_Array_Of_Unsigned_8_Ptr; Byte: out Unsigned_8) return Boolean is
    begin
       if Source.Remainder = 0 then return False; end if;
-      Ptr := Source.Ptr + (Source.Length - Source.Remainder);
-      Byte := Ptr.all;
+      Byte := Source.Ptr.all(Source.Length - Source.Remainder);
       Source.Remainder := Source.Remainder - 1;
       return True;
    end Next;
@@ -121,15 +117,17 @@ package body BRBON_Support is
    end Crc_32;
 
 
-   function Crc_16 (Ptr: Unsigned_8_Ptr; Length: Unsigned_32) return Unsigned_16 is
-      Source: Crc_Unsigned_8_Ptr := (Length, Ptr, Length);
+   function Crc_16 (Arr: Array_Of_Unsigned_8_Ptr) return Unsigned_16 is
+      Length: Unsigned_32 := Arr.all'Length;
+      Source: Crc_Array_Of_Unsigned_8_Ptr := (Length, Arr, Length);
    begin
       return Crc_16 (Source);
    end Crc_16;
 
 
-   function Crc_32 (Ptr: Unsigned_8_Ptr; Length: Unsigned_32) return Unsigned_32 is
-      Source: Crc_Unsigned_8_Ptr := (Length, Ptr, Length);
+   function Crc_32 (Arr: Array_Of_Unsigned_8_Ptr) return Unsigned_32 is
+      Length: Unsigned_32 := Arr.all'Length;
+      Source: Crc_Array_Of_Unsigned_8_Ptr := (Length, Arr, Length);
    begin
       return Crc_32 (Source);
    end Crc_32;

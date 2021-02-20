@@ -1,3 +1,4 @@
+with Portal; use Portal;
 
 package body Item_Manager is
 
@@ -12,42 +13,9 @@ package body Item_Manager is
                                  Root_Type: in Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr is
 
-
-      Im: Item_Manager_Ptr;
-      St: Storage_Area;
-      Rp: Portal.Portal;
-      Pm: Portal_Manager.Portal_Manager;
-
       Bc: Unsigned_32 := (Byte_Count + 8) and 16#FFFFFFFC#; -- ensure rounding up to nearest 32 bit
-
+      Im: Item_Manager_Ptr;
    begin
-
-      Pm := Portal_Manager.New_Portal_Manager;
-
-      St := New_Storage_With_Size (Byte_Count       => Bc,
-                                   Using_Endianness => Use_Endianness);
-
-      Rp := Portal.Portal'(Is_Valid        => True,
-                    Item_Ptr        => St.all(0)'Access,
-                    Index           => 0,
-                    Column          => 0,
-                    Reference_Count => 1);
-
-      Pm := Portal_Manager.New_Portal_Manager;
-
-      Im := new Item_Manager;
-
-      Im.Storage := St;
-
-
-
-        --'(Limited_Controlled'() with
-          --                                 Use_Endianness => Use_Endianness,
-            --                               Storage_Increments => 10 * 2**10,
-              --                             Storage_Ptr => St,
-                --                           Root => Rp,
-                  --                         Portal_Mgr => Pm);
-
       raise BRBON.Incomplete_Code;
       return Im;
    end Item_Manager_Factory;

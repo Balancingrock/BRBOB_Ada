@@ -1,8 +1,9 @@
 with Ada.Finalization; use Ada.Finalization;
+with Interfaces; use Interfaces;
 
-with Item_Manager; use Item_Manager;
-with BRBON_Basic_Types; use BRBON_Basic_Types;
 with BRBON; use BRBON;
+with Item_Manager; use Item_Manager;
+
 
 
 package Item is
@@ -21,6 +22,7 @@ package Item is
    -- Sets the type of an item.
    --
    procedure Set_Item_Type (I: Item; Value: Item_Type);
+
 
    -- Returns the type of the item.
    -- Can raise Enum_Mapping_Failed.
@@ -56,5 +58,6 @@ package Item is
    -- Returns the name field byte count of an item
    --
    function Get_Item_Name_Field_Byte_Count (I: Item) return Unsigned_8;
+
 
 end Item;

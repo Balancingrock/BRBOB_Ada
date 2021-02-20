@@ -1,7 +1,9 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with BRBON_Basic_Types; use BRBON_Basic_Types;
+with Interfaces; use Interfaces;
+with BRBON; use BRBON;
 
+with BRBON; use BRBON;
 
 package BRBON_Support is
 
@@ -18,12 +20,12 @@ package BRBON_Support is
 
    -- Returns the CRC-16 starting at the pointer for the given length.
    --
-   function Crc_16 (Ptr: Unsigned_8_Ptr; Length: Unsigned_32) return Unsigned_16;
+   function Crc_16 (Arr: Array_Of_Unsigned_8_Ptr) return Unsigned_16;
 
 
    -- Returns the CRC-32 starting at the pointer for the given length.
    --
-   function Crc_32 (Ptr: Unsigned_8_Ptr; Length: Unsigned_32) return Unsigned_32;
+   function Crc_32 (Arr: Array_Of_Unsigned_8_Ptr) return Unsigned_32;
 
 
 private
@@ -66,14 +68,14 @@ private
 
    --
 
-   type Crc_Unsigned_8_Ptr is new Crc_Data with
+   type Crc_Array_Of_Unsigned_8_Ptr is new Crc_Data with
       record
-         Ptr: Unsigned_8_Ptr;
+         Ptr: Array_Of_Unsigned_8_Ptr;
          Length: Unsigned_32;
       end record;
 
    overriding
-   function Next (Source: in out Crc_Unsigned_8_Ptr; Byte: out Unsigned_8) return Boolean;
+   function Next (Source: in out Crc_Array_Of_Unsigned_8_Ptr; Byte: out Unsigned_8) return Boolean;
 
 
 end BRBON_Support;

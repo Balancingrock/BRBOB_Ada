@@ -1,8 +1,8 @@
 with Ada.Finalization; use Ada.Finalization;
 with Ada.Unchecked_Conversion;
+with Interfaces; use Interfaces;
 
 with BRBON; use BRBON;
-with BRBON_Basic_Types; use BRBON_Basic_Types;
 with BRBON_Configure; use BRBON_Configure;
 
 with Storage_Area; use Storage_Area;
@@ -11,11 +11,14 @@ with Portal_Manager;
 
 package Item_Manager is
 
+
    type Item_Manager;
+
 
    -- All Item_Managers are dynamically allocated.
    --
    type Item_Manager_Ptr is access Item_Manager;
+
 
    -- The item manager controls access to the storage area. All interactions between the client and Brbon are controlled
    -- by the item manager except for the Portals which can be used as a shortcut.
@@ -27,13 +30,16 @@ package Item_Manager is
          Portals: Portal_Manager.Portal_Manager;
       end record;
 
+
    -- Override the initialization
    --
    procedure Initialize (Mgr: in out Item_Manager);
 
+
    -- Override the finalization
    --
    procedure Finalization (Mgr: in out Item_Manager);
+
 
    -- Increases the storage area byte count. Note that this will cause the entire content of
    -- the area to be copied and hence there should be enough free heap to accomodate both the old
@@ -43,9 +49,11 @@ package Item_Manager is
    --
    procedure Increase_Storage_Byte_Count (Mgr: in out Item_Manager; Value: Unsigned_32);
 
+
    -- Returns the size of the unused area in the storage area of the item manager
    --
    function Unused_Storage (Mgr: in  Item_Manager) return Unsigned_32;
+
 
    -- Creates a new item manager
    -- @value Use_Endianness The endianness of the data as it was created.

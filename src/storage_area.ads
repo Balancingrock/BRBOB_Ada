@@ -1,7 +1,8 @@
 with Ada.Finalization; use Ada.Finalization;
+with Interfaces; use Interfaces;
 
+with BRBON; use BRBON;
 with BRBON_Configure; use BRBON_Configure;
-with BRBON_Basic_Types; use BRBON_Basic_Types;
 
 
 package Storage_Area is
@@ -10,16 +11,14 @@ package Storage_Area is
    -- The area in which items are stored.
    -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
    --
-   type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8 with Pack;
-   for Unsigned_8_Array'Alignment use 32;
-   --
-   type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
    --
    type Storage_Area is new Limited_Controlled with
       record
-         Data: Unsigned_8_Array_Ptr;
+         Data: Array_Of_Unsigned_8_Ptr;
          Uses_Endianness: Endianness;
       end record;
+
+   type Storage_Area_Ptr is access Storage_Area;
 
 
    -- Unsigned_8 access
@@ -64,24 +63,24 @@ package Storage_Area is
 
    -- Float_32 access
    --
-   procedure Set_Float_32 (S: Storage_Area; Offset: Unsigned_32; Value: Float_32);
-   function Get_Float_32 (S: Storage_Area; Offset: Unsigned_32) return Float_32;
+   procedure Set_Float_32 (S: Storage_Area; Offset: Unsigned_32; Value: IEEE_Float_32);
+   function Get_Float_32 (S: Storage_Area; Offset: Unsigned_32) return IEEE_Float_32;
 
    -- Float_64 access
    --
-   procedure Set_Float_64 (S: Storage_Area; Offset: Unsigned_32; Value: Float_64);
-   function Get_Float_64 (S: Storage_Area; Offset: Unsigned_32) return Float_64;
+   procedure Set_Float_64 (S: Storage_Area; Offset: Unsigned_32; Value: IEEE_Float_64);
+   function Get_Float_64 (S: Storage_Area; Offset: Unsigned_32) return IEEE_Float_64;
 
    -- Unsigned_8_Array access
    -- Note: It is assumed that enough storage area is available.
    --
-   procedure Set_Unsigned_8_Array (S: Storage_Area; Offset: Unsigned_32; Value: Unsigned_8_Array);
-   procedure Get_Unsigned_8_Array (S: Storage_Area; Offset: Unsigned_32; Value: in out Unsigned_8_Array);
+   procedure Set_Unsigned_8_Array (S: Storage_Area; Offset: Unsigned_32; Value: Array_Of_Unsigned_8);
+   procedure Get_Unsigned_8_Array (S: Storage_Area; Offset: Unsigned_32; Value: in out Array_Of_Unsigned_8);
 
 
    -- Create a new storage object.
    --
-   function New_Storage_With_Size (Byte_Count: Unsigned_32) return Storage_Area;
+   function New_Storage_Area (Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Storage_Area_Ptr;
 
 
 private
