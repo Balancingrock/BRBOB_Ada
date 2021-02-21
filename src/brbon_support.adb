@@ -1,32 +1,11 @@
 package body BRBON_Support is
 
 
-   -- ==================
-   -- Data Sources
-   -- ==================
-
-   function Next (Source: in out Crc_Unbounded_String; Byte: out Unsigned_8) return Boolean is
-   begin
-      if Source.Remainder = 0 then return False; end if;
-      Source.Remainder := Source.Remainder - 1;
-      Byte := Character'Pos(Element(Source.Str, (Length (Source.Str) - Natural(Source.Remainder))));
-      return True;
-   end Next;
-
-   function Next (Source: in out Crc_Array_Of_Unsigned_8_Ptr; Byte: out Unsigned_8) return Boolean is
-   begin
-      if Source.Remainder = 0 then return False; end if;
-      Byte := Source.Ptr.all(Source.Length - Source.Remainder);
-      Source.Remainder := Source.Remainder - 1;
-      return True;
-   end Next;
-
-
-   -- =====================
+   -- ======================
    -- CRC-16
-   -- =====================
+   -- ======================
 
-   function Crc_16 (Source: in out Crc_Data'Class; Initalization: Unsigned_16 := 0; Polynomial: Unsigned_16 := 16#A001#) return Unsigned_16 is
+   function Crc_16 (Source: in out Byte_Source.Byte_Source'Class; Initalization: Unsigned_16 := 0; Polynomial: Unsigned_16 := 16#A001#) return Unsigned_16 is
       Accumulator: Unsigned_16 := Initalization;
       Byte: Unsigned_8;
       A: Unsigned_8;
@@ -47,9 +26,9 @@ package body BRBON_Support is
    end Crc_16;
 
 
-   -- =======================
+   -- ======================
    -- CRC-32
-   -- =======================
+   -- ======================
 
    Crc_32_Table: Array (Integer range 0..255) of Unsigned_32 :=
      (
@@ -86,7 +65,7 @@ package body BRBON_Support is
       16#bdbdf21c#, 16#cabac28a#, 16#53b39330#, 16#24b4a3a6#, 16#bad03605#, 16#cdd70693#, 16#54de5729#, 16#23d967bf#,
       16#b3667a2e#, 16#c4614ab8#, 16#5d681b02#, 16#2a6f2b94#, 16#b40bbe37#, 16#c30c8ea1#, 16#5a05df1b#, 16#2d02ef8d#);
 
-   function Crc_32 (Source: in out Crc_Data'Class; Initalization: Unsigned_32 := 16#FFFF_FFFF#) return Unsigned_32 is
+   function Crc_32 (Source: in out Byte_Source.Byte_Source'Class; Initalization: Unsigned_32 := 16#FFFF_FFFF#) return Unsigned_32 is
       A: Unsigned_32 := Initalization xor 16#FFFF_FFFF#;
       Byte: Unsigned_8;
    begin
@@ -101,33 +80,31 @@ package body BRBON_Support is
    -- Non-Private (Provided API)
    -- ****************************
 
-   function Crc_16 (Str: String) return Unsigned_16 is
-      UStr: Unbounded_String := To_Unbounded_String (Str);
-      Source: Crc_Unbounded_String := (Unsigned_32 (Length (UStr)), UStr);
+   function Crc_16 (Ptr: String_Ptr) return Unsigned_16 is
+      Length: Unsigned_32 := Ptr.all'Length;
+      Source: String_Source := (Length, Ptr);
    begin
       return Crc_16 (Source);
    end Crc_16;
 
 
-   function Crc_32 (Str: String) return Unsigned_32 is
-      UStr: Unbounded_String := To_Unbounded_String (Str);
-      Source: Crc_Unbounded_String := (Unsigned_32 (Length (UStr)), UStr);
+   function Crc_32 (Ptr: String_Ptr) return Unsigned_32 is
+      Length: Unsigned_32 := Ptr.all'Length;
+      Source: String_Source := (Length, Ptr);
    begin
       return Crc_32 (Source);
    end Crc_32;
 
 
-   function Crc_16 (Arr: Array_Of_Unsigned_8_Ptr) return Unsigned_16 is
-      Length: Unsigned_32 := Arr.all'Length;
-      Source: Crc_Array_Of_Unsigned_8_Ptr := (Length, Arr, Length);
+   function Crc_16 (Ptr: Array_Of_Unsigned_8_Ptr) return Unsigned_16 is
+      Source: Array_Of_Unsigned_8_Source := (Length, Ptr);
    begin
       return Crc_16 (Source);
    end Crc_16;
 
 
-   function Crc_32 (Arr: Array_Of_Unsigned_8_Ptr) return Unsigned_32 is
-      Length: Unsigned_32 := Arr.all'Length;
-      Source: Crc_Array_Of_Unsigned_8_Ptr := (Length, Arr, Length);
+   function Crc_32 (Ptr: Array_Of_Unsigned_8_Ptr) return Unsigned_32 is
+      Source: Array_Of_Unsigned_8_Source := (Length, Ptr);
    begin
       return Crc_32 (Source);
    end Crc_32;

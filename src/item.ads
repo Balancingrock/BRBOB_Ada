@@ -1,8 +1,9 @@
 with Ada.Strings.Bounded; use Ada.Strings.Bounded;
+with Ada.Strings.UTF_Encoding;
 with Ada.Unchecked_Conversion;
 with Interfaces; use Interfaces;
 
-with Storage_Area; use Storage_Area;
+with BRBON; use BRBON;
 
 
 package Item is
@@ -73,43 +74,14 @@ package Item is
 
    -- Layout of an item header
    --
-   type Item_Header (Item_Type: BR_Item_Type) is
+   type Item_Header is
       record
+         Item_Type: BR_Item_Type;
          Options: Item_Options;
          Flags: Item_Flags;
          Name_Field_Byte_Count: Unsigned_8;
          Byte_Count: Unsigned_32;
          Parent_Offset: Unsigned_32;
-
-         case Item_Type is
-
-            when BR_Bool =>
-               Value_Bool: Unsigned_8;
-
-            when BR_Int8 =>
-               Value_Int8: Integer_8;
-
-            when BR_Int16 =>
-               Value_Int16: Integer_16;
-
-            when BR_Int32 =>
-               Value_Int32: Integer_32;
-
-            when BR_UInt8 =>
-               Value_UInt8: Unsigned_8;
-
-            when BR_UInt16 =>
-               Value_UInt16: Unsigned_16;
-
-            when BR_UInt32 =>
-               Value_UInt32: Unsigned_32;
-
-            when BR_Float32 =>
-               Value_Float32: IEEE_Float_32;
-
-            when BR_Illegal | BR_Null | BR_Int64 | BR_UInt64 | BR_Float64 | BR_String | BR_Crc_String | BR_Binary | BR_Crc_Binary | BR_Array | BR_Dictionary | BR_Sequence | BR_Table | BR_Uuid | BR_Rbga | BR_Font =>
-               Unused: Unsigned_32;
-         end case;
       end record;
    --
    for Item_Header use
@@ -120,28 +92,7 @@ package Item is
          Name_Field_Byte_Count at 3  range 0..7;
          Byte_Count            at 4  range 0..31;
          Parent_Offset         at 8  range 0..31;
-         --
-         Value_Bool            at 12 range 0..7;
-         Value_Int8            at 12 range 0..8;
-         Value_Int16           at 12 range 0..15;
-         Value_Int32           at 12 range 0..31;
-         Value_UInt8           at 12 range 0..7;
-         Value_UInt16          at 12 range 0..15;
-         Value_UInt32          at 12 range 0..31;
-         Value_Float32         at 12 range 0..31;
-         Unused                at 12 range 0..31;
       end record;
-
-
-   -- Sets the type of an item.
-   --
-   procedure Item_Type (I: Item_Header; Value: BR_Item_Type);
-
-
-   -- Returns the type of the item.
-   -- Can raise Enum_Mapping_Failed.
-   --
-   function Item_Type (I: Item_Header) return BR_Item_Type;
 
 
    -- A pointer to an item layout
@@ -149,6 +100,28 @@ package Item is
    type Item_Header_Ptr is access Item_Header;
    --
    function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
+
+
+   -- Returns true if the item type specification is valid.
+   --
+   function Is_Valid_Item_Type (Ptr: Unsigned_8_Ptr) return Boolean;
+
+
+   -- Sets the type of an item.
+   --
+   procedure Item_Type (Ptr: Unsigned_8_Ptr; Value: BR_Item_Type);
+
+
+   -- Returns the type of the item.
+   -- Can raise Enum_Mapping_Failed.
+   -- Use Is_Valid_Item_Type first to avoid raising the exception.
+   --
+   function Item_Type (Ptr: Unsigned_8_Ptr) return BR_Item_Type;
+
+
+   -- Returns a pointer to the value area
+   --
+   function Get_Value_Area_Ptr (Ptr: Item_Header_Ptr) return Unsigned_8_Ptr;
 
 
    -- The name array
@@ -171,9 +144,94 @@ package Item is
       end record;
 
 
+   -- =======================
+   -- Value access
+   -- =======================
+
+
+   -- String Value Access
    --
+   type String_Layout is
+      record
+         Byte_Count: Unsigned_32;
+      end record;
+   --
+   type String_Layout_Ptr is access String_Layout;
+   function To_String_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, String_Layout_Ptr);
+   --
+   procedure Set_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: Ada.Strings.UTF_Encoding.UTF_8_String);
+   procedure Get_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Ada.Strings.UTF_Encoding.UTF_8_String);
 
 
+   -- CRC String Value Access
+   --
+   type CRC_String_Layout is
+      record
+         CRC_32: Unsigned_32;
+         Byte_Count: Unsigned_32;
+      end record;
+   --
+   type CRC_String_Layout_Ptr is access CRC_String_Layout;
+   function To_CRC_String_Layout is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, CRC_String_Layout_Ptr);
+   --
+   procedure Set_CRC_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: Ada.Strings.UTF_Encoding.UTF_8_String);
+   procedure Get_CRC_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Ada.Strings.UTF_Encoding.UTF_8_String);
 
+
+   -- Binary Value Access
+   --
+   type Binary_Layout is
+      record
+         Byte_Count: Unsigned_32;
+      end record;
+   --
+   type Binary_Layout_Ptr is access Binary_Layout;
+   function To_Binary_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Binary_Layout_Ptr);
+   --
+   procedure Set_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: Array_Of_Unsigned_8);
+   procedure Get_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Array_Of_Unsigned_8);
+
+
+   -- CRC Binary Access
+   --
+   type CRC_Binary_Layout is
+      record
+         CRC_32: Unsigned_32;
+         Byte_Count: Unsigned_32;
+      end record;
+   --
+   type CRC_Binary_Layout_Ptr is access CRC_Binary_Layout;
+   function To_CRC_Binary_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, CRC_Binary_Layout_Ptr);
+   --
+   procedure Set_CRC_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: Array_Of_Unsigned_8);
+   procedure Get_CRC_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Array_Of_Unsigned_8);
+
+
+   -- Array Access
+   --
+   type Array_Layout is
+      record
+         Reserved: Unsigned_32;
+         Element_Type: BR_Item_Type;
+         Zero_1: Unsigned_8;
+         Zero_2: Unsigned_16;
+         Element_Count: Unsigned_32;
+         Element_Byte_Count: Unsigned_32;
+      end record;
+   --
+   for Array_Layout use
+      record
+         Reserved at 0 range 0..31;
+         Element_Type at 4 range 0..7;
+         Zero_1 at 5 range 0..7;
+         Zero_2 at 6 range 0..15;
+         Element_Count at 8 range 0..31;
+         Element_Byte_Count at 12 range 0..31;
+      end record;
+   --
+   type Array_Layout_Ptr is access Array_Layout;
+   function To_Array_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Array_Layout_Ptr);
+   --
+   --
 
 end Item;

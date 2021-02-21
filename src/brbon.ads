@@ -11,6 +11,16 @@ package BRBON is
    type Endianness is (Big, Little);
 
 
+   -- Most of the data manipulations are done byte wise
+   --
+   type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of aliased Unsigned_8;
+   --
+   type Array_Of_Unsigned_8_Ptr is access Array_Of_Unsigned_8;
+
+
+   -- Access to bytes in the storage
+   --
+   type Unsigned_8_Ptr is access all Unsigned_8;
 
 
    --type Integer_8_Ptr is access all Integer_8;
