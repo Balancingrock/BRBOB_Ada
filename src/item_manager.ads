@@ -3,6 +3,7 @@ with Ada.Unchecked_Conversion;
 with Interfaces; use Interfaces;
 
 with BRBON; use BRBON;
+with Item; use Item;
 with BRBON_Configure; use BRBON_Configure;
 
 with Storage_Area; use Storage_Area;
@@ -64,7 +65,7 @@ package Item_Manager is
                                  Use_Endianness: in Endianness := Machine_Endianness;
                                  Byte_Count: in Unsigned_32 := 10 * 2**10;
                                  Increment: in Unsigned_32 := 10 * 2**10;
-                                 Root_Type: in Item_Type := Br_Dictionary
+                                 Root_Type: in BR_Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr;
 
 end Item_Manager;

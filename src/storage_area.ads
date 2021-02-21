@@ -8,6 +8,17 @@ with BRBON_Configure; use BRBON_Configure;
 package Storage_Area is
 
 
+   -- For the area where all items are stored
+   --
+   type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of aliased Unsigned_8 with Pack;
+   type Array_Of_Unsigned_8_Ptr is access Array_Of_Unsigned_8;
+
+
+   -- Access to bytes in the storage
+   --
+   type Unsigned_8_Ptr is access all Unsigned_8;
+
+
    -- The area in which items are stored.
    -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
    --

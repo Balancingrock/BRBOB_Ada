@@ -1,5 +1,5 @@
 with BRBON; use BRBON;
-
+with Item; use Item;
 
 package Portal is
 
@@ -11,7 +11,7 @@ package Portal is
    type Portal is
       record
          Is_Valid: Boolean := False;
-         Item_Ptr: Unsigned_8_Ptr;
+         --Item_Ptr: Unsigned_8_Ptr;
          Index: Integer := -1;
          Column: Integer := -1;
          Reference_Count: Integer := 0;
@@ -25,6 +25,6 @@ package Portal is
 
    -- Read the type of the item associated with this portal.
    --
-   function Get_Item_Type (Ptr: Portal_Ptr) return Item_Type;
+   function Get_Item_Type (Ptr: Portal_Ptr) return BR_Item_Type;
 
 end Portal;

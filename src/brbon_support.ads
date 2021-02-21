@@ -2,7 +2,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Interfaces; use Interfaces;
 with BRBON; use BRBON;
-
+with Storage_Area; use Storage_Area;
 
 package BRBON_Support is
 

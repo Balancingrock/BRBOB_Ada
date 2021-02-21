@@ -23,7 +23,7 @@ package Portal_Manager is
 
    -- Updates the pointers in all of the portals under control of the manager.
    --
-   procedure Update_Portal_Pointers (Mgr: Portal_Manager; At_And_Above: Unsigned_8_Ptr; Below: Unsigned_8_Ptr; To_New_Base: Unsigned_8_Ptr);
+   --procedure Update_Portal_Pointers (Mgr: Portal_Manager; At_And_Above: Unsigned_8_Ptr; Below: Unsigned_8_Ptr; To_New_Base: Unsigned_8_Ptr);
 
 
    -- Create a new portal

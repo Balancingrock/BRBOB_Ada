@@ -10,7 +10,7 @@ package body Item_Manager is
                                  Use_Endianness: in Endianness := Machine_Endianness;
                                  Byte_Count: in Unsigned_32 := 10 * 2**10;
                                  Increment: in Unsigned_32 := 10 * 2**10;
-                                 Root_Type: in Item_Type := Br_Dictionary
+                                 Root_Type: in BR_Item_Type := Br_Dictionary
                                 ) return Item_Manager_Ptr is
 
       Bc: Unsigned_32 := (Byte_Count + 8) and 16#FFFFFFFC#; -- ensure rounding up to nearest 32 bit
