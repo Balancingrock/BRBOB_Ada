@@ -1,5 +1,5 @@
 with Ada.Finalization; use Ada.Finalization;
-with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
 
 with BRBON; use BRBON;
@@ -26,20 +26,15 @@ package Item_Manager is
    --
    type Item_Manager is new Limited_Controlled with
       record
-         Storage: Storage_Area.Storage_Area;
+         Storage: Storage_Area_Ptr;
          Increments: Unsigned_32;
-         Portals: Portal_Manager.Portal_Manager;
+         --Portals: Portal_Manager.Portal_Manager;
       end record;
-
-
-   -- Override the initialization
-   --
-   procedure Initialize (Mgr: in out Item_Manager);
 
 
    -- Override the finalization
    --
-   procedure Finalization (Mgr: in out Item_Manager);
+   procedure Finalization (M: in out Item_Manager);
 
 
    -- Increases the storage area byte count. Note that this will cause the entire content of
@@ -53,19 +48,23 @@ package Item_Manager is
 
    -- Returns the size of the unused area in the storage area of the item manager
    --
-   function Unused_Storage (Mgr: in  Item_Manager) return Unsigned_32;
+   function Unused_Storage (Mgr: in Item_Manager) return Unsigned_32;
 
 
-   -- Creates a new item manager
+   -- Creates a new item manager.
+   -- The callee is responsible for deallocation.
    -- @value Use_Endianness The endianness of the data as it was created.
    -- @value Byte_Count The initial size of the storage area in bytes. Default = 10KByte.
    -- @value Root_Type The storage type at the top of the hierarchy.
    --
-   function Item_Manager_Factory(
-                                 Use_Endianness: in Endianness := Machine_Endianness;
-                                 Byte_Count: in Unsigned_32 := 10 * 2**10;
-                                 Increment: in Unsigned_32 := 10 * 2**10;
-                                 Root_Type: in BR_Item_Type := Br_Dictionary
-                                ) return Item_Manager_Ptr;
+   function Allocate_And_Create(
+                                Use_Endianness: in Endianness := Machine_Endianness;
+                                Byte_Count: in Unsigned_32 := 10 * 2**10;
+                                Increment: in Unsigned_32 := 10 * 2**10;
+                                Root_Type: in BR_Item_Type := Br_Dictionary
+                               ) return Item_Manager_Ptr;
+
+   procedure Deallocate is new Ada.Unchecked_Deallocation (Item_Manager, Item_Manager_Ptr);
+
 
 end Item_Manager;
