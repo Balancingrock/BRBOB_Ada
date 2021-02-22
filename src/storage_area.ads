@@ -8,9 +8,6 @@ with BRBON_Configure; use BRBON_Configure;
 package Storage_Area is
 
 
-
-
-
    -- The area in which items are stored.
    -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
    --

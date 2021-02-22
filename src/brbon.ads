@@ -1,5 +1,6 @@
 with Ada.Strings.Bounded;
 with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
 with GNAT.Byte_Swapping;
 with Interfaces; use Interfaces;
 with System;
@@ -17,6 +18,8 @@ package BRBON is
    type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of aliased Unsigned_8;
    --
    type Array_Of_Unsigned_8_Ptr is access Array_Of_Unsigned_8;
+   --
+   procedure Deallocate_Array_Of_Unsigned_8 is new Ada.Unchecked_Deallocation (Array_Of_Unsigned_8, Array_Of_Unsigned_8_Ptr);
 
 
    -- Access to bytes in the storage
@@ -58,6 +61,8 @@ package BRBON is
 
    function To_Integer_8 is new Ada.Unchecked_Conversion (Unsigned_8, Integer_8);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Integer_8, Unsigned_8);
+
+   type String_Ptr is access all String;
 
 
    -- Possible exceptions
