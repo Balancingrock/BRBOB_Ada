@@ -1,5 +1,6 @@
 with Ada.Strings.Bounded;
 with Ada.Unchecked_Conversion;
+with GNAT.Byte_Swapping;
 with Interfaces; use Interfaces;
 with System;
 
@@ -23,68 +24,40 @@ package BRBON is
    type Unsigned_8_Ptr is access all Unsigned_8;
 
 
-   --type Integer_8_Ptr is access all Integer_8;
-   --type Integer_16_Ptr is access all Integer_16;
-   --type Integer_32_Ptr is access all Integer_32;
-   --type Integer_64_Ptr is access all Integer_64;
+   function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
+   function Swap_Unsigned_32 is new GNAT.Byte_Swapping.Swapped4 (Unsigned_32);
+   function Swap_Unsigned_64 is new GNAT.Byte_Swapping.Swapped8 (Unsigned_64);
+   function Swap_Integer_16 is new GNAT.Byte_Swapping.Swapped2 (Integer_16);
+   function Swap_Integer_32 is new GNAT.Byte_Swapping.Swapped4 (Integer_32);
+   function Swap_Integer_64 is new GNAT.Byte_Swapping.Swapped8 (Integer_64);
+   function Swap_Float_32 is new GNAT.Byte_Swapping.Swapped4 (IEEE_Float_32);
+   function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
 
 
-   --type Unsigned_16_Ptr is access all Unsigned_16;
-   --type Unsigned_32_Ptr is access all Unsigned_32;
-   --type Unsigned_64_Ptr is access all Unsigned_64;
+   subtype Two_Bytes is Array_Of_Unsigned_8 (1 .. 2);
+   subtype Four_Bytes is Array_Of_Unsigned_8 (1 .. 4);
+   subtype Eight_Bytes is Array_Of_Unsigned_8 (1 .. 8);
 
-   --type IEEE_Float_32_Ptr is access all IEEE_Float_32;
-   --type IEEE_Float_64_Ptr is access all IEEE_Float_64;
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Two_Bytes, Unsigned_16);
+   function To_Integer_16 is new Ada.Unchecked_Conversion (Two_Bytes, Integer_16);
+   function To_Unsigned_32 is new Ada.Unchecked_Conversion (Four_Bytes, Unsigned_32);
+   function To_Integer_32 is new Ada.Unchecked_Conversion (Four_Bytes, Integer_32);
+   function To_Float_32 is new Ada.Unchecked_Conversion (Four_Bytes, IEEE_Float_32);
+   function To_Unsigned_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Unsigned_64);
+   function To_Integer_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Integer_64);
+   function To_Float_64 is new Ada.Unchecked_Conversion (Eight_Bytes, IEEE_Float_64);
 
-   --function To_Integer_8_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_ptr, Integer_8_Ptr);
-   --function To_Integer_16_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Integer_16_Ptr);
-   --function To_Integer_32_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Integer_32_Ptr);
-   --function To_Integer_64_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Integer_64_Ptr);
-   --
-   --function To_Unsigned_16_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Unsigned_16_Ptr);
-   --function To_Unsigned_32_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Unsigned_32_Ptr);
-   --function To_Unsigned_64_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Unsigned_64_Ptr);
-   --
-   --function To_IEEE_Float_32_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, IEEE_Float_32_Ptr);
-   --function To_IEEE_Float_64_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, IEEE_Float_64_Ptr);
+   function To_Two_Bytes is new Ada.Unchecked_Conversion (Unsigned_16, Two_Bytes);
+   function To_Two_Bytes is new Ada.Unchecked_Conversion (Integer_16, Two_Bytes);
+   function To_Four_Bytes is new Ada.Unchecked_Conversion (Unsigned_32, Four_Bytes);
+   function To_Four_Bytes is new Ada.Unchecked_Conversion (Integer_32, Four_Bytes);
+   function To_Four_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_32, Four_Bytes);
+   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Unsigned_64, Eight_Bytes);
+   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Integer_64, Eight_Bytes);
+   function To_Eight_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_64, Eight_Bytes);
 
-
-
-
-
-   -- All types available for storage into an Item_Manager.
-   --
-   --type Item_Type is (
-   --                   Br_Illegal,      -- Used for error detection, cannot be used by the user.
-   --                   Br_Null,         -- A null has no associated value, it simply exists.
-   --                   Br_Bool,         -- Corresponding to Standard.Boolean.
-   --                   Br_Int8,         -- An integer with a size of 8 bits (Byte, char).
-   --                   Br_Int16,        -- An integer with a size of 16 bits.
-   --                   Br_Int32,        -- An integer with a size of 32 bits.
-   --                   Br_Int64,        -- An integer with a size of 64 bits.
-   --                   Br_UInt8,        -- An integer with a size of 8 bits and range 0 .. 2**8-1.
-   --                   Br_UInt16,       -- An integer with a size of 16 bits and range 0 .. 2**16-1.
-   --                   Br_UInt32,       -- An integer with a size of 32 bits and range 0 .. 2**32-1.
-   --                   Br_UInt64,       -- An integer with a size of 64 bits and range of 0 .. 2**64-1.
-   --                   Br_Float32,      -- An IEEE 754 32 bit float. Accurate to about 6 decimals, range approx 1.1e-38 to 3.4e38.
-   --                   Br_Float64,      -- An IEEE 754 64 bit float. Accurate to about 15 digits, range aprox 2.2e-308 to 1.7e+308.
-   --                   Br_String,       -- Corresponds to Standard.String.
-   --                   Br_Crc_String,   -- A string with an associated CRC-16 code for fast searches.
-   --                   Br_Binary,       -- A series of bytes, corresponds to array (1..Count) of Br_UInt8.
-   --                   Br_Crc_Binary,   -- A binary with associated CRC-16 code fro fast searches.
-   --                   Br_Array,        -- An array of Brbon.Item_Types.
-   --                   Br_Dictionary,   -- A dictionary associates a key (string) with a value (Brbon.Item_Type).
-   --                   Br_Sequence,     -- A sequence of Brbon.Item_Type's.
-   --                   Br_Table,        -- A 2 dimension array of Brbon.Item_Type's addressed by column (string or index) and row (index).
-   --                   Br_Uuid,         -- A UUID, an array of 16 Br_UInt8 values returned as array or string.
-   --                   Br_Rbga,         -- A RGBA (Red Green Blue Alpha) for color specifications.
-   --                   Br_Font          -- A font specification (family name and font name).
-   --                  );
-   --for Item_Type'Size use 8;
-   --for Item_Type use (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
-
-
-
+   function To_Integer_8 is new Ada.Unchecked_Conversion (Unsigned_8, Integer_8);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Integer_8, Unsigned_8);
 
 
    -- Possible exceptions

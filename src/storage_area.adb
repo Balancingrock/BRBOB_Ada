@@ -1,43 +1,11 @@
-with GNAT.Byte_Swapping;
+
 with Ada.Unchecked_Conversion;
 
 
 package body Storage_Area is
 
 
-   function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
-   function Swap_Unsigned_32 is new GNAT.Byte_Swapping.Swapped4 (Unsigned_32);
-   function Swap_Unsigned_64 is new GNAT.Byte_Swapping.Swapped8 (Unsigned_64);
-   function Swap_Integer_16 is new GNAT.Byte_Swapping.Swapped2 (Integer_16);
-   function Swap_Integer_32 is new GNAT.Byte_Swapping.Swapped4 (Integer_32);
-   function Swap_Integer_64 is new GNAT.Byte_Swapping.Swapped8 (Integer_64);
-   function Swap_Float_32 is new GNAT.Byte_Swapping.Swapped4 (IEEE_Float_32);
-   function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
 
-   subtype Two_Bytes is Array_Of_Unsigned_8 (1 .. 2);
-   subtype Four_Bytes is Array_Of_Unsigned_8 (1 .. 4);
-   subtype Eight_Bytes is Array_Of_Unsigned_8 (1 .. 8);
-
-   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Two_Bytes, Unsigned_16);
-   function To_Integer_16 is new Ada.Unchecked_Conversion (Two_Bytes, Integer_16);
-   function To_Unsigned_32 is new Ada.Unchecked_Conversion (Four_Bytes, Unsigned_32);
-   function To_Integer_32 is new Ada.Unchecked_Conversion (Four_Bytes, Integer_32);
-   function To_Float_32 is new Ada.Unchecked_Conversion (Four_Bytes, IEEE_Float_32);
-   function To_Unsigned_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Unsigned_64);
-   function To_Integer_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Integer_64);
-   function To_Float_64 is new Ada.Unchecked_Conversion (Eight_Bytes, IEEE_Float_64);
-
-   function To_Two_Bytes is new Ada.Unchecked_Conversion (Unsigned_16, Two_Bytes);
-   function To_Two_Bytes is new Ada.Unchecked_Conversion (Integer_16, Two_Bytes);
-   function To_Four_Bytes is new Ada.Unchecked_Conversion (Unsigned_32, Four_Bytes);
-   function To_Four_Bytes is new Ada.Unchecked_Conversion (Integer_32, Four_Bytes);
-   function To_Four_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_32, Four_Bytes);
-   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Unsigned_64, Eight_Bytes);
-   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Integer_64, Eight_Bytes);
-   function To_Eight_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_64, Eight_Bytes);
-
-   function To_Integer_8 is new Ada.Unchecked_Conversion (Unsigned_8, Integer_8);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Integer_8, Unsigned_8);
 
 
    procedure Set_Unsigned_8 (S: Storage_Area; Offset: Unsigned_32; Value: Unsigned_8) is

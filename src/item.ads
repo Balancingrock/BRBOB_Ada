@@ -232,6 +232,8 @@ package Item is
    type Array_Layout_Ptr is access Array_Layout;
    function To_Array_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Array_Layout_Ptr);
    --
-   --
+   --procedure Set_Array_Element (Index: Unsigned_32; Bytes: Byte_Source);
+   --procedure Get_Array_Element (Index: Unsigned_32; Consumer: Byte_Target);
+
 
 end Item;
