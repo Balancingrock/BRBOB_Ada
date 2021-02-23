@@ -2,10 +2,13 @@ with Crc_Package; use Crc_Package;
 
 package body Item is
 
+
    function Create_Name_Assistent (S: Item_Name) return Name_Assistent is
-      N: String := Item_Name_Bounded_String.To_String (S);
-      A: Name_Assistent (Unsigned_8 (N'Length));
+
+      Name: String := Item_Name_Bounded_String.To_String (S);
+      Assistent: Name_Assistent (Name'Length);
       Index: Unsigned_32 := 1;
+
       type qckt is
          record
             p12: Unsigned_16;
@@ -19,18 +22,34 @@ package body Item is
             p4 at 3 range 0..7;
          end record;
       for qckt'Size use 32;
+
       function To_Unsigned_32 is new Ada.Unchecked_Conversion (qckt, Unsigned_32);
-      Q: qckt;
+
+      Quick_Check: qckt;
+
    begin
-      A.Crc := Calculate_CRC_16 (N);
-      for C of N loop
-         A.Arr(Index) := Character'Pos (C);
+
+      Assistent.CRC_16 := Calculate_CRC_16 (Name);
+
+      for C of Name loop
+         Assistent.Byte_Code(Index) := Character'Pos (C);
          Index := Index + 1;
       end loop;
-      Q := (A.Crc, Unsigned_8 (A.cnt), A.arr(1));
-      A.Qck := To_Unsigned_32 (Q);
-      return A;
+
+      Quick_Check := (Assistent.CRC_16, Assistent.Byte_Code_Count, Assistent.Byte_Code(1));
+
+      Assistent.Quick_Check := To_Unsigned_32 (Quick_Check);
+
+      if Assistent.Byte_Code_Count > 0 then
+         Assistent.Name_Field_Byte_Count := Round_Up_To_Nearest_Multiple_Of_8 (3 + Assistent.Byte_Code_Count);
+      else
+         Assistent.Name_Field_Byte_Count := 0;
+      end if;
+
+      return Assistent;
+
    end Create_Name_Assistent;
+
 
    procedure Item_Type (Ptr: Unsigned_8_Ptr; Value: BR_Item_Type) is
       IPtr: Item_Header_Ptr := To_Item_Header_Ptr (Ptr);
@@ -125,9 +144,9 @@ package body Item is
    -- ============================
 
 
+
    -- ============================
    -- Item Creation
-   -- ============================
 
    function Create_Item_Access (S: Storage_Area_Ptr; O: Unsigned_32) return Item_Access is
    begin
@@ -135,24 +154,40 @@ package body Item is
    end Create_Item_Access;
 
 
+   -- Create_Null
+   --
    procedure Create_Null (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
+
       Ptr: Item_Header_Ptr := I.Header_Ptr;
-      Na: Name_Assistent := Create_Name_Assistent (Name);
+      Assistent: Name_Assistent := Create_Name_Assistent (Name);
+
    begin
+
       Ptr.Item_Type := BR_Null;
       Ptr.Options := No_Options;
       Ptr.Flags := No_Flags;
-      if Na.Cnt > 0 then
-         Ptr.Name_Field_Byte_Count := Unsigned_8 (Na.Cnt);
-      else
-         Ptr.Name_Field_Byte_Count := 0;
-      end if;
+      Ptr.Parent_Offset := Parent_Offset;
+      Ptr.Small_Value := 0;
+      Ptr.Name_Field_Byte_Count := Assistent.Name_Field_Byte_Count;
       Ptr.Byte_Count := Byte_Count;
       Ptr.Parent_Offset := Parent_Offset;
       Ptr.Small_Value := 0;
-      raise BRBON.Incomplete_Code;
+
+      if Assistent.Name_Field_Byte_Count > 0 then
+         declare
+            Ptr: Item_Name_Field_Ptr := I.Name_Field_Pointer;
+         begin
+            Ptr.CRC_16 := Assistent.CRC_16;
+            Ptr.Byte_Code_Count := Assistent.Byte_Code_Count;
+            Ptr.Byte_Code(1..Assistent.Byte_Code_Count) := Assistent.Byte_Code;
+         end;
+      end if;
+
    end Create_Null;
 
+
+   -- Create Bool
+   --
    procedure Create_Bool (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False) is
    begin
       raise BRBON.Incomplete_Code;
