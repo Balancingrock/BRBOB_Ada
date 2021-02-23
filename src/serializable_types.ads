@@ -16,8 +16,8 @@ package Serializable_Types is
    function Next (Source: in out Serializable; Byte: out Unsigned_8) return Boolean;
 
 
-   function New_Serializable (Ptr: String_Ptr) return Serializable;
-   function New_Serializable (Ptr: Array_Of_Unsigned_8_Ptr) return Serializable;
+   function New_Serializable (Str: String) return Serializable;
+   function New_Serializable (Arr: Array_Of_Unsigned_8) return Serializable;
 
 
 private

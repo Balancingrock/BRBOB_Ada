@@ -1,4 +1,4 @@
-with Portal; use Portal;
+with Portal_Package; use Portal_Package;
 
 package body Item_Manager is
 
@@ -10,36 +10,81 @@ package body Item_Manager is
                                 Use_Endianness: in Endianness := Machine_Endianness;
                                 Byte_Count: in Unsigned_32 := 10 * 2**10;
                                 Increment: in Unsigned_32 := 10 * 2**10;
-                                Root_Type: in BR_Item_Type := Br_Dictionary
+                                Root_Type: in BR_Item_Type := Br_Dictionary;
+                                Element_Type: in BR_Item_Type := BR_Bool
                                ) return Item_Manager_Ptr is
 
-      Bc: Unsigned_32 := (Byte_Count + 8) and 16#FFFFFFFC#; -- ensure rounding up to nearest 32 bit
-      Inc: Unsigned_32 := (Increment + 8) and 16#FFFFFFFC#; -- ensure rounding up to nearest 32 bit
-      Im: Item_Manager_Ptr;
-      St: Storage_Area_Ptr;
+      Bc: Unsigned_32 := Round_Up_To_Nearest_Multiple_Of_8 (Byte_Count); -- ensure alignment
+      Mgr: Item_Manager_Ptr;
+      Storage_Ptr: Storage_Area_Ptr;
+      Item: Item_Access;
 
    begin
 
-      St := Allocate_And_Create (Byte_Count       => Bc,
-                                 Using_Endianness => Use_Endianness);
+      -- Root type cannot be Null
+      --
+      if Root_Type = BR_Null then raise BRBON.Illegal_Item_Type; end if;
 
-      Im := new Item_Manager;
-      Im.Storage := St;
-      Im.Increments := Inc;
+      -- Ensure that the byte count is sufficient for an empty item without name.
+      --
+      Bc := Max (Bc, Minimum_Item_Byte_Count (Root_Type));
 
-      Im.Storage.all.Create (0, Root_Type);
+      -- Allocate the necessary memory.
+      --
+      Storage_Ptr := Allocate_And_Create (Byte_Count       => Bc,
+                                          Using_Endianness => Use_Endianness);
 
-      return Im;
+      -- Create the new manager
+      --
+      Mgr := new Item_Manager;
+
+      -- Initialize it
+      --
+      Mgr.Storage := Storage_Ptr;
+      Mgr.Increments := Round_Up_To_Nearest_Multiple_Of_8 (Increment);
+
+      -- Create an access item
+      --
+      Item := Create_Item_Access (Storage_Ptr, 0);
+
+      -- Initialize the root item
+      --
+      case Root_Type is
+         when BR_Null => null; -- Null not allowed as root element
+         when BR_Bool => Item.Create_Bool (Byte_Count => Bc);
+         when BR_Int8 => Item.Create_Integer_8 (Byte_Count => Bc);
+         when BR_Int16 => Item.Create_Integer_16 (Byte_Count => Bc);
+         when BR_Int32 => Item.Create_Integer_32 (Byte_Count => Bc);
+         when BR_Int64 => Item.Create_Integer_64 (Byte_Count => Bc);
+         when BR_UInt8 => Item.Create_Unsigned_8 (Byte_Count => Bc);
+         when BR_UInt16 => Item.Create_Unsigned_16 (Byte_Count => Bc);
+         when BR_UInt32 => Item.Create_Unsigned_32 (Byte_Count => Bc);
+         when BR_UInt64 => Item.Create_Unsigned_64 (Byte_Count => Bc);
+         when BR_Float32 => Item.Create_Float_32 (Byte_Count => Bc);
+         when BR_Float64 => Item.Create_Float_64 (Byte_Count => Bc);
+         when BR_String => Item.Create_String (Byte_Count => Bc);
+         when BR_CRC_String => Item.Create_CRC_String (Byte_Count => Bc);
+         when BR_Binary => Item.Create_Binary (Byte_Count => Bc);
+         when BR_CRC_Binary => Item.Create_CRC_Binary (Byte_Count => Bc);
+         when BR_Array => Item.Create_Array (Byte_Count => Bc, Element_Type => Element_Type);
+         when BR_Dictionary => Item.Create_Dictionary (Byte_Count => Bc);
+         when BR_Sequence => Item.Create_Sequence (Byte_Count => Bc);
+         when BR_Table => Item.Create_Table (Byte_Count => Bc);
+         when BR_UUID => Item.Create_UUID (Byte_Count => Bc);
+         when BR_Color => Item.Create_Color (Byte_Count => Bc);
+         when BR_Font => Item.Create_Font (Byte_Count => Bc);
+      end case;
+
+      return Mgr;
 
    end Allocate_And_Create;
 
 
    -- Finalization
    --
-   procedure Finalization (M: in out Item_Manager) is
+   procedure Finalization (Mgr: in out Item_Manager) is
    begin
-      Deallocate (M.Storage);
-      raise BRBON.Incomplete_Code;
+      Deallocate (Mgr.Storage);
    end Finalization;
 
 

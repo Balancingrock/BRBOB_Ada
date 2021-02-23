@@ -1,8 +1,7 @@
 with BRBON; use BRBON;
 with Item; use Item;
 
-package Portal is
-
+package Portal_Package is
 
    -- A portal functions as an intermediate access mechanism to the actual value in storage.
    -- Since all access to the data in the storage area is pointer based, the pointers must be adjusted in response to
@@ -27,4 +26,4 @@ package Portal is
    --
    function Get_Item_Type (Ptr: Portal_Ptr) return BR_Item_Type;
 
-end Portal;
+end Portal_Package;

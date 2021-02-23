@@ -21,6 +21,8 @@ package BRBON is
    --
    procedure Deallocate_Array_Of_Unsigned_8 is new Ada.Unchecked_Deallocation (Array_Of_Unsigned_8, Array_Of_Unsigned_8_Ptr);
 
+   Short_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..1) := (others => 0);
+
 
    -- Access to bytes in the storage
    --
@@ -64,9 +66,18 @@ package BRBON is
 
    type String_Ptr is access all String;
 
+   function Max (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A > B then A else B);
+   function Min (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A < B then A else B);
+   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_32) return Unsigned_32 is ((A + 8) and 16#FFFFFFF8#);
+
 
    -- Possible exceptions
    -- ===================
+
+   -- Raised when an operation is attempted on the wrong type
+   --
+   Type_Conflict: exception;
+
 
    -- Raised when the storage area runs out of space.
    --

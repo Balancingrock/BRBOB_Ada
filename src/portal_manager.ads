@@ -1,7 +1,7 @@
 with Ada.Containers.Doubly_Linked_Lists;
 
 with BRBON; use BRBON;
-with Portal; use Portal;
+with Portal_Package; use Portal_Package;
 
 
 package Portal_Manager is

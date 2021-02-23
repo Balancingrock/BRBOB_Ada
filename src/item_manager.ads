@@ -34,7 +34,7 @@ package Item_Manager is
 
    -- Override the finalization
    --
-   procedure Finalization (M: in out Item_Manager);
+   procedure Finalization (Mgr: in out Item_Manager);
 
 
    -- Increases the storage area byte count. Note that this will cause the entire content of
@@ -56,12 +56,14 @@ package Item_Manager is
    -- @value Use_Endianness The endianness of the data as it was created.
    -- @value Byte_Count The initial size of the storage area in bytes. Default = 10KByte.
    -- @value Root_Type The storage type at the top of the hierarchy.
+   -- @value Element_Type The type of element when an array is created as the root item. Not used for other item types.
    --
    function Allocate_And_Create(
                                 Use_Endianness: in Endianness := Machine_Endianness;
                                 Byte_Count: in Unsigned_32 := 10 * 2**10;
                                 Increment: in Unsigned_32 := 10 * 2**10;
-                                Root_Type: in BR_Item_Type := Br_Dictionary
+                                Root_Type: in BR_Item_Type := Br_Dictionary;
+                                Element_Type: in BR_Item_Type := BR_Bool
                                ) return Item_Manager_Ptr;
 
    procedure Deallocate is new Ada.Unchecked_Deallocation (Item_Manager, Item_Manager_Ptr);

@@ -22,26 +22,26 @@ package body Serializable_Types is
 
    -- String
    --
-   function New_Serializable (Ptr: String_Ptr) return Serializable is
+   function New_Serializable (Str: String) return Serializable is
       Arr: Array_Of_Unsigned_8_Ptr;
       I: Unsigned_32 := 1;
    begin
-      Arr := new Array_Of_Unsigned_8 (1 .. Ptr.all'Length);
-      for C of Ptr.all loop
+      Arr := new Array_Of_Unsigned_8 (1 .. Str'Length);
+      for C of Str loop
          Arr.all(I) := Character'Pos (C);
       end loop;
-      return (Arr, Ptr.all'Length);
+      return (Arr, Arr'Length);
    end New_Serializable;
 
 
    -- Binary
    --
-   function New_Serializable (Ptr: Array_Of_Unsigned_8_Ptr) return Serializable is
-      Arr: Array_Of_Unsigned_8_Ptr;
+   function New_Serializable (Arr: Array_Of_Unsigned_8) return Serializable is
+      A: Array_Of_Unsigned_8_Ptr;
    begin
-      Arr := new Array_Of_Unsigned_8 (1 .. Ptr.all'Length);
-      Arr.all := Ptr.all;
-      return (Arr, Arr'Length);
+      A := new Array_Of_Unsigned_8 (1 .. Arr'Length);
+      A.all := Arr;
+      return (A, A'Length);
    end New_Serializable;
 
 

@@ -1,4 +1,4 @@
-package body Portal is
+package body Portal_Package is
 
    function Get_Item_Type (Ptr: Portal_Ptr) return BR_Item_Type is
    begin
@@ -7,4 +7,4 @@ package body Portal is
    end Get_Item_Type;
 
 
-end Portal;
+end Portal_Package;
