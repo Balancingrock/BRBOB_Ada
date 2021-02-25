@@ -32,16 +32,16 @@ package body Item is
       Assistent.CRC_16 := Calculate_CRC_16 (Name);
 
       for C of Name loop
-         Assistent.Byte_Code(Index) := Character'Pos (C);
+         Assistent.Ascii_Code(Index) := Character'Pos (C);
          Index := Index + 1;
       end loop;
 
-      Quick_Check := (Assistent.CRC_16, Assistent.Byte_Code_Count, Assistent.Byte_Code(1));
+      Quick_Check := (Assistent.CRC_16, Assistent.Ascii_Code_Count, Assistent.Ascii_Code(1));
 
       Assistent.Quick_Check := To_Unsigned_32 (Quick_Check);
 
-      if Assistent.Byte_Code_Count > 0 then
-         Assistent.Name_Field_Byte_Count := Round_Up_To_Nearest_Multiple_Of_8 (3 + Assistent.Byte_Code_Count);
+      if Assistent.Ascii_Code_Count > 0 then
+         Assistent.Name_Field_Byte_Count := Round_Up_To_Nearest_Multiple_Of_8 (3 + Assistent.Ascii_Code_Count);
       else
          Assistent.Name_Field_Byte_Count := 0;
       end if;
@@ -154,6 +154,24 @@ package body Item is
    end Create_Item_Access;
 
 
+   -- Set the name of an item and its field byte count.
+
+   procedure Set_Name (I: Item_Access'Class; Name: Name_Assistent) is
+      Ptr: Item_Header_Ptr := I.Header_Ptr;
+      NF_Ptr: Item_Name_Field_ptr;
+      Ascii_Offset: Unsigned_32;
+   begin
+      Ptr.Name_Field_Byte_Count := Name.Name_Field_Byte_Count;
+      if Name.Name_Field_Byte_Count > 0 then
+         NF_Ptr := I.Get_Item_Name_Field_Ptr;
+         Ascii_Offset := I.Offset + Item_Name_Field_Ascii_Code_Offset;
+         NF_Ptr.CRC_16 := Name.CRC_16;
+         NF_Ptr.Ascii_Count := Name.Ascii_Code_Count;
+         I.Storage.Data (Ascii_Offset .. Ascii_Offset + Unsigned_32 (Name.Ascii_Code_Count - 1)) := Name.Ascii_Code;
+      end if;
+   end Set_Name;
+
+
    -- Create_Null
    --
    procedure Create_Null (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
@@ -168,29 +186,36 @@ package body Item is
       Ptr.Flags := No_Flags;
       Ptr.Parent_Offset := Parent_Offset;
       Ptr.Small_Value := 0;
-      Ptr.Name_Field_Byte_Count := Assistent.Name_Field_Byte_Count;
       Ptr.Byte_Count := Byte_Count;
       Ptr.Parent_Offset := Parent_Offset;
+
+      I.Set_Name (Assistent);
+
       Ptr.Small_Value := 0;
 
-      if Assistent.Name_Field_Byte_Count > 0 then
-         declare
-            Ptr: Item_Name_Field_Ptr := I.Name_Field_Pointer;
-         begin
-            Ptr.CRC_16 := Assistent.CRC_16;
-            Ptr.Byte_Code_Count := Assistent.Byte_Code_Count;
-            Ptr.Byte_Code(1..Assistent.Byte_Code_Count) := Assistent.Byte_Code;
-         end;
-      end if;
-
    end Create_Null;
+
 
 
    -- Create Bool
    --
    procedure Create_Bool (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False) is
+      Ptr: Item_Header_Ptr := I.Header_Ptr;
+      Assistent: Name_Assistent := Create_Name_Assistent (Name);
    begin
-      raise BRBON.Incomplete_Code;
+
+      Ptr.Item_Type := BR_Null;
+      Ptr.Options := No_Options;
+      Ptr.Flags := No_Flags;
+      Ptr.Parent_Offset := Parent_Offset;
+      Ptr.Small_Value := 0;
+      Ptr.Byte_Count := Byte_Count;
+      Ptr.Parent_Offset := Parent_Offset;
+
+      I.Set_Name (Assistent);
+
+      I.Storage.Set_Unsigned_32 (Offset => I.Get_Item_Small_Value_Offset, Value => 0);
+
    end Create_Bool;
 
    procedure Create_Integer_8 (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_8 := 0) is

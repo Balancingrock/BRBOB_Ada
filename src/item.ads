@@ -143,19 +143,25 @@ package Item is
    procedure Create_Color       (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black);
    procedure Create_Font        (I: Item_Access; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
 
-   function Create_Item_Access (S: Storage_Area_Ptr; O: Unsigned_32) return Item_Access;
+
+   -- Sets the name of an item, does nothing if the name assistent is empty.
+   -- Note: Does not check for any conditions, it will simply write to the proper indexes and update the Item Name_Field_Byte_Count.
+   --
+   procedure Set_Name (I: Item_Access'Class; Name: Name_Assistent);
+
+   function Create_Item_Access  (S: Storage_Area_Ptr; O: Unsigned_32) return Item_Access;
 
 private
 
    type Name_Assistent (String_Length: Unsigned_32) is tagged
       record
          CRC_16: Unsigned_16;
-         Byte_Code: Array_Of_Unsigned_8 (1 .. String_Length);
+         Ascii_Code: Array_Of_Unsigned_8 (1 .. String_Length);
          Quick_Check: Unsigned_32;
          Name_Field_Byte_Count: Unsigned_8;
       end record;
-   function Byte_Code_Count (Assistent: Name_Assistent) return Unsigned_8 is (Unsigned_8 (Assistent.Byte_Code'Length));
-   pragma Inline (Byte_Code_Count);
+   function Ascii_Code_Count (Assistent: Name_Assistent) return Unsigned_8 is (Unsigned_8 (Assistent.Ascii_Code'Length));
+   pragma Inline (Ascii_Code_Count);
 
    -- Layout of an item header
    --
@@ -188,6 +194,28 @@ private
    --
    function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
 
+
+   -- Layout of the name field
+   --
+   type Item_Name_Field is
+      record
+         CRC_16: Unsigned_16;
+         Ascii_Count: Unsigned_8;
+      end record;
+   --
+   for Item_Name_Field use
+      record
+         CRC_16      at 0 range 0..15;
+         Ascii_Count at 2 range 0..7;
+      end record;
+   --
+   type Item_Name_Field_Ptr is access Item_Name_Field;
+   --
+   function To_Item_Name_Field_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Field_ptr);
+   --
+   Item_Name_Field_Ascii_Code_Offset: Unsigned_32 := Item_Header'Size + Item_Name_Field'Size;
+
+
    type Item_Access is tagged
       record
          Storage: Storage_Area_Ptr;
@@ -195,6 +223,28 @@ private
       end record;
 
    function Header_Ptr (I: Item_Access) return Item_Header_Ptr is (To_Item_Header_Ptr (I.Storage.Data.all(0)'Access + I.Offset));
+   pragma inline (Header_Ptr);
+
+   function Get_Item_Name_Field_Offset (I: Item_Access) return Unsigned_32 is (I.Offset + Item_Header'Size);
+   pragma inline (Get_Item_Name_Field_Offset);
+
+   function Get_Item_Name_Field_Ptr (I: Item_Access) return Item_Name_Field_Ptr is (To_Item_Name_Field_Ptr (I.Storage.Data.all(0)'Access + I.Get_Item_Name_Field_Offset));
+   pragma inline (Get_Item_Name_Field_Ptr);
+
+   function Get_Item_Small_Value_Offset (I: Item_Access) return Unsigned_32 is (I.Offset + (Item_Header'Size - 4));
+   pragma inline (Get_Item_Small_Value_Offset);
+
+   function Get_Item_Small_Value_Ptr (I: Item_Access) return Unsigned_8_Ptr is (I.Storage.Data.all(0)'Access + I.Get_Item_Small_Value_Offset);
+   pragma inline (Get_Item_Small_Value_Ptr);
+
+   function Get_Item_Name_Field_Byte_Count (I: Item_Access) return Unsigned_32 is (Unsigned_32 (I.Header_Ptr.Name_Field_Byte_Count));
+   pragma inline (Get_Item_Name_Field_Byte_Count);
+
+   function Get_Item_Value_Offset (I: Item_Access) return Unsigned_32 is (I.Offset + Item_Header'Size + I.Get_Item_Name_Field_Byte_Count);
+   pragma inline (Get_Item_Value_Offset);
+
+   function Get_Item_Value_Ptr (I: Item_Access) return Unsigned_8_Ptr is (I.Storage.Data.all(0)'Access + I.Get_Item_Value_Offset);
+   pragma inline (Get_Item_Value_Ptr);
 
 
    -- Returns true if the item type specification is valid.
