@@ -569,7 +569,6 @@ package body Item is
    procedure Create_String (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "") is
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Name_Assistent := Create_Name_Assistent (Name);
-      Str: aliased String := Value;
    begin
 
       Ptr.Item_Type := BR_String;
@@ -633,7 +632,6 @@ package body Item is
    procedure Create_CRC_String (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "") is
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Name_Assistent := Create_Name_Assistent (Name);
-      Str: aliased String := Value;
    begin
 
       Ptr.Item_Type := BR_CRC_String;
@@ -685,7 +683,6 @@ package body Item is
    procedure Create_Binary (I: Item_Access'Class;  Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Name_Assistent := Create_Name_Assistent (Name);
-      Str: aliased Array_Of_Unsigned_8 := Value;
    begin
 
       Ptr.Item_Type := BR_Binary;
@@ -749,7 +746,6 @@ package body Item is
    procedure Create_CRC_Binary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Name_Assistent := Create_Name_Assistent (Name);
-      Str: aliased Array_Of_Unsigned_8 := Value;
    begin
 
       Ptr.Item_Type := BR_CRC_Binary;
@@ -801,37 +797,98 @@ package body Item is
    --
    procedure Set_Array_Zeros (I: Item_Access'Class) is
    begin
-      raise BRBON.Incomplete_Code;
+      I.Storage.Set_Unsigned_32 (I.Get_Item_Value_Offset + Array_Reserved_Offset, 0);
+      I.Storage.Set_Unsigned_8 (I.Get_Item_Value_Offset + Array_Zero_8_Offset, 0);
+      I.Storage.Set_Unsigned_16 (I.Get_Item_Value_Offset + Array_Zero_16_Offset, 0);
    end Set_Array_Zeros;
    --
    procedure Set_Array_Element_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      raise BRBON.Incomplete_Code;
+      I.Storage.Set_Unsigned_32 (I.Get_Item_Value_Offset + Array_Element_Count_Offset, Value);
    end Set_Array_Element_Count;
    --
    procedure Set_Array_Element_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      raise BRBON.Incomplete_Code;
+      I.Storage.Set_Unsigned_32 (I.Get_Item_Value_Offset + Array_Element_Byte_Count_Offset, Value);
    end Set_Array_Element_Byte_Count;
    --
    procedure Set_Array_Element_Type (I: Item_Access'Class; Value: BR_Item_Type) is
    begin
-      raise BRBON.Incomplete_Code;
+      I.Storage.Set_Unsigned_32 (I.Get_Item_Value_Offset + Array_Element_type_Offset, BR_Item_Type'Pos(Value));
    end Set_Array_Element_Type;
    --
-   procedure Create_Array (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool) is
+   procedure Create_Array (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128) is
+      Ptr: Item_Header_Ptr := I.Header_Ptr;
+      Assistent: Name_Assistent := Create_Name_Assistent (Name);
    begin
-      raise BRBON.Incomplete_Code;
+
+      Ptr.Item_Type := BR_Array;
+      Ptr.Options := No_Options;
+      Ptr.Flags := No_Flags;
+      Ptr.Parent_Offset := Parent_Offset;
+      Ptr.Small_Value := 0;
+      Ptr.Byte_Count := Byte_Count;
+      Ptr.Parent_Offset := Parent_Offset;
+
+      I.Set_Name (Assistent);
+
+      I.Set_Array_Zeros;
+      I.Set_Array_Element_Type (Element_Type);
+      I.Set_Array_Element_Count (0);
+      I.Set_Array_Element_Byte_Count (Element_Byte_Count);
+
    end Create_Array;
 
 
    -- Dictionary
    --
-   procedure Create_Dictionary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
+   Dictionary_Reserved_Offset: Unsigned_32 := 0;
+   Dictionary_Item_Count_Offset: Unsigned_32 := 4;
+   Dictionary_Item_Start_Offset: Unsigned_32 := 8;
+   --
+   function Get_Dictionary_Item_Count (I: Item_Access'Class) return Unsigned_32 is
    begin
-      raise BRBON.Incomplete_Code;
+      return I.Storage.Get_Unsigned_32 (I.Get_Item_Value_Offset + Dictionary_Item_Count_Offset);
+   end Get_Dictionary_Item_Count;
+   --
+   function Get_Dictionary_Item_Start_Offset  (I: Item_Access'Class) return Unsigned_32 is
+   begin
+      return I.Get_Item_Value_Offset + Dictionary_Item_Start_Offset;
+   end Get_Dictionary_Item_Start_Offset;
+   --
+   procedure Set_Dictionary_Item_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Get_Item_Value_Offset + Dictionary_Item_Count_Offset, Value);
+   end Set_Dictionary_Item_Count;
+   --
+   procedure Set_Dictionary_Zeros (I: Item_Access'Class) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Get_Item_Value_Offset, 0);
+   end Set_Dictionary_Zeros;
+   --
+   procedure Create_Dictionary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
+      Ptr: Item_Header_Ptr := I.Header_Ptr;
+      Assistent: Name_Assistent := Create_Name_Assistent (Name);
+   begin
+
+      Ptr.Item_Type := BR_Dictionary;
+      Ptr.Options := No_Options;
+      Ptr.Flags := No_Flags;
+      Ptr.Parent_Offset := Parent_Offset;
+      Ptr.Small_Value := 0;
+      Ptr.Byte_Count := Byte_Count;
+      Ptr.Parent_Offset := Parent_Offset;
+
+      I.Set_Name (Assistent);
+
+      I.Set_Dictionary_Zeros;
+      I.Set_Dictionary_Item_Count (0);
+
    end Create_Dictionary;
 
+
+   -- Sequence
+   --
    procedure Create_Sequence (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
    begin
       raise BRBON.Incomplete_Code;

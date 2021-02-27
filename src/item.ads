@@ -205,9 +205,14 @@ package Item is
    procedure Set_Array_Element_Count      (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Array_Zeros);
    procedure Set_Array_Element_Byte_Count (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Array_Element_Byte_Count);
    procedure Set_Array_Element_Type       (I: Item_Access'Class; Value: BR_Item_Type); pragma Inline (Set_Array_Element_Type);
-   procedure Create_Array                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool);
+   procedure Create_Array                 (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128);
 
-   procedure Create_Dictionary  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   function Get_Dictionary_Item_Count         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Dictionary_Item_Count);
+   function Get_Dictionary_Item_Start_Offset  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Dictionary_Item_Start_Offset);
+   procedure Set_Dictionary_Item_Count        (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Dictionary_Item_Count);
+   procedure Set_Dictionary_Zeros             (I: Item_Access'Class); pragma Inline (Set_Dictionary_Zeros);
+   procedure Create_Dictionary                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+
    procedure Create_Sequence    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
    procedure Create_Table       (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
    procedure Create_UUID        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID);
