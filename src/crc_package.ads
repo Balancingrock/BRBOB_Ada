@@ -14,22 +14,22 @@ package CRC_Package is
 
    -- Returns the CRC-16 over the given string.
    --
-   function Calculate_CRC_16 (Ptr: String) return CRC_16;
+   function Calculate_CRC_16 (Str: String) return CRC_16;
 
 
    -- Returns the CRC-32 over the given string.
    --
-   function Calculate_CRC_32 (Ptr: String) return CRC_32;
+   function Calculate_CRC_32 (Str: String) return CRC_32;
 
 
    -- Returns the CRC-16 starting at the pointer for the given length.
    --
-   function Calculate_CRC_16 (Ptr: Array_Of_Unsigned_8) return CRC_16;
+   function Calculate_CRC_16 (Arr: Array_Of_Unsigned_8) return CRC_16;
 
 
    -- Returns the CRC-32 starting at the pointer for the given length.
    --
-   function Calculate_CRC_32 (Ptr: Array_Of_Unsigned_8) return CRC_32;
+   function Calculate_CRC_32 (Arr: Array_Of_Unsigned_8) return CRC_32;
 
 
 private
