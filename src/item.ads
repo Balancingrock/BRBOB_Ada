@@ -213,11 +213,45 @@ package Item is
    procedure Set_Dictionary_Zeros             (I: Item_Access'Class); pragma Inline (Set_Dictionary_Zeros);
    procedure Create_Dictionary                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
-   procedure Create_Sequence    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   function Get_Sequence_Item_Count           (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Sequence_Item_Count);
+   function Get_Sequence_Item_Start_Offset    (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Sequence_Item_Start_Offset);
+   procedure Set_Sequence_Item_Count          (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Sequence_Item_Count);
+   procedure Set_Sequence_Zeros               (I: Item_Access'Class); pragma Inline (Set_Sequence_Zeros);
+   procedure Create_Sequence                  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+
    procedure Create_Table       (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+
+   procedure Get_UUID           (I: Item_Access'Class; Value: out UUID); pragma Inline (Get_UUID);
+   procedure Set_UUID           (I: Item_Access'Class; Value: UUID); pragma Inline (Set_UUID);
    procedure Create_UUID        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID);
+
+
+   function Get_Alpha           (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Alpha);
+   function Get_Red             (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Red);
+   function Get_Green           (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Green);
+   function Get_Blue            (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Blue);
+   function Get_Color           (I: Item_Access'Class) return Color; pragma Inline (Get_Color);
+   procedure Set_Alpha          (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Alpha);
+   procedure Set_Red            (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Red);
+   procedure Set_Green          (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Green);
+   procedure Set_Blue           (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Blue);
+   procedure Set_Color          (I: Item_Access'Class; Value: Color); pragma Inline (Set_Color);
    procedure Create_Color       (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black);
-   procedure Create_Font        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
+
+   function Get_Size                    (I: Item_Access'Class) return IEEE_Float_32; pragma Inline (Get_Size);
+   function Get_Family_Name_Byte_Count  (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Family_Name_Byte_Count);
+   function Get_Font_Name_Byte_Count    (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Font_Name_Byte_Count);
+   procedure Get_Family_Name            (I: Item_Access'Class; Value: out String); pragma Inline (Get_Family_Name);
+   procedure Get_Font_Name              (I: Item_Access'Class; Value: out String); pragma Inline (Get_Font_Name);
+   procedure Set_Size                   (I: Item_Access'Class; Value: IEEE_Float_32); pragma Inline (Set_Size);
+   procedure Set_Family_Name_Byte_Count (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Family_Name_Byte_Count);
+   procedure Set_Font_Name_Byte_Count   (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Font_Name_Byte_Count);
+   procedure Set_Family_Name_Value      (I: Item_Access'Class; Value: String); pragma Inline (Set_Family_Name_Value);
+   procedure Set_Font_Name_Value        (I: Item_Access'Class; Value: String); pragma Inline (Set_Font_Name_Value);
+   procedure Set_Family_Name            (I: Item_Access'Class; Value: String); pragma Inline (Set_Family_Name);
+   procedure Set_Font_Name              (I: Item_Access'Class; Value: String); pragma Inline (Set_Font_Name);
+   procedure Set_Font                   (I: Item_Access'Class; Value: Font); pragma Inline (Set_Font);
+   procedure Create_Font                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
 
 
    -- Sets the name of an item, does nothing if the name assistent is empty.
