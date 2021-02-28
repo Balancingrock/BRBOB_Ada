@@ -153,12 +153,18 @@ package body Storage_Area is
 
 
    procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String) is
-      Index: Unsigned_32 := 0;
+      subtype Target_Array is Array_Of_Unsigned_8 (1 .. Value'Length);
+      type Target_Array_Ptr is access Target_Array;
+      function To_Target_Array_Ptr is new Unchecked_Conversion (Unsigned_8_Ptr, Target_Array_Ptr);
+      function To_Target_Array is new Ada.Unchecked_Conversion (Value, Target_Array);
+      Target: Target_Array_Ptr := To_Target_Array_Ptr (S.Data.all (Offset)'Access);
+      --Index: Unsigned_32 := 0;
    begin
-      for C of Value loop
-         S.Data.all (Index) := Unsigned_8 (Character'Pos (C));
-         Index := Index + 1;
-      end loop;
+      Tagret.all := To_Target_Array (Value);
+      --for C of Value loop
+      --   S.Data.all (Index) := Unsigned_8 (Character'Pos (C));
+      --   Index := Index + 1;
+      --end loop;
    end Set_String;
 
 

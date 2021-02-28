@@ -118,20 +118,88 @@ package Storage_Area is
    procedure Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: out String);
 
 
-   -- Item Header Access
+   -- Item Header Layout Access
    --
    function Get_Item_Header_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Header_Ptr is (To_Item_Header_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
    pragma Inline (Get_Item_Header_Ptr);
 
 
-   -- Item Name Access
+   -- Item Name Layout Access
    --
-   function Get_Item_Name_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Name_Layout_Ptr is (To_Item_Name_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
-   pragma Inline (Get_Item_Name_Layout_Ptr);
+   function Get_Item_Name_Field_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Name_Field_Layout_Ptr is (To_Item_Name_Field_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_Item_Name_Field_Layout_Ptr);
 
 
-   -- Item Type String Access
+   -- Item BR String layout Access
    --
+   function Get_BR_String_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_String_Layout_Ptr is (To_BR_String_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_String_Layout_Ptr);
+
+
+   -- Item BR_CRC String Layout Access
+   --
+   function Get_BR_CRC_String_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_CRC_String_Layout_Ptr is (To_BR_CRC_String_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_CRC_String_Layout_Ptr);
+
+
+   -- Item BR Binary layout access
+   --
+   function Get_BR_Binary_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Binary_Layout_Ptr is (To_BR_Binary_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Binary_Layout_Ptr);
+
+
+   -- Item BR_CRC Binary Layout Access
+   --
+   function Get_BR_CRC_Binary_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_CRC_Binary_Layout_Ptr is (To_BR_CRC_Binary_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_CRC_Binary_Layout_Ptr);
+
+
+   -- Item BR Array layout access
+   --
+   function Get_BR_Array_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Array_Layout_Ptr is (To_BR_Array_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Array_Layout_Ptr);
+
+
+   -- Item BR Dictionary layout access
+   --
+   function Get_BR_Dictionary_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Dictionary_Layout_Ptr is (To_BR_Dictionary_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Dictionary_Layout_Ptr);
+
+
+   -- Item BR Sequence layout access
+   --
+   function Get_BR_Sequence_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Sequence_Layout_Ptr is (To_BR_Sequence_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Sequence_Layout_Ptr);
+
+
+   -- Item BR Table layout access
+   --
+   function Get_BR_Table_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Table_Layout_Ptr is (To_BR_Table_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Table_Layout_Ptr);
+
+
+   -- BR Table Column Descriptor layout access
+   --
+   function Get_BR_Table_Column_Descriptor_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Table_Column_Descriptor_Layout_Ptr is (To_BR_Table_Column_Descriptor_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Table_Column_Descriptor_Layout_Ptr);
+
+
+   -- BR Table Column Name layout access
+   --
+   function Get_BR_Table_Column_Name_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Table_Column_Name_Layout_Ptr is (To_BR_Table_Column_Name_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Table_Column_Name_Layout_Ptr);
+
+
+   -- Item BR Color access
+   --
+   function Get_BR_Color_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Color_Layout_Ptr is (To_BR_Color_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Color_Layout_Ptr);
+
+
+   -- Item BR Font access
+   --
+   function Get_BR_Font_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Font_Layout_Ptr is (To_BR_Font_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_BR_Font_Layout_Ptr);
 
 
    -- A pointer to the storage area

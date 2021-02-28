@@ -14,9 +14,9 @@ with Pointer_Math; use Pointer_Math;
 package Item is
 
 
-   type Name_Assistent (String_Length: Unsigned_32) is private;
+   type Item_Name_Assistent (String_Length: Unsigned_32) is private;
 
-   function Create_Name_Assistent (S: Item_Name) return Name_Assistent;
+   function Create_Item_Name_Assistent (S: Item_Name) return Item_Name_Assistent;
 
 
    -- Item Access
@@ -25,11 +25,12 @@ package Item is
       record
          Storage: Storage_Area_Ptr;
          Offset: Unsigned_32;
+         Header_Ptr: Item_Header_Ptr;
       end record;
 
 
    -- ===============
-   -- Creating Types
+   -- Types
    -- ===============
 
    procedure Create_Null        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
@@ -78,9 +79,6 @@ package Item is
    procedure Set_Float_64       (I: Item_Access'Class; Value: IEEE_Float_64); pragma Inline (Set_Float_64);
    procedure Create_Float_64    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_64 := 0.0);
 
-   function Get_String_Byte_Count      (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_String_Byte_Count);
-   procedure Set_String_Byte_Count     (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_String_Byte_Count);
-   procedure Set_String_Value          (I: Item_Access'Class; Value: String); pragma Inline (Set_String_Value);
    procedure Get_String                (I: Item_Access'Class; Value: out String); pragma Inline (Get_String);
    procedure Set_String                (I: Item_Access'Class; Value: String); pragma Inline (Set_String);
    procedure Create_String             (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
@@ -171,238 +169,33 @@ package Item is
    procedure Create_Font                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
 
 
+   function Small_Value_Offset (I: Item_Access'Class) return Unsigned_32 is (I.Offset + 12);
+   pragma Inline (Small_Value_Offset);
+
+   function Value_Offset (I: Item_Access'Class) return Unsigned_32 is (I.Offset + 16 + Unsigned_32 (I.Header_Ptr.Name_Field_Byte_Count));
+   pragma Inline (Value_Offset);
+
+   function Get_Item_Small_Value_Ptr (I: Item_Access'Class) return Unsigned_8_Ptr is (I.Storage.Data.all(0)'Access + 12);
+   pragma inline (Get_Item_Small_Value_Ptr);
    -- Sets the name of an item, does nothing if the name assistent is empty.
    -- Note: Does not check for any conditions, it will simply write to the proper indexes and update the Item Name_Field_Byte_Count.
    --
-   procedure Set_Name (I: Item_Access'Class; Name: Name_Assistent);
+   procedure Set_Name (I: Item_Access'Class; Name: Item_Name_Assistent);
 
    function Create_Item_Access  (S: Storage_Area_Ptr; O: Unsigned_32) return Item_Access;
 
 private
 
-   type Name_Assistent (String_Length: Unsigned_32) is tagged
+   type Item_Name_Assistent (String_Length: Unsigned_32) is tagged
       record
          CRC_16: Unsigned_16;
          Ascii_Code: Array_Of_Unsigned_8 (1 .. String_Length);
          Quick_Check: Unsigned_32;
          Name_Field_Byte_Count: Unsigned_8;
       end record;
-   function Ascii_Code_Count (Assistent: Name_Assistent) return Unsigned_8 is (Unsigned_8 (Assistent.Ascii_Code'Length));
+
+   function Ascii_Code_Count (Assistent: Item_Name_Assistent) return Unsigned_8 is (Unsigned_8 (Assistent.Ascii_Code'Length));
    pragma Inline (Ascii_Code_Count);
-
-   -- Layout of an item header
-   --
---   type Item_Header is
---      record
---         Item_Type: BR_Item_Type;
---         Options: Item_Options;
---         Flags: Item_Flags;
---         Name_Field_Byte_Count: Unsigned_8;
---         Byte_Count: Unsigned_32;
---         Parent_Offset: Unsigned_32;
---         Small_Value: Unsigned_32;
---      end record;
-   --
---   for Item_Header use
---      record
---         Item_Type             at 0  range 0..7;
---         Options               at 1  range 0..7;
---         Flags                 at 2  range 0..7;
---         Name_Field_Byte_Count at 3  range 0..7;
---         Byte_Count            at 4  range 0..31;
---         Parent_Offset         at 8  range 0..31;
---         Small_Value           at 12 range 0..31;
---      end record;
-
-
-   -- A pointer to an item layout
-   --
---   type Item_Header_Ptr is access Item_Header;
-   --
---   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
-
-
-   -- Layout of the name field
-   --
-   type Item_Name_Field is
-      record
-         CRC_16: Unsigned_16;
-         Ascii_Count: Unsigned_8;
-      end record;
-   --
-   for Item_Name_Field use
-      record
-         CRC_16      at 0 range 0..15;
-         Ascii_Count at 2 range 0..7;
-      end record;
-   --
-   type Item_Name_Field_Ptr is access Item_Name_Field;
-   --
-   function To_Item_Name_Field_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Field_ptr);
-   --
-   Item_Name_Field_Ascii_Code_Offset: Unsigned_32 := Item_Header'Size + Item_Name_Field'Size;
-
-
-
-
-   function Header_Ptr (I: Item_Access) return Item_Header_Ptr is (To_Item_Header_Ptr (I.Storage.Get_Unsigned_8_Ptr (I.Offset)));
-   pragma inline (Header_Ptr);
-
-   function Get_Item_Name_Field_Offset (I: Item_Access) return Unsigned_32 is (I.Offset + Item_Header'Size);
-   pragma inline (Get_Item_Name_Field_Offset);
-
-   function Get_Item_Name_Field_Ptr (I: Item_Access) return Item_Name_Field_Ptr is (To_Item_Name_Field_Ptr (I.Storage.Get_Unsigned_8_Ptr (I.Get_Item_Name_Field_Offset)));
-   pragma inline (Get_Item_Name_Field_Ptr);
-
-   function Get_Item_Small_Value_Offset (I: Item_Access) return Unsigned_32 is (I.Offset + (Item_Header'Size - 4));
-   pragma inline (Get_Item_Small_Value_Offset);
-
-   function Get_Item_Small_Value_Ptr (I: Item_Access) return Unsigned_8_Ptr is (I.Storage.Data.all(0)'Access + I.Get_Item_Small_Value_Offset);
-   pragma inline (Get_Item_Small_Value_Ptr);
-
-   function Get_Item_Name_Field_Byte_Count (I: Item_Access) return Unsigned_32 is (Unsigned_32 (I.Header_Ptr.Name_Field_Byte_Count));
-   pragma inline (Get_Item_Name_Field_Byte_Count);
-
-   function Get_Item_Value_Offset (I: Item_Access) return Unsigned_32 is (I.Offset + Item_Header'Size + I.Get_Item_Name_Field_Byte_Count);
-   pragma inline (Get_Item_Value_Offset);
-
-   function Get_Item_Value_Ptr (I: Item_Access) return Unsigned_8_Ptr is (I.Storage.Data.all(0)'Access + I.Get_Item_Value_Offset);
-   pragma inline (Get_Item_Value_Ptr);
-
-
-   -- Returns true if the item type specification is valid.
-   --
-   function Is_Valid_Item_Type (Ptr: Unsigned_8_Ptr) return Boolean;
-
-
-   -- Sets the type of an item.
-   --
-   procedure Item_Type (Ptr: Unsigned_8_Ptr; Value: BR_Item_Type);
-
-
-   -- Returns the type of the item.
-   -- Can raise Enum_Mapping_Failed.
-   -- Use Is_Valid_Item_Type first to avoid raising the exception.
-   --
-   function Item_Type (Ptr: Unsigned_8_Ptr) return BR_Item_Type;
-
-
-   -- Returns a pointer to the value area
-   --
-   function Get_Value_Area_Ptr (Ptr: Item_Header_Ptr) return Unsigned_8_Ptr;
-
-
-   -- The name array
-   --
-   type Ascii_Array is array (Item_Name_Index range <>) of Unsigned_8;
-
-
-   -- Layout of the name field
-   --
-   type Name_Field is
-      record
-         CRC: Unsigned_16;
-         Byte_Count: Unsigned_8;
-      end record;
-   --
-   for Name_Field use
-      record
-         CRC        at 0 range 0..15;
-         Byte_Count at 2 range 0..7;
-      end record;
-
-
-   -- =======================
-   -- Value access
-   -- =======================
-
-
-   -- String Value Access
-   --
-   --type String_Layout is
-   --   record
-   --      Byte_Count: Unsigned_32;
-   --   end record;
-   --
-   --type String_Layout_Ptr is access String_Layout;
-   --function To_String_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, String_Layout_Ptr);
-   --
-   --procedure Set_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: Ada.Strings.UTF_Encoding.UTF_8_String);
-   --procedure Get_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Ada.Strings.UTF_Encoding.UTF_8_String);
-
-
-   -- CRC String Value Access
-   --
-   --type CRC_String_Layout is
-   --   record
-   --      CRC_32: Unsigned_32;
-   --      Byte_Count: Unsigned_32;
-   --   end record;
-   --
-   --type CRC_String_Layout_Ptr is access CRC_String_Layout;
-   --function To_CRC_String_Layout is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, CRC_String_Layout_Ptr);
-   --
-   --procedure Set_CRC_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: Ada.Strings.UTF_Encoding.UTF_8_String);
-   --procedure Get_CRC_String_UTF_8_Code (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Ada.Strings.UTF_Encoding.UTF_8_String);
-
-
-   -- Binary Value Access
-   --
-   --type Binary_Layout is
-   --   record
-   --      Byte_Count: Unsigned_32;
-   --   end record;
-   --
-   --type Binary_Layout_Ptr is access Binary_Layout;
-   --function To_Binary_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Binary_Layout_Ptr);
-   --
-   --procedure Set_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: Array_Of_Unsigned_8);
-   --procedure Get_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Array_Of_Unsigned_8);
-
-
-   -- CRC Binary Access
-   --
-   --type CRC_Binary_Layout is
-   --   record
-   --      CRC_32: Unsigned_32;
-   --      Byte_Count: Unsigned_32;
-   --   end record;
-   --
-   --type CRC_Binary_Layout_Ptr is access CRC_Binary_Layout;
-   --function To_CRC_Binary_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, CRC_Binary_Layout_Ptr);
-   --
-   --procedure Set_CRC_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: Array_Of_Unsigned_8);
-   --procedure Get_CRC_Binary_Data (Value_Area_Ptr: Unsigned_8_Ptr; Value: out Array_Of_Unsigned_8);
-
-
-   -- Array Access
-   --
-   --type Array_Layout is
-   --   record
-   --      Reserved: Unsigned_32;
-   --      Element_Type: BR_Item_Type;
-   --      Zero_1: Unsigned_8;
-   --      Zero_2: Unsigned_16;
-   --      Element_Count: Unsigned_32;
-   --      Element_Byte_Count: Unsigned_32;
-   --   end record;
-   --
-   --for Array_Layout use
-   --   record
-   --      Reserved at 0 range 0..31;
-   --      Element_Type at 4 range 0..7;
-   --      Zero_1 at 5 range 0..7;
-   --      Zero_2 at 6 range 0..15;
-   --      Element_Count at 8 range 0..31;
-   --      Element_Byte_Count at 12 range 0..31;
-   --   end record;
-   --
-   --type Array_Layout_Ptr is access Array_Layout;
-   --function To_Array_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Array_Layout_Ptr);
-   --
-   --procedure Set_Array_Element (Index: Unsigned_32; Bytes: Byte_Source);
-   --procedure Get_Array_Element (Index: Unsigned_32; Consumer: Byte_Target);
-
 
 
 end Item;

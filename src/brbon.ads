@@ -194,22 +194,22 @@ package BRBON is
 
    -- Layout of a name
    --
-   type Item_Name_Layout is
+   type Item_Name_Field_Layout is
       record
          CRC_16: Unsigned_16;
          Byte_Count: Unsigned_8;
          Ascii_Code: aliased Unsigned_8;
       end record;
-   for Item_Name_Layout use
+   for Item_Name_Field_Layout use
       record
          CRC_16 at 0 range 0..15;
          Byte_Count at 2 range 0..7;
          Ascii_Code at 3 range 0..7;
       end record;
    --
-   type Item_Name_Layout_Ptr is access Item_Name_Layout;
+   type Item_Name_Field_Layout_Ptr is access Item_Name_Field_Layout;
    --
-   function To_Item_Name_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Layout_Ptr);
+   function To_Item_Name_Field_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Field_Layout_Ptr);
 
 
    -- Layout of the String value
@@ -420,6 +420,50 @@ package BRBON is
    type BR_Table_Column_Name_Layout_Ptr is access BR_Table_Column_Name_Layout;
    --
    function To_BR_Table_Column_Name_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, BR_Table_Column_Name_Layout_Ptr);
+
+
+   -- Color access
+   --
+   type BR_Color_Layout is
+      record
+         Red: Unsigned_8;
+         Green: Unsigned_8;
+         Blue: Unsigned_8;
+         Alpha: Unsigned_8;
+      end record;
+   for BR_Color_Layout use
+      record
+         Red at 0 range 0..7;
+         Green at 1 range 0..7;
+         Blue at 2 range 0..7;
+         Alpha at 3 range 0..7;
+      end record;
+   --
+   type BR_Color_Layout_Ptr is access BR_Color_Layout;
+   --
+   function To_BR_Color_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, BR_Color_Layout_Ptr);
+
+
+   -- Font access
+   --
+   type BR_Font_Layout is
+      record
+         Point_Size: IEEE_Float_32;
+         Family_Name_Byte_Count: Unsigned_8;
+         Font_Name_Byte_Count: Unsigned_8;
+         Names: aliased Unsigned_8;
+      end record;
+   for BR_Font_Layout use
+      record
+         Point_Size at 0 range 0..31;
+         Family_Name_Byte_Count at 4 range 0..7;
+         Font_Name_Byte_Count at 5 range 0..7;
+         Names at 6 range 0..7;
+      end record;
+   --
+   type BR_Font_Layout_Ptr is access BR_Font_Layout;
+   --
+   function To_BR_Font_Layout_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, BR_Font_Layout_Ptr);
 
 
    -- Possible exceptions
