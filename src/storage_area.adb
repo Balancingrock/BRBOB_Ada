@@ -26,6 +26,22 @@ package body Storage_Area is
 
    -- Operational
 
+   procedure Set_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32; Value: BR_Item_Type) is
+   begin
+      S.Data.all (Offset) := BR_Item_Type'Pos (Value);
+   end Set_Item_Type;
+
+   function Valid_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return Boolean is
+   begin
+      return S.Data.all (Offset) > Unsigned_8 (BR_Item_Type'Pos (BR_Item_Type'Last));
+   end Valid_Item_Type;
+
+   function Get_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Item_Type is
+   begin
+      return BR_Item_Type'Val (S.Data.all (Offset));
+   end Get_Item_Type;
+
+
    procedure Set_Bool (S: Storage_Area'Class; Offset: Unsigned_32; Value: Boolean) is
    begin
       S.Data (Offset) := (if Value then 1 else 0);

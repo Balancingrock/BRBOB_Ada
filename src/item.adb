@@ -936,6 +936,17 @@ package body Item is
 
    -- Table
    --
+   function Get_Column_Descriptor_Layout_Ptr (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Table_Column_Name_Layout_Ptr is
+      Table: BR_Table_Layout_Ptr := I.Get_Table_Layout_Ptr;
+   begin
+      return null;
+   end Get_Column_Descriptor_Layout_Ptr;
+   --
+   function Get_Column_Name_Layout_Ptr (I: Item_Access'Class) return BR_Table_Column_Name_Layout_Ptr is
+   begin
+      return null;
+   end Get_Column_Name_Layout_Ptr;
+   --
    procedure Create_Table (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
    begin
       raise BRBON.Incomplete_Code;
@@ -969,7 +980,7 @@ package body Item is
 
       I.Set_Name (Assistent);
 
-      I.Set_UUID (Null_UUID);
+      I.Set_UUID (Value);
 
    end Create_UUID;
 
@@ -1046,7 +1057,7 @@ package body Item is
 
       I.Set_Name (Assistent);
 
-      I.Set_Color (Color_Black);
+      I.Set_Color (Value);
 
    end Create_Color;
 
@@ -1130,8 +1141,22 @@ package body Item is
    end Set_Font;
    --
    procedure Create_Font (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font) is
+      Ptr: Item_Header_Ptr := I.Header_Ptr;
+      Assistent: Name_Assistent := Create_Name_Assistent (Name);
    begin
-      raise BRBON.Incomplete_Code;
+
+      Ptr.Item_Type := BR_Font;
+      Ptr.Options := No_Options;
+      Ptr.Flags := No_Flags;
+      Ptr.Parent_Offset := Parent_Offset;
+      Ptr.Small_Value := 0;
+      Ptr.Byte_Count := Byte_Count;
+      Ptr.Parent_Offset := Parent_Offset;
+
+      I.Set_Name (Assistent);
+
+      I.Set_Font (Value);
+
    end Create_Font;
 
 

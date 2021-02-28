@@ -13,7 +13,6 @@ package Storage_Area is
    -- The area in which items are stored.
    -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
    --
-   --
    type Storage_Area is new Limited_Controlled with
       record
          Data: Array_Of_Unsigned_8_Ptr;
@@ -33,11 +32,16 @@ package Storage_Area is
    procedure Finalization (S: in out Storage_Area);
 
 
+   -- BR Item type access
+   --
+   procedure Set_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32; Value: BR_Item_Type); pragma Inline (Set_Item_Type);
+   function Valid_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return Boolean; pragma Inline (Valid_Item_Type);
+   function Get_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Item_Type; pragma Inline (Get_Item_Type);
+
    -- Bool access
    --
-   procedure Set_Bool (S: Storage_Area'Class; Offset: Unsigned_32; Value: Boolean);
-   function Get_Bool (S: Storage_Area'Class; Offset: Unsigned_32) return Boolean is (S.Data (Offset) /= 0);
-   pragma Inline (Get_Bool);
+   procedure Set_Bool (S: Storage_Area'Class; Offset: Unsigned_32; Value: Boolean); pragma Inline (Set_Bool);
+   function Get_Bool (S: Storage_Area'Class; Offset: Unsigned_32) return Boolean is (S.Data (Offset) /= 0); pragma Inline (Get_Bool);
 
    -- Unsigned_8 access
    --
@@ -112,6 +116,22 @@ package Storage_Area is
    --
    procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String);
    procedure Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: out String);
+
+
+   -- Item Header Access
+   --
+   function Get_Item_Header_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Header_Ptr is (To_Item_Header_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_Item_Header_Ptr);
+
+
+   -- Item Name Access
+   --
+   function Get_Item_Name_Layout_Ptr (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Name_Layout_Ptr is (To_Item_Name_Layout_Ptr (S.Get_Unsigned_8_Ptr (Offset)));
+   pragma Inline (Get_Item_Name_Layout_Ptr);
+
+
+   -- Item Type String Access
+   --
 
 
    -- A pointer to the storage area

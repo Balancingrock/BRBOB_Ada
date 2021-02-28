@@ -14,97 +14,6 @@ with Pointer_Math; use Pointer_Math;
 package Item is
 
 
-   -- All types available for storage into an Item_Manager.
-   --
-   type BR_Item_Type is (
-                      BR_Null,         -- A null has no associated value, it simply exists.
-                      BR_Bool,         -- Corresponding to Standard.Boolean.
-                      BR_Int8,         -- An integer with a size of 8 bits (Byte, char).
-                      BR_Int16,        -- An integer with a size of 16 bits.
-                      BR_Int32,        -- An integer with a size of 32 bits.
-                      BR_Int64,        -- An integer with a size of 64 bits.
-                      BR_UInt8,        -- An integer with a size of 8 bits and range 0 .. 2**8-1.
-                      BR_UInt16,       -- An integer with a size of 16 bits and range 0 .. 2**16-1.
-                      BR_UInt32,       -- An integer with a size of 32 bits and range 0 .. 2**32-1.
-                      BR_UInt64,       -- An integer with a size of 64 bits and range of 0 .. 2**64-1.
-                      BR_Float32,      -- An IEEE 754 32 bit float. Accurate to about 6 decimals, range approx 1.1e-38 to 3.4e38.
-                      BR_Float64,      -- An IEEE 754 64 bit float. Accurate to about 15 digits, range aprox 2.2e-308 to 1.7e+308.
-                      BR_String,       -- Corresponds to Standard.String.
-                      BR_CRC_String,   -- A string with an associated CRC-16 code for fast searches.
-                      BR_Binary,       -- A series of bytes, corresponds to array (1..Count) of Br_UInt8.
-                      BR_CRC_Binary,   -- A binary with associated CRC-16 code fro fast searches.
-                      BR_Array,        -- An array of Item_Types.
-                      BR_Dictionary,   -- A dictionary associates a key (string) with a value (Brbon.Item_Type).
-                      BR_Sequence,     -- A sequence of Brbon.Item_Type's.
-                      BR_Table,        -- A 2 dimension array of Brbon.Item_Type's addressed by column (string or index) and row (index).
-                      BR_UUID,         -- A UUID, an array of 16 Br_UInt8 values returned as array or string.
-                      BR_Color,        -- A RGBA (Red Green Blue Alpha) for color specifications.
-                      BR_Font          -- A font specification (family name and font name).
-                     );
-   for BR_Item_Type'Size use 8;
-   for BR_Item_Type use (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
-
-   -- Minimum items sizes for items without a name, including the value length if the value length is fixed and assuming empty when the value size is variable.
-   -- Always a multiple of 8.
-   --
-   Minimum_Item_Byte_Count: Array (BR_Item_Type'Range) of Unsigned_32 :=
-     (
-      BR_Null => 32,
-      BR_Bool => 32,
-      BR_Int8 => 32,
-      BR_Int16 => 32,
-      BR_Int32 => 32,
-      BR_Int64 => 32 + 8,
-      BR_UInt8 => 32,
-      BR_UInt16 => 32,
-      BR_UInt32 => 32,
-      BR_UInt64 => 32 + 8,
-      BR_Float32 => 32,
-      BR_Float64 => 32 + 8,
-      BR_String => 32 + 8,
-      BR_CRC_String => 32 + 8,
-      BR_Binary => 32 + 4,
-      BR_CRC_Binary => 32 + 8,
-      BR_Array => 32 + 16,
-      BR_Sequence => 32 + 8,
-      BR_Dictionary => 32 + 8,
-      BR_Table => 32 + 16,
-      BR_UUID => 32 + 16,
-      BR_Color => 32,
-      BR_Font => 32 + 8);
-
-   -- A packed array of 8 bits, used for Options and Flags.
-   --
-   type Bits_8 is array (Integer range 0..7) of Boolean with Pack;
-   --
-   function To_Bits_8 is new Ada.Unchecked_Conversion (Unsigned_8, Bits_8);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Bits_8, Unsigned_8);
-
-
-   -- Option associated with stored items (currently unused)
-   --
-   type Item_Options is new Bits_8;
-   function To_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, Item_Options);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Options, Unsigned_8);
-   No_Options : Item_Options := (False, False, False, False, False, False, False, False);
-
-
-   -- Item flags for transitionary events to be recorded in an item (currently unused)
-   --
-   type Item_Flags is new Bits_8;
-   function To_Item_Flags is new Ada.Unchecked_Conversion (Unsigned_8, Item_Flags);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Flags, Unsigned_8);
-   No_Flags : Item_Flags := (False, False, False, False, False, False, False, False);
-
-   -- Item Name
-   --
-   subtype Item_Name_Index is Integer range 1..245;
-   package Item_Name_Bounded_String is new Ada.Strings.Bounded.Generic_Bounded_Length (Item_Name_Index'Last);
-   subtype Item_Name is Item_Name_Bounded_String.Bounded_String;
-   --
-   No_Name: constant Item_Name := Item_Name_Bounded_String.To_Bounded_String("");
-
-
    type Name_Assistent (String_Length: Unsigned_32) is private;
 
    function Create_Name_Assistent (S: Item_Name) return Name_Assistent;
@@ -112,7 +21,11 @@ package Item is
 
    -- Item Access
    --
-   type Item_Access is tagged private;
+   type Item_Access is tagged
+      record
+         Storage: Storage_Area_Ptr;
+         Offset: Unsigned_32;
+      end record;
 
 
    -- ===============
@@ -219,7 +132,11 @@ package Item is
    procedure Set_Sequence_Zeros               (I: Item_Access'Class); pragma Inline (Set_Sequence_Zeros);
    procedure Create_Sequence                  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
-   procedure Create_Table       (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+
+   function Get_Table_Layout_Ptr (I: Item_Access'Class) return BR_Table_Layout_Ptr is (To_BR_Table_Layout_Ptr (I.Storage.Get_Unsigned_8_Ptr (I.Offset))); pragma Inline (Get_Table_Layout_Ptr);
+   function Get_Column_Descriptor_Layout_Ptr (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Table_Column_Name_Layout_Ptr; pragma Inline (Get_Column_Descriptor_Layout_Ptr);
+   function Get_Column_Name_Layout_Ptr (I: Item_Access'Class) return BR_Table_Column_Name_Layout_Ptr; pragma Inline (Get_Table_Layout_Ptr);
+   procedure Create_Table        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
    procedure Get_UUID           (I: Item_Access'Class; Value: out UUID); pragma Inline (Get_UUID);
    procedure Set_UUID           (I: Item_Access'Class; Value: UUID); pragma Inline (Set_UUID);
@@ -275,34 +192,34 @@ private
 
    -- Layout of an item header
    --
-   type Item_Header is
-      record
-         Item_Type: BR_Item_Type;
-         Options: Item_Options;
-         Flags: Item_Flags;
-         Name_Field_Byte_Count: Unsigned_8;
-         Byte_Count: Unsigned_32;
-         Parent_Offset: Unsigned_32;
-         Small_Value: Unsigned_32;
-      end record;
+--   type Item_Header is
+--      record
+--         Item_Type: BR_Item_Type;
+--         Options: Item_Options;
+--         Flags: Item_Flags;
+--         Name_Field_Byte_Count: Unsigned_8;
+--         Byte_Count: Unsigned_32;
+--         Parent_Offset: Unsigned_32;
+--         Small_Value: Unsigned_32;
+--      end record;
    --
-   for Item_Header use
-      record
-         Item_Type             at 0  range 0..7;
-         Options               at 1  range 0..7;
-         Flags                 at 2  range 0..7;
-         Name_Field_Byte_Count at 3  range 0..7;
-         Byte_Count            at 4  range 0..31;
-         Parent_Offset         at 8  range 0..31;
-         Small_Value           at 12 range 0..31;
-      end record;
+--   for Item_Header use
+--      record
+--         Item_Type             at 0  range 0..7;
+--         Options               at 1  range 0..7;
+--         Flags                 at 2  range 0..7;
+--         Name_Field_Byte_Count at 3  range 0..7;
+--         Byte_Count            at 4  range 0..31;
+--         Parent_Offset         at 8  range 0..31;
+--         Small_Value           at 12 range 0..31;
+--      end record;
 
 
    -- A pointer to an item layout
    --
-   type Item_Header_Ptr is access Item_Header;
+--   type Item_Header_Ptr is access Item_Header;
    --
-   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
+--   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
 
 
    -- Layout of the name field
@@ -326,11 +243,7 @@ private
    Item_Name_Field_Ascii_Code_Offset: Unsigned_32 := Item_Header'Size + Item_Name_Field'Size;
 
 
-   type Item_Access is tagged
-      record
-         Storage: Storage_Area_Ptr;
-         Offset: Unsigned_32;
-      end record;
+
 
    function Header_Ptr (I: Item_Access) return Item_Header_Ptr is (To_Item_Header_Ptr (I.Storage.Get_Unsigned_8_Ptr (I.Offset)));
    pragma inline (Header_Ptr);
@@ -489,6 +402,7 @@ private
    --
    --procedure Set_Array_Element (Index: Unsigned_32; Bytes: Byte_Source);
    --procedure Get_Array_Element (Index: Unsigned_32; Consumer: Byte_Target);
+
 
 
 end Item;
