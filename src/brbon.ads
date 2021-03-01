@@ -374,6 +374,8 @@ package BRBON is
 
    -- Table access
    --
+   BR_Table_Column_Descriptor_Base_Offset: constant Integer := 16;
+   --
    type BR_Table_Layout is
       record
          Row_Count: Unsigned_32;
