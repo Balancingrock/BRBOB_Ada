@@ -51,19 +51,19 @@ package body Item_Manager is
       --
       case Root_Type is
          when BR_Null => null; -- Null not allowed as root element
-         when BR_Bool => Item.Create_Bool (Byte_Count => Bc);
-         when BR_Int8 => Item.Create_Integer_8 (Byte_Count => Bc);
-         when BR_Int16 => Item.Create_Integer_16 (Byte_Count => Bc);
-         when BR_Int32 => Item.Create_Integer_32 (Byte_Count => Bc);
-         when BR_Int64 => Item.Create_Integer_64 (Byte_Count => Bc);
-         when BR_UInt8 => Item.Create_Unsigned_8 (Byte_Count => Bc);
-         when BR_UInt16 => Item.Create_Unsigned_16 (Byte_Count => Bc);
-         when BR_UInt32 => Item.Create_Unsigned_32 (Byte_Count => Bc);
-         when BR_UInt64 => Item.Create_Unsigned_64 (Byte_Count => Bc);
-         when BR_Float32 => Item.Create_Float_32 (Byte_Count => Bc);
-         when BR_Float64 => Item.Create_Float_64 (Byte_Count => Bc);
-         when BR_String => Item.Create_String (Byte_Count => Bc);
-         when BR_CRC_String => Item.Create_CRC_String (Byte_Count => Bc);
+         when BR_Bool => Item.Create_BR_Bool (Byte_Count => Bc);
+         when BR_Int8 => Item.Create_BR_Int8 (Byte_Count => Bc);
+         when BR_Int16 => Item.Create_BR_Int16 (Byte_Count => Bc);
+         when BR_Int32 => Item.Create_BR_Int32 (Byte_Count => Bc);
+         when BR_Int64 => Item.Create_BR_Int64 (Byte_Count => Bc);
+         when BR_UInt8 => Item.Create_BR_UInt8 (Byte_Count => Bc);
+         when BR_UInt16 => Item.Create_BR_UInt16 (Byte_Count => Bc);
+         when BR_UInt32 => Item.Create_BR_UInt32 (Byte_Count => Bc);
+         when BR_UInt64 => Item.Create_BR_UInt64 (Byte_Count => Bc);
+         when BR_Float32 => Item.Create_BR_Float32 (Byte_Count => Bc);
+         when BR_Float64 => Item.Create_BR_Float64 (Byte_Count => Bc);
+         when BR_String => Item.Create_BR_String (Byte_Count => Bc);
+         when BR_CRC_String => Item.Create_BR_CRC_String (Byte_Count => Bc);
          when BR_Binary => Item.Create_Binary (Byte_Count => Bc);
          when BR_CRC_Binary => Item.Create_CRC_Binary (Byte_Count => Bc);
          when BR_Array => Item.Create_Array (Byte_Count => Bc, Element_Type => Element_Type);

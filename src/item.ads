@@ -36,70 +36,71 @@ package Item is
    procedure Create_Null        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
 
-   function Value               (I: Item_Access'Class) return Boolean; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Boolean); pragma Inline (Set_Value_To);
-   procedure Create_Bool        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False);
+   function BR_Bool             (I: Item_Access'Class) return Boolean; pragma Inline (BR_Bool);
+   procedure Assign_BR_Bool     (I: Item_Access'Class; Value: Boolean); pragma Inline (Assign_BR_Bool);
+   procedure Create_BR_Bool     (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False);
 
-   function Value               (I: Item_Access'Class) return Integer_8; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Integer_8); pragma Inline (Set_Value_To);
-   procedure Create_Integer_8   (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_8 := 0);
+   function BR_Int8             (I: Item_Access'Class) return Integer_8; pragma Inline (BR_Int8);
+   procedure Assign_BR_Int8     (I: Item_Access'Class; Value: Integer_8); pragma Inline (Assign_BR_Int8);
+   procedure Create_BR_Int8     (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_8 := 0);
 
-   function Value               (I: Item_Access'Class) return Integer_16; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Integer_16); pragma Inline (Set_Value_To);
-   procedure Create_Integer_16  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_16 := 0);
+   function BR_Int16            (I: Item_Access'Class) return Integer_16; pragma Inline (BR_Int16);
+   procedure Assign_BR_Int16    (I: Item_Access'Class; Value: Integer_16); pragma Inline (Assign_BR_Int16);
+   procedure Create_BR_Int16    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_16 := 0);
 
-   function Value               (I: Item_Access'Class) return Integer_32; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Integer_32); pragma Inline (Set_Value_To);
-   procedure Create_Integer_32  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_32 := 0);
+   function BR_Int32            (I: Item_Access'Class) return Integer_32; pragma Inline (BR_Int32);
+   procedure Assign_BR_Int32    (I: Item_Access'Class; Value: Integer_32); pragma Inline (Assign_BR_Int32);
+   procedure Create_BR_Int32    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_32 := 0);
 
-   function Value               (I: Item_Access'Class) return Integer_64; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Integer_64); pragma Inline (Set_Value_To);
-   procedure Create_Integer_64  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_64 := 0);
+   function BR_Int64            (I: Item_Access'Class) return Integer_64; pragma Inline (BR_Int64);
+   procedure Assign_BR_Int64    (I: Item_Access'Class; Value: Integer_64); pragma Inline (Assign_BR_Int64);
+   procedure Create_BR_Int64    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_64 := 0);
 
-   function Value               (I: Item_Access'Class) return Unsigned_8; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Value_To);
-   procedure Create_Unsigned_8  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_8 := 0);
+   function BR_UInt8            (I: Item_Access'Class) return Unsigned_8; pragma Inline (BR_UInt8);
+   procedure Assign_BR_UInt8    (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Assign_BR_UInt8);
+   procedure Create_BR_UInt8    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_8 := 0);
 
-   function Value               (I: Item_Access'Class) return Unsigned_16; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Unsigned_16); pragma Inline (Set_Value_To);
-   procedure Create_Unsigned_16 (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_16 := 0);
+   function BR_UInt16           (I: Item_Access'Class) return Unsigned_16; pragma Inline (BR_UInt16);
+   procedure Assign_BR_UInt16   (I: Item_Access'Class; Value: Unsigned_16); pragma Inline (Assign_BR_UInt16);
+   procedure Create_BR_UInt16   (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_16 := 0);
 
-   function Value               (I: Item_Access'Class) return Unsigned_32; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Value_To);
-   procedure Create_Unsigned_32 (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_32 := 0);
+   function BR_UInt32           (I: Item_Access'Class) return Unsigned_32; pragma Inline (BR_UInt32);
+   procedure Assign_BR_UInt32   (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Assign_BR_UInt32);
+   procedure Create_BR_UInt32   (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_32 := 0);
 
-   function Value               (I: Item_Access'Class) return Unsigned_64; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: Unsigned_64); pragma Inline (Set_Value_To);
-   procedure Create_Unsigned_64 (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_64 := 0);
+   function BR_UInt64           (I: Item_Access'Class) return Unsigned_64; pragma Inline (BR_UInt64);
+   procedure Assign_BR_UInt64   (I: Item_Access'Class; Value: Unsigned_64); pragma Inline (Assign_BR_UInt64);
+   procedure Create_BR_UInt64   (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_64 := 0);
 
-   function Value               (I: Item_Access'Class) return IEEE_Float_32; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: IEEE_Float_32); pragma Inline (Set_Value_To);
-   procedure Create_Float_32    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_32 := 0.0);
+   function BR_Float32          (I: Item_Access'Class) return IEEE_Float_32; pragma Inline (BR_Float32);
+   procedure Assign_BR_Float32  (I: Item_Access'Class; Value: IEEE_Float_32); pragma Inline (Assign_BR_Float32);
+   procedure Create_BR_Float32  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_32 := 0.0);
 
-   function Value               (I: Item_Access'Class) return IEEE_Float_64; pragma Inline (Value);
-   procedure Set_Value_To       (I: Item_Access'Class; Value: IEEE_Float_64); pragma Inline (Set_Value_To);
-   procedure Create_Float_64    (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_64 := 0.0);
+   function BR_Float64          (I: Item_Access'Class) return IEEE_Float_64; pragma Inline (BR_Float64);
+   procedure Assign_BR_Float64  (I: Item_Access'Class; Value: IEEE_Float_64); pragma Inline (Assign_BR_Float64);
+   procedure Create_BR_Float64  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_64 := 0.0);
 
-   procedure Get_String              (I: Item_Access'Class; Value: out String); pragma Inline (Value);
-   procedure Set_String       (I: Item_Access'Class; Value: String); pragma Inline (Set_Value_To);
-   procedure Create_String      (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
+   function BR_String                     (I: Item_Access'Class) return String; pragma Inline (BR_String);
+   procedure Get_BR_String                (I: Item_Access'Class; Value: out String); pragma Inline (Get_BR_String);
+   procedure Assign_BR_String             (I: Item_Access'Class; Value: String); pragma Inline (Assign_BR_String);
+   procedure Create_BR_String             (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
 
-   function Get_CRC_String_CRC         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_String_CRC);
-   function Get_CRC_String_Byte_Count  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_String_Byte_Count);
-   procedure Set_CRC_String            (I: Item_Access'Class; Value: String); pragma Inline (Set_CRC_String);
-   procedure Get_CRC_String            (I: Item_Access'Class; Value: out String); pragma Inline (Get_CRC_String);
-   procedure Create_CRC_String         (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
+   function BR_CRC_String                 (I: Item_Access'Class) return String; pragma Inline (BR_CRC_String);
+   procedure Get_BR_CRC_String            (I: Item_Access'Class; Value: out String); pragma Inline (Get_BR_CRC_String);
+   procedure Assign_BR_CRC_String         (I: Item_Access'Class; Value: String); pragma Inline (Assign_BR_CRC_String);
+   function BR_CRC_String_CRC             (I: Item_Access'Class) return Unsigned_32; pragma Inline (BR_CRC_String_CRC);
+   procedure Create_BR_CRC_String         (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
 
-   function Get_Binary_Byte_Count      (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Binary_Byte_Count);
-   procedure Set_Binary                (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_Binary);
-   procedure Get_Binary                (I: Item_Access'Class; Value: out Array_Of_Unsigned_8); pragma Inline (Get_Binary);
-   procedure Create_Binary             (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
+   function Get_Binary_Byte_Count         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Binary_Byte_Count);
+   procedure Set_Binary                   (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_Binary);
+   procedure Get_Binary                   (I: Item_Access'Class; Value: out Array_Of_Unsigned_8); pragma Inline (Get_Binary);
+   procedure Create_Binary                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
 
-   function Get_CRC_Binary_CRC         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_Binary_CRC);
-   function Get_CRC_Binary_Byte_Count  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_Binary_Byte_Count);
-   procedure Set_CRC_Binary            (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_CRC_Binary);
-   procedure Get_CRC_Binary            (I: Item_Access'Class; Value: out Array_Of_Unsigned_8); pragma Inline (Get_CRC_Binary);
-   procedure Create_CRC_Binary         (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
+   function Get_CRC_Binary_CRC            (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_Binary_CRC);
+   function Get_CRC_Binary_Byte_Count     (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_Binary_Byte_Count);
+   procedure Set_CRC_Binary               (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_CRC_Binary);
+   procedure Get_CRC_Binary               (I: Item_Access'Class; Value: out Array_Of_Unsigned_8); pragma Inline (Get_CRC_Binary);
+   procedure Create_CRC_Binary            (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
 
    function Get_Array_Element_Type        (I: Item_Access'Class) return BR_Item_Type; pragma Inline (Get_Array_Element_Type);
    function Get_Array_Element_Count       (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Array_Element_Count);
