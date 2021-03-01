@@ -64,9 +64,9 @@ package body Item_Manager is
          when BR_Float64 => Item.Create_BR_Float64 (Byte_Count => Bc);
          when BR_String => Item.Create_BR_String (Byte_Count => Bc);
          when BR_CRC_String => Item.Create_BR_CRC_String (Byte_Count => Bc);
-         when BR_Binary => Item.Create_Binary (Byte_Count => Bc);
-         when BR_CRC_Binary => Item.Create_CRC_Binary (Byte_Count => Bc);
-         when BR_Array => Item.Create_Array (Byte_Count => Bc, Element_Type => Element_Type);
+         when BR_Binary => Item.Create_BR_Binary (Byte_Count => Bc);
+         when BR_CRC_Binary => Item.Create_BR_CRC_Binary (Byte_Count => Bc);
+         when BR_Array => Item.Create_BR_Array (Byte_Count => Bc, Element_Type => Element_Type);
          when BR_Dictionary => Item.Create_Dictionary (Byte_Count => Bc);
          when BR_Sequence => Item.Create_Sequence (Byte_Count => Bc);
          when BR_Table => Item.Create_Table (Byte_Count => Bc);

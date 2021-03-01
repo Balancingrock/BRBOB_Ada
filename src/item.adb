@@ -464,7 +464,7 @@ package body Item is
 
 
    -- ======================
-   -- BR_Crc_String
+   -- BR_CRC_String
    -- ======================
 
    function BR_CRC_String (I: Item_Access'Class) return String is
@@ -478,7 +478,7 @@ package body Item is
    procedure Get_BR_CRC_String (I: Item_Access'Class; Value: out String) is
       Ptr: BR_CRC_String_Layout_Ptr := I.Storage.Get_BR_CRC_String_Layout_Ptr (I.Value_Offset);
    begin
-      I.Storage.Get_String (I.Value_Offset + Unsigned_32 (Ptr.Byte_Count), Value);
+      I.Storage.Get_String (I.Value_Offset + Unsigned_32 (BR_CRC_String_Byte_Code_Offset), Value);
    end Get_BR_CRC_String;
 
    procedure Assign_BR_CRC_String (I: Item_Access'Class; Value: String) is
@@ -521,26 +521,34 @@ package body Item is
    -- BR_Binary
    -- ======================
 
-   function Get_Binary_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Binary (I: Item_Access'Class) return Array_Of_Unsigned_8 is
+      Ptr: BR_Binary_Layout_Ptr := I.Storage.Get_BR_Binary_Layout_Ptr (I.Value_Offset);
+      Arr: Array_Of_Unsigned_8 (1 .. Ptr.Byte_Count);
+   begin
+      I.Get_BR_Binary (Arr);
+      return Arr;
+   end BR_Binary;
+
+   function BR_Binary_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_Binary_Layout_Ptr := I.Storage.Get_BR_Binary_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Byte_Count;
-   end Get_Binary_Byte_Count;
+   end BR_Binary_Byte_Count;
 
-   procedure Set_Binary (I: Item_Access'Class; Value: Array_Of_Unsigned_8) is
+   procedure Assign_BR_Binary (I: Item_Access'Class; Value: Array_Of_Unsigned_8) is
       Ptr: BR_Binary_Layout_Ptr := I.Storage.Get_BR_Binary_Layout_Ptr (I.Value_Offset);
    begin
       Ptr.Byte_Count := Value'Length;
       I.Storage.Set_Unsigned_8_Array (I.Value_Offset + Unsigned_32 (BR_Binary_Data_Offset), Value);
-   end Set_Binary;
+   end Assign_BR_Binary;
 
-   procedure Get_Binary (I: Item_Access'Class; Value: out Array_Of_Unsigned_8) is
+   procedure Get_BR_Binary (I: Item_Access'Class; Value: out Array_Of_Unsigned_8) is
       Ptr: BR_Binary_Layout_Ptr := I.Storage.Get_BR_Binary_Layout_Ptr (I.Value_Offset);
    begin
       I.Storage.Get_Unsigned_8_Array (I.Value_Offset + Unsigned_32 (BR_Binary_Data_Offset), Value);
-   end Get_Binary;
+   end Get_BR_Binary;
 
-   procedure Create_Binary (I: Item_Access'Class;  Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
+   procedure Create_BR_Binary (I: Item_Access'Class;  Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
 
       Ptr: Item_Header_Ptr := I.Storage.Get_Item_Header_Ptr (I.Offset);
       Assistent: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
@@ -556,41 +564,49 @@ package body Item is
       Ptr.Parent_Offset := Parent_Offset;
 
       I.Set_Name (Assistent);
-      I.Set_Binary (Value);
+      I.Assign_BR_Binary (Value);
 
-   end Create_Binary;
+   end Create_BR_Binary;
 
 
    -- =====================
-   -- CRC Binary
+   -- BR_CRC_Binary
    -- =====================
 
-   function Get_CRC_Binary_CRC (I: Item_Access'Class) return Unsigned_32 is
+   function BR_CRC_Binary (I: Item_Access'Class) return Array_Of_Unsigned_8 is
+      Ptr: BR_CRC_Binary_Layout_Ptr := I.Storage.Get_BR_CRC_Binary_Layout_Ptr (I.Value_Offset);
+      Arr: Array_Of_Unsigned_8 (1 .. Ptr.Byte_Count);
+   begin
+      I.Get_BR_CRC_Binary (Arr);
+      return Arr;
+   end BR_CRC_Binary;
+
+   function BR_CRC_Binary_CRC (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_CRC_Binary_Layout_Ptr := I.Storage.Get_BR_CRC_Binary_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.CRC_32;
-   end Get_CRC_Binary_CRC;
+   end BR_CRC_Binary_CRC;
 
-   function Get_CRC_Binary_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_CRC_Binary_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_CRC_Binary_Layout_Ptr := I.Storage.Get_BR_CRC_Binary_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Byte_Count;
-   end Get_CRC_Binary_Byte_Count;
+   end BR_CRC_Binary_Byte_Count;
 
-   procedure Set_CRC_Binary (I: Item_Access'Class; Value: Array_Of_Unsigned_8) is
+   procedure Assign_BR_CRC_Binary (I: Item_Access'Class; Value: Array_Of_Unsigned_8) is
       Ptr: BR_CRC_Binary_Layout_Ptr := I.Storage.Get_BR_CRC_Binary_Layout_Ptr (I.Value_Offset);
    begin
       Ptr.CRC_32 := Calculate_CRC_32 (Value);
       Ptr.Byte_Count := Value'Length;
       I.Storage.Set_Unsigned_8_Array (I.Value_Offset + Unsigned_32 (BR_CRC_Binary_Data_Offset), Value);
-   end Set_CRC_Binary;
+   end Assign_BR_CRC_Binary;
 
-   procedure Get_CRC_Binary (I: Item_Access'Class; Value: out Array_Of_Unsigned_8) is
+   procedure Get_BR_CRC_Binary (I: Item_Access'Class; Value: out Array_Of_Unsigned_8) is
    begin
       I.Storage.Get_Unsigned_8_Array (I.Value_Offset + Unsigned_32 (BR_CRC_Binary_Data_Offset), Value);
-   end Get_CRC_Binary;
+   end Get_BR_CRC_Binary;
 
-   procedure Create_CRC_Binary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
+   procedure Create_BR_CRC_Binary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
 
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
@@ -606,52 +622,52 @@ package body Item is
       Ptr.Parent_Offset := Parent_Offset;
 
       I.Set_Name (Assistent);
-      I.Set_CRC_Binary (Value);
+      I.Assign_BR_CRC_Binary (Value);
 
-   end Create_CRC_Binary;
+   end Create_BR_CRC_Binary;
 
 
    -- ====================
    -- Array
    -- ====================
 
-   function Get_Array_Element_Type (I: Item_Access'Class) return BR_Item_Type is
+   function BR_Array_Element_Type (I: Item_Access'Class) return BR_Item_Type is
       Ptr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Element_Type;
-   end Get_Array_Element_Type;
+   end BR_Array_Element_Type;
 
-   function Get_Array_Element_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Array_Element_Count (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Element_Count;
-   end Get_Array_Element_Count;
+   end BR_Array_Element_Count;
 
-   function Get_Array_Element_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Array_Element_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Element_Byte_Count;
-   end Get_Array_Element_Byte_Count;
+   end BR_Array_Element_Byte_Count;
 
-   function Get_Array_Element_Offset (I: Item_Access'Class; Index: Unsigned_32) return Unsigned_32 is
+   function BR_Array_Element_Offset (I: Item_Access'Class; Index: Unsigned_32) return Unsigned_32 is
       Ptr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
    begin
       return I.Value_Offset + Unsigned_32 (BR_Array_Element_Base_Offset) + Ptr.Element_Byte_Count * (Index - 1);
-   end Get_Array_Element_Offset;
+   end BR_Array_Element_Offset;
 
-   procedure Set_Array_Element_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   procedure Set_BR_Array_Element_Count (I: Item_Access'Class; Value: Unsigned_32) is
       Ptr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
    begin
       Ptr.Element_Count := Value;
-   end Set_Array_Element_Count;
+   end Set_BR_Array_Element_Count;
 
-   procedure Set_Array_Element_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   procedure Set_BR_Array_Element_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
       Ptr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
    begin
       Ptr.Element_Byte_Count := Value;
-   end Set_Array_Element_Byte_Count;
+   end Set_BR_Array_Element_Byte_Count;
 
-   procedure Create_Array (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128) is
+   procedure Create_BR_Array (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128) is
 
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       APtr: BR_Array_Layout_Ptr := I.Storage.Get_BR_Array_Layout_Ptr (I.Value_Offset);
@@ -675,7 +691,7 @@ package body Item is
       APtr.Element_Type := Element_Type;
       APtr.Element_Byte_Count := Element_Byte_Count;
 
-   end Create_Array;
+   end Create_BR_Array;
 
 
    -- =================
