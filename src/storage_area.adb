@@ -155,25 +155,23 @@ package body Storage_Area is
    procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String) is
       subtype Target_Array is Array_Of_Unsigned_8 (1 .. Value'Length);
       type Target_Array_Ptr is access Target_Array;
-      function To_Target_Array_Ptr is new Unchecked_Conversion (Unsigned_8_Ptr, Target_Array_Ptr);
-      function To_Target_Array is new Ada.Unchecked_Conversion (Value, Target_Array);
+      function To_Target_Array_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Target_Array_Ptr);
+      subtype String_Helper is String (1 .. Value'Length);
+      function To_Target_Array is new Ada.Unchecked_Conversion (String_Helper, Target_Array);
       Target: Target_Array_Ptr := To_Target_Array_Ptr (S.Data.all (Offset)'Access);
-      --Index: Unsigned_32 := 0;
    begin
-      Tagret.all := To_Target_Array (Value);
-      --for C of Value loop
-      --   S.Data.all (Index) := Unsigned_8 (Character'Pos (C));
-      --   Index := Index + 1;
-      --end loop;
+      Target.all := To_Target_Array (Value);
    end Set_String;
 
 
    procedure Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: out String) is
-      Index: Unsigned_32 := 0;
+      subtype Source_Array is Array_Of_Unsigned_8 (1 .. Value'Length);
+      type Source_Array_Ptr is access Source_Array;
+      function To_Source_Array_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Source_Array_Ptr);
+      subtype String_Helper is String (1 .. Value'Length);
+      function To_String_Helper is new Ada.Unchecked_Conversion (Source_Array, String_Helper);
    begin
-      while Index < Value'Length loop
-         Value (Value'First + Integer (Index)) := Character'Val (S.Data.all(Offset + Index));
-      end loop;
+      Value := To_String_Helper (To_Source_Array_Ptr (S.Data.all (Offset)'Access).all);
    end Get_String;
 
 end Storage_Area;

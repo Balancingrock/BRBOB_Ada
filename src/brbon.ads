@@ -194,6 +194,8 @@ package BRBON is
 
    -- Layout of a name
    --
+   Item_Name_Field_Ascii_Code_Offset: constant Integer := 3;
+   --
    type Item_Name_Field_Layout is
       record
          CRC_16: Unsigned_16;
@@ -204,7 +206,7 @@ package BRBON is
       record
          CRC_16 at 0 range 0..15;
          Byte_Count at 2 range 0..7;
-         Ascii_Code at 3 range 0..7;
+         Ascii_Code at Item_Name_Field_Ascii_Code_Offset range 0..7;
       end record;
    --
    type Item_Name_Field_Layout_Ptr is access Item_Name_Field_Layout;
@@ -214,6 +216,8 @@ package BRBON is
 
    -- Layout of the String value
    --
+   BR_String_Byte_Code_Offset: constant Integer := 4;
+   --
    type BR_String_Layout is
       record
          Byte_Count: Unsigned_32;
@@ -222,7 +226,7 @@ package BRBON is
    for BR_String_Layout use
       record
          Byte_Count at 0 range 0..31;
-         UTF8_Byte_Code at 4 range 0..7;
+         UTF8_Byte_Code at BR_String_Byte_Code_Offset range 0..7;
       end record;
    --
    type BR_String_Layout_Ptr is access BR_String_Layout;
@@ -231,6 +235,8 @@ package BRBON is
 
 
    -- Layout of the CRC String value
+   --
+   BR_CRC_String_Byte_Code_Offset: constant Integer := 8;
    --
    type BR_CRC_String_Layout is
       record
@@ -242,7 +248,7 @@ package BRBON is
       record
          CRC_32 at 0 range 0..31;
          Byte_Count at 4 range 0..31;
-         UTF8_Byte_Code at 8 range 0..7;
+         UTF8_Byte_Code at BR_CRC_String_Byte_Code_Offset range 0..7;
       end record;
    --
    type BR_CRC_String_Layout_Ptr is access BR_CRC_String_Layout;
@@ -252,6 +258,8 @@ package BRBON is
 
    -- Layout of the Binary value
    --
+   BR_Binary_Data_Offset: constant Integer := 4;
+   --
    type BR_Binary_Layout is
       record
          Byte_Count: Unsigned_32;
@@ -260,7 +268,7 @@ package BRBON is
    for BR_Binary_Layout use
       record
          Byte_Count at 0 range 0..31;
-         Binary at 4 range 0..7;
+         Binary at BR_Binary_Data_Offset range 0..7;
       end record;
    --
    type BR_Binary_Layout_Ptr is access BR_Binary_Layout;
@@ -269,6 +277,8 @@ package BRBON is
 
 
    -- Layout of the CRC Binary value
+   --
+   BR_CRC_Binary_Data_Offset: constant Integer := 8;
    --
    type BR_CRC_Binary_Layout is
       record
@@ -280,7 +290,7 @@ package BRBON is
       record
          CRC_32 at 0 range 0..31;
          Byte_Count at 4 range 0..31;
-         Binary at 8 range 0..7;
+         Binary at BR_CRC_Binary_Data_Offset range 0..7;
       end record;
    --
    type BR_CRC_Binary_Layout_Ptr is access BR_CRC_Binary_Layout;
@@ -289,6 +299,8 @@ package BRBON is
 
 
    -- Layout of the Array value
+   --
+   BR_Array_Element_Base_Offset: constant Integer := 16;
    --
    type BR_Array_Layout is
       record
@@ -308,7 +320,7 @@ package BRBON is
          Reserved_16 at 6 range 0..15;
          Element_Count at 8 range 0..31;
          Element_Byte_Count at 12 range 0..31;
-         Element_Base at 16 range 0..7;
+         Element_Base at BR_Array_Element_Base_Offset range 0..7;
       end record;
    --
    type BR_Array_Layout_Ptr is access BR_Array_Layout;
@@ -317,6 +329,8 @@ package BRBON is
 
 
    -- Layout of the Dictionary
+   --
+   BR_Dictionary_Items_Offset: constant Integer := 8;
    --
    type BR_Dictionary_Layout is
       record
@@ -328,7 +342,7 @@ package BRBON is
       record
          Reserved_32 at 0 range 0..31;
          Item_Count at 4 range 0..31;
-         Items_Base at 8 range 0..7;
+         Items_Base at BR_Dictionary_Items_Offset range 0..7;
       end record;
    --
    type BR_Dictionary_Layout_Ptr is access BR_Dictionary_Layout;
@@ -337,6 +351,8 @@ package BRBON is
 
 
    -- Layout of the Sequence
+   --
+   BR_Sequence_Items_Offset: constant Integer := 8;
    --
    type BR_Sequence_Layout is
       record
@@ -348,7 +364,7 @@ package BRBON is
       record
          Reserved_32 at 0 range 0..31;
          Item_Count at 4 range 0..31;
-         Items_Base at 8 range 0..7;
+         Items_Base at BR_Sequence_Items_Offset range 0..7;
       end record;
    --
    type BR_Sequence_Layout_Ptr is access BR_Sequence_Layout;
@@ -446,6 +462,8 @@ package BRBON is
 
    -- Font access
    --
+   BR_Font_Names_Offset: constant Integer := 6;
+   --
    type BR_Font_Layout is
       record
          Point_Size: IEEE_Float_32;
@@ -458,7 +476,7 @@ package BRBON is
          Point_Size at 0 range 0..31;
          Family_Name_Byte_Count at 4 range 0..7;
          Font_Name_Byte_Count at 5 range 0..7;
-         Names at 6 range 0..7;
+         Names at BR_Font_Names_Offset range 0..7;
       end record;
    --
    type BR_Font_Layout_Ptr is access BR_Font_Layout;

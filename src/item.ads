@@ -85,86 +85,54 @@ package Item is
 
    function Get_CRC_String_CRC         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_String_CRC);
    function Get_CRC_String_Byte_Count  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_String_Byte_Count);
-   procedure Set_CRC_String_CRC        (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_CRC_String_CRC);
-   procedure Set_CRC_String_Byte_Count (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_CRC_String_Byte_Count);
-   procedure Set_CRC_String_Value      (I: Item_Access'Class; Value: String); pragma Inline (Set_CRC_String_Value);
    procedure Set_CRC_String            (I: Item_Access'Class; Value: String); pragma Inline (Set_CRC_String);
    procedure Get_CRC_String            (I: Item_Access'Class; Value: out String); pragma Inline (Get_CRC_String);
    procedure Create_CRC_String         (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
 
    function Get_Binary_Byte_Count      (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Binary_Byte_Count);
-   procedure Set_Binary_Byte_Count     (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Binary_Byte_Count);
-   procedure Set_Binary_Value          (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_Binary_Value);
-   procedure Set_Binary                (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_Binary_Value);
+   procedure Set_Binary                (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_Binary);
    procedure Get_Binary                (I: Item_Access'Class; Value: out Array_Of_Unsigned_8); pragma Inline (Get_Binary);
    procedure Create_Binary             (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
 
    function Get_CRC_Binary_CRC         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_Binary_CRC);
    function Get_CRC_Binary_Byte_Count  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_CRC_Binary_Byte_Count);
-   procedure Set_CRC_Binary_CRC        (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_CRC_Binary_CRC);
-   procedure Set_CRC_Binary_Byte_Count (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_CRC_Binary_CRC);
-   procedure Set_CRC_Binary_Value      (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_CRC_Binary_Value);
    procedure Set_CRC_Binary            (I: Item_Access'Class; Value: Array_Of_Unsigned_8); pragma Inline (Set_CRC_Binary);
    procedure Get_CRC_Binary            (I: Item_Access'Class; Value: out Array_Of_Unsigned_8); pragma Inline (Get_CRC_Binary);
    procedure Create_CRC_Binary         (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
 
-   function Get_Array_Element_Type        (I: Item_Access'Class) return BR_Item_Type;
+   function Get_Array_Element_Type        (I: Item_Access'Class) return BR_Item_Type; pragma Inline (Get_Array_Element_Type);
    function Get_Array_Element_Count       (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Array_Element_Count);
    function Get_Array_Element_Byte_Count  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Array_Element_Byte_Count);
    function Get_Array_Element_Offset      (I: Item_Access'Class; Index: Unsigned_32) return Unsigned_32; pragma Inline (Get_Array_Element_Offset);
-   procedure Set_Array_Zeros              (I: Item_Access'Class); pragma Inline (Set_Array_Zeros);
-   procedure Set_Array_Element_Count      (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Array_Zeros);
+   procedure Set_Array_Element_Count      (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Array_Element_Count);
    procedure Set_Array_Element_Byte_Count (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Array_Element_Byte_Count);
-   procedure Set_Array_Element_Type       (I: Item_Access'Class; Value: BR_Item_Type); pragma Inline (Set_Array_Element_Type);
    procedure Create_Array                 (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128);
 
    function Get_Dictionary_Item_Count         (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Dictionary_Item_Count);
-   function Get_Dictionary_Item_Start_Offset  (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Dictionary_Item_Start_Offset);
    procedure Set_Dictionary_Item_Count        (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Dictionary_Item_Count);
-   procedure Set_Dictionary_Zeros             (I: Item_Access'Class); pragma Inline (Set_Dictionary_Zeros);
    procedure Create_Dictionary                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
    function Get_Sequence_Item_Count           (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Sequence_Item_Count);
-   function Get_Sequence_Item_Start_Offset    (I: Item_Access'Class) return Unsigned_32; pragma Inline (Get_Sequence_Item_Start_Offset);
    procedure Set_Sequence_Item_Count          (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Sequence_Item_Count);
-   procedure Set_Sequence_Zeros               (I: Item_Access'Class); pragma Inline (Set_Sequence_Zeros);
    procedure Create_Sequence                  (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
-
-   function Get_Table_Layout_Ptr (I: Item_Access'Class) return BR_Table_Layout_Ptr is (To_BR_Table_Layout_Ptr (I.Storage.Get_Unsigned_8_Ptr (I.Offset))); pragma Inline (Get_Table_Layout_Ptr);
-   function Get_Column_Descriptor_Layout_Ptr (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Table_Column_Name_Layout_Ptr; pragma Inline (Get_Column_Descriptor_Layout_Ptr);
-   function Get_Column_Name_Layout_Ptr (I: Item_Access'Class) return BR_Table_Column_Name_Layout_Ptr; pragma Inline (Get_Table_Layout_Ptr);
-   procedure Create_Table        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   function Get_Table_Layout_Ptr              (I: Item_Access'Class) return BR_Table_Layout_Ptr is (To_BR_Table_Layout_Ptr (I.Storage.Get_Unsigned_8_Ptr (I.Offset))); pragma Inline (Get_Table_Layout_Ptr);
+   function Get_Column_Descriptor_Layout_Ptr  (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Table_Column_Name_Layout_Ptr; pragma Inline (Get_Column_Descriptor_Layout_Ptr);
+   function Get_Column_Name_Layout_Ptr        (I: Item_Access'Class) return BR_Table_Column_Name_Layout_Ptr; pragma Inline (Get_Table_Layout_Ptr);
+   procedure Create_Table                     (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
    procedure Get_UUID           (I: Item_Access'Class; Value: out UUID); pragma Inline (Get_UUID);
    procedure Set_UUID           (I: Item_Access'Class; Value: UUID); pragma Inline (Set_UUID);
    procedure Create_UUID        (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID);
 
-
-   function Get_Alpha           (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Alpha);
-   function Get_Red             (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Red);
-   function Get_Green           (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Green);
-   function Get_Blue            (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Blue);
    function Get_Color           (I: Item_Access'Class) return Color; pragma Inline (Get_Color);
-   procedure Set_Alpha          (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Alpha);
-   procedure Set_Red            (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Red);
-   procedure Set_Green          (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Green);
-   procedure Set_Blue           (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Blue);
    procedure Set_Color          (I: Item_Access'Class; Value: Color); pragma Inline (Set_Color);
    procedure Create_Color       (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black);
 
-   function Get_Size                    (I: Item_Access'Class) return IEEE_Float_32; pragma Inline (Get_Size);
    function Get_Family_Name_Byte_Count  (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Family_Name_Byte_Count);
    function Get_Font_Name_Byte_Count    (I: Item_Access'Class) return Unsigned_8; pragma Inline (Get_Font_Name_Byte_Count);
    procedure Get_Family_Name            (I: Item_Access'Class; Value: out String); pragma Inline (Get_Family_Name);
    procedure Get_Font_Name              (I: Item_Access'Class; Value: out String); pragma Inline (Get_Font_Name);
-   procedure Set_Size                   (I: Item_Access'Class; Value: IEEE_Float_32); pragma Inline (Set_Size);
-   procedure Set_Family_Name_Byte_Count (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Family_Name_Byte_Count);
-   procedure Set_Font_Name_Byte_Count   (I: Item_Access'Class; Value: Unsigned_8); pragma Inline (Set_Font_Name_Byte_Count);
-   procedure Set_Family_Name_Value      (I: Item_Access'Class; Value: String); pragma Inline (Set_Family_Name_Value);
-   procedure Set_Font_Name_Value        (I: Item_Access'Class; Value: String); pragma Inline (Set_Font_Name_Value);
-   procedure Set_Family_Name            (I: Item_Access'Class; Value: String); pragma Inline (Set_Family_Name);
-   procedure Set_Font_Name              (I: Item_Access'Class; Value: String); pragma Inline (Set_Font_Name);
    procedure Set_Font                   (I: Item_Access'Class; Value: Font); pragma Inline (Set_Font);
    procedure Create_Font                (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
 
