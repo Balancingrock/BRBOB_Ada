@@ -42,6 +42,18 @@ package body Storage_Area is
    end Get_Item_Type;
 
 
+   procedure Set_Item_Options (S: Storage_Area'Class; Offset: Unsigned_32; Value: Item_Options) is
+   begin
+      S.Data.all (Offset) := To_Unsigned_8 (Value);
+   end Set_Item_Options;
+
+
+   procedure Set_Item_Flags (S: Storage_Area'Class; Offset: Unsigned_32; Value: Item_Flags) is
+   begin
+      S.Data.all (Offset) := To_Unsigned_8 (Value);
+   end Set_Item_Flags;
+
+
    procedure Set_Bool (S: Storage_Area'Class; Offset: Unsigned_32; Value: Boolean) is
    begin
       S.Data (Offset) := (if Value then 1 else 0);

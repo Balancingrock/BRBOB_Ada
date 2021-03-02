@@ -3,63 +3,93 @@ with Crc_Package; use Crc_Package;
 package body Item is
 
 
+   procedure Assign_Item_Type (I: Item_Access'Class; Value: BR_Item_Type) is
+   begin
+      I.Storage.Set_Item_Type (I.Offset + Item_Type_Offset, Value);
+   end Assign_Item_Type;
+
+
+   procedure Assign_Item_Options (I: Item_Access'Class; Value: BR_Item_Options) is
+   begin
+      I.Storage.Set_Item_Type (I.Offset + Item_Options_Offset, Value);
+   end Assign_Item_Type;
+
+
+   procedure Assign_Item_Flags (I: Item_Access'Class; Value: BR_Item_Flags) is
+   begin
+      I.Storage.Set_Item_Flags (I.Offset + Item_Flags_Offset, Value);
+   end Assign_Item_Flags;
+
+
+   procedure Assign_Item_Name_Field_Byte_Count (I: Item_Access'Class; Value: Unsigned_8) is
+   begin
+      I.Storage.Set_Unsigned_8 (I.Offset + Item_Name_Field_Byte_Count_Offset, Value);
+   end Assign_Item_Name_Field_Byte_Count;
+
+
+   procedure Assign_Item_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Offset + Item_Name_Byte_Count_Offset, Value);
+   end Assign_Item_Byte_Count;
+
+
+   procedure Assign_Item_Parent_Offset (I: Item_Access'Class; Value: Unsigned_32) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Offset + Item_Name_Parent_Offset_Offset, Value);
+   end Assign_Item_Byte_Count;
+
+
    -- ===================
    -- BR_Null
    -- ===================
 
-   procedure Create_Null (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
-
-      Ptr: Item_Header_Ptr := I.Storage.Get_Item_Header_Ptr (I.Offset);
-      Assistent: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
-
+   procedure Create_Null_Item (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Null); Parent_Offset: Unsigned_32 := 0) is
+      A: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
    begin
 
-      Ptr.Item_Type := BR_Null;
-      Ptr.Options := No_Options;
-      Ptr.Flags := No_Flags;
-      Ptr.Byte_Count := Byte_Count;
-      Ptr.Parent_Offset := Parent_Offset;
-      Ptr.Small_Value := 0;
+      I.Assign_Item_Type (BR_Null);
+      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Flags (No_Flags);
+      I.Assign_Item_Name_Field_Byte_Count (A.Name_Field_Byte_Count);
+      I.Assign_Item_Byte_Count (Byte_Count);
+      I.Assign_Item_Parent_Offset (Parent_Offset);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset, 0);
 
-      I.Set_Name (Assistent);
+      I.Set_Name (A);
 
-      Ptr.Small_Value := 0;
-
-   end Create_Null;
+   end Create_Null_Item;
 
 
    -- ====================
    -- BR_Bool
    -- ====================
 
-   function BR_Bool (I: Item_Access'Class) return Boolean is
+   function Boolean_Value (I: Item_Access'Class) return Boolean is
    begin
       return I.Storage.Get_Bool (I.Small_Value_Offset);
-   end BR_Bool;
+   end Bool_Value;
 
-   procedure Assign_BR_Bool (I: Item_Access'Class; Value: Boolean) is
+   procedure Assign_Boolean_Value (I: Item_Access'Class; Value: Boolean) is
    begin
       I.Storage.Set_Bool (I.Small_Value_Offset, Value);
-   end Assign_BR_Bool;
+   end Assign_Boolean_Value;
 
-   procedure Create_BR_Bool (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False) is
-
-      Ptr: Item_Header_Ptr := I.Header_Ptr;
-      Assistent: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
-
+   procedure Create_Boolean_Item (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False) is
+      A: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
    begin
 
-      Ptr.Item_Type := BR_Bool;
-      Ptr.Options := No_Options;
-      Ptr.Flags := No_Flags;
-      Ptr.Byte_Count := Byte_Count;
-      Ptr.Parent_Offset := Parent_Offset;
-      Ptr.Small_Value := 0;
+      I.Assign_Item_Type (BR_Bool):
+      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Flags (No_Flags);
+      I.Assign_Item_Name_Field_Byte_Count (A.Name_Field_Byte_Count);
+      I.Assign_Item_Byte_Count (Byte_Count);
+      I.Assign_Item_Parent_Offset (Parent_Offset);
+      I.Storage.Set_Unsigned_32 (I.Small_Value_Offset, 0);
+      I.Storage.Set_Bool (I.Small_Value_Offset, Value);
 
-      I.Set_Name (Assistent);
-      I.Assign_BR_Bool (Value);
+      I.Set_Name (A);
 
-   end Create_BR_Bool;
+   end Create_Boolean_Item;
 
 
    -- =======================
@@ -698,19 +728,19 @@ package body Item is
    -- BR_Dictionary
    -- =================
 
-   function Get_Dictionary_Item_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Dictionary_Item_Count (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_Dictionary_Layout_Ptr := I.Storage.Get_BR_Dictionary_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Item_Count;
-   end Get_Dictionary_Item_Count;
+   end BR_Dictionary_Item_Count;
 
-   procedure Set_Dictionary_Item_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   procedure Set_BR_Dictionary_Item_Count (I: Item_Access'Class; Value: Unsigned_32) is
       Ptr: BR_Dictionary_Layout_Ptr := I.Storage.Get_BR_Dictionary_Layout_Ptr (I.Value_Offset);
    begin
       Ptr.Item_Count := Value;
-   end Set_Dictionary_Item_Count;
+   end Set_BR_Dictionary_Item_Count;
 
-   procedure Create_Dictionary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
+   procedure Create_BR_Dictionary (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
 
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       DPtr: BR_Dictionary_Layout_Ptr := I.Storage.Get_BR_Dictionary_Layout_Ptr (I.Value_Offset);
@@ -731,26 +761,26 @@ package body Item is
       DPtr.Reserved_32 := 0;
       DPtr.Item_Count := 0;
 
-   end Create_Dictionary;
+   end Create_BR_Dictionary;
 
 
    -- =================
    -- BR_Sequence
    -- =================
 
-   function Get_Sequence_Item_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Sequence_Item_Count (I: Item_Access'Class) return Unsigned_32 is
       Ptr: BR_Sequence_Layout_Ptr := I.Storage.Get_BR_Sequence_Layout_Ptr (I.Value_Offset);
    begin
       return Ptr.Item_Count;
-   end Get_Sequence_Item_Count;
+   end BR_Sequence_Item_Count;
 
-   procedure Set_Sequence_Item_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   procedure Set_BR_Sequence_Item_Count (I: Item_Access'Class; Value: Unsigned_32) is
       Ptr: BR_Sequence_Layout_Ptr := I.Storage.Get_BR_Sequence_Layout_Ptr (I.Value_Offset);
    begin
       Ptr.Item_Count := Value;
-   end Set_Sequence_Item_Count;
+   end Set_BR_Sequence_Item_Count;
 
-   procedure Create_Sequence (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
+   procedure Create_BR_Sequence (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
 
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       SPtr: BR_Sequence_Layout_Ptr := I.Storage.Get_BR_Sequence_Layout_Ptr (I.Value_Offset);
@@ -771,74 +801,76 @@ package body Item is
       SPtr.Reserved_32 := 0;
       SPtr.Item_Count := 0;
 
-   end Create_Sequence;
+   end Create_BR_Sequence;
 
 
    -- =================
    -- Table
    -- =================
 
-   function Get_Table_Row_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Table_Row_Count (I: Item_Access'Class) return Unsigned_32 is
    begin
       return 0;
-   end Get_Table_Row_Count;
+   end BR_Table_Row_Count;
 
-   function Get_Table_Column_Count (I: Item_Access'Class) return Unsigned_32 is
+   function BR_Table_Column_Count (I: Item_Access'Class) return Unsigned_32 is
    begin
       return 0;
-   end Get_Table_Column_Count;
+   end BR_Table_Column_Count;
 
-   function Get_Table_Column_Descriptor_Offset (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
+   function BR_Table_Column_Descriptor_Offset (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
    begin
       return 0;
-   end Get_Table_Column_Descriptor_Offset;
+   end BR_Table_Column_Descriptor_Offset;
 
-   function Get_Table_Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8 is
+   function BR_Table_Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8 is
    begin
       return 0;
-   end Get_Table_Column_Name_Byte_Count;
+   end BR_Table_Column_Name_Byte_Count;
 
-   function Get_Table_Column_Name_CRC (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_16 is
+   function BR_Table_Column_Name_CRC (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_16 is
    begin
       return 0;
-   end Get_Table_Column_Name_CRC;
+   end BR_Table_Column_Name_CRC;
 
-   procedure Get_Table_Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32; Value: out String) is
+   procedure Get_BR_Table_Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32; Value: out String) is
    begin
       null;
-   end Get_Table_Column_Name;
+   end Get_BR_Table_Column_Name;
 
-   procedure Set_Table_Row_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   procedure Set_BR_Table_Row_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
       null;
-   end Set_Table_Row_Count;
+   end Set_BR_Table_Row_Count;
 
-   procedure Set_Table_Column_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   procedure Set_BR_Table_Column_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
       null;
-   end Set_Table_Column_Count;
+   end Set_BR_Table_Column_Count;
 
-   procedure Create_Table (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
+   procedure Create_BR_Table (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0) is
    begin
       raise BRBON.Incomplete_Code;
-   end Create_Table;
+   end Create_BR_Table;
 
 
    -- ===================
    -- BR_UUID
    -- ===================
 
-   procedure Get_UUID (I: Item_Access'Class; Value: out UUID) is
+   function BR_UUID (I: Item_Access'Class) return UUID is
+      U: UUID;
    begin
-      I.Storage.Get_Unsigned_8_Array (I.Value_Offset, Array_Of_Unsigned_8 (Value));
-   end Get_UUID;
+      I.Storage.Get_Unsigned_8_Array (I.Value_Offset, U);
+      return U;
+   end BR_UUID;
 
-   procedure Set_UUID (I: Item_Access'Class; Value: UUID) is
+   procedure Assign_UUID (I: Item_Access'Class; Value: UUID) is
    begin
       I.Storage.Set_Unsigned_8_Array (I.Value_Offset, Array_Of_Unsigned_8 (Value));
-   end Set_UUID;
+   end Assign_UUID;
 
-   procedure Create_UUID (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID) is
+   procedure Create_BR_UUID (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID) is
 
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
@@ -855,26 +887,26 @@ package body Item is
 
       I.Set_Name (Assistent);
 
-      I.Set_UUID (Value);
+      I.Assign_BR_UUID (Value);
 
-   end Create_UUID;
+   end Create_BR_UUID;
 
 
    -- =================
    -- BR_Color
    -- =================
 
-   function Get_Color (I: Item_Access'Class) return Color is
+   function BR_Color (I: Item_Access'Class) return Color is
    begin
-      return To_Color (I.Storage.Get_Unsigned_32 (I.Value_Offset));
-   end Get_Color;
+      return To_Color (I.Storage.Get_Unsigned_32 (I.Small_Value_Offset));
+   end BR_Color;
 
-   procedure Set_Color (I: Item_Access'Class; Value: Color) is
+   procedure Assign_BR_Color (I: Item_Access'Class; Value: Color) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset, To_Unsigned_32 (Value));
-   end Set_Color;
+      I.Storage.Set_Unsigned_32 (I.Small_Value_Offset, To_Unsigned_32 (Value));
+   end Assign_BR_Color;
 
-   procedure Create_Color (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black) is
+   procedure Create_BR_Color (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black) is
 
       Ptr: Item_Header_Ptr := I.Header_Ptr;
       Assistent: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
@@ -891,14 +923,24 @@ package body Item is
 
       I.Set_Name (Assistent);
 
-      I.Set_Color (Value);
+      I.Assign_BR_Color (Value);
 
-   end Create_Color;
+   end Create_BR_Color;
 
 
    -- ====================
    -- BR_Font
    -- ====================
+
+   function BR_Font (I: Item_Access'Class) return Font is
+      Ptr: BR_Font_Layout_Ptr := I.Storage.Get_BR_Font_Layout_Ptr (I.Value_Offset);
+      F: Font;
+      Family_Name: String := String (1 .. Ptr.Family_Name_Byte_Count);
+      Font_Name: String := String (1 .. Ptr.Font_Name_Byte_Count);
+   begin
+
+      return F;
+   end BR_Font;
 
    function Get_Family_Name_Byte_Count (I: Item_Access'Class) return Unsigned_8 is
       Ptr: BR_Font_Layout_Ptr := I.Storage.Get_BR_Font_Layout_Ptr (I.Value_Offset);
