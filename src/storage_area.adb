@@ -152,38 +152,34 @@ package body Storage_Area is
    end Set_Float_64;
 
 
+   function Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Length: Unsigned_32) return String is
+      subtype Str_T is String (1 .. Integer (Length));
+      subtype Arr_T is Array_Of_Unsigned_8 (1 .. Integer (Length));
+      function To_Str_T is new Ada.Unchecked_Conversion (Arr_T, Str_T);
+   begin
+      return To_Str_T (Arr_T (S.Data (Offset .. Offset + Length - 1)));
+   end Get_String;
+
+
+   procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String) is
+      subtype Arr_T is Array_Of_Unsigned_8 (1 .. Value'Length);
+      subtype Str_T is String (1 .. Value'Length);
+      function To_Arr_T is new Ada.Unchecked_Conversion (Str_T, Arr_T);
+   begin
+      S.Data (Offset .. Offset + Value'Length - 1) := To_Arr_T (Value);
+   end Set_String;
+
+
+   function Get_Unsigned_8_Array (S: Storage_Area; Offset: Unsigned_32; Length: Unsigned_32) return Array_Of_Unsigned_8 is
+   begin
+      return S.Data (Offset .. Offset + Length - 1));
+   end Get_Unsigned_8_Array;
+
+
    procedure Set_Unsigned_8_Array (S: Storage_Area'Class; Offset: Unsigned_32; Value: Array_Of_Unsigned_8) is
    begin
       S.Data.all (Offset .. Offset + Value'Last) := Value;
    end Set_Unsigned_8_Array;
 
-
-   procedure Get_Unsigned_8_Array (S: Storage_Area'Class; Offset: Unsigned_32; Value: in out Array_Of_Unsigned_8) is
-   begin
-      Value := S.Data.all (Offset .. Offset + Value'Last);
-   end Get_Unsigned_8_Array;
-
-
-   procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String) is
-      subtype Target_Array is Array_Of_Unsigned_8 (1 .. Value'Length);
-      type Target_Array_Ptr is access Target_Array;
-      function To_Target_Array_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Target_Array_Ptr);
-      subtype String_Helper is String (1 .. Value'Length);
-      function To_Target_Array is new Ada.Unchecked_Conversion (String_Helper, Target_Array);
-      Target: Target_Array_Ptr := To_Target_Array_Ptr (S.Data.all (Offset)'Access);
-   begin
-      Target.all := To_Target_Array (Value);
-   end Set_String;
-
-
-   procedure Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: out String) is
-      subtype Source_Array is Array_Of_Unsigned_8 (1 .. Value'Length);
-      type Source_Array_Ptr is access Source_Array;
-      function To_Source_Array_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Source_Array_Ptr);
-      subtype String_Helper is String (1 .. Value'Length);
-      function To_String_Helper is new Ada.Unchecked_Conversion (Source_Array, String_Helper);
-   begin
-      Value := To_String_Helper (To_Source_Array_Ptr (S.Data.all (Offset)'Access).all);
-   end Get_String;
 
 end Storage_Area;

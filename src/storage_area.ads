@@ -40,13 +40,13 @@ package Storage_Area is
 
    -- BR Item Options access
    --
-   procedure Set_Item_Options (S: Storage_Area'Class; Offset: Unsigned_32; Value: Item_Options); pragma Inline (Set_Item_Options);
-   function Get_Item_Options (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Options is (To_Item_Options (S.Data (Offset)));
+   procedure Set_Item_Options (S: Storage_Area'Class; Offset: Unsigned_32; Value: BR_Item_Options); pragma Inline (Set_Item_Options);
+   function Get_Item_Options (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Item_Options is (To_BR_Item_Options (S.Data (Offset)));
 
    -- BR Item Flags access
    --
-   procedure Set_Item_Flags (S: Storage_Area'Class; Offset: Unsigned_32; Value: Item_Flags); pragma Inline (Set_Item_Flags);
-   function Get_Item_Flags (S: Storage_Area'Class; Offset: Unsigned_32) return Item_Flags is (To_Item_Flags (S.Data (Offset))); pragma Inline (Get_Item_Flags);
+   procedure Set_Item_Flags (S: Storage_Area'Class; Offset: Unsigned_32; Value: BR_Item_Flags); pragma Inline (Set_Item_Flags);
+   function Get_Item_Flags (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Item_Flags is (To_BR_Item_Flags (S.Data (Offset))); pragma Inline (Get_Item_Flags);
 
    -- Bool access
    --
@@ -115,17 +115,15 @@ package Storage_Area is
    pragma Inline (Get_Float_64);
 
 
-   -- Unsigned_8_Array access
-   -- Note: It is assumed that enough storage area is available.
+   -- String
    --
-   procedure Set_Unsigned_8_Array (S: Storage_Area'Class; Offset: Unsigned_32; Value: Array_Of_Unsigned_8);
-   procedure Get_Unsigned_8_Array (S: Storage_Area'Class; Offset: Unsigned_32; Value: out Array_Of_Unsigned_8);
+   function Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Length: Unsigned_32) return String; pragma Inline (Get_String);
+   procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String); pragma Inline (Set_String);
 
-
-   -- String access
+   -- Array
    --
-   procedure Set_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: String);
-   procedure Get_String (S: Storage_Area'Class; Offset: Unsigned_32; Value: out String);
+   function Get_Unsigned_8_Array (S: Storage_Area; Offset: Unsigned_32; Length: Unsigned_32) return Array_Of_Unsigned_8; pragma Inline (Get_Unsigned_8_Array);
+   procedure Set_Unsigned_8_Array (S: Storage_Area'Class; Offset: Unsigned_32; Value: Array_Of_Unsigned_8); pragma Inline (Set_Unsigned_8_Array);
 
 
    -- A pointer to the storage area
