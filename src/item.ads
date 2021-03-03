@@ -216,38 +216,68 @@ package Item is
    procedure Create_Sequence_Item    (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
 
 
-   Table_Value_Row_Count_Offset: constant Unsigned_32 := 0;                 -- 4 bytes
-   Table_Value_Column_Count_Offset: constant Unsigned_32 := 4;              -- 4 bytes
-   Table_Value_Fields_Offset: constant Unsigned_32 := 8;                    -- 4 bytes
-   Table_Value_Row_Byte_Count_Offset: constant Unsigned_32 := 12;           -- 4 bytes
-   Table_Value_Column_Descriptor_Base_Offset: constant Unsigned_32 := 16;   -- N bytes
+   Table_Value_Row_Count_Offset: constant Unsigned_32 := 0;                   -- 4 bytes
+   Table_Value_Column_Count_Offset: constant Unsigned_32 := 4;                -- 4 bytes
+   Table_Value_Fields_Offset_Offset: constant Unsigned_32 := 8;               -- 4 bytes
+   Table_Value_Row_Byte_Count_Offset: constant Unsigned_32 := 12;             -- 4 bytes
+   Table_Value_Column_Descriptor_Base_Offset: constant Unsigned_32 := 16;     -- N bytes
    --
-   Table_Column_Descriptor_Name_CRC_16_Offset: constant Unsigned_32 := 0;           -- 2 bytes
-   Table_Column_Descriptor_Name_Field_Byte_Count_Offset: constant Unsigned_32 := 2; -- 1 byte
-   Table_Column_Descriptor_Field_Type_Offset: constant Unsigned_32 := 3;            -- 1 byte
-   Table_Column_Descriptor_Name_Field_Offset_Offset: constant Unsigned_32 := 4;     -- 4 bytes
-   Table_Column_Descriptor_Field_Offset_Offset: constant Unsigned_32 := 8;          -- 4 bytes
-   Table_Column_Descriptor_Field_Byte_Count_Offset: constant Unsigned_32 := 12;     -- 4 bytes
+   Column_Descriptor_Name_CRC_16_Offset: constant Unsigned_32 := 0;           -- 2 bytes
+   Column_Descriptor_Name_Field_Byte_Count_Offset: constant Unsigned_32 := 2; -- 1 byte
+   Column_Descriptor_Field_Type_Offset: constant Unsigned_32 := 3;            -- 1 byte
+   Column_Descriptor_Name_Field_Offset_Offset: constant Unsigned_32 := 4;     -- 4 bytes
+   Column_Descriptor_Field_Offset_Offset: constant Unsigned_32 := 8;          -- 4 bytes
+   Column_Descriptor_Field_Byte_Count_Offset: constant Unsigned_32 := 12;     -- 4 bytes
    --
-   Table_Column_Descriptor_Byte_Count: constant Unsigned_32 := 16;
+   Column_Descriptor_Byte_Count: constant Unsigned_32 := 16;
    --
-   Table_Column_Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 0;  -- 1 byte
-   Table_Column_Name_Field_Reserved_8_Offset: constant Unsigned_32 := 1;        -- 1 byte
-   Table_Column_Name_Field_Reserved_16_Offset: constant Unsigned_32 := 2;       -- 2 byte
-   Table_Column_Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 4;        -- N bytes
+   Column_Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 0;      -- 1 byte
+   Column_Name_Field_Reserved_8_Offset: constant Unsigned_32 := 1;            -- 1 byte
+   Column_Name_Field_Reserved_16_Offset: constant Unsigned_32 := 2;           -- 2 byte
+   Column_Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 4;            -- N bytes
    --
-   function Table_Row_Count                    (I: Item_Access'Class) return Unsigned_32; pragma Inline (Table_Row_Count);
-   function Table_Column_Count                 (I: Item_Access'Class) return Unsigned_32; pragma Inline (Table_Column_Count);
-   function Table_Column_Descriptor_Offset     (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32; pragma Inline (Table_Column_Descriptor_Offset);
-   function Table_Column_Name_Field_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8; pragma Inline (Table_Column_Name_Field_Byte_Count);
-   function Table_Column_Name_CRC              (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_16; pragma Inline (Table_Column_Name_CRC);
-   function Table_Column_Name                  (I: Item_Access'Class; Column_Index: Unsigned_32) return String; pragma Inline (Table_Column_Name);
-   function Table_Column_Type                  (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Item_Type; pragma Inline (Table_Column_Type);
-   function Table_Field_Offset                 (I: Item_Access'Class; Column_Index: Unsigned_32; Row_Index: Unsigned_32) return Unsigned_32;
-   procedure Set_Table_Row_Count               (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Table_Row_Count);
-   procedure Set_Table_Column_Count            (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Table_Column_Count);
-   procedure Assign_Table_Column_Name          (I: Item_Access'Class; Column_Index: Unsigned_32; Value: String); pragma Inline (Assign_Table_Column_Name);
-   procedure Create_Table_Item                 (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   function Table_Row_Count                   (I: Item_Access'Class) return Unsigned_32; pragma Inline (Table_Row_Count);
+   procedure Set_Table_Row_Count              (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Table_Row_Count);
+   --
+   function Table_Column_Count                (I: Item_Access'Class) return Unsigned_32; pragma Inline (Table_Column_Count);
+   procedure Set_Table_Column_Count           (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Table_Column_Count);
+   --
+   function Table_Fields_Offset               (I: Item_Access'Class) return Unsigned_32; pragma Inline (Table_Fields_Offset);
+   procedure Set_Table_Fields_Offset          (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Table_Fields_Offset);
+   --
+   function Table_Row_Byte_Count              (I: Item_Access'Class) return Unsigned_32; pragma Inline (Table_Row_Byte_Count);
+   procedure Set_Table_Row_Byte_Count         (I: Item_Access'Class; Value: Unsigned_32); pragma Inline (Set_Table_Row_Byte_Count);
+   --
+   function Table_Column_Descriptor_Offset    (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32; pragma Inline (Table_Column_Descriptor_Offset);
+   --
+   function Column_Name_CRC                   (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_16; pragma Inline (Column_Name_CRC);
+   procedure Set_Column_Name_CRC              (I: Item_Access'Class; Value: Unsigned_16); pragma Inline (Set_Column_Name_CRC);
+   --
+   function Column_Name_Field_Byte_Count      (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8; pragma Inline (Column_Name_Field_Byte_Count);
+   procedure Set_Column_Name_Field_Byte_Count (I: Item_Access'Class; Value: Unsigned_16); pragma Inline (Set_Column_Name_Field_Byte_Count);
+   --
+   function Column_Type                       (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Item_Type; pragma Inline (Column_Type);
+   procedure Set_Column_Type                  (I: Item_Access'Class; Value: BR_Item_Type); pragma Inline (Set_Column_Type);
+   --
+   function Column_Name_Field_Offset          (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32; pragma Inline (Column_Name_Field_Offset);
+   procedure Set_Column_Name_Field_Offset     (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32); pragma Inline (Set_Column_Name_Field_Offset);
+   --
+   function Column_Field_Offset               (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32; pragma Inline (Column_Field_Offset);
+   procedure Set_Column_Field_Offset          (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32); pragma Inline (Set_Column_Field_Offset);
+   --
+   function Column_Field_Byte_Count           (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32; pragma Inline (Column_Field_Byte_Count);
+   procedure Set_Column_Field_Byte_Count      (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32); pragma Inline (Set_Column_Field_Byte_Count);
+   --
+   function Column_Name_Byte_Count            (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8; pragma Inline (Column_Name_Byte_Count);
+   procedure Set_Column_Name_Byte_Count       (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32); pragma Inline (Set_Column_Name_Byte_Count);
+   --
+   function Column_Name                       (I: Item_Access'Class; Column_Index: Unsigned_32) return String; pragma Inline (Column_Name);
+   procedure Set_Column_Name                  (I: Item_Access'Class; Column_Index: Unsigned_32; Value: String); pragma Inline (Set_Column_Name);
+   --
+   function Table_Field_Offset                (I: Item_Access'Class; Column_Index: Unsigned_32; Row_Index: Unsigned_32) return Unsigned_32; pragma Inline (Table_Field_Offset);
+   --
+   procedure Create_Table_Item                (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification);
+
 
    function UUID_Value                     (I: Item_Access'Class) return UUID; pragma Inline (UUID_Value);
    procedure Assign_UUID_Value             (I: Item_Access'Class; Value: UUID); pragma Inline (Assign_UUID_Value);

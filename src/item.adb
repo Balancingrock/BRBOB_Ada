@@ -732,45 +732,149 @@ package body Item is
       return I.Storage.Get_Unsigned_32 (I.Value_Offset + Table_Value_Row_Count_Offset);
    end Table_Row_Count;
 
+   procedure Set_Table_Row_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Table_Value_Row_Count_Offset, Value);
+   end Set_Table_row_Count;
+
+
    function Table_Column_Count (I: Item_Access'Class) return Unsigned_32 is
    begin
       return I.Storage.Get_Unsigned_32 (I.Value_Offset + Table_Value_Column_Count_Offset);
    end Table_Column_Count;
 
-   function Table_Fields_Offset (I: Item_Access'Class; Column_Index: Unsigned_32; Row_Index: Unsigned_32) return Unsigned_32 is
+   procedure Set_Table_Column_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      -- Count the number of columns (C), extract from each column the size of the name field (NF) add that to the column descriptor base (B)
-      -- Fields_Offset = B + C * Column_Descriptor_Size + Sum (of each NF)
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Table_Value_Column_Count_Offset, Value);
+   end Set_Table_Column_Count;
 
+
+   function Table_Fields_Offset (I: Item_Access'Class) return Unsigned_32 is
+   begin
+      return I.Storage.Get_Unsigned_32 (I.Value_Offset + Table_Value_Fields_Offset_Offset);
    end Table_Fields_Offset;
+
+   procedure Set_Table_Fields_Offset (I: Item_Access'Class; Value: Unsigned_32) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Table_Value_Fields_Offset_Offset, Value);
+   end Set_Table_Fields_Offset;
+
+
+   function Table_Row_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
+   begin
+      return I.Storage.Get_Unsigned_32 (I.Value_Offset + Table_Value_Row_Byte_Count_Offset);
+   end Table_Row_Byte_Count;
+
+   procedure Set_Table_Row_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
+   begin
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Table_Value_Row_Byte_Count_Offset, Value);
+   end Set_Table_Row_Byte_Count;
+
 
    function Table_Column_Descriptor_Offset (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
    begin
-      return I.Value_Offset + Table_Value_Column_Descriptor_Base_Offset + Column_Index * Table_Column_Descriptor_Byte_Count;
+      return I.Value_Offset + Table_Value_Column_Descriptor_Base_Offset + (Column_Index - 1) * Column_Descriptor_Byte_Count;
    end Table_Column_Descriptor_Offset;
 
-   function Table_Column_Name_CRC (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_16 is
-   begin
-      return I.Storage.Get_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Table_Column_Descriptor_Name_CRC_16_Offset);
-   end Table_Column_Name_CRC;
 
-   function Table_Column_Name_Field_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8 is
+   function Column_Name_CRC (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_16 is
    begin
-      return I.Storage.Get_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Table_Column_Descriptor_Name_Field_Byte_Count_Offset);
-   end Table_Column_Name_Field_Byte_Count;
+      return I.Storage.Get_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Column_Descriptor_Name_CRC_16_Offset);
+   end Column_Name_CRC;
 
-   function Table_Column_Type (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Item_Type is
+   procedure Set_Column_Name_CRC (I: Item_Access'Class; Value: Unsigned_16) is
    begin
-      return I.Storage.Get_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Table_Column_Descriptor_Field_Type_Offset);
-   end Table_Column_Type;
+      I.Storage.Set_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Column_Descriptor_Name_CRC_16_Offset, Value);
+   end Set_Column_Name_CRC;
 
-   function Table_Column_Name_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
+
+   function Column_Name_Field_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8 is
    begin
-      return I.Storage.Get_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Table_Column_Descriptor_Name_Field_Offset_Offset);
-   end Table_Column_Name_Field_Offset;
+      return I.Storage.Get_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Column_Descriptor_Name_Field_Byte_Count_Offset);
+   end Column_Name_Field_Byte_Count;
+
+   procedure Set_Column_Name_Field_Byte_Count (I: Item_Access'Class; Value: Unsigned_16) is
+   begin
+      I.Storage.Set_Unsigned_8 (Table_Column_Descriptor_Offset (Column_Index) + Column_Descriptor_Name_Field_Byte_Count_Offset, Value);
+   end Set_Column_Name_Field_Byte_Count;
+
+
+   function Column_Type (I: Item_Access'Class; Column_Index: Unsigned_32) return BR_Item_Type is
+   begin
+      return I.Storage.Get_Item_Type (Table_Column_Descriptor_Offset (Column_Index) + Column_Descriptor_Field_Type_Offset);
+   end Column_Type;
+
+   procedure Set_Column_Type (I: Item_Access'Class; Value: BR_Item_Type) is
+   begin
+      return I.Storage.Set_Item_Type (Table_Column_Descriptor_Offset (Column_Index) + Column_Descriptor_Field_Type_Offset, Value);
+   end Set_Column_Type;
+
+
+   function Column_Name_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
+   begin
+      return I.Storage.Get_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Column_Descriptor_Name_Field_Offset_Offset);
+   end Column_Name_Field_Offset;
+
+   procedure Set_Column_Name_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32) is
+   begin
+      return I.Storage.Set_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Column_Descriptor_Name_Field_Offset_Offset, Value);
+   end Set_Column_Name_Field_Offset;
+
+
+   function Column_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
+   begin
+      return I.Storage.Get_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Column_Descriptor_Field_Offset_Offset);
+   end Column_Field_Offset;
+
+   procedure Set_Column_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32) is
+   begin
+      return I.Storage.Set_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Column_Descriptor_Field_Offset_Offset, Value);
+   end Set_Column_Field_Offset;
+
+
+   function Column_Field_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_32 is
+   begin
+      return I.Storage.Get_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Column_Descriptor_Field_Byte_Count_Offset);
+   end Column_Field_Byte_Count;
+
+   procedure Set_Column_Field_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32) is
+   begin
+      return I.Storage.Set_Unsigned_32 (I.Table_Column_Descriptor_Offset (Column_index) + Column_Descriptor_Field_Byte_Count_Offset, Value);
+   end Set_Column_Field_Byte_Count;
+
+
+   function Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8 is
+   begin
+      return I.Storage.Get_Unsigned_8 (I.Column_Name_Field_Offset (Column_index) + Column_Name_Byte_Count);
+   end Column_Name_Byte_Count;
+
+   procedure Set_Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_8) is
+   begin
+      return I.Storage.Set_Unsigned_8 (I.Column_Name_Field_Offset (Column_index) + Column_Name_Byte_Count, Value);
+   end Set_Column_Name_Byte_Count;
+
+
+   function Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32) return String is
+   begin
+      return I.Storage.Get_String (I.Column_Name_Field_Offset (Column_Index) + Column_Name_Field_ASCII_Code_Offset, I.Column_Name_Byte_Count (Column_Index));
+   end Column_Name;
+
+   procedure Set_Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32; Value: String) is
+   begin
+      I.Storage.Set_String (I.Column_Name_Field_Offset (Column_Index) + Column_Name_Field_ASCII_Code_Offset, I.Column_Name_Byte_Count (Column_Index), Value);
+   end Set_Column_Name;
+
+
+   function Table_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32; Row_Index: Unsigned_32) return Unsigned_32 is
+   begin
+      return I.Value_Offset + Table_Fields_Offset + (Row_index - 1) * Table_Row_Byte_Count + zzzzz
+   end Table_Field_Offset;
+   --
+   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification);
+
+
 
    function Table_Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32) return String is
-   begin
       Name_Field_Offset: Unsigned_32 := Name_Field_Offset (Column_Index);
       Length: Unsigned_8 := I.Storage.Get_Unsigned_8 (Name_Field_Offset + Table_Column_Name_Field_ASCII_Byte_Count_Offset);
    begin
@@ -778,11 +882,9 @@ package body Item is
    end Table_Column_Name;
 
 
-
-   procedure Set_Table_Row_Count (I: Item_Access'Class; Value: Unsigned_32)
-   procedure Set_Table_Column_Count (I: Item_Access'Class; Value: Unsigned_32)
-   procedure Assign_Table_Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32; Value: String)
-   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0)
+   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification) is
+   begin
+   end Create_Table_Item;
 
 
    -- ===================
