@@ -1,27 +1,59 @@
-with Ada.Unchecked_Conversion;
+-- =====================================================================================================================
+--
+--  File:       Storage_Area.adb
+--  Project:    BRBON
+--
+--  Version:    0.1.0
+--
+--  Author:     Marinus van der Lugt
+--  Company:    http://balancingrock.nl
+--  Repository: https://github.com/Balancingrock/BRBON_Ada
+--
+--  Copyright:  (c) 2021 Marinus van der Lugt, All rights reserved.
+--
+--  License:    MIT, see LICENSE file
+--
+--  And because I need to make a living:
+--
+--   - You can send payment (you choose the amount) via paypal to: sales@balancingrock.nl
+--   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
+--
+--  If you prefer to pay in another way, please contact me at rien@balancingrock.nl
+--
+--  Prices/Quotes for support, modifications or enhancements can also be obtained from: rien@balancingrock.nl
+--
+-- =====================================================================================================================
+-- Purpose
+--
+-- See specification
+--
+-- =====================================================================================================================
+-- History
+--
+-- 0.1.0 - Initial version
+--
+-- =====================================================================================================================
 
 
 package body Storage_Area is
 
 
-   function To_Array_Of_Unsigned_8_Ptr is new Ada.Unchecked_Conversion (String_Ptr, Array_Of_Unsigned_8_Ptr);
+   --function To_Array_Of_Unsigned_8_Ptr is new Ada.Unchecked_Conversion (String_Ptr, Array_Of_Unsigned_8_Ptr);
 
 
-   function Allocate_And_Create (Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Storage_Area_Ptr is
-      S: Storage_Area_Ptr;
+   function Allocate_And_Create (Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Storage_Area is
+      S: Storage_Area (Byte_Count);
    begin
-      S := new Storage_Area;
       S.all.Uses_Endianness := Using_Endianness;
       S.all.Data := new Array_Of_Unsigned_8 (1 .. Byte_Count);
       S.all.Swap := Using_Endianness = Machine_Endianness;
       return S;
    end Allocate_And_Create;
 
-
-   procedure Finalization (S: in out Storage_Area) is
+   procedure Finalize (S: in out Storage_Area) is
    begin
       Deallocate_Array_Of_Unsigned_8 (S.Data);
-   end Finalization;
+   end Finalize;
 
 
    -- Operational
@@ -30,16 +62,6 @@ package body Storage_Area is
    begin
       S.Data.all (Offset) := BR_Item_Type'Pos (Value);
    end Set_Item_Type;
-
-   function Valid_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return Boolean is
-   begin
-      return S.Data.all (Offset) > Unsigned_8 (BR_Item_Type'Pos (BR_Item_Type'Last));
-   end Valid_Item_Type;
-
-   function Get_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Item_Type is
-   begin
-      return BR_Item_Type'Val (S.Data.all (Offset));
-   end Get_Item_Type;
 
 
    procedure Set_Item_Options (S: Storage_Area'Class; Offset: Unsigned_32; Value: Item_Options) is

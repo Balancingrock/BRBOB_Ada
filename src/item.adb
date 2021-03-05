@@ -5,37 +5,37 @@ package body Item is
 
    procedure Assign_Item_Type (I: Item_Access'Class; Value: BR_Item_Type) is
    begin
-      I.Storage.Set_Item_Type (I.Offset + Item_Type_Offset, Value);
+      I.Storage.Set_Item_Type (I.Offset + Item_Header_Offset_Type, Value);
    end Assign_Item_Type;
 
 
    procedure Assign_Item_Options (I: Item_Access'Class; Value: BR_Item_Options) is
    begin
-      I.Storage.Set_Item_Type (I.Offset + Item_Options_Offset, Value);
+      I.Storage.Set_Item_Type (I.Offset + Item_Header_Offset_Options, Value);
    end Assign_Item_Options;
 
 
    procedure Assign_Item_Flags (I: Item_Access'Class; Value: BR_Item_Flags) is
    begin
-      I.Storage.Set_Item_Flags (I.Offset + Item_Flags_Offset, Value);
+      I.Storage.Set_Item_Flags (I.Offset + Item_Header_Offset_Flags, Value);
    end Assign_Item_Flags;
 
 
    procedure Assign_Item_Name_Field_Byte_Count (I: Item_Access'Class; Value: Unsigned_8) is
    begin
-      I.Storage.Set_Unsigned_8 (I.Offset + Item_Name_Field_Byte_Count_Offset, Value);
+      I.Storage.Set_Unsigned_8 (I.Offset + Item_Name_Field_Offset_Byte_Count, Value);
    end Assign_Item_Name_Field_Byte_Count;
 
 
    procedure Assign_Item_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Offset + Item_Name_Byte_Count_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Offset + Item_Name_Field_Offset_Byte_Count, Value);
    end Assign_Item_Byte_Count;
 
 
    procedure Assign_Item_Parent_Offset (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Offset + Item_Parent_Offset_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Offset + Item_Header_Offset_Parent_Offset, Value);
    end Assign_Item_Parent_Offset;
 
 
@@ -43,17 +43,17 @@ package body Item is
    procedure Assign_Item_Name (I: Item_Access'Class; Value: BR_Item_Name) is
       A: Item_Name_Assistent := Create_Item_Name_Assistent (Value);
    begin
-      I.Storage.Set_Unsigned_8 (I.Offset + Item_Name_Field_Byte_Count_Offset, A.Name_Field_Byte_Count);
-      I.Storage.Set_Unsigned_16 (I.Offset + Item_Name_CRC_16_Offset, A.CRC_16);
-      I.Storage.Set_Unsigned_8 (I.Offset + Item_Name_Byte_Count, A.Ascii_Code_Count);
-      I.Storage.Set_Unsigned_8_Array (I.Offset + Item_Name_ASCII_Code_Offset, A.Ascii_Code);
+      I.Storage.Set_Unsigned_8 (I.Offset + Item_Header_Offset_Name_Field_Byte_Count, A.Name_Field_Byte_Count);
+      I.Storage.Set_Unsigned_16 (I.Offset + Item_Name_Field_Offset_CRC_16, A.CRC_16);
+      I.Storage.Set_Unsigned_8 (I.Offset + Item_Name_Field_Offset_Byte_Count, A.Ascii_Code_Count);
+      I.Storage.Set_Unsigned_8_Array (I.Offset + Item_Name_Field_Offset_ASCII_Code, A.Ascii_Code);
    end Assign_Item_Name;
 
 
    function Item_Name (I: Item_Access'Class) return String is
-      Length: Unsigned_8 := I.Storage.Get_Unsigned_8 (I.Offset + Item_Name_Byte_Count_Offset);
+      Length: Unsigned_8 := I.Storage.Get_Unsigned_8 (I.Offset + Item_Name_Field_Offset_Byte_Count);
    begin
-      return I.Storage.Get_String (I.Offset + Item_Name_ASCII_Code_Offset, Length);
+      return I.Storage.Get_String (I.Offset + Item_Name_Field_Offset_ASCII_Code, Length);
    end Item_Name;
 
 
@@ -70,7 +70,7 @@ package body Item is
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
-      I.Storage.Set_Unsigned_32 (I.Value_Offset, 0);
+      I.Storage.Set_Unsigned_32 (I.Small_Value_Offset, 0);
 
       I.Assign_Item_Name (A);
 
@@ -80,11 +80,6 @@ package body Item is
    -- ====================
    -- BR_Bool
    -- ====================
-
-   function Boolean_Value (I: Item_Access'Class) return Boolean is
-   begin
-      return I.Storage.Get_Bool (I.Small_Value_Offset);
-   end Boolean_Value;
 
    procedure Assign_Boolean_Value (I: Item_Access'Class; Value: Boolean) is
    begin
@@ -113,11 +108,6 @@ package body Item is
    -- BR_Int8
    -- =======================
 
-   function Integer_8_Value (I: Item_Access'Class) return Integer_8 is
-   begin
-      return I.Storage.Get_Integer_8 (I.Small_Value_Offset);
-   end Integer_8_Value;
-
    procedure Assign_Integer_8_Value (I: Item_Access'Class; Value: Integer_8) is
    begin
       I.Storage.Set_Integer_8 (I.Small_Value_Offset, Value);
@@ -144,11 +134,6 @@ package body Item is
    -- =======================
    -- BR_Int16
    -- =======================
-
-   function Integer_16_Value (I: Item_Access'Class) return Integer_16 is
-   begin
-      return I.Storage.Get_Integer_16 (I.Small_Value_Offset);
-   end Integer_16_Value;
 
    procedure Assign_Integer_16_Value (I: Item_Access'Class; Value: Integer_16) is
    begin
@@ -177,11 +162,6 @@ package body Item is
    -- BR_Int32
    -- ========================
 
-   function Integer_32_Value  (I: Item_Access'Class) return Integer_32 is
-   begin
-      return I.Storage.Get_Integer_32 (I.Small_Value_Offset);
-   end Integer_32_Value;
-
    procedure Assign_Integer_32_Value (I: Item_Access'Class; Value: Integer_32) is
    begin
       I.Storage.Set_Integer_32 (I.Small_Value_Offset, Value);
@@ -207,11 +187,6 @@ package body Item is
    -- ======================
    -- BR_Int64
    -- ======================
-
-   function Integer_64_Value (I: Item_Access'Class) return Integer_64 is
-   begin
-      return I.Storage.Get_Integer_64 (I.Value_Offset);
-   end Integer_64_Value;
 
    procedure Assign_Integer_64_Value (I: Item_Access'Class; Value: Integer_64) is
    begin
@@ -240,11 +215,6 @@ package body Item is
    -- BR_UInt8
    -- =======================
 
-   function Unsigned_8_Value (I: Item_Access'Class) return Unsigned_8 is
-   begin
-      return I.Storage.Get_Unsigned_8 (I.Small_Value_Offset);
-   end Unsigned_8_Value;
-
    procedure Assign_Unsigned_8_Value (I: Item_Access'Class; Value: Unsigned_8) is
    begin
       I.Storage.Set_Unsigned_8 (Offset => I.Small_Value_Offset, Value => Value);
@@ -271,11 +241,6 @@ package body Item is
    -- ======================
    -- BR_UInt16
    -- ======================
-
-   function Unsigned_16_Value (I: Item_Access'Class) return Unsigned_16 is
-   begin
-      return I.Storage.Get_Unsigned_16 (I.Small_Value_Offset);
-   end Unsigned_16_Value;
 
    procedure Assign_Unsigned_16_Value (I: Item_Access'Class; Value: Unsigned_16) is
    begin
@@ -304,11 +269,6 @@ package body Item is
    -- BR_UInt32
    -- ======================
 
-   function Unsigned_32_Value (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Small_Value_Offset);
-   end Unsigned_32_Value;
-
    procedure Assign_Unsigned_32_Value (I: Item_Access'Class; Value: Unsigned_32) is
    begin
       I.Storage.Set_Unsigned_32 (Offset => I.Small_Value_Offset, Value => Value);
@@ -334,11 +294,6 @@ package body Item is
    -- =======================
    -- BR_UInt64
    -- =======================
-
-   function Unsigned_64_Value (I: Item_Access'Class) return Unsigned_64 is
-   begin
-      return I.Storage.Get_Unsigned_64 (I.Value_Offset);
-   end Unsigned_64_Value;
 
    procedure Assign_Unsigned_64_Value (I: Item_Access'Class; Value: Unsigned_64) is
    begin
@@ -367,11 +322,6 @@ package body Item is
    -- BR_Float32
    -- ======================
 
-   function Float_32_Value (I: Item_Access'Class) return IEEE_Float_32 is
-   begin
-      return I.Storage.Get_Float_32 (I.Small_Value_Offset);
-   end Float_32_Value;
-
    procedure Assign_Float_32_Value (I: Item_Access'Class; Value: IEEE_Float_32) is
    begin
       I.Storage.Set_Float_32 (Offset => I.Small_Value_Offset, Value => Value);
@@ -397,11 +347,6 @@ package body Item is
    -- ====================
    -- BR_Float64
    -- ====================
-
-   function Float_64_Value (I: Item_Access'Class) return IEEE_Float_64 is
-   begin
-      return I.Storage.Get_Float_64 (I.Value_Offset);
-   end Float_64_Value;
 
    procedure Assign_Float_64_Value (I: Item_Access'Class; Value: IEEE_Float_64) is
    begin
@@ -430,21 +375,10 @@ package body Item is
    -- BR_String
    -- ======================
 
-   function String_Value (I: Item_Access'Class) return String is
-      Length: Unsigned_32 := I.String_Byte_Count;
-   begin
-      return I.Storage.Get_String (I.Value_Offset + String_Value_UTF8_Code_Offset, Length);
-   end String_Value;
-
-   function String_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + String_Value_Byte_Count_Offset);
-   end String_Byte_Count;
-
    procedure Assign_String_Value (I: Item_Access'Class; Value: String) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + String_Value_Byte_Count_Offset, Value'Length);
-      I.Storage.Set_String (I.Value_Offset + String_Value_UTF8_Code_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + String_Value_Offset_Byte_Count, Value'Length);
+      I.Storage.Set_String (I.Value_Offset + String_Value_Offset_UTF8_Code, Value);
    end Assign_String_Value;
 
    procedure Create_String_Item (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "") is
@@ -469,28 +403,12 @@ package body Item is
    -- BR_CRC_String
    -- ======================
 
-   function CRC_String_CRC (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + CRC_String_Value_CRC_Offset);
-   end CRC_String_CRC;
-
-   function CRC_String_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + CRC_String_Value_Byte_Count_Offset);
-   end CRC_String_Byte_Count;
-
-   function CRC_String_Value (I: Item_Access'Class) return String is
-      Length: Unsigned_32 := I.CRC_String_Byte_Count;
-   begin
-      return I.Storage.Get_String (I.Value_Offset + CRC_String_Value_UTF8_Code_Offset, Length);
-   end CRC_String_Value;
-
    procedure Assign_CRC_String_Value (I: Item_Access'Class; Value: String) is
       CRC: Unsigned_32 := Calculate_CRC_32 (Value);
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_String_Value_CRC_Offset, CRC);
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_String_Value_Byte_Count_Offset, Value'Length);
-      I.Storage.Set_String (I.Value_Offset + CRC_String_Value_UTF8_Code_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_String_Value_Offset_CRC, CRC);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_String_Value_Offset_Byte_Count, Value'Length);
+      I.Storage.Set_String (I.Value_Offset + CRC_String_Value_Offset_UTF8_Code, Value);
    end Assign_CRC_String_Value;
 
    procedure Create_CRC_String_Item (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "") is
@@ -515,21 +433,10 @@ package body Item is
    -- BR_Binary
    -- ======================
 
-   function Binary_Value (I: Item_Access'Class) return Array_Of_Unsigned_8 is
-      Length: Unsigned_32 := I.Binary_Byte_Count;
-   begin
-      return I.Storage.Get_Unsigned_8_Array (I.Value_Offset + Binary_Value_Bytes_Offset, Length);
-   end Binary_Value;
-
-   function Binary_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + Binary_Value_Byte_Count_Offset);
-   end Binary_Byte_Count;
-
    procedure Assign_Binary_Value (I: Item_Access'Class; Value: Array_Of_Unsigned_8) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + Binary_Value_Byte_Count_Offset, Value'Length);
-      I.Storage.Set_Unsigned_8_Array (I.Value_Offset + Binary_Value_UTF8_Code_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Binary_Value_Offset_Byte_Count, Value'Length);
+      I.Storage.Set_Unsigned_8_Array (I.Value_Offset + Binary_Value_Offset_UTF8_Code, Value);
    end Assign_Binary_Value;
 
    procedure Create_Binary_Item (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
@@ -554,29 +461,12 @@ package body Item is
    -- BR_CRC_Binary
    -- =====================
 
-
-   function CRC_Binary_CRC (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + CRC_Binary_Value_CRC_Offset);
-   end CRC_Binary_CRC;
-
-   function CRC_Binary_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + CRC_Binary_Value_Byte_Count_Offset);
-   end CRC_Binary_Byte_Count;
-
-   function CRC_Binary_Value (I: Item_Access'Class) return Array_Of_Unsigned_8 is
-      Length: Unsigned_32 := I.CRC_Binary_Byte_Count;
-   begin
-      return I.Storage.Get_String (I.Value_Offset + CRC_Binary_Value_Bytes_Offset, Length);
-   end CRC_Binary_Value;
-
    procedure Assign_CRC_Binary_Value (I: Item_Access'Class; Value: Array_Of_Unsigned_8) is
       CRC: Unsigned_32 := Calculate_CRC_32 (Value);
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_Binary_Value_CRC_Offset, CRC);
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_Binary_Value_Byte_Count_Offset, Value'Length);
-      I.Storage.Set_Unsigned_8_Array (I.Value_Offset + CRC_Binary_Value_Bytes_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_Binary_Value_Offset_CRC, CRC);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + CRC_Binary_Value_Offset_Byte_Count, Value'Length);
+      I.Storage.Set_Unsigned_8_Array (I.Value_Offset + CRC_Binary_Value_Offset_Bytes, Value);
    end Assign_CRC_Binary_Value;
 
    procedure Create_CRC_Binary_Item (I: Item_Access'Class; Name: Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8) is
@@ -601,34 +491,14 @@ package body Item is
    -- Array
    -- ====================
 
-   function Array_Element_Type (I: Item_Access'Class) return BR_Item_Type is
-   begin
-      return I.Storage.Get_Item_Type (I.Value_Offset + Array_Value_Element_Type_Offset);
-   end Array_Element_Type;
-
-   function Array_Element_Count (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + Array_Value_Element_Count_Offset);
-   end Array_Element_Count;
-
-   function Array_Element_Byte_Count (I: Item_Access'Class) return Unsigned_32 is
-   begin
-      return I.Storage.Get_Unsigned_32 (I.Value_Offset + Array_Value_Element_Byte_Count_Offset);
-   end Array_Element_Byte_Count;
-
-   function Array_Element_Offset (I: Item_Access'Class; Index: Unsigned_32) return Unsigned_32 is
-   begin
-      return I.Value_Offset + Array_Value_Element_Base_Offset + (Index - 1) * Array_Element_Byte_Count;
-   end Array_Element_Offset;
-
    procedure Set_Array_Element_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + Array_Value_Element_Count_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Array_Value_Offset_Element_Count, Value);
    end Set_Array_Element_Count;
 
    procedure Set_Array_Element_Byte_Count (I: Item_Access'Class; Value: Unsigned_32) is
    begin
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + Array_Value_Element_Byte_Count_Offset, Value);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Array_Value_Offset_Element_Byte_Count, Value);
    end Set_Array_Element_Byte_Count;
 
    procedure Create_Array_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128) is
@@ -644,13 +514,13 @@ package body Item is
 
       I.Assign_Item_Name (A);
 
-      I.Storage.Set_Item_Type (I.Value_Offset + Array_Value_Element_Type_Offset, Element_Type);
+      I.Storage.Set_Item_Type (I.Value_Offset + Array_Value_Offset_Element_Type, Element_Type);
       I.Set_Array_Element_Count (0);
       I.Set_Array_Element_Byte_Count (Element_Byte_Count);
 
-      I.Storage.Set_Unsigned_32 (I.Value_Offset + Array_Value_Reserved_32_Offset, 0);
-      I.Storage.Set_Unsigned_16 (I.Value_Offset + Array_Value_Reserved_16_Offset, 0);
-      I.Storage.Set_Unsigned_8 (I.Value_Offset + Array_Value_Reserved_8_Offset, 0);
+      I.Storage.Set_Unsigned_32 (I.Value_Offset + Array_Value_Offset_Reserved_32, 0);
+      I.Storage.Set_Unsigned_16 (I.Value_Offset + Array_Value_Offset_Reserved_16, 0);
+      I.Storage.Set_Unsigned_8 (I.Value_Offset + Array_Value_Offset_Reserved_8, 0);
 
    end Create_Array_Item;
 
@@ -867,11 +737,10 @@ package body Item is
 
    function Table_Field_Offset (I: Item_Access'Class; Column_Index: Unsigned_32; Row_Index: Unsigned_32) return Unsigned_32 is
    begin
-      return I.Value_Offset + Table_Fields_Offset + (Row_index - 1) * Table_Row_Byte_Count + zzzzz
+      return I.Value_Offset + Table_Fields_Offset + (Row_index - 1) * Table_Row_Byte_Count + I.Column_Field_Offset (Column_index);
    end Table_Field_Offset;
-   --
-   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification);
 
+   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification);
 
 
    function Table_Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32) return String is
@@ -882,9 +751,20 @@ package body Item is
    end Table_Column_Name;
 
 
-   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification) is
+   procedure Create_Table_Item_Header (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification) is
+      A: Item_Name_Assistent := Create_Item_Name_Assistent (Name);
    begin
-   end Create_Table_Item;
+
+      I.Assign_Item_Type (BR_Table);
+      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Flags (No_Flags);
+      I.Assign_Item_Byte_Count (Byte_Count);
+      I.Assign_Item_Parent_Offset (Parent_Offset);
+      I.Storage.Set_Unsigned_32 (I.Small_Value_Offset, 0);
+
+      I.Assign_Item_Name (A);
+
+   end Create_Table_Item_Header;
 
 
    -- ===================
