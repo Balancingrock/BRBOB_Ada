@@ -2,11 +2,11 @@ with Ada.Finalization; use Ada.Finalization;
 with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
 
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 with Item; use Item;
-with BRBON_Configure; use BRBON_Configure;
+with BRBON.Configure; use BRBON.Configure;
 
-with Storage_Area; use Storage_Area;
+with BRBON.Container; use BRBON.Container;
 with Portal_Manager;
 
 
@@ -26,7 +26,7 @@ package Item_Manager is
    --
    type Item_Manager is new Limited_Controlled with
       record
-         Storage: Storage_Area_Ptr;
+         Storage: Storage_Area;
          Increments: Unsigned_32;
          --Portals: Portal_Manager.Portal_Manager;
       end record;
@@ -34,7 +34,8 @@ package Item_Manager is
 
    -- Override the finalization
    --
-   procedure Finalization (Mgr: in out Item_Manager);
+   overriding
+   procedure Finalize (Mgr: in out Item_Manager);
 
 
    -- Increases the storage area byte count. Note that this will cause the entire content of

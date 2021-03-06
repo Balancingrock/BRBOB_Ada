@@ -1,5 +1,5 @@
 with Interfaces; use Interfaces;
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 
 
 -- Contains methods to convert types into a stream of bytes.

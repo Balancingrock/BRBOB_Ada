@@ -1,7 +1,7 @@
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 
 
-package BRBON_Configure is
+package BRBON.Configure is
 
 
    -- Change this to the endianness of the processor.
@@ -15,4 +15,4 @@ package BRBON_Configure is
    Zero_New_Storage: constant Boolean := False;
 
 
-end BRBON_Configure;
+end BRBON.Configure;

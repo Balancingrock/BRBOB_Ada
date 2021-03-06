@@ -1,6 +1,6 @@
 with Interfaces.C;
 
-with BRBON_Configure; use BRBON_Configure;
+with BRBON.Configure; use BRBON.Configure;
 
 
 package body Serializable_Types is

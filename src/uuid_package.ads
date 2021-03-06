@@ -1,4 +1,4 @@
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 
 
 package UUID_Package is

@@ -1,7 +1,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Interfaces; use Interfaces;
 
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 with Serializable_Types; use Serializable_Types;
 
 package CRC_Package is

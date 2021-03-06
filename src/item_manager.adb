@@ -16,7 +16,7 @@ package body Item_Manager is
 
       Bc: Unsigned_32 := Round_Up_To_Nearest_Multiple_Of_8 (Byte_Count); -- ensure alignment
       Mgr: Item_Manager_Ptr;
-      Storage_Ptr: Storage_Area_Ptr;
+      --Storage_Ptr: Storage_Area_Ptr;
       Item: Item_Access;
 
    begin
@@ -31,8 +31,8 @@ package body Item_Manager is
 
       -- Allocate the necessary memory.
       --
-      Storage_Ptr := Allocate_And_Create (Byte_Count       => Bc,
-                                          Using_Endianness => Use_Endianness);
+      --Storage_Ptr := Allocate_And_Create (Byte_Count       => Bc,
+      --                                    Using_Endianness => Use_Endianness);
 
       -- Create the new manager
       --
@@ -40,12 +40,12 @@ package body Item_Manager is
 
       -- Initialize it
       --
-      Mgr.Storage := Storage_Ptr;
+      Mgr.Storage := Storage_Area (Bc);
       Mgr.Increments := Round_Up_To_Nearest_Multiple_Of_8 (Increment);
 
       -- Create an access item
       --
-      Item := Create_Item_Access (Storage_Ptr, 0);
+      Item := Create_Item_Access (Mgr.Storage'Access, 0);
 
       -- Initialize the root item
       --
@@ -89,10 +89,12 @@ package body Item_Manager is
 
    -- Finalization
    --
-   procedure Finalization (Mgr: in out Item_Manager) is
+   overriding
+   procedure Finalize (Mgr: in out Item_Manager) is
    begin
-      Deallocate (Mgr.Storage);
-   end Finalization;
+      null;
+   --   Deallocate (Mgr.Storage);
+   end Finalize;
 
 
    -- Increase_Storage_Byte_Count

@@ -3,7 +3,7 @@ with Interfaces.C.Pointers;
 with Interfaces.C;
 with Interfaces; use Interfaces;
 
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 
 
 package Pointer_Math is

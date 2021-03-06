@@ -1,4 +1,4 @@
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 with Item; use Item;
 
 package Portal_Package is

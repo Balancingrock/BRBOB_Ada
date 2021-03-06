@@ -1,6 +1,6 @@
 with Ada.Containers.Doubly_Linked_Lists;
 
-with BRBON; use BRBON;
+with BRBON.Types; use BRBON.Types;
 with Portal_Package; use Portal_Package;
 
 

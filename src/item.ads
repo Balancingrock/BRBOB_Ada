@@ -4,8 +4,8 @@ with Ada.Unchecked_Conversion;
 with Interfaces; use Interfaces;
 with Interfaces.C.Pointers;
 
-with BRBON; use BRBON;
-with Storage_Area; use Storage_Area;
+with BRBON.Types; use BRBON.Types;
+with BRBON.Container; use BRBON.Container;
 with UUID_Package; use UUID_Package;
 with Color_Package; use Color_Package;
 with Font_Package; use Font_Package;
