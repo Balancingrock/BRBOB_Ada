@@ -60,9 +60,9 @@ package Storage_Area is
    -- The container in which items are stored.
    -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
    --
-   type Storage_Area (Byte_Count: Unsigned_32) is new Limited_Controlled with
+   type Storage_Area is new Limited_Controlled with
       record
-         Data: Array_Of_Unsigned_8 (1 .. Byte_Count);
+         Data: Array_Of_Unsigned_8_Ptr;
          Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
       end record;
 

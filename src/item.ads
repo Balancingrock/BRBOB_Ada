@@ -152,24 +152,29 @@ package Item is
    -- Item name access
    -- ======================
 
-   -- Assigns the given name to the item referenced through I.
-   -- Note that the name field byte count will be updated as necessary, but it is assumed that this is possible without the need to shift data around.
-   --
-   procedure Assign_Item_Name (I: Item_Access'Class; Value: BR_Item_Name);
-
-   -- Return the item name of the item referenced through I as a string.
-   --
-   function Item_Name (I: Item_Access'Class) return String;
-
    -- Returns the CRC-16 from the name field associated with the item referenced through I.
    --
-   function Item_Name_CRC (I: Item_Access'Class) return Unsigned_16 is (I.Storage.Get_Unsigned_16 (I.Offset + Item_Name_Field_Offset_CRC_16));
+   function Item_Name_CRC (I: Item_Access'Class) return Unsigned_16 is
+     (I.Storage.Get_Unsigned_16 (I.Offset + Item_Name_Field_Offset_CRC_16));
    pragma Inline (Item_Name_CRC);
 
    -- Returns the length (in bytes) of the ASCII sequence of the item name of the item referenced through I (as stored in the name field).
    --
-   function Item_Name_Byte_Count (I: Item_Access'Class) return Unsigned_8 is (I.Storage.Get_Unsigned_8 (I.Offset + Item_Name_Field_Offset_Byte_Count));
+   function Item_Name_Byte_Count (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Offset + Item_Name_Field_Offset_Byte_Count));
    pragma Inline (Item_Name_CRC);
+
+   -- Return the item name of the item referenced through I.
+   --
+   function Item_Name (I: Item_Access'Class) return String is
+     (I.Storage.Get_String (I.Offset + Item_Name_Field_Offset_ASCII_Code, Unsigned_32 (I.Item_Name_Byte_Count)));
+   pragma Inline (Item_Name);
+
+   -- Assigns the given name to the item referenced through I.
+   -- Note that the name field byte count will be updated as necessary, but it is assumed that this is possible without the need to shift data around.
+   --
+   procedure Assign_Item_Name (I: Item_Access'Class; Value: Item_Name_Assistent);
+
 
 
    -- ===============
@@ -178,7 +183,7 @@ package Item is
 
    -- Creates a null-item starting at the offset given in I.
    --
-   procedure Create_Null_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   procedure Create_Null_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Null); Parent_Offset: Unsigned_32 := 0);
 
 
    -- ================
@@ -198,7 +203,7 @@ package Item is
 
    -- Creates a boolean item starting at the offset given in I.
    --
-   procedure Create_Boolean_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Boolean := False);
+   procedure Create_Boolean_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Bool); Parent_Offset: Unsigned_32 := 0; Value: Boolean := False);
 
 
    -- ===============
@@ -218,7 +223,7 @@ package Item is
 
    -- Create an integer_8 item starting at the offset given in I.
    --
-   procedure Create_Integer_8_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_8 := 0);
+   procedure Create_Integer_8_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Int8); Parent_Offset: Unsigned_32 := 0; Value: Integer_8 := 0);
 
 
    -- ===============
@@ -238,7 +243,7 @@ package Item is
 
    -- Create an integer_16 item starting at the offset given in I.
    --
-   procedure Create_Integer_16_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_16 := 0);
+   procedure Create_Integer_16_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Int16); Parent_Offset: Unsigned_32 := 0; Value: Integer_16 := 0);
 
 
    -- ================
@@ -258,7 +263,7 @@ package Item is
 
    -- Create an integer_32 item starting at the offset given in I.
    --
-   procedure Create_Integer_32_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_32 := 0);
+   procedure Create_Integer_32_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Int32); Parent_Offset: Unsigned_32 := 0; Value: Integer_32 := 0);
 
 
    -- =================
@@ -278,7 +283,7 @@ package Item is
 
    -- Create an integer_64 item starting at the offset given in I.
    --
-   procedure Create_Integer_64_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Integer_64 := 0);
+   procedure Create_Integer_64_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Int64); Parent_Offset: Unsigned_32 := 0; Value: Integer_64 := 0);
 
 
    -- =================
@@ -298,7 +303,7 @@ package Item is
 
    -- Create an unsigned_8 item starting at the offset given in I.
    --
-   procedure Create_Unsigned_8_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_8 := 0);
+   procedure Create_Unsigned_8_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_UInt8); Parent_Offset: Unsigned_32 := 0; Value: Unsigned_8 := 0);
 
 
    -- =================
@@ -318,7 +323,7 @@ package Item is
 
    -- Create an unsigned_16 item starting at the offset given in I.
    --
-   procedure Create_Unsigned_16_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_16 := 0);
+   procedure Create_Unsigned_16_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_UInt16); Parent_Offset: Unsigned_32 := 0; Value: Unsigned_16 := 0);
 
 
    -- =================
@@ -338,7 +343,7 @@ package Item is
 
    -- Create an unsigned_16 item starting at the offset given in I.
    --
-   procedure Create_Unsigned_32_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_32 := 0);
+   procedure Create_Unsigned_32_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_UInt32); Parent_Offset: Unsigned_32 := 0; Value: Unsigned_32 := 0);
 
 
    -- =================
@@ -358,7 +363,7 @@ package Item is
 
    -- Create an unsigned_64 item starting at the offset given in I.
    --
-   procedure Create_Unsigned_64_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Unsigned_64 := 0);
+   procedure Create_Unsigned_64_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_UInt64); Parent_Offset: Unsigned_32 := 0; Value: Unsigned_64 := 0);
 
 
    -- =================
@@ -378,7 +383,7 @@ package Item is
 
    -- Create an float_64 item starting at the offset given in I.
    --
-   procedure Create_Float_32_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_32 := 0.0);
+   procedure Create_Float_32_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Float32); Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_32 := 0.0);
 
 
    -- =================
@@ -398,7 +403,7 @@ package Item is
 
    -- Create an float_64 item starting at the offset given in I.
    --
-   procedure Create_Float_64_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_64 := 0.0);
+   procedure Create_Float_64_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Float64); Parent_Offset: Unsigned_32 := 0; Value: IEEE_Float_64 := 0.0);
 
 
 
@@ -433,7 +438,7 @@ package Item is
 
    -- Create a string item starting at the offset given in I.
    --
-   procedure Create_String_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
+   procedure Create_String_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_String); Parent_Offset: Unsigned_32 := 0; Value: String := "");
 
 
    -- =================
@@ -478,7 +483,7 @@ package Item is
 
    -- Create a CRC string item starting at the offset given in I.
    --
-   procedure Create_CRC_String_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: String := "");
+   procedure Create_CRC_String_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_CRC_String); Parent_Offset: Unsigned_32 := 0; Value: String := "");
 
 
    -- =================
@@ -513,24 +518,18 @@ package Item is
 
    -- Create a binary item starting at the offset given in I.
    --
-   procedure Create_Binary_Item  (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
+   procedure Create_Binary_Item  (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Binary); Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
 
 
    -- =====================
    -- BR_CRC_Binary
    -- =====================
 
-   -- Offset of the CRC-32 value of the binary (in de value area)
+   -- Offset from the start of the CRC Binary item value area.
    --
-   CRC_Binary_Value_Offset_CRC: constant Unsigned_32 := 0; -- 4 bytes
-
-   -- Ofset of the byte-count of the binary (in the value area)
-   --
+   CRC_Binary_Value_Offset_CRC: constant Unsigned_32 := 0;       -- 4 bytes
    CRC_Binary_Value_Offset_Byte_Count: constant Unsigned_32 := 4; -- 4 bytes
-
-   -- Offset of the start of the binary (in the value area)
-   --
-   CRC_Binary_Value_Offset_Bytes: constant Unsigned_32 := 8; -- byte-count bytes
+   CRC_Binary_Value_Offset_Bytes: constant Unsigned_32 := 8;      -- byte-count bytes
 
    -- Returns the CRC of the item referenced through I.
    --
@@ -558,7 +557,7 @@ package Item is
 
    -- Create a CRC-binary item starting at the offset given in I.
    --
-   procedure Create_CRC_Binary_Item   (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
+   procedure Create_CRC_Binary_Item   (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_CRC_Binary); Parent_Offset: Unsigned_32 := 0; Value: Array_Of_Unsigned_8 := Short_Array_Of_Unsigned_8);
 
 
    -- ====================
@@ -611,7 +610,7 @@ package Item is
 
    -- Creates a new array item at the offset given in I.
    --
-   procedure Create_Array_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128);
+   procedure Create_Array_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Array); Parent_Offset: Unsigned_32 := 0; Element_Type: BR_Item_Type := BR_Bool; Element_Byte_Count: Unsigned_32 := 128);
 
 
    -- =====================
@@ -637,7 +636,7 @@ package Item is
 
    -- Creates a new dictionary item at the offset given in I.
    --
-   procedure Create_Dictionary_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   procedure Create_Dictionary_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Dictionary); Parent_Offset: Unsigned_32 := 0);
 
 
    -- =====================
@@ -663,7 +662,7 @@ package Item is
 
    -- Creates a new sequence item at the offset given in I.
    --
-   procedure Create_Sequence_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0);
+   procedure Create_Sequence_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Sequence); Parent_Offset: Unsigned_32 := 0);
 
 
    -- =================
@@ -693,10 +692,10 @@ package Item is
 
    -- Offsets from the start of a column name field.
    --
-   Column_Name_Field_Offset_ASCII_Byte_Countt: constant Unsigned_32 := 0;      -- 1 byte
+   Column_Name_Field_Offset_ASCII_Byte_Count: constant Unsigned_32 := 0;      -- 1 byte
    Column_Name_Field_Offset_Reserved_8: constant Unsigned_32 := 1;            -- 1 byte
    Column_Name_Field_Offset_Reserved_16: constant Unsigned_32 := 2;           -- 2 byte
-   Column_Name_Field_Offset_ASCII_Codet: constant Unsigned_32 := 4;            -- N bytes
+   Column_Name_Field_Offset_ASCII_Code: constant Unsigned_32 := 4;            -- N bytes
 
    -- The number of rows in the table referenced by I.
    --
@@ -756,7 +755,7 @@ package Item is
 
    -- Sets the CRC-16 of a column name in the table referenced by I.
    --
-   procedure Set_Column_Name_CRC (I: Item_Access'Class; Value: Unsigned_16);
+   procedure Set_Column_Name_CRC (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_16);
    pragma Inline (Set_Column_Name_CRC);
 
    -- Returns the byte-count of a column name field in the table referenced by I.
@@ -767,7 +766,7 @@ package Item is
 
    -- Sets the byte-count of a column name field in the table referenced by I.
    --
-   procedure Set_Column_Name_Field_Byte_Count (I: Item_Access'Class; Value: Unsigned_16);
+   procedure Set_Column_Name_Field_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_16);
    pragma Inline (Set_Column_Name_Field_Byte_Count);
 
    -- Returns the item type of a column in the table referenced by I.
@@ -778,7 +777,7 @@ package Item is
 
    -- Sets the item type of a column in the table referenced by I.
    --
-   procedure Set_Column_Type (I: Item_Access'Class; Value: BR_Item_Type);
+   procedure Set_Column_Type (I: Item_Access'Class; Column_Index: Unsigned_32; Value: BR_Item_Type);
    pragma Inline (Set_Column_Type);
 
    -- Returns the name field offset of a column in the table referenced by I
@@ -823,18 +822,18 @@ package Item is
    -- Returns the byte count of a column name in the table referenced by I.
    --
    function Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32) return Unsigned_8 is
-      (I.Storage.Get_Unsigned_32 (I.Column_Name_Field_Base_Offset + Column_Name_Field_Offset_ASCII_Byte_Countt));
+      (I.Storage.Get_Unsigned_8 (I.Column_Name_Field_Base_Offset (Column_Index) + Column_Name_Field_Offset_ASCII_Byte_Count));
    pragma Inline (Column_Name_Byte_Count);
 
    -- Sets the byte count of a column name in the table referenced by I.
    --
-   procedure Set_Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_32);
+   procedure Set_Column_Name_Byte_Count (I: Item_Access'Class; Column_Index: Unsigned_32; Value: Unsigned_8);
    pragma Inline (Set_Column_Name_Byte_Count);
 
    -- Returns the name of a column in the table referenced by I.
    --
    function Column_Name (I: Item_Access'Class; Column_Index: Unsigned_32) return String is
-      (I.Storage.Get_String (I.Column_Name_Field_Base_Offset (Column_Index) + Column_Name_Field_Offset_ASCII_Code), I.Column_Name_Byte_Count (Column_Index));
+     (I.Storage.Get_String (I.Column_Name_Field_Base_Offset (Column_Index) + Column_Name_Field_Offset_ASCII_Code, Unsigned_32 (I.Column_Name_Byte_Count (Column_Index))));
    pragma Inline (Column_Name);
 
    -- Sets the name of a column in the table referenced by I.
@@ -850,40 +849,193 @@ package Item is
 
    -- Creates a new table item at the offset given in I.
    --
-   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification);
+   procedure Create_Table_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Table); Parent_Offset: Unsigned_32 := 0; Column_Specifications: Array_Of_Table_Column_Specification);
 
 
    -- ===================
    -- BR_UUID
    -- ===================
 
-   function UUID_Value                     (I: Item_Access'Class) return UUID; pragma Inline (UUID_Value);
-   procedure Assign_UUID_Value             (I: Item_Access'Class; Value: UUID); pragma Inline (Assign_UUID_Value);
-   procedure Create_UUID_Item              (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID);
+   -- Return the UUID value if the item referenced by I.
+   --
+   function UUID_Value (I: Item_Access'Class) return UUID is
+      (UUID (I.Storage.Get_Unsigned_8_Array (I.Value_Offset, 16)));
+   pragma Inline (UUID_Value);
+
+   -- Set a new UUID value in the item referenced by I.
+   --
+   procedure Assign_UUID_Value (I: Item_Access'Class; Value: UUID);
+   pragma Inline (Assign_UUID_Value);
+
+   -- Creates a new UUID item at the offset given in I.
+   --
+   procedure Create_UUID_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_UUID); Parent_Offset: Unsigned_32 := 0; Value: UUID := Null_UUID);
 
 
    -- ===================
    -- BR_Color
    -- ===================
 
-   function Color_Value                    (I: Item_Access'Class) return Color; pragma Inline (Color_Value);
-   procedure Assign_Color_Value            (I: Item_Access'Class; Value: Color); pragma Inline (Assign_Color_Value);
-   procedure Create_Color_Item             (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black);
+   -- Offset from the start of the color item value area.
+   --
+   Color_Small_Value_Offset_Red: constant Unsigned_32 := 0;
+   Color_Small_Value_Offset_Green: constant Unsigned_32 := 1;
+   Color_Small_Value_Offset_Blue: constant Unsigned_32 := 2;
+   Color_Small_Value_Offset_Alpha: constant Unsigned_32 := 3;
+
+   -- Return the Color value if the item referenced by I.
+   --
+   function Color_Value (I: Item_Access'Class) return Color;
+   pragma Inline (Color_Value);
+
+   -- Return the red component of the item referenced by I.
+   --
+   function Red (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Small_Value_Offset + Color_Small_Value_Offset_Red));
+   pragma Inline (Red);
+
+   -- Set the red component of the item referenced by I.
+   --
+   procedure Set_Red (I: Item_Access'Class; Value: Unsigned_8);
+   pragma Inline (Set_Red);
+
+   -- Return the green component of the item referenced by I.
+   --
+   function Green (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Small_Value_Offset + Color_Small_Value_Offset_Green));
+   pragma Inline (Green);
+
+   -- Set the green component of the item referenced by I.
+   --
+   procedure Set_Green (I: Item_Access'Class; Value: Unsigned_8);
+   pragma Inline (Set_Green);
+
+   -- Return the blue component of the item referenced by I.
+   --
+   function Blue (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Small_Value_Offset + Color_Small_Value_Offset_Blue));
+   pragma Inline (Blue);
+
+   -- Set the blue component of the item referenced by I.
+   --
+   procedure Set_Blue (I: Item_Access'Class; Value: Unsigned_8);
+   pragma Inline (Set_Blue);
+
+   -- Return the alpha component of the item referenced by I.
+   --
+   function Alpha (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Small_Value_Offset + Color_Small_Value_Offset_Alpha));
+   pragma Inline (Alpha);
+
+   -- Set the alpha component of the item referenced by I.
+   --
+   procedure Set_Alpha (I: Item_Access'Class; Value: Unsigned_8);
+   pragma Inline (Set_Alpha);
+
+   -- Set a new color value in the item referenced by I.
+   --
+   procedure Assign_Color_Value (I: Item_Access'Class; Value: Color);
+   pragma Inline (Assign_Color_Value);
+
+   -- Creates a new color item at the offset given in I.
+   --
+   procedure Create_Color_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Color); Parent_Offset: Unsigned_32 := 0; Value: Color := Color_Black);
 
 
    -- ===================
    -- BR_Font
    -- ===================
 
-   function Font_Value                     (I: Item_Access'Class) return Font; pragma Inline (Font_Value);
-   procedure Assign_Font_Value             (I: Item_Access'Class; Value: Font); pragma Inline (Assign_Font_Value);
-   procedure Create_Font_Item              (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := 0; Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
+   -- Offset from the start of the color item value area.
+   --
+   Font_Value_Offset_Points: constant Unsigned_32 := 0;
+   Font_Value_Offset_Family_Name_Byte_Count: constant Unsigned_32 := 4;
+   Font_Value_Offset_Font_Name_Byte_Count: constant Unsigned_32 := 5;
+   Font_Value_Offset_Family_Name_String: constant Unsigned_32 := 6;
+
+   -- Returns the font size for the item referenced by I.
+   --
+   function Points (I: Item_Access'Class) return IEEE_Float_32 is
+     (I.Storage.Get_Float_32 (I.Value_Offset + Font_Value_Offset_Points));
+   pragma Inline (Points);
+
+   -- Set the font size for the item referenced by I.
+   --
+   procedure Set_Points (I: Item_Access'Class; Value: IEEE_Float_32);
+   pragma Inline (Set_Points);
+
+   -- Returns the number of bytes in the family name of the item referenced by I.
+   --
+   function Family_Name_Byte_Count (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Value_Offset + Font_Value_Offset_Family_Name_Byte_Count));
+   pragma Inline (Family_Name_Byte_Count);
+
+   -- Set the number of bytes in the family name of the item referenced by I.
+   --
+   procedure Set_Family_Name_Byte_Count (I: Item_Access'Class; Value: Unsigned_8);
+   pragma Inline (Set_Family_Name_Byte_Count);
+
+   -- Returns the number of bytes in the font name of the item referenced by I.
+   --
+   function Font_Name_Byte_Count (I: Item_Access'Class) return Unsigned_8 is
+     (I.Storage.Get_Unsigned_8 (I.Value_Offset + Font_Value_Offset_Family_Name_Byte_Count));
+   pragma Inline (Font_Name_Byte_Count);
+
+   -- Set the number of bytes in the family name of the item referenced by I.
+   --
+   procedure Set_Font_Name_Byte_Count (I: Item_Access'Class; Value: Unsigned_8);
+   pragma Inline (Set_Font_Name_Byte_Count);
+
+   -- Return the family name of the item referenced by I.
+   --
+   function Family_Name (I: Item_Access'Class) return String is
+     (I.Storage.Get_String (I.Value_Offset + Font_Value_Offset_Family_Name_String, Unsigned_32 (I.Family_Name_Byte_Count)));
+   pragma Inline (Family_Name);
+
+   -- Set the family name of the item referenced by I.
+   --
+   procedure Set_Family_Name (I: Item_Access'Class; Value: String);
+   pragma Inline (Set_Family_Name);
+
+   -- Return the font name of the item referenced by I.
+   --
+   function Font_Name (I: Item_Access'Class) return String is
+     (I.Storage.Get_String (I.Value_Offset + Font_Value_Offset_Family_Name_String + Unsigned_32 (I.Family_Name_Byte_Count), Unsigned_32 (I.Font_Name_Byte_Count)));
+   pragma Inline (Font_Name);
+
+   -- Set the font name of the item referenced by I.
+   -- Warning: Unprotected operation, make sure to first set the family name, then the font name. Otherwise the font name might overwrite the family name.
+   --
+   procedure Set_Font_Name (I: Item_Access'Class; Value: String);
+   pragma Inline (Set_Font_Name);
+
+   -- Return the font value if the item referenced by I.
+   --
+   function Font_Value (I: Item_Access'Class) return Font;
+   pragma Inline (Font_Value);
+
+   -- Set a new font value in the item referenced by I.
+   --
+   procedure Set_Font_Value (I: Item_Access'Class; Value: Font);
+   pragma Inline (Set_Font_Value);
+
+   -- Creates a new color item at the offset given in I.
+   --
+   procedure Create_Font_Item (I: Item_Access'Class; Name: BR_Item_Name := No_Name; Byte_Count: Unsigned_32 := Minimum_Item_Byte_Count (BR_Font); Parent_Offset: Unsigned_32 := 0; Value: Font := Default_Font);
 
 
+   -- ====================
+   -- Item_Access
+   -- ====================
+
+   -- Create a new item_access type
+   --
    function Create_Item_Access  (S: Storage_Area_Ptr; O: Unsigned_32) return Item_Access;
 
 private
 
+   -- Used to set the components of an item name.
+   --
    type Item_Name_Assistent (String_Length: Unsigned_32) is tagged
       record
          CRC_16: Unsigned_16;
@@ -892,6 +1044,8 @@ private
          Name_Field_Byte_Count: Unsigned_8;
       end record;
 
+   -- Returns the number of bytes in the name that is or must be stored in the name field.
+   --
    function Ascii_Code_Count (Assistent: Item_Name_Assistent) return Unsigned_8 is (Unsigned_8 (Assistent.Ascii_Code'Length));
    pragma Inline (Ascii_Code_Count);
 

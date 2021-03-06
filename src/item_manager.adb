@@ -51,28 +51,35 @@ package body Item_Manager is
       --
       case Root_Type is
          when BR_Null => null; -- Null not allowed as root element
-         when BR_Bool => Item.Create_BR_Bool (Byte_Count => Bc);
-         when BR_Int8 => Item.Create_BR_Int8 (Byte_Count => Bc);
-         when BR_Int16 => Item.Create_BR_Int16 (Byte_Count => Bc);
-         when BR_Int32 => Item.Create_BR_Int32 (Byte_Count => Bc);
-         when BR_Int64 => Item.Create_BR_Int64 (Byte_Count => Bc);
-         when BR_UInt8 => Item.Create_BR_UInt8 (Byte_Count => Bc);
-         when BR_UInt16 => Item.Create_BR_UInt16 (Byte_Count => Bc);
-         when BR_UInt32 => Item.Create_BR_UInt32 (Byte_Count => Bc);
-         when BR_UInt64 => Item.Create_BR_UInt64 (Byte_Count => Bc);
-         when BR_Float32 => Item.Create_BR_Float32 (Byte_Count => Bc);
-         when BR_Float64 => Item.Create_BR_Float64 (Byte_Count => Bc);
-         when BR_String => Item.Create_BR_String (Byte_Count => Bc);
-         when BR_CRC_String => Item.Create_BR_CRC_String (Byte_Count => Bc);
-         when BR_Binary => Item.Create_BR_Binary (Byte_Count => Bc);
-         when BR_CRC_Binary => Item.Create_BR_CRC_Binary (Byte_Count => Bc);
-         when BR_Array => Item.Create_BR_Array (Byte_Count => Bc, Element_Type => Element_Type);
-         when BR_Dictionary => Item.Create_BR_Dictionary (Byte_Count => Bc);
-         when BR_Sequence => Item.Create_BR_Sequence (Byte_Count => Bc);
-         when BR_Table => Item.Create_Table (Byte_Count => Bc);
-         when BR_UUID => Item.Create_UUID (Byte_Count => Bc);
-         when BR_Color => Item.Create_Color (Byte_Count => Bc);
-         when BR_Font => Item.Create_Font (Byte_Count => Bc);
+         when BR_Bool => Item.Create_Boolean_Item (Byte_Count => Bc);
+         when BR_Int8 => Item.Create_Integer_8_Item (Byte_Count => Bc);
+         when BR_Int16 => Item.Create_Integer_16_Item (Byte_Count => Bc);
+         when BR_Int32 => Item.Create_Integer_32_Item (Byte_Count => Bc);
+         when BR_Int64 => Item.Create_Integer_64_Item (Byte_Count => Bc);
+         when BR_UInt8 => Item.Create_Unsigned_8_Item (Byte_Count => Bc);
+         when BR_UInt16 => Item.Create_Unsigned_16_Item (Byte_Count => Bc);
+         when BR_UInt32 => Item.Create_Unsigned_32_Item (Byte_Count => Bc);
+         when BR_UInt64 => Item.Create_Unsigned_64_Item (Byte_Count => Bc);
+         when BR_Float32 => Item.Create_Float_32_Item (Byte_Count => Bc);
+         when BR_Float64 => Item.Create_Float_64_Item (Byte_Count => Bc);
+         when BR_String => Item.Create_String_Item (Byte_Count => Bc);
+         when BR_CRC_String => Item.Create_CRC_String_Item (Byte_Count => Bc);
+         when BR_Binary => Item.Create_Binary_Item (Byte_Count => Bc);
+         when BR_CRC_Binary => Item.Create_CRC_Binary_Item (Byte_Count => Bc);
+         when BR_Array => Item.Create_Array_Item (Byte_Count => Bc, Element_Type => Element_Type);
+         when BR_Dictionary => Item.Create_Dictionary_Item (Byte_Count => Bc);
+         when BR_Sequence => Item.Create_Sequence_Item (Byte_Count => Bc);
+         when BR_Table =>
+            declare
+               CS: Table_Column_Specification := (BR_Item_Name_Bounded_String.To_Bounded_String ("Column_1"), BR_Bool, 4, 0, 0);
+               AC: Array_Of_Table_Column_Specification (1 .. 1) := (others => CS);
+            begin
+                Item.Create_Table_Item (Byte_Count => Bc, Column_Specifications => AC);
+            end;
+
+         when BR_UUID => Item.Create_UUID_Item (Byte_Count => Bc);
+         when BR_Color => Item.Create_Color_Item (Byte_Count => Bc);
+         when BR_Font => Item.Create_Font_Item (Byte_Count => Bc);
       end case;
 
       return Mgr;
