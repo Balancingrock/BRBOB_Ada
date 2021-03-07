@@ -35,6 +35,7 @@
 -- =====================================================================================================================
 
 with Ada.Unchecked_Conversion;
+with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 
 
 package body BRBON.Container is
@@ -52,11 +53,33 @@ package body BRBON.Container is
    end Storage_Area_Factory;
 
    function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area is
-      S: Storage_Area (1);
+      File: File_Type;
+      Byte_Count: Unsigned_32;
    begin
-      S.Swap := Using_Endianness = Machine_Endianness;
-      return S;
+      Open (File, In_File, Filepath);
+      Byte_Count := Unsigned_32 (Size (File)); -- Find out how big the storage area data component should be
+      declare
+         Store: Storage_Area (Byte_Count);
+         In_Stream: Stream_Access := Stream (File);
+         subtype T is Array_Of_Unsigned_8 (0..Byte_Count);
+      begin
+         T'Read (In_Stream, Store.Data);
+         Store.Swap := Using_Endianness = Machine_Endianness;
+         Close (File);
+         return Store;
+      end;
    end Storage_Area_Factory;
+
+   procedure Write_to_File (S: in out Storage_Area'Class; Filepath: String) is
+      File: File_Type;
+      subtype T is Array_Of_Unsigned_8 (S.Data'First .. S.Data'Last);
+      Out_Stream: Stream_Access;
+   begin
+      Open (File, Out_File, Filepath);
+      Out_Stream := Stream (File);
+      T'Write (Out_Stream, S.Data);
+      Close (File);
+   end Write_to_File;
 
 
    -- Operational

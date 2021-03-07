@@ -81,6 +81,11 @@ package BRBON.Container is
    --
    function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area;
 
+   -- Save the content of the storage area to file.
+   -- @param Filepath The location in the filesystem to store the data.
+   --
+   procedure Write_to_File (S: in out Storage_Area'Class; Filepath: String);
+
 
    -- =======================
    -- Operational
