@@ -40,21 +40,23 @@ with Ada.Unchecked_Conversion;
 package body BRBON.Container is
 
 
-   --function To_Array_Of_Unsigned_8_Ptr is new Ada.Unchecked_Conversion (String_Ptr, Array_Of_Unsigned_8_Ptr);
+   function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area is
+   begin
+      Byte_Count := Round_Up_To_Nearest_Multiple_of_8 (Max (Byte_Count, Minimum_Item_Byte_Count (BR_Table)));
+      declare
+         S: Storage_Area (Byte_Count);
+      begin
+         S.Swap := Using_Endianness = Machine_Endianness;
+         return S;
+      end;
+   end Storage_Area_Factory;
 
-
-   --function Allocate_And_Create (Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Storage_Area_Ptr is
-      --S: Storage_Area_Ptr := new Storage_Area ;
-   --begin
-     -- S.all.Data := new Array_Of_Unsigned_8 (0 .. Byte_Count - 1);
-      --S.all.Swap := Using_Endianness = Machine_Endianness;
-      --return S;
-   --end Allocate_And_Create;
-
-   --procedure Finalize (S: in out Storage_Area) is
-   --begin
-   --   Deallocate_Array_Of_Unsigned_8 (S.Data);
-   --end Finalize;
+   function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area is
+      S: Storage_Area (1);
+   begin
+      S.Swap := Using_Endianness = Machine_Endianness;
+      return S;
+   end Storage_Area_Factory;
 
 
    -- Operational

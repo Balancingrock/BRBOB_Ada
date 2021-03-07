@@ -24,9 +24,9 @@ package Item_Manager is
    -- The item manager controls access to the storage area. All interactions between the client and Brbon are controlled
    -- by the item manager except for the Portals which can be used as a shortcut.
    --
-   type Item_Manager is new Limited_Controlled with
+   type Item_Manager (Byte_Count: Unsigned_32) is new Limited_Controlled with
       record
-         Storage: Storage_Area;
+         Storage: aliased Storage_Area (Byte_Count);
          Increments: Unsigned_32;
          --Portals: Portal_Manager.Portal_Manager;
       end record;

@@ -38,7 +38,6 @@
 --
 -- =====================================================================================================================
 
-with Ada.Finalization; use Ada.Finalization;
 with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
 
@@ -47,8 +46,8 @@ with BRBON.Configure; use BRBON.Configure;
 with Pointer_Math; use Pointer_Math;
 
 
--- Provides a byte array as a storage area with the necessary access operations for basic types.
--- The storage container has an associated endianness that will be used to read/write the multi-byte data.
+-- @summary
+-- An endianness aware storage container.
 --
 package BRBON.Container is
 
@@ -57,16 +56,11 @@ package BRBON.Container is
    -- Definitions
    -- ====================
 
-   -- The container in which items are stored.
-   -- Since this is a top level definition, all allocations should be deallocated when no longer needed.
+   --  The container to be used for storage/retrieval of byte based data.
    --
-   type Storage_Area (Byte_Count: Unsigned_32) is tagged private; --new Limited_Controlled with
---      record
---         Data: Array_Of_Unsigned_8_Ptr;
---         Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
---      end record;
+   type Storage_Area (Byte_count: Unsigned_32) is tagged private;
 
-   -- A pointer to a storage area
+   -- A pointer to a storag area
    --
    type Storage_Area_Ptr is access all Storage_Area;
 
@@ -75,22 +69,17 @@ package BRBON.Container is
    -- Management
    -- =====================
 
-   -- Create a new storage object and returns a pointer to it.
-   -- To reclaim the memory occupied by the storage container the callee must call 'Deallocate (The_Pointer)'
+   -- Create a new empty storage object.
+   -- @param Byte_Count On input the requested number of storage bytes, on exit the actual number of storage bytes.
+   -- @param Using_Endianness The endianness (Big or Little) to be used in the storage area.
+   -- @return A storage area.
    --
---   function Allocate_And_Create (Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Storage_Area_Ptr;
+   function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area;
 
-   -- Cleanup on destruction is necessary.
+   -- Create a new storage object with the content of a file.
+   -- @param Path The path to a file on the local filesystem that will be read to fill the storage area.
    --
-   --overriding
-   --procedure Finalize (S: in out Storage_Area);
-
-   -- For deallocation when the storage area is no longer needed.
-   --
-   --procedure Deallocate is new Ada.Unchecked_Deallocation (Storage_Area, Storage_Area_Ptr);
-
-   function Swap (E: Endianness) return Boolean is (E /= Machine_Endianness);
-   pragma Inline (Swap);
+   function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area;
 
 
    -- =======================
@@ -281,7 +270,7 @@ package BRBON.Container is
 
 private
 
-      type Storage_Area (Byte_Count: Unsigned_32) is tagged --new Limited_Controlled with
+      type Storage_Area (Byte_count: Unsigned_32) is tagged
       record
          Data: Array_Of_Unsigned_8 (0 .. Byte_Count);
          Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order

@@ -36,11 +36,11 @@ package body Item_Manager is
 
       -- Create the new manager
       --
-      Mgr := new Item_Manager;
+      Mgr := new Item_Manager (Bc);
 
       -- Initialize it
       --
-      Mgr.Storage := Storage_Area (Bc);
+      Mgr.Storage := Storage_Area_Factory (Bc);
       Mgr.Increments := Round_Up_To_Nearest_Multiple_Of_8 (Increment);
 
       -- Create an access item
