@@ -49,6 +49,10 @@ with Pointer_Math; use Pointer_Math;
 -- @summary
 -- An endianness aware storage container.
 --
+-- @description
+-- Access to byte and multi-byte data in a memory image. While the access is endianness aware, at this level the API user
+-- has to specify the endianness of the data. At the higher levels APIs this will be set automatically where possible.
+--
 package BRBON.Container is
 
 
@@ -74,12 +78,12 @@ package BRBON.Container is
    -- @param Using_Endianness The endianness (Big or Little) to be used in the storage area.
    -- @return A storage area.
    --
-   function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area;
+   function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness) return Storage_Area;
 
    -- Create a new storage object with the content of a file.
    -- @param Path The path to a file on the local filesystem that will be read to fill the storage area.
    --
-   function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area;
+   function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness) return Storage_Area;
 
    -- Save the content of the storage area to file.
    -- @param Filepath The location in the filesystem to store the data.

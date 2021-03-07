@@ -41,7 +41,7 @@ with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 package body BRBON.Container is
 
 
-   function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area is
+   function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness) return Storage_Area is
    begin
       Byte_Count := Round_Up_To_Nearest_Multiple_of_8 (Max (Byte_Count, Minimum_Item_Byte_Count (BR_Table)));
       declare
@@ -52,7 +52,7 @@ package body BRBON.Container is
       end;
    end Storage_Area_Factory;
 
-   function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness := Machine_Endianness) return Storage_Area is
+   function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness) return Storage_Area is
       File: File_Type;
       Byte_Count: Unsigned_32;
    begin
