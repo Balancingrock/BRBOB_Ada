@@ -38,7 +38,6 @@
 --
 -- =====================================================================================================================
 
-with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
 
 with BRBON.Types; use BRBON.Types;
@@ -87,8 +86,18 @@ package BRBON.Container is
 
    -- Save the content of the storage area to file.
    -- @param Filepath The location in the filesystem to store the data.
+   -- @exception File_Too_Large Raised when a file has a byte count > Unsigned_32'Last.
+   -- @exception Placeholder Most system defined file associated exceptions
    --
    procedure Write_to_File (S: in out Storage_Area'Class; Filepath: String);
+
+   -- Returns the byte count of the container
+   --
+   function Length (S: in out Storage_Area) return Unsigned_32;
+
+   -- Returns the endianness of the data in the container
+   --
+   function Uses_Endianness (S: in out Storage_Area) return Endianness;
 
 
    -- =======================

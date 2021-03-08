@@ -115,4 +115,8 @@ package BRBON is
    --
    Enum_Mapping_Failed: exception;
 
+   -- Raised when an attempt is made to open a file larger than Unsigned_32'Last bytes.
+   --
+   File_Too_Large: exception;
+
 end BRBON;

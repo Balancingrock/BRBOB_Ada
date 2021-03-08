@@ -43,9 +43,9 @@ package body BRBON.Container is
 
    function Storage_Area_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness) return Storage_Area is
    begin
-      Byte_Count := Round_Up_To_Nearest_Multiple_of_8 (Max (Byte_Count, Minimum_Item_Byte_Count (BR_Table)));
+      Byte_Count := Round_Up_To_Nearest_Multiple_of_8 (Max (Byte_Count, (Minimum_Item_Byte_Count (BR_Table) + Minimum_Block_Byte_Count (Single_Item_File))));
       declare
-         S: Storage_Area (Byte_Count);
+         S: Storage_Area (Byte_Count - 1);
       begin
          S.Swap := Using_Endianness = Machine_Endianness;
          return S;
@@ -54,20 +54,27 @@ package body BRBON.Container is
 
    function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness) return Storage_Area is
       File: File_Type;
+      File_Size: Integer_64;
       Byte_Count: Unsigned_32;
    begin
       Open (File, In_File, Filepath);
-      Byte_Count := Unsigned_32 (Size (File)); -- Find out how big the storage area data component should be
-      declare
-         Store: Storage_Area (Byte_Count);
-         In_Stream: Stream_Access := Stream (File);
-         subtype T is Array_Of_Unsigned_8 (0..Byte_Count);
-      begin
-         T'Read (In_Stream, Store.Data);
-         Store.Swap := Using_Endianness = Machine_Endianness;
-         Close (File);
-         return Store;
-      end;
+      File_Size := Integer_64 (Size (File));
+      if File_Size <= Integer_64 (Unsigned_32'Last) then
+         Byte_Count := Unsigned_32 (File_Size); -- Find out how big the storage area data component should be
+         declare
+            Store: Storage_Area (Byte_Count);
+            In_Stream: Stream_Access := Stream (File);
+            subtype T is Array_Of_Unsigned_8 (0..Byte_Count);
+         begin
+            T'Read (In_Stream, Store.Data);
+            Store.Swap := Using_Endianness = Machine_Endianness;
+            Close (File);
+            return Store;
+         end;
+      else
+         Close(File);
+         raise File_Too_Large;
+      end if;
    end Storage_Area_Factory;
 
    procedure Write_to_File (S: in out Storage_Area'Class; Filepath: String) is
@@ -80,6 +87,29 @@ package body BRBON.Container is
       T'Write (Out_Stream, S.Data);
       Close (File);
    end Write_to_File;
+
+
+   function Length (S: in out Storage_Area) return Unsigned_32 is
+   begin
+      return Unsigned_32 (S.Data'Length);
+   end Length;
+
+   function Uses_Endianness (S: in out Storage_Area) return Endianness is
+   begin
+      if Machine_Endianness = Big then
+         if S.Swap then
+            return Little;
+         else
+            return Big;
+         end if;
+      else
+         if S.Swap then
+            return Big;
+         else
+            return Little;
+         end if;
+      end if;
+   end Uses_Endianness;
 
 
    -- Operational
