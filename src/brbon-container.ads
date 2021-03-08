@@ -101,6 +101,15 @@ package BRBON.Container is
 
 
    -- =======================
+   -- For testing purposes
+   -- =======================
+
+   -- Return a part of the storage area
+   --
+   procedure Test_Support_Get_Bytes (S: in out Storage_Area; Start: Unsigned_32; Dest: out Array_Of_Unsigned_8);
+
+
+   -- =======================
    -- Operational
    -- =======================
 

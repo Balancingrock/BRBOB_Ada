@@ -112,6 +112,24 @@ package body BRBON.Container is
    end Uses_Endianness;
 
 
+   -- Test support
+
+   procedure Test_Support_Get_Bytes (S: in out Storage_Area; Start: Unsigned_32; Dest: out Array_Of_Unsigned_8) is
+      Index: Unsigned_32 := Start;
+   begin
+      if Dest'Length > 0 then
+         for I in Dest'Range loop
+            if Index <= S.Data'Last then
+               Dest (I) := S.Data (Index);
+            else
+               Dest (I) := 0;
+            end if;
+            Index := Index + 1;
+         end loop;
+      end if;
+   end Test_Support_Get_Bytes;
+
+
    -- Operational
 
    procedure Set_Item_Type (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: BR_Item_Type) is

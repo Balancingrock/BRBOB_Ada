@@ -26,5 +26,6 @@ package body Container_Tests is
    function Size_21 return Test_Result is separate;
    function Size_81 return Test_Result is separate;
    function Size_1000 return Test_Result is separate;
+   function Bool_Access return Test_Result is separate;
 
 end Container_Tests;
