@@ -12,7 +12,7 @@ package BRBON.Configure is
    -- When set to True, any new storage space allocated will be set to 0.
    -- Mostly usefull for testing, to ensure an expected content.
    --
-   Zero_New_Storage: constant Boolean := False;
+   Zero_New_Storage: constant Boolean := True;
 
 
 end BRBON.Configure;

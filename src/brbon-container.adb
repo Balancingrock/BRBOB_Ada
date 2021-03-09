@@ -48,6 +48,9 @@ package body BRBON.Container is
          S: Storage_Area (Byte_Count - 1);
       begin
          S.Swap := Using_Endianness = Machine_Endianness;
+         if Zero_New_Storage then
+            S.Data := (others => 0);
+         end if;
          return S;
       end;
    end Storage_Area_Factory;
