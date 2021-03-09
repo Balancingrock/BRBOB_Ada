@@ -15,5 +15,6 @@ package body Container_Tests is
    function Size_1000 (Count: in out Integer) return Test_Result is separate;
    function Bool_Access (Count: in out Integer) return Test_Result is separate;
    function UInt8_Access (Count: in out Integer) return Test_Result is separate;
+   function UInt16_Access (Count: in out Integer) return Test_Result is separate;
 
 end Container_Tests;

@@ -1,7 +1,8 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
 with Interfaces; use Interfaces;
+
+with BRBON.Container; use BRBON.Container;
 
 
 package body Support is
@@ -31,5 +32,22 @@ package body Support is
       return To_String (Result);
 
    end Put_As_Line;
+
+
+   function Verify_Small_Bytes (Container: in out Storage_Area; Offset: Unsigned_32; Expected: Array_Of_Unsigned_8) return Test_Result is
+
+      Actual: Array_Of_Unsigned_8 (Expected'Range);
+
+   begin
+
+      Container.Test_Support_Get_Bytes (Start => 0, Dest => Actual);
+
+      if Actual /= Expected then
+         Put_Line (" - Failed, Expected: " & Put_As_Line (Expected) & ", Found: " & Put_As_Line (Actual));
+         return Failed;
+      end if;
+      return Passed;
+
+   end Verify_Small_Bytes;
 
 end Support;

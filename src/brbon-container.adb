@@ -198,9 +198,9 @@ package body BRBON.Container is
    procedure Set_Unsigned_16 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: Unsigned_16) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 1) := To_Two_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 1) := To_Two_Bytes (Swap_Unsigned_16 (Value));
+      else
+         S.Data (Offset .. Offset + 1) := To_Two_Bytes (Value);
       end if;
    end Set_Unsigned_16;
 
@@ -218,9 +218,9 @@ package body BRBON.Container is
    procedure Set_Unsigned_32 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: Unsigned_32) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 3) := To_Four_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 3) := To_Four_Bytes (Swap_Unsigned_32 (Value));
+      else
+         S.Data (Offset .. Offset + 3) := To_Four_Bytes (Value);
       end if;
    end Set_Unsigned_32;
 
@@ -238,9 +238,9 @@ package body BRBON.Container is
    procedure Set_Unsigned_64 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: Unsigned_64) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Swap_Unsigned_64 (Value));
+      else
+         S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Value);
       end if;
    end Set_Unsigned_64;
 
@@ -269,9 +269,9 @@ package body BRBON.Container is
    procedure Set_Integer_16 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: Integer_16) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 1) := To_Two_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 1) := To_Two_Bytes (Swap_Integer_16 (Value));
+      else
+         S.Data (Offset .. Offset + 1) := To_Two_Bytes (Value);
       end if;
    end Set_Integer_16;
 
@@ -289,9 +289,9 @@ package body BRBON.Container is
    procedure Set_Integer_32 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: Integer_32) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 3) := To_Four_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 3) := To_Four_Bytes (Swap_Integer_32 (Value));
+      else
+         S.Data (Offset .. Offset + 3) := To_Four_Bytes (Value);
       end if;
    end Set_Integer_32;
 
@@ -309,9 +309,9 @@ package body BRBON.Container is
    procedure Set_Integer_64 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: Integer_64) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Swap_Integer_64 (Value));
+      else
+         S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Value);
       end if;
    end Set_Integer_64;
 
@@ -329,9 +329,9 @@ package body BRBON.Container is
    procedure Set_Float_32 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: IEEE_Float_32) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 3) := To_Four_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 3) := To_Four_Bytes (Swap_Float_32 (Value));
+      else
+         S.Data (Offset .. Offset + 3) := To_Four_Bytes (Value);
       end if;
    end Set_Float_32;
 
@@ -349,9 +349,9 @@ package body BRBON.Container is
    procedure Set_Float_64 (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: IEEE_Float_64) is
    begin
       if S.Swap then
-         S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Value);
-      else
          S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Swap_Float_64 (Value));
+      else
+         S.Data (Offset .. Offset + 7) := To_Eight_Bytes (Value);
       end if;
    end Set_Float_64;
 

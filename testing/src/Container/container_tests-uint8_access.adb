@@ -7,23 +7,23 @@ function UInt8_Access (Count: in out Integer) return Test_Result is
                                                     Using_Endianness => Machine_Endianness);
 
 
+   function Verify (Location: Unsigned_32; Expected: Unsigned_8) return Test_Result is
+      Actual: Unsigned_8 := Container.Get_Unsigned_8 (Location);
+   begin
+      if  Expected /= Actual then
+         declare
+            E_Str: String := Unsigned_8'Image (Expected);
+            A_Str: String := Unsigned_8'Image (Actual);
+         begin
+            Put_Line (" - Failed, Expected " & E_Str & ", found " & A_Str & " at offset 0, make sure the Zero_New_Storage constant in BRBON.Configure is set to True");
+         end;
+         return Failed;
+      end if;
+      return Passed;
+   end Verify;
+
 
    function Test (Location: Unsigned_32; Value: Unsigned_8) return Test_Result is
-
-      function Verify (Location: Unsigned_32; Expected: Unsigned_8) return Test_Result is
-         Actual: Unsigned_8 := Container.Get_Unsigned_8 (Location);
-      begin
-         if  Expected /= Actual then
-            declare
-               E_Str: String := Unsigned_8'Image (Expected);
-               A_Str: String := Unsigned_8'Image (Actual);
-            begin
-               Put_Line (" - Failed, Expected " & E_Str & ", found " & A_Str & " at offset 0, make sure the Zero_New_Storage constant in BRBON.Configure is set to True");
-            end;
-            return Failed;
-         end if;
-         return Passed;
-      end Verify;
 
       Result: Test_Result;
 
@@ -49,6 +49,8 @@ function UInt8_Access (Count: in out Integer) return Test_Result is
 
    end Test;
 
+
+
    Result: Test_Result;
 
 begin
@@ -66,18 +68,8 @@ begin
    Container.Set_Unsigned_8 (Offset => 0, Value => 5);
    Container.Set_Unsigned_8 (Offset => 1, Value => 12);
 
-   declare
-      subtype Comparable is Array_Of_Unsigned_8 (1 .. 2);
-      Actual: Comparable;
-      Expected: Comparable := (5, 12);
-   begin
-      Container.Test_Support_Get_Bytes (Start => 0, Dest => Actual);
-      if Actual /= Expected then
-         Put_Line (" - Failed, Expected: " & Put_As_Line (Expected) & ", Found: " & Put_As_Line (Actual));
-         return Failed;
-      end if;
-   end;
+   Result := Verify_Small_Bytes (Container, 0, (5, 12));
 
-   return Passed;
+   return Result;
 
 end UInt8_Access;
