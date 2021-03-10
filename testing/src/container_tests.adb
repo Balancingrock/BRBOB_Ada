@@ -16,5 +16,11 @@ package body Container_Tests is
    function Bool_Access (Count: in out Integer) return Test_Result is separate;
    function UInt8_Access (Count: in out Integer) return Test_Result is separate;
    function UInt16_Access (Count: in out Integer) return Test_Result is separate;
+   function UInt32_Access (Count: in out Integer) return Test_Result is separate;
+   function UInt64_Access (Count: in out Integer) return Test_Result is separate;
+   function Int8_Access (Count: in out Integer) return Test_Result is separate;
+   function Int16_Access (Count: in out Integer) return Test_Result is separate;
+   function Int32_Access (Count: in out Integer) return Test_Result is separate;
+   function Int64_Access (Count: in out Integer) return Test_Result is separate;
 
 end Container_Tests;

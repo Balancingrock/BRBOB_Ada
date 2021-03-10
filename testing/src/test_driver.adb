@@ -1,5 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Ada.Calendar; use Ada.Calendar;
 
@@ -12,6 +13,8 @@ package body Test_Driver is
 
       Start_Time: Time;
       End_Time: Time;
+      Dur: Duration;
+      DurStr: Unbounded_String;
 
    begin
 
@@ -29,7 +32,10 @@ package body Test_Driver is
          Count := Count + 1;
 
          if Result = Passed then
-            Put_Line (" - Passed in" & Duration'Image((End_Time - Start_Time) * 1000) & " mS");
+            Dur := (End_Time - Start_Time) * 1000;
+            DurStr := To_Unbounded_String (Duration'Image (Dur));
+            Delete (DurStr, (Length (DurStr) - 5), Length (DurStr)); -- Remove excess zero's
+            Put_Line (" - Passed in" & DurStr & " mS");
          end if;
 
          exit when Result /= Passed;
