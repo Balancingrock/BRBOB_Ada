@@ -37,6 +37,7 @@
 with Ada.Unchecked_Conversion;
 with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body BRBON.Container is
 
@@ -56,7 +57,7 @@ package body BRBON.Container is
    end Storage_Area_Factory;
 
    function Storage_Area_Factory (Filepath: String; Using_Endianness: Endianness) return Storage_Area is
-      File: File_Type;
+      File: Ada.Streams.Stream_IO.File_Type;
       File_Size: Integer_64;
       Byte_Count: Unsigned_32;
    begin
@@ -81,7 +82,7 @@ package body BRBON.Container is
    end Storage_Area_Factory;
 
    procedure Write_to_File (S: in out Storage_Area'Class; Filepath: String) is
-      File: File_Type;
+      File: Ada.Streams.Stream_IO.File_Type;
       subtype T is Array_Of_Unsigned_8 (S.Data'First .. S.Data'Last);
       Out_Stream: Stream_Access;
    begin
@@ -137,17 +138,20 @@ package body BRBON.Container is
 
    procedure Set_Item_Type (S: in out Storage_Area'Class; Offset: Unsigned_32; Value: BR_Item_Type) is
    begin
-      S.Data (Offset) := BR_Item_Type'Pos (Value);
+      S.Data (Offset) := To_Unsigned_8 (Value);
    end Set_Item_Type;
 
    function Valid_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return Boolean is
+      T: Unsigned_8 := S.Data (Offset);
    begin
-      return S.Data (Offset) > Unsigned_8 (BR_Item_Type'Pos (BR_Item_Type'Last));
+      if T = 0 then return False; end if;
+      return T <= To_Unsigned_8 (BR_Item_Type'Last);
    end Valid_Item_Type;
 
    function Get_Item_Type (S: Storage_Area'Class; Offset: Unsigned_32) return BR_Item_Type is
    begin
-      return BR_Item_Type'Val (S.Data (Offset));
+      if not S.Valid_Item_Type (Offset) then raise BRBON.Illegal_Item_Type; end if;
+      return To_BR_Item_Type (S.Data (Offset));
    end Get_Item_Type;
 
 

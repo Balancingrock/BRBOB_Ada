@@ -16,6 +16,11 @@ package Container_Tests is
    function Int16_Access (Count: in out Integer) return Test_Result;
    function Int32_Access (Count: in out Integer) return Test_Result;
    function Int64_Access (Count: in out Integer) return Test_Result;
+   function Item_Access (Count: in out Integer) return Test_Result;
+   function Float32_Access (Count: in out Integer) return Test_Result;
+   function Float64_Access (Count: in out Integer) return Test_Result;
+   function String_Access (Count: in out Integer) return Test_Result;
+   function Array_Access (Count: in out Integer) return Test_Result;
 
    Tests: aliased Array_Of_Tests :=
      (
@@ -29,9 +34,14 @@ package Container_Tests is
       (UStr ("UInt32_Access"), UInt32_Access'Access),
       (UStr ("UInt64_Access"), UInt64_Access'Access),
       (UStr ("Int8_Access"), UInt8_Access'Access),
-      (UStr ("Int16_Access"), UInt8_Access'Access),
-      (UStr ("Int32_Access"), UInt8_Access'Access),
-      (UStr ("Int64_Access"), UInt8_Access'Access)
+      (UStr ("Int16_Access"), UInt16_Access'Access),
+      (UStr ("Int32_Access"), UInt32_Access'Access),
+      (UStr ("Int64_Access"), UInt64_Access'Access),
+      (UStr ("Item_Access"), Item_Access'Access),
+      (UStr ("Float32_Access"), Float32_Access'Access),
+      (UStr ("Float64_Access"), Float64_Access'Access),
+      (UStr ("String_Access"), String_Access'Access),
+      (UStr ("Array_Access"), Array_Access'Access)
      );
 
 end Container_Tests;

@@ -55,6 +55,9 @@ package BRBON.Types is
    for BR_Item_Type'Size use 8;
    for BR_Item_Type use (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
+   function To_BR_Item_Type is new Ada.Unchecked_Conversion (Unsigned_8, BR_Item_Type);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Item_Type, Unsigned_8);
+
    -- Minimum items sizes for items without a name, including the value length if the value length is fixed and assuming empty when the value size is variable.
    -- Always a multiple of 8.
    --
