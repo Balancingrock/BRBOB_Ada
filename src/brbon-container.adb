@@ -66,9 +66,9 @@ package body BRBON.Container is
       if File_Size <= Integer_64 (Unsigned_32'Last) then
          Byte_Count := Unsigned_32 (File_Size); -- Find out how big the storage area data component should be
          declare
-            Store: Storage_Area (Byte_Count);
+            Store: Storage_Area (Byte_Count - 1);
             In_Stream: Stream_Access := Stream (File);
-            subtype T is Array_Of_Unsigned_8 (0..Byte_Count);
+            subtype T is Array_Of_Unsigned_8 (0..Byte_Count-1);
          begin
             T'Read (In_Stream, Store.Data);
             Store.Swap := Using_Endianness = Machine_Endianness;
@@ -86,7 +86,9 @@ package body BRBON.Container is
       subtype T is Array_Of_Unsigned_8 (S.Data'First .. S.Data'Last);
       Out_Stream: Stream_Access;
    begin
-      Open (File, Out_File, Filepath);
+      Create (File => File,
+              Mode => Out_File,
+              Name => Filepath);
       Out_Stream := Stream (File);
       T'Write (Out_Stream, S.Data);
       Close (File);

@@ -27,5 +27,6 @@ package body Container_Tests is
    function Float64_Access (Count: in out Integer) return Test_Result is separate;
    function String_Access (Count: in out Integer) return Test_Result is separate;
    function Array_Access (Count: in out Integer) return Test_Result is separate;
+   function Read_Write (Count: in out Integer) return Test_Result is separate;
 
 end Container_Tests;

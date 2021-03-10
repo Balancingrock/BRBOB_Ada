@@ -6,7 +6,7 @@ package Types is
 
    function UStr (Str: String) return Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
 
-   Test_Files_Root: String := "/home/rien/Projects/Software/Ada/BTest/tmp";
+   Test_Files_Root: String := "/home/rien/Projects/Software/Ada/BRBON/testing/files/";
 
    Break_Before: Integer := 0;
 
