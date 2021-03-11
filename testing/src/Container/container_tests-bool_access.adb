@@ -3,7 +3,7 @@ separate (Container_Tests)
 function Bool_Access (Count: in out Integer) return Test_Result is
 
    Byte_Count: Unsigned_32 := 1000;
-   Container: Storage_Area := Storage_Area_Factory (Byte_Count       => Byte_Count,
+   Container: Binary_Store := Binary_Store_Factory (Byte_Count       => Byte_Count,
                                                     Using_Endianness => Machine_Endianness);
 begin
 

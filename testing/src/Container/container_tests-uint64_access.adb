@@ -3,12 +3,12 @@ separate (Container_Tests)
 function UInt64_Access (Count: in out Integer) return Test_Result is
 
    Byte_Count: Unsigned_32 := 1000;
-   Big_Container: Storage_Area := Storage_Area_Factory (Byte_Count, Big);
-   Little_Container: Storage_Area := Storage_Area_Factory (Byte_Count, Little);
+   Big_Container: Binary_Store := Binary_Store_Factory (Byte_Count, Big);
+   Little_Container: Binary_Store := Binary_Store_Factory (Byte_Count, Little);
    TCount: Integer := 0;
 
 
-   function Verify (Container: Storage_area; Location: Unsigned_32; Expected: Unsigned_64) return Test_Result is
+   function Verify (Container: Binary_Store; Location: Unsigned_32; Expected: Unsigned_64) return Test_Result is
 
       Actual: Unsigned_64 := Container.Get_Unsigned_64 (Location);
 
@@ -31,7 +31,7 @@ function UInt64_Access (Count: in out Integer) return Test_Result is
    end Verify;
 
 
-   function Test (Container: in out Storage_area; Location: Unsigned_32; Value: Unsigned_64) return Test_Result is
+   function Test (Container: in out Binary_Store; Location: Unsigned_32; Value: Unsigned_64) return Test_Result is
 
       Result: Test_Result;
 

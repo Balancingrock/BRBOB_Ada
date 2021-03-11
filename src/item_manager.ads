@@ -26,7 +26,7 @@ package Item_Manager is
    --
    type Item_Manager (Byte_Count: Unsigned_32) is new Limited_Controlled with
       record
-         Storage: aliased Storage_Area (Byte_Count);
+         Storage: aliased Binary_Store (Byte_Count);
          Increments: Unsigned_32;
          --Portals: Portal_Manager.Portal_Manager;
       end record;
