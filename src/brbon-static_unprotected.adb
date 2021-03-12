@@ -19,9 +19,8 @@ package body BRBON.Static_Unprotected is
    Block_Type_1_First_Item_Offset: Unsigned_32 := 16;
 
 
-   function Block_Factory
+   function Block_Factory_Create_Single_Item_File
      (
-      Of_Type: BR_Block_Type := Single_Item_File;
       With_Item_Type: BR_Item_Type := BR_Dictionary;
       In_Byte_Store: Byte_Store_Ptr
      )
@@ -32,17 +31,8 @@ package body BRBON.Static_Unprotected is
 
    begin
 
-      case Of_Type is
-
-      when Illegal => raise BRBON.Illegal_Block_Type;
-
-      when Single_Item_File =>
-         B.Create_Block_Type_1_Single_Item_File;
-         B.First_Item_Offset := Block_Type_1_First_Item_Offset;
-
-      when others => raise BRBON.Illegal_Block_Type;
-      end case;
-
+      B.Create_Block_Type_1_Single_Item_File;
+      B.First_Item_Offset := Block_Type_1_First_Item_Offset;
 
       A := (B.Store, Block_Type_1_First_Item_Offset);
 
@@ -50,11 +40,16 @@ package body BRBON.Static_Unprotected is
 
       B.Free_Area_Offset := Block_Type_1_First_Item_Offset + A.Item_Byte_Count;
 
-      B.Block_Type := Of_Type;
+      B.Block_Type := Single_Item_File;
 
       return B;
 
    end Block_Factory;
+
+   function Block_Factory_Open_Single_Item_File (B: Byte_Store_Ptr) return BR_Block is
+   begin
+      -- Verify that the header is ok.
+   end Block_Factory_Open_Single_Item_File;
 
 
    procedure Create_Block_Header (B: in out BR_Block) is
@@ -91,6 +86,12 @@ package body BRBON.Static_Unprotected is
    end Create_Block_Type_1_Single_Item_File;
 
 
+   procedure Write_To_File (B: in out BR_Block'Class; Filepath: String) is
+   begin
+      B.Store.Write_to_File (Filepath);
+   end Write_To_File;
+
+
    function Get_Number_Of_Items (B: in out BR_Block'Class) return Unsigned_32 is
    begin
       case B.Block_Type is
@@ -110,5 +111,13 @@ package body BRBON.Static_Unprotected is
       end case;
    end Get_Item;
 
+   procedure Update_Free_Area_Offset (B: in out BR_Block; Increment: Unsigned_32) is
+   begin
+      B.Free_Area_Offset := B.Free_Area_Offset + Increment;
+      case B.Block_Type is
+         when Single_Item_File => B.Store.Set_Unsigned_32 (Block_Type_1_Block_Byte_Count_Offset, B.Free_Area_Offset);
+         when others => raise Illegal_Block_Type;
+      end case;
+   end Update_Free_Area_Offset;
 
 end BRBON.Static_Unprotected;

@@ -90,6 +90,10 @@ package BRBON is
    -- Possible exceptions
    -- ===================
 
+   -- Raised when a byte store is opened as a block but does not have a valid block structure.
+   --
+   Invalid_Block_Structure: exception;
+
    -- Raised when an index is out of range
    --
    Index_Out_Of_Range: exception;
