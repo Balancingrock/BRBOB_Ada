@@ -1,7 +1,6 @@
 with Ada.Strings.Bounded;
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
-with GNAT.Byte_Swapping;
 with Interfaces; use Interfaces;
 with System;
 
@@ -11,6 +10,8 @@ package BRBON.Types is
    -- The endianness to be used to store data.
    --
    type Endianness is (Big, Little);
+
+
 
 
    -- Most of the data manipulations are done byte wise
@@ -23,6 +24,31 @@ package BRBON.Types is
 
    Short_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..1) := (others => 0);
 
+
+   subtype Two_Bytes is Array_Of_Unsigned_8 (1 .. 2);
+   subtype Four_Bytes is Array_Of_Unsigned_8 (1 .. 4);
+   subtype Eight_Bytes is Array_Of_Unsigned_8 (1 .. 8);
+
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Two_Bytes, Unsigned_16);
+   function To_Integer_16 is new Ada.Unchecked_Conversion (Two_Bytes, Integer_16);
+   function To_Unsigned_32 is new Ada.Unchecked_Conversion (Four_Bytes, Unsigned_32);
+   function To_Integer_32 is new Ada.Unchecked_Conversion (Four_Bytes, Integer_32);
+   function To_Float_32 is new Ada.Unchecked_Conversion (Four_Bytes, IEEE_Float_32);
+   function To_Unsigned_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Unsigned_64);
+   function To_Integer_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Integer_64);
+   function To_Float_64 is new Ada.Unchecked_Conversion (Eight_Bytes, IEEE_Float_64);
+
+   function To_Two_Bytes is new Ada.Unchecked_Conversion (Unsigned_16, Two_Bytes);
+   function To_Two_Bytes is new Ada.Unchecked_Conversion (Integer_16, Two_Bytes);
+   function To_Four_Bytes is new Ada.Unchecked_Conversion (Unsigned_32, Four_Bytes);
+   function To_Four_Bytes is new Ada.Unchecked_Conversion (Integer_32, Four_Bytes);
+   function To_Four_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_32, Four_Bytes);
+   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Unsigned_64, Eight_Bytes);
+   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Integer_64, Eight_Bytes);
+   function To_Eight_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_64, Eight_Bytes);
+
+   function To_Integer_8 is new Ada.Unchecked_Conversion (Unsigned_8, Integer_8);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Integer_8, Unsigned_8);
 
    -- All types available for storage into an Item_Manager.
    --
@@ -97,63 +123,62 @@ package BRBON.Types is
 
    -- The type of blocks available
    --
-   type Block_Type is
+   type BR_Block_Type is
      (
       Illegal,
       Single_Item_File
      );
-   for Block_Type'Size use 8;
-   for Block_Type use
+   for BR_Block_Type'Size use 8;
+   for BR_Block_Type use
      (
       Illegal => 0,
       Single_Item_File => 1
      );
 
-   Minimum_Block_Byte_Count: array (Block_Type'Range) of Unsigned_32 :=
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Block_Type, Unsigned_8);
+   function To_BR_Block_Type is new Ada.Unchecked_Conversion (Unsigned_8, BR_Block_Type);
+
+   Minimum_Block_Byte_Count: array (BR_Block_Type'Range) of Unsigned_32 :=
      (
       Illegal => 0,
       Single_Item_File => 8 + 8 + 8 + 8
      );
 
-   -- Access to bytes in the storage
+
+   -- The block options
+   --
+   type BR_Block_Options is
+      record
+         Endianness: Boolean;
+         Bit_6: Boolean;
+         Bit_5: Boolean;
+         Bit_4: Boolean;
+         Bit_3: Boolean;
+         Bit_2: Boolean;
+         Bit_1: Boolean;
+         Bit_0: Boolean;
+      end record;
+   for BR_Block_Options use
+      record
+         Endianness at 0 range 7..7;
+         Bit_6 at 0 range 6..6;
+         Bit_5 at 0 range 5..5;
+         Bit_4 at 0 range 4..4;
+         Bit_3 at 0 range 3..3;
+         Bit_2 at 0 range 2..2;
+         Bit_1 at 0 range 1..1;
+         Bit_0 at 0 range 0..0;
+      end record;
+   for BR_Block_Options'Size use 8;
+
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Block_Options, Unsigned_8);
+   function To_BR_Block_Options is new Ada.Unchecked_Conversion (Unsigned_8, BR_Block_Options);
+
+
+   -- Access to bytes in the byte store
    --
    type Unsigned_8_Ptr is access all Unsigned_8;
 
-
-   function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
-   function Swap_Unsigned_32 is new GNAT.Byte_Swapping.Swapped4 (Unsigned_32);
-   function Swap_Unsigned_64 is new GNAT.Byte_Swapping.Swapped8 (Unsigned_64);
-   function Swap_Integer_16 is new GNAT.Byte_Swapping.Swapped2 (Integer_16);
-   function Swap_Integer_32 is new GNAT.Byte_Swapping.Swapped4 (Integer_32);
-   function Swap_Integer_64 is new GNAT.Byte_Swapping.Swapped8 (Integer_64);
-   function Swap_Float_32 is new GNAT.Byte_Swapping.Swapped4 (IEEE_Float_32);
-   function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
-
-
-   subtype Two_Bytes is Array_Of_Unsigned_8 (1 .. 2);
-   subtype Four_Bytes is Array_Of_Unsigned_8 (1 .. 4);
-   subtype Eight_Bytes is Array_Of_Unsigned_8 (1 .. 8);
-
-   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Two_Bytes, Unsigned_16);
-   function To_Integer_16 is new Ada.Unchecked_Conversion (Two_Bytes, Integer_16);
-   function To_Unsigned_32 is new Ada.Unchecked_Conversion (Four_Bytes, Unsigned_32);
-   function To_Integer_32 is new Ada.Unchecked_Conversion (Four_Bytes, Integer_32);
-   function To_Float_32 is new Ada.Unchecked_Conversion (Four_Bytes, IEEE_Float_32);
-   function To_Unsigned_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Unsigned_64);
-   function To_Integer_64 is new Ada.Unchecked_Conversion (Eight_Bytes, Integer_64);
-   function To_Float_64 is new Ada.Unchecked_Conversion (Eight_Bytes, IEEE_Float_64);
-
-   function To_Two_Bytes is new Ada.Unchecked_Conversion (Unsigned_16, Two_Bytes);
-   function To_Two_Bytes is new Ada.Unchecked_Conversion (Integer_16, Two_Bytes);
-   function To_Four_Bytes is new Ada.Unchecked_Conversion (Unsigned_32, Four_Bytes);
-   function To_Four_Bytes is new Ada.Unchecked_Conversion (Integer_32, Four_Bytes);
-   function To_Four_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_32, Four_Bytes);
-   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Unsigned_64, Eight_Bytes);
-   function To_Eight_Bytes is new Ada.Unchecked_Conversion (Integer_64, Eight_Bytes);
-   function To_Eight_Bytes is new Ada.Unchecked_Conversion (IEEE_Float_64, Eight_Bytes);
-
-   function To_Integer_8 is new Ada.Unchecked_Conversion (Unsigned_8, Integer_8);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Integer_8, Unsigned_8);
 
    type String_Ptr is access all String;
 

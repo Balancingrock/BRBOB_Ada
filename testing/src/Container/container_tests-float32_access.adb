@@ -3,12 +3,12 @@ separate (Container_Tests)
 function Float32_Access (Count: in out Integer) return Test_Result is
 
    Byte_Count: Unsigned_32 := 1000;
-   Big_Container: Binary_Store := Binary_Store_Factory (Byte_Count, Big);
-   Little_Container: Binary_Store := Binary_Store_Factory (Byte_Count, Little);
+   Big_Container: Byte_Store := Byte_Store_Factory (Byte_Count, Big);
+   Little_Container: Byte_Store := Byte_Store_Factory (Byte_Count, Little);
    TCount: Integer := 0;
 
 
-   function Verify (Container: Binary_Store; Location: Unsigned_32; Expected: IEEE_Float_32) return Test_Result is
+   function Verify (Container: Byte_Store; Location: Unsigned_32; Expected: IEEE_Float_32) return Test_Result is
 
       Actual: IEEE_Float_32 := Container.Get_Float_32 (Location);
 
@@ -31,7 +31,7 @@ function Float32_Access (Count: in out Integer) return Test_Result is
    end Verify;
 
 
-   function Test (Container: in out Binary_Store; Location: Unsigned_32; Value: IEEE_Float_32) return Test_Result is
+   function Test (Container: in out Byte_Store; Location: Unsigned_32; Value: IEEE_Float_32) return Test_Result is
 
       Result: Test_Result;
 

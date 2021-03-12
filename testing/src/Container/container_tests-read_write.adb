@@ -6,7 +6,7 @@ function Read_Write (Count: in out Integer) return Test_Result is
 
 
    Byte_Count: Unsigned_32 := 1000;
-   Container: Binary_Store := Binary_Store_Factory (Byte_Count       => Byte_Count,
+   Container: Byte_Store := Byte_Store_Factory (Byte_Count       => Byte_Count,
                                                     Using_Endianness => Machine_Endianness);
 
    Str: String := "Hello";
@@ -27,7 +27,7 @@ begin
 
    declare
 
-      Second: Binary_Store := Binary_Store_Factory (Path, Machine_Endianness);
+      Second: Byte_Store := Byte_Store_Factory (Path, Machine_Endianness);
       Act: String := Second.Get_String (Offset => 0, Length => 5);
 
    begin

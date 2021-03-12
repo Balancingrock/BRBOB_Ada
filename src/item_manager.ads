@@ -3,7 +3,7 @@ with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
 
 with BRBON.Types; use BRBON.Types;
-with Item; use Item;
+with Item_Static_Unprotected; use Item_Static_Unprotected;
 with BRBON.Configure; use BRBON.Configure;
 
 with BRBON.Container; use BRBON.Container;
@@ -26,7 +26,7 @@ package Item_Manager is
    --
    type Item_Manager (Byte_Count: Unsigned_32) is new Limited_Controlled with
       record
-         Storage: aliased Binary_Store (Byte_Count);
+         Storage: aliased Byte_Store (Byte_Count);
          Increments: Unsigned_32;
          --Portals: Portal_Manager.Portal_Manager;
       end record;

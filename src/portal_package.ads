@@ -1,5 +1,5 @@
 with BRBON.Types; use BRBON.Types;
-with Item; use Item;
+with Item_Static_Unprotected; use Item_Static_Unprotected;
 
 package Portal_Package is
 

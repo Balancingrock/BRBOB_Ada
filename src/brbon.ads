@@ -90,10 +90,17 @@ package BRBON is
    -- Possible exceptions
    -- ===================
 
+   -- Raised when an index is out of range
+   --
+   Index_Out_Of_Range: exception;
+
+   -- Raised when an attempt is made to create an illegal block type
+   --
+   Illegal_Block_Type: exception;
+
    -- Raised when an operation is attempted on the wrong type
    --
    Type_Conflict: exception;
-
 
    -- Raised when the storage area runs out of space.
    --

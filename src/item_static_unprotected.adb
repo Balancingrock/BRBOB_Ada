@@ -1,6 +1,6 @@
 with Crc_Package; use Crc_Package;
 
-package body Item is
+package body Item_Static_Unprotected is
 
 
    procedure Assign_Item_Type (I: Item_Access'Class; Value: BR_Item_Type) is
@@ -858,10 +858,10 @@ package body Item is
    -- Item Access
    -- =======================
 
-   function Create_Item_Access (S: Binary_Store_Ptr; O: Unsigned_32) return Item_Access is
+   function Create_Item_Access (S: Byte_Store_Ptr; O: Unsigned_32) return Item_Access is
    begin
       return (S, O);
    end Create_Item_Access;
 
 
-end Item;
+end Item_Static_Unprotected;

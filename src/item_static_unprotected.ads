@@ -15,7 +15,7 @@ with Pointer_Math; use Pointer_Math;
 -- It does not provide checks, and it will not shift any data to accomodate updates.
 -- It uses the access operation provided by the package Storage_Area and hence all accesses will respect the endianness of the Storage container.
 --
-package Item is
+package Item_Static_Unprotected is
 
 
    -- Item header offsets and sizes
@@ -48,7 +48,7 @@ package Item is
    --
    type Item_Access is tagged
       record
-         Storage: Binary_Store_Ptr; -- Pointer to the storage area itself
+         Storage: Byte_Store_Ptr; -- Pointer to the storage area itself
          Offset: Unsigned_32;       -- Offset to the first header byte in the storage area
       end record;
 
@@ -1030,7 +1030,7 @@ package Item is
 
    -- Create a new item_access type
    --
-   function Create_Item_Access  (S: Binary_Store_Ptr; O: Unsigned_32) return Item_Access;
+   function Create_Item_Access  (S: Byte_Store_Ptr; O: Unsigned_32) return Item_Access;
 
 private
 
@@ -1050,4 +1050,4 @@ private
    pragma Inline (Ascii_Code_Count);
 
 
-end Item;
+end Item_Static_Unprotected;
