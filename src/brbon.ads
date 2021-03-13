@@ -90,6 +90,18 @@ package BRBON is
    -- Possible exceptions
    -- ===================
 
+   -- Raised when a block does not match the byte store it is in.
+   --
+   Endianness_Mismatch: exception;
+
+   -- Raised when a block does not contain the right block header markers.
+   --
+   Invalid_Block_Header: exception;
+
+   -- Raised when a block contains unspecified option flags.
+   --
+   Illegal_Block_Options: exception;
+
    -- Raised when a byte store is opened as a block but does not have a valid block structure.
    --
    Invalid_Block_Structure: exception;
