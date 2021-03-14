@@ -2,9 +2,8 @@ separate (Container_Tests)
 
 function UInt64_Access (Count: in out Integer) return Test_Result is
 
-   Byte_Count: Unsigned_32 := 1000;
-   Big_Container: Byte_Store := Byte_Store_Factory (Byte_Count, Big);
-   Little_Container: Byte_Store := Byte_Store_Factory (Byte_Count, Little);
+   Big_Container: Byte_Store := Byte_Store_Factory (Buffer'Access, Big);
+   Little_Container: Byte_Store := Byte_Store_Factory (LBuffer'Access, Little);
    TCount: Integer := 0;
 
 

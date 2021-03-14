@@ -40,7 +40,7 @@ package body Item_Manager is
 
       -- Initialize it
       --
-      Mgr.Storage := Byte_Store_Factory (Bc, Using_Endianness => Machine_Endianness);
+     -- Mgr.Storage := Byte_Store_Factory (Bc, Using_Endianness => Machine_Endianness);
       Mgr.Increments := Round_Up_To_Nearest_Multiple_Of_8 (Increment);
 
       -- Create an access item

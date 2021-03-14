@@ -25,9 +25,17 @@ package BRBON.Static_Unprotected is
    -- Contains information about a file that can be used to open a file in a Byte_Store.
    --
    type Block_Info is record
-      Byte_Count: Unsigned_32; -- The byte count necessary to read a file, note that this may be smaller than the file size itself.
+      Block_Byte_Count: Unsigned_32; -- The byte count necessary to read a file, note that this may be smaller than the file size itself.
       Using_Endianness: Endianness;  -- The endianess for the buffer to read the file into.
    end record;
+
+   -- Retrieves the block info from the block header of a file.
+   -- @param Path Designates the file to be read.
+   -- @return The block info for the first block in the file.
+   -- @exception File_IO_Error if the file could not be read
+   -- @exception Block_Error if the block header is not valid
+   --
+   function Get_Block_Info (Path: String) return Block_Info;
 
 
    -- Create a new single-item-file type block.
@@ -43,7 +51,7 @@ package BRBON.Static_Unprotected is
    -- @return The block as it was openend.
    -- @exception Invalid_Block When the block is invalid.
    --
-   function Block_Factory_Open_Single_Item_File (Path: String) return Boolean;
+   --function Block_Factory_Open_Single_Item_File (Path: String) return Boolean;
 
    -- Return the number of items in the block.
    -- @param B The block from which to get the number of item.

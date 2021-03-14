@@ -9,10 +9,10 @@ package BRBON.Configure is
    Machine_Endianness: constant Endianness := Little;
 
 
-   -- When set to True, any new storage space allocated will be set to 0.
+   -- When set to True, any storage space used for the first time will be set to 0.
    -- Mostly usefull for testing, to ensure an expected content.
    --
-   Zero_New_Storage: constant Boolean := True;
+   Zero_Storage: constant Boolean := True;
 
 
 end BRBON.Configure;

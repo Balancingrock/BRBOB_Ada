@@ -13,7 +13,7 @@
 --
 --  License:    MIT, see LICENSE file
 --
---  And because I need to make a living:
+--  And because I too need to make a living:
 --
 --   - You can send payment (you choose the amount) via paypal to: sales@balancingrock.nl
 --   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -117,6 +117,10 @@ package BRBON is
    -- Raised when an operation is attempted on the wrong type
    --
    Type_Conflict: exception;
+
+   -- Raised when a buffer is too small
+   --
+   Buffer_Error: exception;
 
    -- Raised when the storage area runs out of space.
    --

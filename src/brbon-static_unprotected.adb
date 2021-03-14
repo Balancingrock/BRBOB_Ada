@@ -36,7 +36,6 @@ package body BRBON.Static_Unprotected is
    function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
    function Swap_Unsigned_32 is new GNAT.Byte_Swapping.Swapped4 (Unsigned_32);
 
-
    function Block_Factory_Create_Single_Item_File
      (
       With_Item_Type: BR_Item_Type := BR_Dictionary;
@@ -78,7 +77,7 @@ package body BRBON.Static_Unprotected is
 
    end Block_Factory_Create_Single_Item_File;
 
-   function Block_Factory_Open_Single_Item_File (Path: String) return Boolean is
+   function Get_Block_Info (Path: String) return Block_Info is
 
       subtype Header_Type is Array_Of_Unsigned_8 (0 .. Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset);
       Header_Buffer: Header_Type := (others => 0);
@@ -162,15 +161,11 @@ package body BRBON.Static_Unprotected is
 
       -- Return the new block
 
-      return True;
+      return (Block_Length, Using_Endianness);
 
-   end Block_Factory_Open_Single_Item_File;
+   end Get_Block_Info;
 
-   function Get_File_Info (Filepath: String) return Block_Info is
-   begin
-      raise Incomplete_Code;
-      return (100, Big);
-   end Get_File_Info;
+
 
    procedure Create_Block_Header (B: in out BR_Block'Class) is
 

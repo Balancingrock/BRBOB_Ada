@@ -9,10 +9,9 @@ with Support; use Support;
 
 package body Container_Tests is
 
-   function Size_0 (Count: in out Integer) return Test_Result is separate;
-   function Size_21 (Count: in out Integer) return Test_Result is separate;
-   function Size_81 (Count: in out Integer) return Test_Result is separate;
-   function Size_1000 (Count: in out Integer) return Test_Result is separate;
+   Buffer: aliased Array_Of_Unsigned_8 := (0..1000 => 0);
+   LBuffer: aliased  Array_Of_Unsigned_8 := (0..1000 => 0);
+
    function Bool_Access (Count: in out Integer) return Test_Result is separate;
    function UInt8_Access (Count: in out Integer) return Test_Result is separate;
    function UInt16_Access (Count: in out Integer) return Test_Result is separate;

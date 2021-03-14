@@ -13,7 +13,7 @@
 --
 --  License:    MIT, see LICENSE file
 --
---  And because I need to make a living:
+--  And because I too need to make a living:
 --
 --   - You can send payment (you choose the amount) via paypal to: sales@balancingrock.nl
 --   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -54,35 +54,33 @@ package body BRBON.Container is
    function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
 
 
-   function Byte_Store_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness) return Byte_Store is
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Byte_Store is
+      Byte_Count: Unsigned_32 := Unsigned_32 (Buffer_Ptr.all'Length);
+      S: Byte_Store;
    begin
-      Byte_Count := Round_Up_To_Nearest_Multiple_of_8 (Max (Byte_Count, (Minimum_Item_Byte_Count (BR_Table) + Minimum_Block_Byte_Count (Single_Item_File))));
-      declare
-         S: Byte_Store (Byte_Count - 1);
-      begin
-         S.Swap := Using_Endianness /= Machine_Endianness;
-         if Zero_New_Storage then
-            S.Data := (others => 0);
-         end if;
-         return S;
-      end;
+      if Byte_Count < (Minimum_Item_Byte_Count (BR_Bool) + Minimum_Block_Byte_Count (Single_Item_File)) then raise Buffer_Error with "Buffer too small"; end if;
+      S.Data := Buffer_Ptr;
+      S.Swap := Using_Endianness /= Machine_Endianness;
+      if Zero_Storage then S.Data.all := (others => 0); end if;
+      return S;
    end Byte_Store_Factory;
 
-   function Byte_Store_Factory (Filepath: String; Using_Endianness: Endianness) return Byte_Store is
+
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Byte_Store is
       File: Ada.Streams.Stream_IO.File_Type;
-      File_Size: Integer_64;
+      File_Size: Unsigned_64;
       Byte_Count: Unsigned_32;
    begin
-      Open (File, In_File, Filepath);
-      File_Size := Integer_64 (Size (File));
-      if File_Size <= Integer_64 (Unsigned_32'Last) then
+      Open (File, In_File, Path);
+      File_Size := Unsigned_64 (Size (File));
+      if File_Size <= Unsigned_64 (Unsigned_32'Last) then
          Byte_Count := Unsigned_32 (File_Size); -- Find out how big the storage area data component should be
          declare
-            Store: Byte_Store (Byte_Count - 1);
+            Store: Byte_Store;
             In_Stream: Stream_Access := Stream (File);
             subtype T is Array_Of_Unsigned_8 (0..Byte_Count-1);
          begin
-            T'Read (In_Stream, Store.Data);
+            T'Read (In_Stream, Store.Data.all);
             Store.Swap := Using_Endianness = Machine_Endianness;
             Close (File);
             return Store;
@@ -102,7 +100,7 @@ package body BRBON.Container is
               Mode => Out_File,
               Name => Filepath);
       Out_Stream := Stream (File);
-      T'Write (Out_Stream, S.Data);
+      T'Write (Out_Stream, S.Data.all);
       Close (File);
    end Write_to_File;
 

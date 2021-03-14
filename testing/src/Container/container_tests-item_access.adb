@@ -2,9 +2,7 @@ separate (Container_Tests)
 
 function Item_Access (Count: in out Integer) return Test_Result is
 
-   Byte_Count: Unsigned_32 := 1000;
-   Container: Byte_Store := Byte_Store_Factory (Byte_Count       => Byte_Count,
-                                                    Using_Endianness => Machine_Endianness);
+   Container: Byte_Store := Byte_Store_Factory (Buffer'Access , Machine_Endianness);
 
    Opt: BR_Item_Options := To_BR_Item_Options (16#45#);
    Flg: BR_Item_Flags := To_BR_Item_Flags (16#3E#);

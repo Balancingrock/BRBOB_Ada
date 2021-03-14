@@ -13,7 +13,7 @@
 --
 --  License:    MIT, see LICENSE file
 --
---  And because I need to make a living:
+--  And because I too need to make a living:
 --
 --   - You can send payment (you choose the amount) via paypal to: sales@balancingrock.nl
 --   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -42,7 +42,6 @@ with Interfaces; use Interfaces;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Configure; use BRBON.Configure;
---with Pointer_Math; use Pointer_Math;
 
 
 -- @summary
@@ -61,7 +60,7 @@ package BRBON.Container is
 
    --  The container to be used for storage/retrieval of byte based data.
    --
-   type Byte_Store (Byte_count: Unsigned_32) is tagged private;
+   type Byte_Store is tagged private;
 
    -- A pointer to a binary store
    --
@@ -72,17 +71,17 @@ package BRBON.Container is
    -- Management
    -- =====================
 
-   -- Create a new empty byte store.
-   -- @param Byte_Count On input the requested number of storage bytes, on exit the actual number of storage bytes.
+   -- Create a new byte store in the provided buffer. The buffer will be nilled if the BRBON.Configure Zero_Storage is set to True.
+   -- @param Buffer_Ptr The memory area to be used for storage.
    -- @param Using_Endianness The endianness (Big or Little) to be used in the storage area.
-   -- @return A storage area.
+   -- @return The new byte store.
    --
-   function Byte_Store_Factory (Byte_Count: in out Unsigned_32; Using_Endianness: Endianness) return Byte_Store;
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Byte_Store;
 
-   -- Create a new byte store with the content of a file.
+   -- Read the contents of the file into the given buffer, then use this as the new Byte_Store.
    -- @param Path The path to a file on the local filesystem that will be read to fill the storage area.
    --
-   function Byte_Store_Factory (Filepath: String; Using_Endianness: Endianness) return Byte_Store;
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Byte_Store;
 
    -- Save the content of the byte store to file.
    -- @param Filepath The location in the filesystem to store the data.
@@ -297,9 +296,9 @@ package BRBON.Container is
 
 private
 
-      type Byte_Store (Byte_count: Unsigned_32) is tagged
+      type Byte_Store is tagged
       record
-         Data: Array_Of_Unsigned_8 (0 .. Byte_Count);
+         Data: Array_Of_Unsigned_8_Ptr;
          Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
       end record;
 
