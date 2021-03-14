@@ -42,7 +42,7 @@ with Interfaces; use Interfaces;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Configure; use BRBON.Configure;
-with Pointer_Math; use Pointer_Math;
+--with Pointer_Math; use Pointer_Math;
 
 
 -- @summary
