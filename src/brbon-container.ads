@@ -79,9 +79,9 @@ package BRBON.Container is
    function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Byte_Store;
 
    -- Read the contents of the file into the given buffer, then use this as the new Byte_Store.
-   -- @param Path The path to a file on the local filesystem that will be read to fill the storage area.
+   -- @param Path The path to a file on the local filesystem that will be read.
    --
-   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Byte_Store;
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Boolean; -- Byte_Store;
 
    -- Save the content of the byte store to file.
    -- @param Filepath The location in the filesystem to store the data.

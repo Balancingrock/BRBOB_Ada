@@ -66,29 +66,13 @@ package body BRBON.Container is
    end Byte_Store_Factory;
 
 
-   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Byte_Store is
-      File: Ada.Streams.Stream_IO.File_Type;
-      File_Size: Unsigned_64;
-      Byte_Count: Unsigned_32;
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Boolean is --Byte_Store is
+      --File: Ada.Streams.Stream_IO.File_Type;
+      --File_Size: Unsigned_64;
+      --Byte_Count: Unsigned_32;
    begin
-      Open (File, In_File, Path);
-      File_Size := Unsigned_64 (Size (File));
-      if File_Size <= Unsigned_64 (Unsigned_32'Last) then
-         Byte_Count := Unsigned_32 (File_Size); -- Find out how big the storage area data component should be
-         declare
-            Store: Byte_Store;
-            In_Stream: Stream_Access := Stream (File);
-            subtype T is Array_Of_Unsigned_8 (0..Byte_Count-1);
-         begin
-            T'Read (In_Stream, Store.Data.all);
-            Store.Swap := Using_Endianness = Machine_Endianness;
-            Close (File);
-            return Store;
-         end;
-      else
-         Close(File);
-         raise File_IO_Error with "File larger than Unsigned_32'Max";
-      end if;
+      raise Incomplete_Code;
+      return False;
    end Byte_Store_Factory;
 
    procedure Write_to_File (S: in out Byte_Store'Class; Filepath: String) is
