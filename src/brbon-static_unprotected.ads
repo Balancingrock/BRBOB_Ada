@@ -6,9 +6,13 @@ with BRBON.Container; use BRBON.Container;
 
 package BRBON.Static_Unprotected is
 
-   -- Controls access to a block.
+   -- Contains a block.
    --
    type BR_Block is tagged private;
+
+   -- Access type for a block
+   --
+   type BR_Block_Ptr is access all BR_Block;
 
    -- Controls access to the static unprotected items in the block.
    --
@@ -18,17 +22,13 @@ package BRBON.Static_Unprotected is
    --
    type File_Status is (Not_Found, Cannot_Read, OK);
 
-   -- Contains information about a file that can be used to create the necessary data structures to open a block file with allocating dynamic memory.
+   -- Contains information about a file that can be used to open a file in a Byte_Store.
    --
-   type Block_File_info is record
-      Status: File_Status;
+   type Block_Info is record
       Byte_Count: Unsigned_32; -- The byte count necessary to read a file, note that this may be smaller than the file size itself.
       Using_Endianness: Endianness;  -- The endianess for the buffer to read the file into.
    end record;
 
-   -- Callback for an operation that allocates a block of memory to read in a file
-   --
-   type Byte_Store_Allocator is access function (Info: Block_File_info) return Byte_Store;
 
    -- Create a new single-item-file type block.
    -- You will need to provide a byte-store. This can be created by the Byte_Store_Factory in BRBON.Container.
@@ -38,17 +38,12 @@ package BRBON.Static_Unprotected is
    --
    function Block_Factory_Create_Single_Item_File (With_Item_Type: BR_Item_Type := BR_Dictionary; In_Byte_Store: Byte_Store_Ptr) return BR_Block;
 
-   -- Returns information about the file necessary to set up a byte store that can contain the file.
-   -- @param Filepath The path to the file to be read.
-   --
-   function Get_File_Info (Filepath: String) return Block_File_info;
-
    -- Open an existing byte store as a block.
-   -- @param B A pointer to the byte store to be used.
-   -- @return Theblock as it was openend.
-   -- @exception Invalid_Block_Structure.
+   -- @param S A byte store with a single-item-file block in it.
+   -- @return The block as it was openend.
+   -- @exception Invalid_Block When the block is invalid.
    --
-   function Block_Factory_Open_Single_Item_File (B: Byte_Store_Ptr) return Boolean; -- BR_Block;
+   function Block_Factory_Open_Single_Item_File (Path: String) return Boolean;
 
    -- Return the number of items in the block.
    -- @param B The block from which to get the number of item.

@@ -89,7 +89,7 @@ package body BRBON.Container is
          end;
       else
          Close(File);
-         raise File_Too_Large;
+         raise File_IO_Error with "File larger than Unsigned_32'Max";
       end if;
    end Byte_Store_Factory;
 

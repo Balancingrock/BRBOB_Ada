@@ -1,3 +1,6 @@
+with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
+with GNAT.Byte_Swapping;
+
 with Item_Static_Unprotected; use Item_Static_Unprotected;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Configure; use BRBON.Configure;
@@ -29,6 +32,9 @@ package body BRBON.Static_Unprotected is
    Type_1_Header_Tail_CRC_16_Offset: Unsigned_32 := 6;        -- 2 bytes
 
    Type_1_Payload_Offset: Unsigned_32 := 8;
+
+   function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
+   function Swap_Unsigned_32 is new GNAT.Byte_Swapping.Swapped4 (Unsigned_32);
 
 
    function Block_Factory_Create_Single_Item_File
@@ -72,36 +78,98 @@ package body BRBON.Static_Unprotected is
 
    end Block_Factory_Create_Single_Item_File;
 
-   function Block_Factory_Open_Single_Item_File (B: Byte_Store_Ptr) return Boolean is --BR_Block is
+   function Block_Factory_Open_Single_Item_File (Path: String) return Boolean is
+
+      subtype Header_Type is Array_Of_Unsigned_8 (0 .. Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset);
+      Header_Buffer: Header_Type := (others => 0);
+
+      File: File_Type;
+      In_Stream: Stream_Access;
+
+      Using_Endianness: Endianness;
+      --Block_Ptr: BR_Block_Ptr;
+
+      Block_Length: Unsigned_32;
+
    begin
 
+      -- Open the file and read the header
+      -- ---------------------------------
+
+      Open (File => File, Mode => In_File, Name => Path);
+
+      if Unsigned_64 (Size (File)) < Unsigned_64 (Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset) then raise File_IO_Error with "File too small"; end if;
+
+      In_Stream := Stream (File);
+
+      Header_Type'Read (In_Stream, Header_Buffer);
+
+
       -- Verify that the header is ok.
+      -- -----------------------------
 
-      if B.Get_Unsigned_8 (Block_Header_Start_Marker_Byte_1_Offset) /= 16#A5# then raise Invalid_Block_Header; end if;
-      if B.Get_Unsigned_8 (Block_Header_Start_Marker_Byte_2_Offset) /= 16#7E# then raise Invalid_Block_Header; end if;
-      if B.Get_Unsigned_8 (Block_Header_Start_Marker_Byte_3_Offset) /= 16#81# then raise Invalid_Block_Header; end if;
-      if B.Get_Unsigned_8 (Block_Header_Start_Marker_Byte_4_Offset) /= 16#5A# then raise Invalid_Block_Header; end if;
+      -- Marker bytes
+      if Header_Buffer (Block_Header_Start_Marker_Byte_1_Offset) /= 16#A5# then raise Invalid_Block with "First header marker not found"; end if;
+      if Header_Buffer (Block_Header_Start_Marker_Byte_2_Offset) /= 16#7E# then raise Invalid_Block with "Second header marker not found"; end if;
+      if Header_Buffer (Block_Header_Start_Marker_Byte_3_Offset) /= 16#81# then raise Invalid_Block with "Third header marker not found"; end if;
+      if Header_Buffer (Block_Header_Start_Marker_Byte_4_Offset) /= 16#5A# then raise Invalid_Block with "Fourth header marker not found"; end if;
 
-      if B.Get_Unsigned_8 (Block_Header_Type_Offset) /= To_Unsigned_8 (Single_Item_File) then raise Illegal_Block_Type; end if;
+      -- Block type
+      if Header_Buffer (Block_Header_Type_Offset) /= To_Unsigned_8 (Single_Item_File) then raise Invalid_Block with "Expected block type 1"; end if;
 
+      -- Block options
       declare
-         Options: BR_Block_Options := To_BR_Block_Options (B.Get_Unsigned_8 (Block_Header_Options_Offset));
+         Options: BR_Block_Options := To_BR_Block_Options (Header_Buffer (Block_Header_Options_Offset));
       begin
-         if Options.Bit_6 or Options.Bit_5 or Options.Bit_4 or Options.Bit_3 or Options.Bit_2 or Options.Bit_1 or Options.Bit_0 then raise Illegal_Block_Options; end if;
-         if Options.Endianness = True and B.Uses_Endianness = Little then raise Endianness_Mismatch; end if;
-         if Options.Endianness = False and B.Uses_Endianness = Big then raise Endianness_Mismatch; end if;
+         if Options.Bit_6 or Options.Bit_5 or Options.Bit_4 or Options.Bit_3 or Options.Bit_2 or Options.Bit_1 or Options.Bit_0 then raise Invalid_Block with "Unexpected options"; end if;
+         Using_Endianness := (if Options.Endianness then Big else Little);
       end;
 
-      raise Incomplete_Code;
+      -- Header size
+      declare
+         Header_Length: Unsigned_16 := To_Unsigned_16 (Header_Buffer (Block_Header_Header_Byte_Count_Offset .. Block_Header_Header_Byte_Count_Offset + 1));
+      begin
+         if Using_Endianness /= Machine_Endianness then Header_Length := Swap_Unsigned_16 (Header_Length); end if;
+         if Unsigned_32 (Header_Length) /= Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset then raise Invalid_Block with "Block header byte count error"; end if;
+      end;
+
+      -- Block size (is not necessarily the same as the file size)
+      Block_Length := To_Unsigned_32 (Header_Buffer (Block_Type_Dependent_Header_Offset + Type_1_Block_Byte_Count_Offset .. Block_Type_Dependent_Header_Offset + Type_1_Block_Byte_Count_Offset + 3));
+      if Using_Endianness /= Machine_Endianness then Block_Length := Swap_Unsigned_32 (Block_Length); end if;
+
+      -- Item count
+      declare
+         Item_Count: Unsigned_16 := To_Unsigned_16 (Header_Buffer (Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_Item_Count_Offset .. Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_Item_Count_Offset + 1));
+      begin
+         if Using_Endianness /= Machine_Endianness then Item_Count := Swap_Unsigned_16 (Item_Count); end if;
+         if Item_Count /= 1 then raise Invalid_Block with "Only 1 item expected"; end if;
+      end;
+
+      -- CRC check
+      declare
+         Expected_CRC: Unsigned_16 := To_Unsigned_16 (Header_Buffer (Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_CRC_16_Offset .. Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_CRC_16_Offset + 1));
+         Actual_CRC: Unsigned_16 := Calculate_CRC_16 (Header_Buffer (0 .. Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_CRC_16_Offset - 1));
+      begin
+         if Using_Endianness /= Machine_Endianness then Expected_CRC := Swap_Unsigned_16 (Expected_CRC); end if;
+         if Expected_CRC /= Actual_CRC then raise Invalid_Block with "CRC check failed"; end if;
+      end;
+
+
+      -- Header check completed with success
+
+      Close (File);
+
+
+      -- Return the new block
 
       return True;
 
    end Block_Factory_Open_Single_Item_File;
 
-   function Get_File_Info (Filepath: String) return Block_File_info is
+   function Get_File_Info (Filepath: String) return Block_Info is
    begin
       raise Incomplete_Code;
-      return (OK, 100, Big);
+      return (100, Big);
    end Get_File_Info;
 
    procedure Create_Block_Header (B: in out BR_Block'Class) is

@@ -96,7 +96,7 @@ package BRBON is
 
    -- Raised when a block does not contain the right block header markers.
    --
-   Invalid_Block_Header: exception;
+   Invalid_Block: exception;
 
    -- Raised when a block contains unspecified option flags.
    --
@@ -138,8 +138,8 @@ package BRBON is
    --
    Enum_Mapping_Failed: exception;
 
-   -- Raised when an attempt is made to open a file larger than Unsigned_32'Last bytes.
+   -- Raised when a file related operation failed. The text details the kind of error.
    --
-   File_Too_Large: exception;
+   File_IO_Error: exception;
 
 end BRBON;
