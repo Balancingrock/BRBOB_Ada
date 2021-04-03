@@ -39,6 +39,7 @@
 -- =====================================================================================================================
 
 with Interfaces; use Interfaces;
+with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Configure; use BRBON.Configure;
@@ -81,14 +82,14 @@ package BRBON.Container is
    -- Read the contents of the file into the given buffer, then use this as the new Byte_Store.
    -- @param Path The path to a file on the local filesystem that will be read.
    --
-   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Boolean; -- Byte_Store;
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Byte_Store;
 
    -- Save the content of the byte store to file.
-   -- @param Filepath The location in the filesystem to store the data.
+   -- @param Path The location in the filesystem to store the data.
    -- @exception File_Too_Large Raised when a file has a byte count > Unsigned_32'Last.
    -- @exception Placeholder Most system defined file associated exceptions
    --
-   procedure Write_to_File (S: in out Byte_Store'Class; Filepath: String);
+   procedure Write_To_File (S: in out Byte_Store'Class; Path: String);
 
    -- Returns the byte count of the store
    --

@@ -16,7 +16,7 @@ begin
    Container.Set_String (0, Str);
 
    begin
-      Container.Write_to_File (Filepath => Path);
+      Container.Write_To_File (Path);
    exception
       when Ada.IO_Exceptions.Name_Error =>
          Put_Line (" - Failed: Cannot store file in given path: " & Path);

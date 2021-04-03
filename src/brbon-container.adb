@@ -66,23 +66,34 @@ package body BRBON.Container is
    end Byte_Store_Factory;
 
 
-   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Boolean is --Byte_Store is
-      --File: Ada.Streams.Stream_IO.File_Type;
-      --File_Size: Unsigned_64;
-      --Byte_Count: Unsigned_32;
+   function Byte_Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Byte_Store is
+      File: Ada.Streams.Stream_IO.File_Type;
+      File_Size: Unsigned_64;
+      In_Stream: Stream_Access;
+      S: Byte_Store;
    begin
-      raise Incomplete_Code;
-      return False;
+      Open (File => File,
+            Mode => In_File,
+            Name => Path);
+      File_Size := Unsigned_64 (Size (File));
+      In_Stream := Stream(File);
+      if File_Size > Buffer_Ptr.all'Length then
+         raise BRBON.Storage_Error with "File too large for buffer";
+      end if;
+      Array_Of_Unsigned_8'Read (In_Stream, Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
+      S.Data := Buffer_Ptr;
+      S.Swap := Using_Endianness /= Machine_Endianness;
+      return S;
    end Byte_Store_Factory;
 
-   procedure Write_to_File (S: in out Byte_Store'Class; Filepath: String) is
+   procedure Write_to_File (S: in out Byte_Store'Class; Path: String) is
       File: Ada.Streams.Stream_IO.File_Type;
       subtype T is Array_Of_Unsigned_8 (S.Data'First .. S.Data'Last);
       Out_Stream: Stream_Access;
    begin
       Create (File => File,
               Mode => Out_File,
-              Name => Filepath);
+              Name => Path);
       Out_Stream := Stream (File);
       T'Write (Out_Stream, S.Data.all);
       Close (File);
