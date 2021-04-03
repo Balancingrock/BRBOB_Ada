@@ -9,6 +9,6 @@ package Support is
 
    function Put_As_Line (Arr: in Array_Of_Unsigned_8) return String;
 
-   function Verify_Small_Bytes (Container: in out Byte_Store; Offset: Unsigned_32; Expected: Array_Of_Unsigned_8) return Test_Result;
+   function Verify_Small_Bytes (Container: in out Store; Offset: Unsigned_32; Expected: Array_Of_Unsigned_8) return Test_Result;
 
 end Support;

@@ -5,7 +5,7 @@ separate (Container_Tests)
 function Read_Write (Count: in out Integer) return Test_Result is
 
 
-   Container: Byte_Store := Byte_Store_Factory (Buffer'Access, Machine_Endianness);
+   Container: Store := Store_Factory (Buffer'Access, Machine_Endianness);
 
    Str: String := "Hello";
 
@@ -25,7 +25,7 @@ begin
 
    declare
 
-      Second: Byte_Store := Byte_Store_Factory (Buffer'Access, Path, Machine_Endianness);
+      Second: Store := Store_Factory (Buffer'Access, Path, Machine_Endianness);
       Act: String := Second.Get_String (Offset => 0, Length => 5);
 
    begin

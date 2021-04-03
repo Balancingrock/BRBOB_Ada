@@ -2,7 +2,7 @@ separate (Container_Tests)
 
 function Array_Access (Count: in out Integer) return Test_Result is
 
-   Container: Byte_Store := Byte_Store_Factory (Buffer'Access, Machine_Endianness);
+   Container: Store := Store_Factory (Buffer'Access, Machine_Endianness);
 
    Arr: Array_Of_Unsigned_8 := (16#12#, 16#33#, 16#A6#);
 

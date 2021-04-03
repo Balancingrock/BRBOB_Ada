@@ -2,12 +2,12 @@ separate (Container_Tests)
 
 function Int32_Access (Count: in out Integer) return Test_Result is
 
-   Big_Container: Byte_Store := Byte_Store_Factory (Buffer'Access, Big);
-   Little_Container: Byte_Store := Byte_Store_Factory (LBuffer'Access, Little);
+   Big_Container: Store := Store_Factory (Buffer'Access, Big);
+   Little_Container: Store := Store_Factory (LBuffer'Access, Little);
    TCount: Integer := 0;
 
 
-   function Verify (Container: Byte_Store; Location: Unsigned_32; Expected: Integer_32) return Test_Result is
+   function Verify (Container: Store; Location: Unsigned_32; Expected: Integer_32) return Test_Result is
 
       Actual: Integer_32 := Container.Get_Integer_32 (Location);
 
@@ -30,7 +30,7 @@ function Int32_Access (Count: in out Integer) return Test_Result is
    end Verify;
 
 
-   function Test (Container: in out Byte_Store; Location: Unsigned_32; Value: Integer_32) return Test_Result is
+   function Test (Container: in out Store; Location: Unsigned_32; Value: Integer_32) return Test_Result is
 
       Result: Test_Result;
 

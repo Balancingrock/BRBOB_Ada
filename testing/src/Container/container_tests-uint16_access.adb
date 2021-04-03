@@ -3,12 +3,12 @@ separate (Container_Tests)
 function UInt16_Access (Count: in out Integer) return Test_Result is
 
 
-   Big_Container: Byte_Store := Byte_Store_Factory (Buffer'Access, Big);
-   Little_Container: Byte_Store := Byte_Store_Factory (LBuffer'Access, Little);
+   Big_Container: Store := Store_Factory (Buffer'Access, Big);
+   Little_Container: Store := Store_Factory (LBuffer'Access, Little);
    TCount: Integer := 0;
 
 
-   function Verify (Container: Byte_Store; Location: Unsigned_32; Expected: Unsigned_16) return Test_Result is
+   function Verify (Container: Store; Location: Unsigned_32; Expected: Unsigned_16) return Test_Result is
 
       Actual: Unsigned_16 := Container.Get_Unsigned_16 (Location);
 
@@ -31,7 +31,7 @@ function UInt16_Access (Count: in out Integer) return Test_Result is
    end Verify;
 
 
-   function Test (Container: in out Byte_Store; Location: Unsigned_32; Value: Unsigned_16) return Test_Result is
+   function Test (Container: in out Store; Location: Unsigned_32; Value: Unsigned_16) return Test_Result is
 
       Result: Test_Result;
 

@@ -34,7 +34,7 @@ package body Support is
    end Put_As_Line;
 
 
-   function Verify_Small_Bytes (Container: in out Byte_Store; Offset: Unsigned_32; Expected: Array_Of_Unsigned_8) return Test_Result is
+   function Verify_Small_Bytes (Container: in out Store; Offset: Unsigned_32; Expected: Array_Of_Unsigned_8) return Test_Result is
 
       Actual: Array_Of_Unsigned_8 (Expected'Range);
 
