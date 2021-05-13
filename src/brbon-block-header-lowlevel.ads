@@ -1,32 +1,8 @@
-with Interfaces; use Interfaces;
-
-with BRBON.Types; use BRBON.Types;
-with BRBON.Container; -- use BRBON.Container;
-
-
-package BRBON.Block_Header is
-
-   Block_Header_Type_1_Byte_Count: Unsigned_32 := 70;
-
-   -- A block header
-   --
-   type Block_Header is tagged private;
-
-   -- A block header pointer
-   --
-   type Block_Header_Ptr is access Block_Header;
-
-
-   -- Create a type 1 block header in the given memory area with the given endianness.
-   -- @param Memory_Area_Ptr The memory area where the block header should be constrcuted & maintained.
-   -- @param Using_Endianness The endianness to be used in the header.
-   -- @return A block header.
-   --
-   function Block_Header_Type_1_Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Block_Header;
+package BRBON.Block.Header.LowLevel is
 
    -- Set the block synchronization header byte 1 to the expected value.
    --
-   procedure Set_Synchronization_Byte_1 (H: in out Block_Header'class);
+   procedure Set_Synchronization_Byte_1 (H: in Block_Header_Ptr);
    pragma inline (Set_Synchronization_Byte_1);
 
    -- Verifiy that the first byte of the block synchronisation header has the correct value.
@@ -37,7 +13,7 @@ package BRBON.Block_Header is
 
    -- Set the block synchronization header byte 2 to the expected value.
    --
-   procedure Set_Synchronization_Byte_2 (H: in out Block_Header'class);
+   procedure Set_Synchronization_Byte_2 (H: in Block_Header_Ptr);
    pragma inline (Set_Synchronization_Byte_2);
 
    -- Verifiy that the second byte of the block synchronisation header has the correct value.
@@ -48,7 +24,7 @@ package BRBON.Block_Header is
 
    -- Set the block synchronization header byte 3 to the expected value.
    --
-   procedure Set_Synchronization_Byte_3 (H: in out Block_Header'class);
+   procedure Set_Synchronization_Byte_3 (H: in Block_Header_Ptr);
    pragma inline (Set_Synchronization_Byte_3);
 
    -- Verifiy that the thrid byte of the block synchronisation header has the correct value.
@@ -60,7 +36,7 @@ package BRBON.Block_Header is
    -- Set the block synchronization header byte 4 to the expected value for the endianness given at creation.
    -- Side effect: Afterwards the endianness can be retrieved with Get_Endianness.
    --
-   procedure Set_Synchronization_Byte_4 (H: in out Block_Header'class);
+   procedure Set_Synchronization_Byte_4 (H: in Block_Header_Ptr);
    pragma inline (Set_Synchronization_Byte_4);
 
    -- Verifiy that the fourth byte of the block synchronisation header has the correct value.
@@ -367,12 +343,5 @@ package BRBON.Block_Header is
    function Get_Block_Header_Crc16 (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
    pragma inline (Get_Block_Header_Crc16);
 
-private
 
-   type Block_Header is tagged
-      record
-         Store: BRBON.Container.Store;
-         Endianness: BRBON.Types.Endianness; -- Set after verification/assignment of synch byte 4
-      end record;
-
-end BRBON.Block_Header;
+end BRBON.Block.Header.LowLevel;

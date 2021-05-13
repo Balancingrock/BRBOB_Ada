@@ -1,7 +1,4 @@
-with Ada.Unchecked_Conversion;
-
-
-package body BRBON.Block_Header is
+package body BRBON.Block.Header.LowLevel is
 
    Block_Synchronization_Byte_1_Offset:      constant Unsigned_32 := 16#00#; -- 1 byte
    Block_Synchronization_Byte_2_Offset:      constant Unsigned_32 := 16#01#; -- 1 byte
@@ -55,17 +52,7 @@ package body BRBON.Block_Header is
    Block_Synchronization_Byte_4_Big_Endian_Expected_Value: constant Unsigned_8 := 16#A5#;
 
 
-   function Block_Header_Type_1_Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Block_Header is
-      H: Block_Header;
-      Store: BRBON.Container.Store := BRBON.Container.Store_Factory (Memory_Area_Ptr, Using_Endianness);
-   begin
-      H.Store := Store;
-      H.Endianness := Using_Endianness;
-      return H;
-   end Block_Header_Type_1_Factory;
-
-
-   procedure Set_Synchronization_Byte_1 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_1 (H: in Block_Header_Ptr) is
    begin
       H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_1_Offset, Block_Synchronization_Byte_1_Expected_Value);
    end Set_Synchronization_Byte_1;
@@ -77,7 +64,7 @@ package body BRBON.Block_Header is
    end Verify_Synchronization_Byte_1;
 
 
-   procedure Set_Synchronization_Byte_2 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_2 (H: in Block_Header_Ptr) is
    begin
       H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_2_Offset, Block_Synchronization_Byte_2_Expected_Value);
    end Set_Synchronization_Byte_2;
@@ -89,7 +76,7 @@ package body BRBON.Block_Header is
    end Verify_Synchronization_Byte_2;
 
 
-   procedure Set_Synchronization_Byte_3 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_3 (H: in Block_Header_Ptr) is
    begin
       H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_3_Offset, Block_Synchronization_Byte_3_Expected_Value);
    end Set_Synchronization_Byte_3;
@@ -101,7 +88,7 @@ package body BRBON.Block_Header is
    end Verify_Synchronization_Byte_3;
 
 
-   procedure Set_Synchronization_Byte_4 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_4 (H: in Block_Header_Ptr) is
    begin
       if H.Endianness = Little then
          H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_4_Offset, Block_Synchronization_Byte_4_Little_Endian_Expected_Value);
@@ -133,7 +120,7 @@ package body BRBON.Block_Header is
 
    function Verify_Synchronization_Bytes (H: in out Block_Header'class) return Boolean is
    begin
-      if Verify_Synchronization_Byte_1 (H) = false then return false; end if;
+      --if Verify_Synchronization_Byte_1 (H) = false then return false; end if;
       if Verify_Synchronization_Byte_2 (H) = false then return false; end if;
       if Verify_Synchronization_Byte_3 (H) = false then return false; end if;
       return Verify_Synchronization_Byte_4 (H);
@@ -494,4 +481,4 @@ package body BRBON.Block_Header is
    end Get_Block_Header_Crc16;
 
 
-end BRBON.Block_Header;
+end Brbon.Block.Header.LowLevel;

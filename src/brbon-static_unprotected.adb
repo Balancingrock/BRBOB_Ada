@@ -5,7 +5,7 @@ with Item_Static_Unprotected; use Item_Static_Unprotected;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Configure; use BRBON.Configure;
 with CRC_Package; use CRC_Package;
-with BRBON.Block_Header; use BRBON.Block_Header;
+with BRBON.Block.Header; use BRBON.Block.Header;
 
 
 package body BRBON.Static_Unprotected is
