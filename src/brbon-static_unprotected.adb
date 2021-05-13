@@ -5,33 +5,11 @@ with Item_Static_Unprotected; use Item_Static_Unprotected;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Configure; use BRBON.Configure;
 with CRC_Package; use CRC_Package;
+with BRBON.Block_Header; use BRBON.Block_Header;
 
 
 package body BRBON.Static_Unprotected is
 
-
-   -- First 32 bits
-   Block_Header_Start_Marker_Byte_1_Offset: Unsigned_32 := 0; -- 1 byte
-   Block_Header_Start_Marker_Byte_2_Offset: Unsigned_32 := 1; -- 1 byte
-   Block_Header_Start_Marker_Byte_3_Offset: Unsigned_32 := 2; -- 1 byte
-   Block_Header_Start_Marker_Byte_4_Offset: Unsigned_32 := 3; -- 1 byte
-
-   -- Second 32 bits
-   Block_Header_Type_Offset: Unsigned_32 := 4;                -- 1 byte
-   Block_Header_Options_Offset: Unsigned_32 := 5;             -- 1 byte
-   Block_Header_Header_Byte_Count_Offset: Unsigned_32 := 6;   -- 2 bytes
-
-   Block_Type_Dependent_Header_Offset: Unsigned_32 := 8;
-
-
-   -- Type 1: Single file
-
-   Type_1_Block_Byte_Count_Offset: Unsigned_32 := 0;          -- 4 bytes
-
-   Type_1_Header_Tail_Item_Count_Offset: Unsigned_32 := 4;    -- 2 bytes
-   Type_1_Header_Tail_CRC_16_Offset: Unsigned_32 := 6;        -- 2 bytes
-
-   Type_1_Payload_Offset: Unsigned_32 := 8;
 
    function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
    function Swap_Unsigned_32 is new GNAT.Byte_Swapping.Swapped4 (Unsigned_32);
@@ -48,7 +26,7 @@ package body BRBON.Static_Unprotected is
 
       -- Set the offset for the first item
       --
-      S.First_Item_Offset := Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset;
+--      S.First_Item_Offset := Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset;
 
       -- Create a shortcut (Item_Access) for the first item
       --
@@ -65,7 +43,7 @@ package body BRBON.Static_Unprotected is
       --
       S.Block_Type := Single_Item_File;
       S.Free_Area_Offset := 0;
-      S.Update_Free_Area_Offset (Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset + A.Item_Byte_Count); -- Will also set the block header
+--      S.Update_Free_Area_Offset (Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset + A.Item_Byte_Count); -- Will also set the block header
 
 
    end Create_Block_Single_Item_File;
@@ -176,22 +154,24 @@ package body BRBON.Static_Unprotected is
 
    begin
 
-      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_1_Offset, 16#A5#);
-      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_2_Offset, 16#7E#);
-      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_3_Offset, 16#81#);
-      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_4_Offset, 16#5A#);
-      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Type_Offset, To_Unsigned_8 (Single_Item_File));
-      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Options_Offset, To_Unsigned_8 (Block_Options));
+--      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_1_Offset, 16#A5#);
+--      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_2_Offset, 16#7E#);
+--      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_3_Offset, 16#81#);
+--      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_4_Offset, 16#5A#);
+--      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Type_Offset, To_Unsigned_8 (Single_Item_File));
+--      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Options_Offset, To_Unsigned_8 (Block_Options));
 
+      null;
    end;
 
 
    procedure Create_Block_Type_1_Single_Item_File (S: in out Static_Unprotected_Store'Class) is
    begin
-      S.Create_Block_Header;
-      S.Store_Ptr.Set_Unsigned_32 (Block_Type_Dependent_Header_Offset + Type_1_Block_Byte_Count_Offset, 0);        -- Is updated continously
-      S.Store_Ptr.Set_Unsigned_16 (Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_Item_Count_Offset, 1);  -- Should always be 1 for a type 1 block
-      S.Store_Ptr.Set_Unsigned_16 (Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_CRC_16_Offset, 0);      -- Will need to be filled in before saving to file
+--      S.Create_Block_Header;
+--      S.Store_Ptr.Set_Unsigned_32 (Block_Type_Dependent_Header_Offset + Type_1_Block_Byte_Count_Offset, 0);        -- Is updated continously
+--      S.Store_Ptr.Set_Unsigned_16 (Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_Item_Count_Offset, 1);  -- Should always be 1 for a type 1 block
+--      S.Store_Ptr.Set_Unsigned_16 (Block_Type_Dependent_Header_Offset + Type_1_Header_Tail_CRC_16_Offset, 0);      -- Will need to be filled in before saving to file
+      null;
    end Create_Block_Type_1_Single_Item_File;
 
 
@@ -224,11 +204,12 @@ package body BRBON.Static_Unprotected is
 
    procedure Update_Free_Area_Offset (S: in out Static_Unprotected_Store'Class; Increment: Unsigned_32) is
    begin
-      S.Free_Area_Offset := S.Free_Area_Offset + Increment;
-      case S.Block_Type is
-         when Single_Item_File => S.Store_Ptr.Set_Unsigned_32 (Block_Type_Dependent_Header_Offset + Type_1_Block_Byte_Count_Offset, S.Free_Area_Offset);
-         when others => raise Incomplete_Code;
-      end case;
+--      S.Free_Area_Offset := S.Free_Area_Offset + Increment;
+--      case S.Block_Type is
+--         when Single_Item_File => S.Store_Ptr.Set_Unsigned_32 (Block_Type_Dependent_Header_Offset + Type_1_Block_Byte_Count_Offset, S.Free_Area_Offset);
+--         when others => raise Incomplete_Code;
+--      end case;
+      null;
    end Update_Free_Area_Offset;
 
 
