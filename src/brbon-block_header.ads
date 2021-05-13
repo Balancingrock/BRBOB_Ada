@@ -16,20 +16,13 @@ package BRBON.Block_Header is
    --
    type Block_Header_Ptr is access Block_Header;
 
-   -- The memory area for a block header type 1
-   --
-   subtype Block_Header_Type_1_Memory_Area is Array_Of_Unsigned_8 (0 .. Block_Header_Type_1_Byte_Count - 1);
-
-   -- The pointer to a memory area for a block header type 1
-   --
-   type Block_Header_Type_1_Memory_Area_Ptr is access Block_Header_Type_1_Memory_Area;
 
    -- Create a type 1 block header in the given memory area with the given endianness.
    -- @param Memory_Area_Ptr The memory area where the block header should be constrcuted & maintained.
    -- @param Using_Endianness The endianness to be used in the header.
    -- @return A block header.
    --
-   function Block_Header_Type_1_Factory (Memory_Area_Ptr: Block_Header_Type_1_Memory_Area_Ptr; Using_Endianness: Endianness) return Block_Header;
+   function Block_Header_Type_1_Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Block_Header;
 
    -- Set the block synchronization header byte 1 to the expected value.
    --
@@ -95,13 +88,13 @@ package BRBON.Block_Header is
 
    -- Set the value for the first reserved field in the block header.
    --
-   procedure Set_Reserved_1 (H: in out Block_Header'class; Value: Unsigned_16);
-   pragma inline (Set_Reserved_1);
+   procedure Set_Block_Options (H: in out Block_Header'class; Value: Unsigned_16);
+   pragma inline (Set_Block_Options);
 
    -- Returns the value of the first reserved field in the block header.
    --
-   function Get_Reserved_1 (H: in out Block_Header'class) return Unsigned_16;
-   pragma inline (Get_Reserved_1);
+   function Get_Block_Options (H: in out Block_Header'class) return Unsigned_16;
+   pragma inline (Get_Block_Options);
 
    -- Set the byte count for the complete block.
    -- This value is optional, and initialized to "not used" = 16#FFFF_FFFF#.
@@ -254,15 +247,25 @@ package BRBON.Block_Header is
    function Get_Block_Path_Prefix_Offset (H: in out Block_Header'class) return Unsigned_16;
    pragma inline (Get_Block_Path_Prefix_Offset);
 
-   -- Set the value for the first reserved field in the block header.
+   -- Set the value for the byte count of the Acquisition URL field.
    --
-   procedure Set_Reserved_2 (H: in out Block_Header'class; Value: Unsigned_32);
-   pragma inline (Set_Reserved_2);
+   procedure Set_Acquisition_URL_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16);
+   pragma inline (Set_Acquisition_URL_Byte_Count);
 
-   -- Returns the value of the first reserved field in the block header.
+   -- Returns the value of the byte count of the Acquisition URL field.
    --
-   function Get_Reserved_2 (H: in out Block_Header'class) return Unsigned_32;
-   pragma inline (Get_Reserved_2);
+   function Get_Acquisition_URL_Byte_Count (H: in out Block_Header'class) return Unsigned_16;
+   pragma inline (Get_Acquisition_URL_Byte_Count);
+
+   -- Set the value for the offset of the Acquisition URL field.
+   --
+   procedure Set_Acquisition_URL_Offset (H: in out Block_Header'class; Value: Unsigned_16);
+   pragma inline (Set_Acquisition_URL_Offset);
+
+   -- Returns the value of the offset of the Acquisition URL field.
+   --
+   function Get_Acquisition_URL_Offset (H: in out Block_Header'class) return Unsigned_16;
+   pragma inline (Get_Acquisition_URL_Offset);
 
    -- Set the byte count of the target list field
    --
@@ -334,25 +337,25 @@ package BRBON.Block_Header is
    function Get_Block_Expiry_Timestamp (H: in out Block_Header'class) return Unsigned_64;
    pragma inline (Get_Block_Expiry_Timestamp);
 
-   -- Set the reserved field 3 value, first 32 bits.
+   -- Set the reserved field 1 value, first 32 bits.
    --
-   procedure Set_Reserved_3a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32);
-   pragma inline (Set_Reserved_3a);
+   procedure Set_Reserved_1a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32);
+   pragma inline (Set_Reserved_1a);
 
-   -- Return the reserved 3 value, first 32 bits.
+   -- Return the reserved 1 value, first 32 bits.
    --
-   function Get_Reserved_3a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32;
-   pragma inline (Get_Reserved_3a);
+   function Get_Reserved_1a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32;
+   pragma inline (Get_Reserved_1a);
 
-   -- Set the reserved field 3 value, last 16 bits.
+   -- Set the reserved field 1 value, last 16 bits.
    --
-   procedure Set_Reserved_3b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16);
-   pragma inline (Set_Reserved_3b);
+   procedure Set_Reserved_1b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16);
+   pragma inline (Set_Reserved_1b);
 
-   -- Return the reserved 3 value, first 16 bits.
+   -- Return the reserved 1 value, first 16 bits.
    --
-   function Get_Reserved_3b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
-   pragma inline (Get_Reserved_3b);
+   function Get_Reserved_1b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
+   pragma inline (Get_Reserved_1b);
 
    -- Set the CRC16 value for the entire block header.
    --

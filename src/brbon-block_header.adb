@@ -8,7 +8,7 @@ package body BRBON.Block_Header is
    Block_Synchronization_Byte_3_Offset:      constant Unsigned_32 := 16#02#; -- 1 byte
    Block_Synchronization_Byte_4_Offset:      constant Unsigned_32 := 16#03#; -- 1 byte
    Block_Type_Offset:                        constant Unsigned_32 := 16#04#; -- 2 bytes
-   Block_Reserved_1_Offset:                  constant Unsigned_32 := 16#06#; -- 2 bytes
+   Block_Options_Offset:                     constant Unsigned_32 := 16#06#; -- 2 bytes
 
    Block_Byte_Count_Offset:                  constant Unsigned_32 := 16#08#; -- 4 bytes
    Block_Header_Byte_Count_Offset:           constant Unsigned_32 := 16#0C#; -- 2 Bytes
@@ -28,7 +28,8 @@ package body BRBON.Block_Header is
 
    Block_Extension_Offset_Offset:            constant Unsigned_32 := 16#20#; -- 2 Bytes
    Block_Path_Prefix_Offset_Offset:          constant Unsigned_32 := 16#22#; -- 2 Bytes
-   Block_Reserved_2_Offset:                  constant Unsigned_32 := 16#24#; -- 4 Bytes
+   Block_Acquisition_URL_Byte_Count_Offset:  constant Unsigned_32 := 16#24#; -- 2 Bytes
+   Block_Acquisition_URL_Offset_Offset:      constant Unsigned_32 := 16#26#; -- 2 Bytes
 
    Block_Target_List_Byte_Count_Offset:      constant Unsigned_32 := 16#28#; -- 2 Bytes
    Block_Target_List_Offset_Offset:          constant Unsigned_32 := 16#2A#; -- 2 Bytes
@@ -43,8 +44,8 @@ package body BRBON.Block_Header is
 
    Block_Header_Field_Storage_Type_1_Offset: constant Unsigned_32 := 16#48#; -- M * 8 Bytes
 
-   Block_Reserved_3a_Offset:                 constant Unsigned_32 := 8;
-   Block_Reserved_3b_Offset:                 constant Unsigned_32 := 4;
+   Block_Reserved_1a_Offset:                 constant Unsigned_32 := 8;
+   Block_Reserved_1b_Offset:                 constant Unsigned_32 := 4;
    Block_Header_CRC16_Offset:                constant Unsigned_32 := 2;
 
    Block_Synchronization_Byte_1_Expected_Value: constant Unsigned_8 := 16#96#;
@@ -53,13 +54,10 @@ package body BRBON.Block_Header is
    Block_Synchronization_Byte_4_Little_Endian_Expected_Value: constant Unsigned_8 := 16#5A#;
    Block_Synchronization_Byte_4_Big_Endian_Expected_Value: constant Unsigned_8 := 16#A5#;
 
-   pragma Suppress (Size_Check);
-   function To_Array_Of_Unsigned_8_Ptr is new Ada.Unchecked_Conversion (Block_Header_Type_1_Memory_Area_Ptr, Array_Of_Unsigned_8_Ptr);
 
-
-   function Block_Header_Type_1_Factory (Memory_Area_Ptr: Block_Header_Type_1_Memory_Area_Ptr; Using_Endianness: Endianness) return Block_Header is
+   function Block_Header_Type_1_Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Block_Header is
       H: Block_Header;
-      Store: BRBON.Container.Store := BRBON.Container.Store_Factory (To_Array_Of_Unsigned_8_Ptr (Memory_Area_Ptr), Using_Endianness);
+      Store: BRBON.Container.Store := BRBON.Container.Store_Factory (Memory_Area_Ptr, Using_Endianness);
    begin
       H.Store := Store;
       H.Endianness := Using_Endianness;
@@ -154,16 +152,16 @@ package body BRBON.Block_Header is
    end Get_Block_Type;
 
 
-   procedure Set_Reserved_1 (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Options (H: in out Block_Header'class; Value: Unsigned_16) is
    begin
-      H.Store.Set_Unsigned_16 (Block_Reserved_1_Offset, Value);
-   end Set_Reserved_1;
+      H.Store.Set_Unsigned_16 (Block_Options_Offset, Value);
+   end Set_Block_Options;
 
 
-   function Get_Reserved_1 (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Options (H: in out Block_Header'class) return Unsigned_16 is
    begin
-      return H.Store.Get_Unsigned_16 (Block_Reserved_1_Offset);
-   end Get_Reserved_1;
+      return H.Store.Get_Unsigned_16 (Block_Options_Offset);
+   end Get_Block_Options;
 
 
    procedure Set_Block_Byte_Count (H: in out Block_Header'class; Value: Unsigned_32) is
@@ -346,16 +344,28 @@ package body BRBON.Block_Header is
    end Get_Block_Path_Prefix_Offset;
 
 
-   procedure Set_Reserved_2 (H: in out Block_Header'class; Value: Unsigned_32) is
+   procedure Set_Acquisition_URL_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
    begin
-      H.Store.Set_Unsigned_32 (Block_Reserved_2_Offset, Value);
-   end Set_Reserved_2;
+      H.Store.Set_Unsigned_16 (Block_Acquisition_URL_Byte_Count_Offset, Value);
+   end Set_Acquisition_URL_Byte_Count;
 
 
-   function Get_Reserved_2 (H: in out Block_Header'class) return Unsigned_32 is
+   function Get_Acquisition_URL_Byte_Count (H: in out Block_Header'class) return Unsigned_16 is
    begin
-      return H.Store.Get_Unsigned_32 (Block_Reserved_2_Offset);
-   end Get_Reserved_2;
+      return H.Store.Get_Unsigned_16 (Block_Acquisition_URL_Byte_Count_Offset);
+   end Get_Acquisition_URL_Byte_Count;
+
+
+   procedure Set_Acquisition_URL_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   begin
+      H.Store.Set_Unsigned_16 (Block_Acquisition_URL_Offset_Offset, Value);
+   end Set_Acquisition_URL_Offset;
+
+
+   function Get_Acquisition_URL_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   begin
+      return H.Store.Get_Unsigned_16 (Block_Acquisition_URL_Offset_Offset);
+   end Get_Acquisition_URL_Offset;
 
 
    procedure Set_Block_Target_List_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
@@ -442,32 +452,32 @@ package body BRBON.Block_Header is
    end Get_Block_Expiry_Timestamp;
 
 
-   procedure Set_Reserved_3a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32) is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_3a_Offset;
+   procedure Set_Reserved_1a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32) is
+      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1a_Offset;
    begin
       H.Store.Set_Unsigned_32 (Offset, Value);
-   end Set_Reserved_3a;
+   end Set_Reserved_1a;
 
 
-   function Get_Reserved_3a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32 is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_3a_Offset;
+   function Get_Reserved_1a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32 is
+      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1a_Offset;
    begin
       return H.Store.Get_Unsigned_32 (Offset);
-   end Get_Reserved_3a;
+   end Get_Reserved_1a;
 
 
-   procedure Set_Reserved_3b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_3b_Offset;
+   procedure Set_Reserved_1b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
+      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1b_Offset;
    begin
       H.Store.Set_Unsigned_16 (Offset, Value);
-   end Set_Reserved_3b;
+   end Set_Reserved_1b;
 
 
-   function Get_Reserved_3b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_3b_Offset;
+   function Get_Reserved_1b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
+      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1b_Offset;
    begin
       return H.Store.Get_Unsigned_16 (Offset);
-   end Get_Reserved_3b;
+   end Get_Reserved_1b;
 
 
    procedure Set_Block_Header_Crc16 (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
