@@ -143,47 +143,12 @@ package BRBON.Types is
      );
 
 
-   -- The block options
-   --
-   type BR_Block_Options is
-      record
-         Endianness: Boolean;
-         Bit_6: Boolean;
-         Bit_5: Boolean;
-         Bit_4: Boolean;
-         Bit_3: Boolean;
-         Bit_2: Boolean;
-         Bit_1: Boolean;
-         Bit_0: Boolean;
-      end record;
-   for BR_Block_Options use
-      record
-         Endianness at 0 range 7..7;
-         Bit_6 at 0 range 6..6;
-         Bit_5 at 0 range 5..5;
-         Bit_4 at 0 range 4..4;
-         Bit_3 at 0 range 3..3;
-         Bit_2 at 0 range 2..2;
-         Bit_1 at 0 range 1..1;
-         Bit_0 at 0 range 0..0;
-      end record;
-   for BR_Block_Options'Size use 8;
-
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Block_Options, Unsigned_8);
-   function To_BR_Block_Options is new Ada.Unchecked_Conversion (Unsigned_8, BR_Block_Options);
-
-
    -- Access to bytes in the byte store
    --
    type Unsigned_8_Ptr is access all Unsigned_8;
 
 
    type String_Ptr is access all String;
-
-   function Max (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A > B then A else B);
-   function Min (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A < B then A else B);
-   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_32) return Unsigned_32 is (if (A and 16#07#) = 0 then A else (A + 8) and 16#FFFFFFF8#);
-   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_8) return Unsigned_8 is (if (A and 16#07#) = 0 then A else (A + 8) and 16#F8#);
 
 
    -- Option associated with stored items (currently unused)

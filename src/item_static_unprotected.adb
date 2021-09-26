@@ -1,5 +1,8 @@
 with Crc_Package; use Crc_Package;
 
+with BRBON.Utils;
+
+
 package body Item_Static_Unprotected is
 
 
@@ -843,7 +846,7 @@ package body Item_Static_Unprotected is
       Assistent.Quick_Check := To_Unsigned_32 (Quick_Check);
 
       if Assistent.Ascii_Code_Count > 0 then
-         Assistent.Name_Field_Byte_Count := Round_Up_To_Nearest_Multiple_Of_8 (3 + Assistent.Ascii_Code_Count);
+         Assistent.Name_Field_Byte_Count := BRBON.Utils.Round_Up_To_Nearest_Multiple_Of_8 (3 + Assistent.Ascii_Code_Count);
       else
          Assistent.Name_Field_Byte_Count := 0;
       end if;

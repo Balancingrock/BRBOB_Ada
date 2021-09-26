@@ -1,4 +1,5 @@
 with Interfaces; use Interfaces;
+with Ada.Unchecked_Conversion;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container;
@@ -13,6 +14,53 @@ package BRBON.Block.Header is
    -- A block header pointer
    --
    type Block_Header_Ptr is access all Block_Header;
+
+   -- The block options
+   --
+   type Options is
+      record
+         ReAcquisitionIsPossible: Boolean;
+         Bit_01: Boolean;
+         Bit_02: Boolean;
+         Bit_03: Boolean;
+         Bit_04: Boolean;
+         Bit_05: Boolean;
+         Bit_06: Boolean;
+         Bit_07: Boolean;
+         Bit_08: Boolean;
+         Bit_09: Boolean;
+         Bit_10: Boolean;
+         Bit_11: Boolean;
+         Bit_12: Boolean;
+         Bit_13: Boolean;
+         Bit_14: Boolean;
+         Bit_15: Boolean;
+      end record;
+   for Options use
+      record
+         ReAcquisitionIsPossible at 0 range 0..0;
+         Bit_01 at 0 range 1..1;
+         Bit_02 at 0 range 2..2;
+         Bit_03 at 0 range 3..3;
+         Bit_04 at 0 range 4..4;
+         Bit_05 at 0 range 5..5;
+         Bit_06 at 0 range 6..6;
+         Bit_07 at 0 range 7..7;
+         Bit_08 at 0 range 8..8;
+         Bit_09 at 0 range 9..9;
+         Bit_10 at 0 range 10..10;
+         Bit_11 at 0 range 11..11;
+         Bit_12 at 0 range 12..12;
+         Bit_13 at 0 range 13..13;
+         Bit_14 at 0 range 14..14;
+         Bit_15 at 0 range 15..15;
+      end record;
+   for Options'Size use 16;
+
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Options, Unsigned_16);
+   function To_Options is new Ada.Unchecked_Conversion (Unsigned_16, Options);
+
+   No_Options: constant Options := To_Options (0);
 
 
    -- ===================
@@ -73,22 +121,22 @@ package BRBON.Block.Header is
 
    -- Sets the type of the block to the given value.
    --
-   procedure Set_Block_Type (H: in out Block_Header'class; Value: Unsigned_16);
+   procedure Set_Block_Type (H: in out Block_Header'class; Value: Block_Type);
    pragma inline (Set_Block_Type);
 
    -- Returns the raw value of the block type.
    --
-   function Get_Block_Type (H: in out Block_Header'class) return Unsigned_16;
+   function Get_Block_Type (H: in out Block_Header'class) return Block_Type;
    pragma inline (Get_Block_Type);
 
    -- Set the value for the first reserved field in the block header.
    --
-   procedure Set_Block_Options (H: in out Block_Header'class; Value: Unsigned_16);
+   procedure Set_Block_Options (H: in out Block_Header'class; Value: Options);
    pragma inline (Set_Block_Options);
 
    -- Returns the value of the first reserved field in the block header.
    --
-   function Get_Block_Options (H: in out Block_Header'class) return Unsigned_16;
+   function Get_Block_Options (H: in out Block_Header'class) return Options;
    pragma inline (Get_Block_Options);
 
    -- Set the byte count for the complete block.
@@ -361,6 +409,7 @@ package BRBON.Block.Header is
    --
    function Get_Block_Header_Crc16 (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
    pragma inline (Get_Block_Header_Crc16);
+
 
 private
 

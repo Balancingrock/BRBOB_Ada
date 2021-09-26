@@ -138,21 +138,21 @@ package body BRBON.Static_Unprotected is
 
 
 
-   procedure Create_Block_Header (S: in out Static_Unprotected_Store'Class) is
+--   procedure Create_Block_Header (S: in out Static_Unprotected_Store'Class) is
 
-      Block_Options: BR_Block_Options :=
-        (
-         Endianness => S.Store_Ptr.Uses_Endianness = Big,
-         Bit_6 => False,
-         Bit_5 => False,
-         Bit_4 => False,
-         Bit_3 => False,
-         Bit_2 => False,
-         Bit_1 => False,
-         Bit_0 => False
-        );
+--      Block_Options: BR_Block_Options :=
+--        (
+--         Endianness => S.Store_Ptr.Uses_Endianness = Big,
+--         Bit_6 => False,
+--         Bit_5 => False,
+--         Bit_4 => False,
+--         Bit_3 => False,
+--         Bit_2 => False,
+--         Bit_1 => False,
+--         Bit_0 => False
+--        );
 
-   begin
+--   begin
 
 --      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_1_Offset, 16#A5#);
 --      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Start_Marker_Byte_2_Offset, 16#7E#);
@@ -161,8 +161,8 @@ package body BRBON.Static_Unprotected is
 --      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Type_Offset, To_Unsigned_8 (Single_Item_File));
 --      S.Store_Ptr.Set_Unsigned_8 (Block_Header_Options_Offset, To_Unsigned_8 (Block_Options));
 
-      null;
-   end;
+--      null;
+--   end;
 
 
    procedure Create_Block_Type_1_Single_Item_File (S: in out Static_Unprotected_Store'Class) is

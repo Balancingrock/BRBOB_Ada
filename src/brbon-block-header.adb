@@ -127,27 +127,27 @@ package body BRBON.Block.Header is
    end Verify_Synchronization_Bytes;
 
 
-   procedure Set_Block_Type (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Type (H: in out Block_Header'class; Value: Block_Type) is
    begin
-      H.Store.Set_Unsigned_16 (Block_Type_Offset, Value);
+      H.Store.Set_Unsigned_16 (Block_Type_Offset, To_Unsigned_16 (Value));
    end Set_Block_Type;
 
 
-   function Get_Block_Type (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Type (H: in out Block_Header'class) return Block_Type is
    begin
-      return H.Store.Get_Unsigned_16 (Block_Type_Offset);
+      return To_Block_Type (H.Store.Get_Unsigned_16 (Block_Type_Offset));
    end Get_Block_Type;
 
 
-   procedure Set_Block_Options (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Options (H: in out Block_Header'class; Value: Options) is
    begin
-      H.Store.Set_Unsigned_16 (Block_Options_Offset, Value);
+      H.Store.Set_Unsigned_16 (Block_Options_Offset, To_Unsigned_16 (Value));
    end Set_Block_Options;
 
 
-   function Get_Block_Options (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Options (H: in out Block_Header'class) return Options is
    begin
-      return H.Store.Get_Unsigned_16 (Block_Options_Offset);
+      return To_Options (H.Store.Get_Unsigned_16 (Block_Options_Offset));
    end Get_Block_Options;
 
 

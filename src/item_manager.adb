@@ -1,4 +1,5 @@
 with Portal_Package; use Portal_Package;
+with BRBON.Utils;
 
 package body Item_Manager is
 
@@ -14,7 +15,7 @@ package body Item_Manager is
                                 Element_Type: in BR_Item_Type := BR_Bool
                                ) return Item_Manager_Ptr is
 
-      Bc: Unsigned_32 := Round_Up_To_Nearest_Multiple_Of_8 (Byte_Count); -- ensure alignment
+      Bc: Unsigned_32 := BRBON.Utils.Round_Up_To_Nearest_Multiple_Of_8 (Byte_Count); -- ensure alignment
       Mgr: Item_Manager_Ptr;
       --Storage_Ptr: Storage_Area_Ptr;
       Item: Item_Access;
@@ -27,7 +28,7 @@ package body Item_Manager is
 
       -- Ensure that the byte count is sufficient for an empty item without name.
       --
-      Bc := Max (Bc, Minimum_Item_Byte_Count (Root_Type));
+      Bc := BRBON.Utils.Max (Bc, Minimum_Item_Byte_Count (Root_Type));
 
       -- Allocate the necessary memory.
       --
@@ -41,7 +42,7 @@ package body Item_Manager is
       -- Initialize it
       --
      -- Mgr.Storage := Byte_Store_Factory (Bc, Using_Endianness => Machine_Endianness);
-      Mgr.Increments := Round_Up_To_Nearest_Multiple_Of_8 (Increment);
+      Mgr.Increments := BRBON.Utils.Round_Up_To_Nearest_Multiple_Of_8 (Increment);
 
       -- Create an access item
       --

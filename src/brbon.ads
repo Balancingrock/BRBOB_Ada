@@ -33,10 +33,10 @@
 -- Use BRBON.Static_Unprotected for a read-only and/or single-pass write of a BRBON formatted memory image.
 -- Use BRBON.Static_Protected for an Ada-like read/write BRBON formatted memory image.
 -- Use BRBON.Dynamic for path-based, DB-like, read/write access to a BRBON formatted memory image.
--- Use BRBON.Thread_Safe for the as Dynamic, but with a thread safe API.
+-- Use BRBON.Thread_Safe see Dynamic, but with a thread safe API.
 --
 -- Note that the above packages are implemented in sequence and only as necessary for our purposes. They represent
--- the implementation traject and not all may be complete when you read this.
+-- the implementation traject and not all may be complete (or even started) when you read this.
 --
 -- =====================================================================================================================
 -- History
