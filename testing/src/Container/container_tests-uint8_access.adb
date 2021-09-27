@@ -2,7 +2,7 @@ separate (Container_Tests)
 
 function UInt8_Access (Count: in out Integer) return Test_Result is
 
-   Container: Instance := Store_Factory (Buffer'Access, Machine_Endianness);
+   Container: Instance := Factory (Buffer'Access, Machine_Endianness);
 
 
    function Verify (Location: Unsigned_32; Expected: Unsigned_8) return Test_Result is

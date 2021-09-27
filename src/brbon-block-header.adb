@@ -1,3 +1,5 @@
+with Crc_Package;
+
 package body BRBON.Block.Header is
 
    Block_Synchronization_Byte_1_Offset:      constant Unsigned_32 := 16#00#; -- 1 byte
@@ -127,15 +129,15 @@ package body BRBON.Block.Header is
    end Verify_Synchronization_Bytes;
 
 
-   procedure Set_Block_Type (H: in out Instance'class; Value: Block_Type) is
+   procedure Set_Block_Type (H: in out Instance'class; Value: Block.Instance_Type) is
    begin
       H.Store.Set_Unsigned_16 (Block_Type_Offset, To_Unsigned_16 (Value));
    end Set_Block_Type;
 
 
-   function Get_Block_Type (H: in out Instance'class) return Block_Type is
+   function Get_Block_Type (H: in out Instance'class) return Block.Instance_Type is
    begin
-      return To_Block_Type (H.Store.Get_Unsigned_16 (Block_Type_Offset));
+      return To_Block_Instance_Type (H.Store.Get_Unsigned_16 (Block_Type_Offset));
    end Get_Block_Type;
 
 
@@ -331,28 +333,28 @@ package body BRBON.Block.Header is
    end Get_Block_Path_Prefix_Offset;
 
 
-   procedure Set_Acquisition_URL_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
+   procedure Set_Block_Acquisition_URL_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Acquisition_URL_Byte_Count_Offset, Value);
-   end Set_Acquisition_URL_Byte_Count;
+   end Set_Block_Acquisition_URL_Byte_Count;
 
 
-   function Get_Acquisition_URL_Byte_Count (H: in out Instance'class) return Unsigned_16 is
+   function Get_Block_Acquisition_URL_Byte_Count (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Acquisition_URL_Byte_Count_Offset);
-   end Get_Acquisition_URL_Byte_Count;
+   end Get_Block_Acquisition_URL_Byte_Count;
 
 
-   procedure Set_Acquisition_URL_Offset (H: in out Instance'class; Value: Unsigned_16) is
+   procedure Set_Block_Acquisition_URL_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Acquisition_URL_Offset_Offset, Value);
-   end Set_Acquisition_URL_Offset;
+   end Set_Block_Acquisition_URL_Offset;
 
 
-   function Get_Acquisition_URL_Offset (H: in out Instance'class) return Unsigned_16 is
+   function Get_Block_Acquisition_URL_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Acquisition_URL_Offset_Offset);
-   end Get_Acquisition_URL_Offset;
+   end Get_Block_Acquisition_URL_Offset;
 
 
    procedure Set_Block_Target_List_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
@@ -479,6 +481,15 @@ package body BRBON.Block.Header is
    begin
       return H.Store.Get_Unsigned_16 (Offset);
    end Get_Block_Header_Crc16;
+
+
+   procedure Update_Block_Header_Crc16 (H: in out Instance'class) is
+      Byte_Count: constant Unsigned_32 := Unsigned_32 (H.Get_Block_Header_Byte_Count);
+      Crc16: constant Unsigned_16 := H.Store.Get_CRC_16_Over_Range (Start => 0,
+                                                                    Count => Byte_Count);
+   begin
+      H.Set_Block_Header_Crc16 (For_Block_Header_Byte_Count => Byte_Count, Value => Crc16);
+   end Update_Block_Header_Crc16;
 
 
 end Brbon.Block.Header;

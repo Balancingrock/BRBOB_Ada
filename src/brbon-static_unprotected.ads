@@ -2,6 +2,7 @@ with Interfaces; use Interfaces;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container; use BRBON.Container;
+with BRBON.Block;
 
 
 package BRBON.Static_Unprotected is
@@ -80,17 +81,12 @@ private
 
    type Static_Unprotected_Store is tagged
       record
-         Store_Ptr: BRBON.Container.Store_Ptr; -- This makes it impossible to access this store with low level operations
-         Block_Type: BR_Block_Type;
+         Store_Ptr: Container.Instance_Ptr; -- This makes it impossible to access this store with low level operations
+         Block_Type: Block.Instance_Type;
          First_Item_Offset: Unsigned_32;
          Free_Area_Offset: Unsigned_32;
       end record;
 
---   type BR_Static_Unprotected_Item is tagged
---      record
---         Store: Store_Ptr;
---         Offset: Unsigned_32;
---      end record;
 
 --   procedure Create_Block_Header (B: in out Static_Unprotected_Store'Class);
 

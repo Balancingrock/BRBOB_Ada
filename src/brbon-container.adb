@@ -40,6 +40,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.Byte_Swapping;
 
 with BRBON.Utils;
+with CRC_Package;
 
 
 package body BRBON.Container is
@@ -56,19 +57,19 @@ package body BRBON.Container is
    function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
 
 
-   function Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance is
+   function Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance is
       Byte_Count: Unsigned_32 := BRBON.Utils.Round_Down_To_Nearest_Multiple_of_32 (Unsigned_32 (Buffer_Ptr.all'Length));
       S: Instance;
    begin
-      if Byte_Count < (Minimum_Item_Byte_Count (BR_Bool) + Minimum_Block_Byte_Count (Single_Item_File)) then raise Buffer_Error with "Buffer too small"; end if;
+      -- if Byte_Count < (Minimum_Item_Byte_Count (BR_Bool) + Minimum_Block_Byte_Count (Single_Item_File)) then raise Buffer_Error with "Buffer too small"; end if;
       S.Data := Buffer_Ptr;
       S.Swap := Using_Endianness /= Machine_Endianness;
       if Zero_Storage then S.Data.all := (others => 0); end if;
       return S;
-   end Store_Factory;
+   end Factory;
 
 
-   function Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Instance is
+   function Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Instance is
       File: Ada.Streams.Stream_IO.File_Type;
       File_Size: Unsigned_64;
       In_Stream: Stream_Access;
@@ -86,7 +87,7 @@ package body BRBON.Container is
       S.Data := Buffer_Ptr;
       S.Swap := Using_Endianness /= Machine_Endianness;
       return S;
-   end Store_Factory;
+   end Factory;
 
    procedure Write_to_File (S: in out Instance'Class; Path: String) is
       File: Ada.Streams.Stream_IO.File_Type;
@@ -408,5 +409,10 @@ package body BRBON.Container is
       S.Data (Offset .. Offset + Value'Last) := Value;
    end Set_Unsigned_8_Array;
 
+
+   function Get_CRC_16_Over_Range (S: Instance'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16 is
+   begin
+      return CRC_Package.Calculate_CRC_16 (Arr => S.Data (Start .. (Start + Count - 1)));
+   end Get_CRC_16_Over_Range;
 
 end BRBON.Container;

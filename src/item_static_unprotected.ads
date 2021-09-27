@@ -48,7 +48,7 @@ package Item_Static_Unprotected is
    --
    type Item_Access is tagged
       record
-         Storage: Store_Ptr; -- Pointer to the storage area itself
+         Storage: Instance_Ptr; -- Pointer to the storage area itself
          Offset: Unsigned_32;       -- Offset to the first header byte in the storage area
       end record;
 
@@ -1030,7 +1030,7 @@ package Item_Static_Unprotected is
 
    -- Create a new item_access type
    --
-   function Create_Item_Access  (S: Store_Ptr; O: Unsigned_32) return Item_Access;
+   function Create_Item_Access  (S: Instance_Ptr; O: Unsigned_32) return Item_Access;
 
 private
 

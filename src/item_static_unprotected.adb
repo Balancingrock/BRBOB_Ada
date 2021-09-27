@@ -861,7 +861,7 @@ package body Item_Static_Unprotected is
    -- Item Access
    -- =======================
 
-   function Create_Item_Access (S: Store_Ptr; O: Unsigned_32) return Item_Access is
+   function Create_Item_Access (S: Instance_Ptr; O: Unsigned_32) return Item_Access is
    begin
       return (S, O);
    end Create_Item_Access;

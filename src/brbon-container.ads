@@ -65,7 +65,7 @@ package BRBON.Container is
 
    -- A pointer to a binary store
    --
-   type Store_Ptr is access all Instance;
+   type Instance_Ptr is access all Instance;
 
 
    -- =====================
@@ -77,12 +77,12 @@ package BRBON.Container is
    -- @param Using_Endianness The endianness (Big or Little) to be used in the storage area.
    -- @return The new byte store.
    --
-   function Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance;
+   function Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance;
 
    -- Read the contents of the file into the given buffer, then use this as the new Byte_Store.
    -- @param Path The path to a file on the local filesystem that will be read.
    --
-   function Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Instance;
+   function Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Path: String; Using_Endianness: Endianness) return Instance;
 
    -- Save the content of the byte store to file.
    -- @param Path The location in the filesystem to store the data.
@@ -294,6 +294,14 @@ package BRBON.Container is
    --
    function Get_Unsigned_8_Array (S: Instance'Class; Offset: Unsigned_32; Length: Unsigned_32) return Array_Of_Unsigned_8;
    pragma Inline (Get_Unsigned_8_Array);
+
+   -- Return the CRC-16 over the specified range.
+   -- @param Start The first byte to be included in the CRC-16.
+   -- @param Count The number of bytes to include in the CRC-16.
+   -- @return The CRC-16 of the specified bytes.
+   --
+   function Get_CRC_16_Over_Range (S: Instance'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16;
+   pragma Inline (Get_CRC_16_Over_Range);
 
 private
 

@@ -3,8 +3,8 @@ separate (Container_Tests)
 function UInt16_Access (Count: in out Integer) return Test_Result is
 
 
-   Big_Container: Instance := Store_Factory (Buffer'Access, Big);
-   Little_Container: Instance := Store_Factory (LBuffer'Access, Little);
+   Big_Container: Instance := Factory (Buffer'Access, Big);
+   Little_Container: Instance := Factory (LBuffer'Access, Little);
    TCount: Integer := 0;
 
 

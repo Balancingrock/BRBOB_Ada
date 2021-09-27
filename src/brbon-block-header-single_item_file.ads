@@ -57,7 +57,7 @@ package BRBON.Block.Header.Single_Item_File is
    -- @param Using_Endianness The endianness to be used in the header (and therefore the entire block).
    -- @return A Block_Header of which the storage area is filled with a header of type 1.
    --
-   function Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance;
+   function Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Block.Header.Instance;
 
 
 end BRBON.Block.Header.Single_Item_File;

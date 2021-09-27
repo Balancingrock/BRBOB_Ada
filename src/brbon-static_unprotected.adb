@@ -41,7 +41,7 @@ package body BRBON.Static_Unprotected is
 
       -- Initialize the remainder of the block info
       --
-      S.Block_Type := Single_Item_File;
+--      S.Block_Type := Single_Item_File;
       S.Free_Area_Offset := 0;
 --      S.Update_Free_Area_Offset (Block_Type_Dependent_Header_Offset + Type_1_Payload_Offset + A.Item_Byte_Count); -- Will also set the block header
 

@@ -65,7 +65,7 @@ package BRBON.Block.Header is
    -- The block header minimum byte count is given by the fixed layout byte count + the trailing long word.
    -- To calculate the block header byte count add the type dependent byte count and field storage byte count.
    --
-   Minimum_Byte_Count: constant array (Block_Type) of Unsigned_16 :=
+   Minimum_Byte_Count: constant array (Instance_Type) of Unsigned_16 :=
      (
       0,                -- BRBON.Block.Illegal
       9 * 8 + 0 + 0 + 8 -- BRBON.Block.Single_Item_File
@@ -130,12 +130,12 @@ package BRBON.Block.Header is
 
    -- Sets the type of the block to the given value.
    --
-   procedure Set_Block_Type (H: in out Instance'class; Value: Block_Type);
+   procedure Set_Block_Type (H: in out Instance'class; Value: BRBON.Block.Instance_Type);
    pragma inline (Set_Block_Type);
 
    -- Returns the raw value of the block type.
    --
-   function Get_Block_Type (H: in out Instance'class) return Block_Type;
+   function Get_Block_Type (H: in out Instance'class) return BRBON.Block.Instance_Type;
    pragma inline (Get_Block_Type);
 
    -- Set the value for the first reserved field in the block header.
@@ -301,23 +301,23 @@ package BRBON.Block.Header is
 
    -- Set the value for the byte count of the Acquisition URL field.
    --
-   procedure Set_Acquisition_URL_Byte_Count (H: in out Instance'class; Value: Unsigned_16);
-   pragma inline (Set_Acquisition_URL_Byte_Count);
+   procedure Set_Block_Acquisition_URL_Byte_Count (H: in out Instance'class; Value: Unsigned_16);
+   pragma inline (Set_Block_Acquisition_URL_Byte_Count);
 
    -- Returns the value of the byte count of the Acquisition URL field.
    --
-   function Get_Acquisition_URL_Byte_Count (H: in out Instance'class) return Unsigned_16;
-   pragma inline (Get_Acquisition_URL_Byte_Count);
+   function Get_Block_Acquisition_URL_Byte_Count (H: in out Instance'class) return Unsigned_16;
+   pragma inline (Get_Block_Acquisition_URL_Byte_Count);
 
    -- Set the value for the offset of the Acquisition URL field.
    --
-   procedure Set_Acquisition_URL_Offset (H: in out Instance'class; Value: Unsigned_16);
-   pragma inline (Set_Acquisition_URL_Offset);
+   procedure Set_Block_Acquisition_URL_Offset (H: in out Instance'class; Value: Unsigned_16);
+   pragma inline (Set_Block_Acquisition_URL_Offset);
 
    -- Returns the value of the offset of the Acquisition URL field.
    --
-   function Get_Acquisition_URL_Offset (H: in out Instance'class) return Unsigned_16;
-   pragma inline (Get_Acquisition_URL_Offset);
+   function Get_Block_Acquisition_URL_Offset (H: in out Instance'class) return Unsigned_16;
+   pragma inline (Get_Block_Acquisition_URL_Offset);
 
    -- Set the byte count of the target list field
    --
@@ -419,13 +419,16 @@ package BRBON.Block.Header is
    function Get_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
    pragma inline (Get_Block_Header_Crc16);
 
+   -- Update the block header crc value in accordance with the block header contents
+   --
+   procedure Update_Block_Header_Crc16 (H: in out Instance'class);
 
 private
 
    type Instance is tagged
       record
-         Store: BRBON.Container.Instance;
-         Endianness: BRBON.Types.Endianness; -- Set after verification/assignment of synch byte 4
+         Store: Container.Instance;
+         Endianness: Types.Endianness; -- Set after verification/assignment of synch byte 4
       end record;
 
 end BRBON.Block.Header;
