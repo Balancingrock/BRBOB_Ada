@@ -48,10 +48,10 @@ package body BRBON.Block.Header.Single_Item_File is
       H.Set_Block_Modification_Timestamp (Value => Now);
       H.Set_Block_Expiry_Timestamp (Value => 16#7FFF_FFFF_FFFF_FFFF#);
 
---      H.Set_Reserved_1a (For_Block_Header_Byte_Count => H.Get_Block_Header_Byte_Count,
---                         Value                       => 0);
---      H.Set_Reserved_1b (For_Block_Header_Byte_Count => H.Get_Block_Header_Byte_Count,
---                         Value                       => 0);
+      H.Set_Reserved_1a (For_Block_Header_Byte_Count => H.Get_Block_Header_Byte_Count,
+                         Value                       => 0);
+      H.Set_Reserved_1b (For_Block_Header_Byte_Count => H.Get_Block_Header_Byte_Count,
+                         Value                       => 0);
       H.Update_Block_Header_Crc16;
 
       return H;

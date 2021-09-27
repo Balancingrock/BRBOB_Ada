@@ -391,35 +391,36 @@ package BRBON.Block.Header is
 
    -- Set the reserved field 1 value, first 32 bits.
    --
-   procedure Set_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32);
+   procedure Set_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16; Value: Unsigned_32);
    pragma inline (Set_Reserved_1a);
 
    -- Return the reserved 1 value, first 32 bits.
    --
-   function Get_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32;
+   function Get_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16) return Unsigned_32;
    pragma inline (Get_Reserved_1a);
 
    -- Set the reserved field 1 value, last 16 bits.
    --
-   procedure Set_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16);
+   procedure Set_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16; Value: Unsigned_16);
    pragma inline (Set_Reserved_1b);
 
    -- Return the reserved 1 value, first 16 bits.
    --
-   function Get_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
+   function Get_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16) return Unsigned_16;
    pragma inline (Get_Reserved_1b);
 
    -- Set the CRC16 value for the entire block header.
    --
-   procedure Set_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16);
+   procedure Set_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16; Value: Unsigned_16);
    pragma inline (Set_Block_Header_Crc16);
 
    -- Return the CRC16 value for the entire block header.
    --
-   function Get_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16;
+   function Get_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16) return Unsigned_16;
    pragma inline (Get_Block_Header_Crc16);
 
-   -- Update the block header crc value in accordance with the block header contents
+   -- Update the block header crc value in accordance with the block header contents.
+   -- Note: All values in the header must have been set to their final values before calling this operation.
    --
    procedure Update_Block_Header_Crc16 (H: in out Instance'class);
 

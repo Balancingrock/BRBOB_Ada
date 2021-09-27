@@ -441,52 +441,51 @@ package body BRBON.Block.Header is
    end Get_Block_Expiry_Timestamp;
 
 
-   procedure Set_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32) is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1a_Offset;
+   procedure Set_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16; Value: Unsigned_32) is
+      Offset: Unsigned_32 := Unsigned_32 (For_Block_Header_Byte_Count) - Block_Reserved_1a_Offset;
    begin
       H.Store.Set_Unsigned_32 (Offset, Value);
    end Set_Reserved_1a;
 
 
-   function Get_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32 is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1a_Offset;
+   function Get_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16) return Unsigned_32 is
+      Offset: Unsigned_32 := Unsigned_32 (For_Block_Header_Byte_Count) - Block_Reserved_1a_Offset;
    begin
       return H.Store.Get_Unsigned_32 (Offset);
    end Get_Reserved_1a;
 
 
-   procedure Set_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1b_Offset;
+   procedure Set_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16; Value: Unsigned_16) is
+      Offset: Unsigned_32 := Unsigned_32 (For_Block_Header_Byte_Count) - Block_Reserved_1b_Offset;
    begin
       H.Store.Set_Unsigned_16 (Offset, Value);
    end Set_Reserved_1b;
 
 
-   function Get_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1b_Offset;
+   function Get_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16) return Unsigned_16 is
+      Offset: Unsigned_32 := Unsigned_32 (For_Block_Header_Byte_Count) - Block_Reserved_1b_Offset;
    begin
       return H.Store.Get_Unsigned_16 (Offset);
    end Get_Reserved_1b;
 
 
-   procedure Set_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Header_CRC16_Offset;
+   procedure Set_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16; Value: Unsigned_16) is
+      Offset: Unsigned_32 := Unsigned_32 (For_Block_Header_Byte_Count) - Block_Header_CRC16_Offset;
    begin
       H.Store.Set_Unsigned_16 (Offset, Value);
    end Set_Block_Header_Crc16;
 
 
-   function Get_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
-      Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Header_CRC16_Offset;
+   function Get_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_16) return Unsigned_16 is
+      Offset: Unsigned_32 := Unsigned_32 (For_Block_Header_Byte_Count) - Block_Header_CRC16_Offset;
    begin
       return H.Store.Get_Unsigned_16 (Offset);
    end Get_Block_Header_Crc16;
 
 
    procedure Update_Block_Header_Crc16 (H: in out Instance'class) is
-      Byte_Count: constant Unsigned_32 := Unsigned_32 (H.Get_Block_Header_Byte_Count);
-      Crc16: constant Unsigned_16 := H.Store.Get_CRC_16_Over_Range (Start => 0,
-                                                                    Count => Byte_Count);
+      Byte_Count: constant Unsigned_16 := H.Get_Block_Header_Byte_Count;
+      Crc16: constant Unsigned_16 := H.Store.Get_CRC_16_Over_Range (Start => 0, Count => Unsigned_32 (Byte_Count));
    begin
       H.Set_Block_Header_Crc16 (For_Block_Header_Byte_Count => Byte_Count, Value => Crc16);
    end Update_Block_Header_Crc16;
