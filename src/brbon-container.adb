@@ -39,6 +39,8 @@ with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.Byte_Swapping;
 
+with BRBON.Utils;
+
 
 package body BRBON.Container is
 
@@ -55,7 +57,7 @@ package body BRBON.Container is
 
 
    function Store_Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Store is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Buffer_Ptr.all'Length);
+      Byte_Count: Unsigned_32 := BRBON.Utils.Round_Down_To_Nearest_Multiple_of_32 (Unsigned_32 (Buffer_Ptr.all'Length));
       S: Store;
    begin
       if Byte_Count < (Minimum_Item_Byte_Count (BR_Bool) + Minimum_Block_Byte_Count (Single_Item_File)) then raise Buffer_Error with "Buffer too small"; end if;
@@ -100,10 +102,10 @@ package body BRBON.Container is
    end Write_to_File;
 
 
-   function Length (S: in out Store) return Unsigned_32 is
+   function Byte_Count (S: in out Store) return Unsigned_32 is
    begin
       return Unsigned_32 (S.Data'Length);
-   end Length;
+   end Byte_Count;
 
    function Uses_Endianness (S: in out Store) return Endianness is
    begin

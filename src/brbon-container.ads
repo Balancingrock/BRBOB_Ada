@@ -91,9 +91,9 @@ package BRBON.Container is
    --
    procedure Write_To_File (S: in out Store'Class; Path: String);
 
-   -- Returns the byte count of the store
+   -- Returns the number of bytes that can be stored
    --
-   function Length (S: in out Store) return Unsigned_32;
+   function Byte_Count (S: in out Store) return Unsigned_32;
 
    -- Returns the endianness of the data in the store
    --

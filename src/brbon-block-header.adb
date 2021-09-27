@@ -52,43 +52,43 @@ package body BRBON.Block.Header is
    Block_Synchronization_Byte_4_Big_Endian_Expected_Value: constant Unsigned_8 := 16#A5#;
 
 
-   procedure Set_Synchronization_Byte_1 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_1 (H: in out Instance'class) is
    begin
       H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_1_Offset, Block_Synchronization_Byte_1_Expected_Value);
    end Set_Synchronization_Byte_1;
 
 
-   function Verify_Synchronization_Byte_1 (H: in out Block_Header'class) return Boolean is
+   function Verify_Synchronization_Byte_1 (H: in out Instance'class) return Boolean is
    begin
       return H.Store.Get_Unsigned_8 (Block_Synchronization_Byte_1_Offset) = Block_Synchronization_Byte_1_Expected_Value;
    end Verify_Synchronization_Byte_1;
 
 
-   procedure Set_Synchronization_Byte_2 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_2 (H: in out Instance'class) is
    begin
       H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_2_Offset, Block_Synchronization_Byte_2_Expected_Value);
    end Set_Synchronization_Byte_2;
 
 
-   function Verify_Synchronization_Byte_2 (H: in out Block_Header'class) return Boolean is
+   function Verify_Synchronization_Byte_2 (H: in out Instance'class) return Boolean is
    begin
       return H.Store.Get_Unsigned_8 (Block_Synchronization_Byte_2_Offset) = Block_Synchronization_Byte_2_Expected_Value;
    end Verify_Synchronization_Byte_2;
 
 
-   procedure Set_Synchronization_Byte_3 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_3 (H: in out Instance'class) is
    begin
       H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_3_Offset, Block_Synchronization_Byte_3_Expected_Value);
    end Set_Synchronization_Byte_3;
 
 
-   function Verify_Synchronization_Byte_3 (H: in out Block_Header'class) return Boolean is
+   function Verify_Synchronization_Byte_3 (H: in out Instance'class) return Boolean is
    begin
       return H.Store.Get_Unsigned_8 (Block_Synchronization_Byte_3_Offset) = Block_Synchronization_Byte_3_Expected_Value;
    end Verify_Synchronization_Byte_3;
 
 
-   procedure Set_Synchronization_Byte_4 (H: in out Block_Header'class) is
+   procedure Set_Synchronization_Byte_4 (H: in out Instance'class) is
    begin
       if H.Endianness = Little then
          H.Store.Set_Unsigned_8 (Block_Synchronization_Byte_4_Offset, Block_Synchronization_Byte_4_Little_Endian_Expected_Value);
@@ -98,7 +98,7 @@ package body BRBON.Block.Header is
    end Set_Synchronization_Byte_4;
 
 
-   function Verify_Synchronization_Byte_4 (H: in out Block_Header'class) return Boolean is
+   function Verify_Synchronization_Byte_4 (H: in out Instance'class) return Boolean is
    begin
       if H.Store.Get_Unsigned_8 (Block_Synchronization_Byte_4_Offset) = Block_Synchronization_Byte_4_Little_Endian_Expected_Value then
          H.Endianness := Little;
@@ -112,13 +112,13 @@ package body BRBON.Block.Header is
    end Verify_Synchronization_Byte_4;
 
 
-   function Get_Endianness (H: in out Block_Header'class) return Endianness is
+   function Get_Endianness (H: in out Instance'class) return Endianness is
    begin
       return H.Endianness;
    end Get_Endianness;
 
 
-   function Verify_Synchronization_Bytes (H: in out Block_Header'class) return Boolean is
+   function Verify_Synchronization_Bytes (H: in out Instance'class) return Boolean is
    begin
       --if Verify_Synchronization_Byte_1 (H) = false then return false; end if;
       if Verify_Synchronization_Byte_2 (H) = false then return false; end if;
@@ -127,354 +127,354 @@ package body BRBON.Block.Header is
    end Verify_Synchronization_Bytes;
 
 
-   procedure Set_Block_Type (H: in out Block_Header'class; Value: Block_Type) is
+   procedure Set_Block_Type (H: in out Instance'class; Value: Block_Type) is
    begin
       H.Store.Set_Unsigned_16 (Block_Type_Offset, To_Unsigned_16 (Value));
    end Set_Block_Type;
 
 
-   function Get_Block_Type (H: in out Block_Header'class) return Block_Type is
+   function Get_Block_Type (H: in out Instance'class) return Block_Type is
    begin
       return To_Block_Type (H.Store.Get_Unsigned_16 (Block_Type_Offset));
    end Get_Block_Type;
 
 
-   procedure Set_Block_Options (H: in out Block_Header'class; Value: Options) is
+   procedure Set_Block_Options (H: in out Instance'class; Value: Options) is
    begin
       H.Store.Set_Unsigned_16 (Block_Options_Offset, To_Unsigned_16 (Value));
    end Set_Block_Options;
 
 
-   function Get_Block_Options (H: in out Block_Header'class) return Options is
+   function Get_Block_Options (H: in out Instance'class) return Options is
    begin
       return To_Options (H.Store.Get_Unsigned_16 (Block_Options_Offset));
    end Get_Block_Options;
 
 
-   procedure Set_Block_Byte_Count (H: in out Block_Header'class; Value: Unsigned_32) is
+   procedure Set_Block_Byte_Count (H: in out Instance'class; Value: Unsigned_32) is
    begin
       H.Store.Set_Unsigned_32 (Block_Byte_Count_Offset, Value);
    end Set_Block_Byte_Count;
 
 
-   function Get_Block_Byte_Count (H: in out Block_Header'class) return Unsigned_32 is
+   function Get_Block_Byte_Count (H: in out Instance'class) return Unsigned_32 is
    begin
       return H.Store.Get_Unsigned_32 (Block_Byte_Count_Offset);
    end Get_Block_Byte_Count;
 
 
-   procedure Set_Block_Header_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Header_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Header_Byte_Count_Offset, Value);
    end Set_Block_Header_Byte_Count;
 
 
-   function Get_Block_Header_Byte_Count (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Header_Byte_Count (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Header_Byte_Count_Offset);
    end Get_Block_Header_Byte_Count;
 
 
-   procedure Set_Block_Encrypted_Header_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Encrypted_Header_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Encrypted_Header_Byte_Count_Offset, Value);
    end Set_Block_Encrypted_Header_Byte_Count;
 
 
-   function Get_Block_Encrypted_Header_Byte_Count (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Encrypted_Header_Byte_Count (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Encrypted_Header_Byte_Count_Offset);
    end Get_Block_Encrypted_Header_Byte_Count;
 
 
-   procedure Set_Block_Origin_Crc16 (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Origin_Crc16 (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Origin_CRC16_Offset, Value);
    end Set_Block_Origin_Crc16;
 
 
-   function Get_Block_Origin_Crc16 (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Origin_Crc16 (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Origin_CRC16_Offset);
    end Get_Block_Origin_Crc16;
 
 
-   procedure Set_Block_Identifier_Crc16 (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Identifier_Crc16 (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Identifier_CRC16_Offset, Value);
    end Set_Block_Identifier_Crc16;
 
 
-   function Get_Block_Identifier_Crc16 (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Identifier_Crc16 (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Identifier_CRC16_Offset);
    end Get_Block_Identifier_Crc16;
 
 
-   procedure Set_Block_Extension_Crc16 (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Extension_Crc16 (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Extension_CRC16_Offset, Value);
    end Set_Block_Extension_Crc16;
 
 
-   function Get_Block_Extension_Crc16 (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Extension_Crc16 (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Extension_CRC16_Offset);
    end Get_Block_Extension_Crc16;
 
 
-   procedure Set_Block_Path_Prefix_Crc16 (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Path_Prefix_Crc16 (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Path_Prefix_CRC16_Offset, Value);
    end Set_Block_Path_Prefix_Crc16;
 
 
-   function Get_Block_Path_Prefix_Crc16 (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Path_Prefix_Crc16 (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Path_Prefix_CRC16_Offset);
    end Get_Block_Path_Prefix_Crc16;
 
 
-   procedure Set_Block_Origin_Byte_Count (H: in out Block_Header'class; Value: Unsigned_8) is
+   procedure Set_Block_Origin_Byte_Count (H: in out Instance'class; Value: Unsigned_8) is
    begin
       H.Store.Set_Unsigned_8 (Block_Origin_Byte_Count_Offset, Value);
    end Set_Block_Origin_Byte_Count;
 
 
-   function Get_Block_Origin_Byte_Count (H: in out Block_Header'class) return Unsigned_8 is
+   function Get_Block_Origin_Byte_Count (H: in out Instance'class) return Unsigned_8 is
    begin
       return H.Store.Get_Unsigned_8 (Block_Origin_Byte_Count_Offset);
    end Get_Block_Origin_Byte_Count;
 
 
-   procedure Set_Block_Identifier_Byte_Count (H: in out Block_Header'class; Value: Unsigned_8) is
+   procedure Set_Block_Identifier_Byte_Count (H: in out Instance'class; Value: Unsigned_8) is
    begin
       H.Store.Set_Unsigned_8 (Block_Identifier_Byte_Count_Offset, Value);
    end Set_Block_Identifier_Byte_Count;
 
 
-   function Get_Block_Identifier_Byte_Count (H: in out Block_Header'class) return Unsigned_8 is
+   function Get_Block_Identifier_Byte_Count (H: in out Instance'class) return Unsigned_8 is
    begin
       return H.Store.Get_Unsigned_8 (Block_Identifier_Byte_Count_Offset);
    end Get_Block_Identifier_Byte_Count;
 
 
-   procedure Set_Block_Extension_Byte_Count (H: in out Block_Header'class; Value: Unsigned_8) is
+   procedure Set_Block_Extension_Byte_Count (H: in out Instance'class; Value: Unsigned_8) is
    begin
       H.Store.Set_Unsigned_8 (Block_Extension_Byte_Count_Offset, Value);
    end Set_Block_Extension_Byte_Count;
 
 
-   function Get_Block_Extension_Byte_Count (H: in out Block_Header'class) return Unsigned_8 is
+   function Get_Block_Extension_Byte_Count (H: in out Instance'class) return Unsigned_8 is
    begin
       return H.Store.Get_Unsigned_8 (Block_Extension_Byte_Count_Offset);
    end Get_Block_Extension_Byte_Count;
 
 
-   procedure Set_Block_Path_Prefix_Byte_Count (H: in out Block_Header'class; Value: Unsigned_8) is
+   procedure Set_Block_Path_Prefix_Byte_Count (H: in out Instance'class; Value: Unsigned_8) is
    begin
       H.Store.Set_Unsigned_8 (Block_Path_Prefix_Byte_Count_Offset, Value);
    end Set_Block_Path_Prefix_Byte_Count;
 
 
-   function Get_Block_Path_Prefix_Byte_Count (H: in out Block_Header'class) return Unsigned_8 is
+   function Get_Block_Path_Prefix_Byte_Count (H: in out Instance'class) return Unsigned_8 is
    begin
       return H.Store.Get_Unsigned_8 (Block_Path_Prefix_Byte_Count_Offset);
    end Get_Block_Path_Prefix_Byte_Count;
 
 
-   procedure Set_Block_Origin_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Origin_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Origin_Offset_Offset, Value);
    end Set_Block_Origin_Offset;
 
 
-   function Get_Block_Origin_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Origin_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Origin_Offset_Offset);
    end Get_Block_Origin_Offset;
 
 
-   procedure Set_Block_Identifier_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Identifier_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Identifier_Offset_Offset, Value);
    end Set_Block_Identifier_Offset;
 
 
-   function Get_Block_Identifier_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Identifier_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Identifier_Offset_Offset);
    end Get_Block_Identifier_Offset;
 
 
-   procedure Set_Block_Extension_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Extension_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Extension_Offset_Offset, Value);
    end Set_Block_Extension_Offset;
 
 
-   function Get_Block_Extension_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Extension_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Extension_Offset_Offset);
    end Get_Block_Extension_Offset;
 
 
-   procedure Set_Block_Path_Prefix_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Path_Prefix_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Path_Prefix_Offset_Offset, Value);
    end Set_Block_Path_Prefix_Offset;
 
 
-   function Get_Block_Path_Prefix_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Path_Prefix_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Path_Prefix_Offset_Offset);
    end Get_Block_Path_Prefix_Offset;
 
 
-   procedure Set_Acquisition_URL_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Acquisition_URL_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Acquisition_URL_Byte_Count_Offset, Value);
    end Set_Acquisition_URL_Byte_Count;
 
 
-   function Get_Acquisition_URL_Byte_Count (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Acquisition_URL_Byte_Count (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Acquisition_URL_Byte_Count_Offset);
    end Get_Acquisition_URL_Byte_Count;
 
 
-   procedure Set_Acquisition_URL_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Acquisition_URL_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Acquisition_URL_Offset_Offset, Value);
    end Set_Acquisition_URL_Offset;
 
 
-   function Get_Acquisition_URL_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Acquisition_URL_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Acquisition_URL_Offset_Offset);
    end Get_Acquisition_URL_Offset;
 
 
-   procedure Set_Block_Target_List_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Target_List_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Target_List_Byte_Count_Offset, Value);
    end Set_Block_Target_List_Byte_Count;
 
 
-   function Get_Block_Target_List_Byte_Count (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Target_List_Byte_Count (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Target_List_Byte_Count_Offset);
    end Get_Block_Target_List_Byte_Count;
 
 
-   procedure Set_Block_Target_List_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Target_List_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Target_List_Offset_Offset, Value);
    end Set_Block_Target_List_Offset;
 
 
-   function Get_Block_Target_List_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Target_List_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Target_List_Offset_Offset);
    end Get_Block_Target_List_Offset;
 
 
-   procedure Set_Block_Public_Key_URL_Byte_Count (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Public_Key_URL_Byte_Count (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Public_Key_URL_Byte_Count_Offset, Value);
    end Set_Block_Public_Key_URL_Byte_Count;
 
 
-   function Get_Block_Public_Key_URL_Byte_Count (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Public_Key_URL_Byte_Count (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Public_Key_URL_Byte_Count_Offset);
    end Get_Block_Public_Key_URL_Byte_Count;
 
 
-   procedure Set_Block_Public_Key_URL_Offset (H: in out Block_Header'class; Value: Unsigned_16) is
+   procedure Set_Block_Public_Key_URL_Offset (H: in out Instance'class; Value: Unsigned_16) is
    begin
       H.Store.Set_Unsigned_16 (Block_Public_Key_URL_Offset_Offset, Value);
    end Set_Block_Public_Key_URL_Offset;
 
 
-   function Get_Block_Public_Key_URL_Offset (H: in out Block_Header'class) return Unsigned_16 is
+   function Get_Block_Public_Key_URL_Offset (H: in out Instance'class) return Unsigned_16 is
    begin
       return H.Store.Get_Unsigned_16 (Block_Public_Key_URL_Offset_Offset);
    end Get_Block_Public_Key_URL_Offset;
 
 
-   procedure Set_Block_Creation_Timestamp (H: in out Block_Header'class; Value: Unsigned_64) is
+   procedure Set_Block_Creation_Timestamp (H: in out Instance'class; Value: Unsigned_64) is
    begin
       H.Store.Set_Unsigned_64 (Block_Creation_Timestamp_Offset, Value);
    end Set_Block_Creation_Timestamp;
 
 
-   function Get_Block_Creation_Timestamp (H: in out Block_Header'class) return Unsigned_64 is
+   function Get_Block_Creation_Timestamp (H: in out Instance'class) return Unsigned_64 is
    begin
       return H.Store.Get_Unsigned_64 (Block_Creation_Timestamp_Offset);
    end Get_Block_Creation_Timestamp;
 
 
-   procedure Set_Block_Modification_Timestamp (H: in out Block_Header'class; Value: Unsigned_64) is
+   procedure Set_Block_Modification_Timestamp (H: in out Instance'class; Value: Unsigned_64) is
    begin
       H.Store.Set_Unsigned_64 (Block_Modification_Timestamp_Offset, Value);
    end Set_Block_Modification_Timestamp;
 
 
-   function Get_Block_Modification_Timestamp (H: in out Block_Header'class) return Unsigned_64 is
+   function Get_Block_Modification_Timestamp (H: in out Instance'class) return Unsigned_64 is
    begin
       return H.Store.Get_Unsigned_64 (Block_Modification_Timestamp_Offset);
    end Get_Block_Modification_Timestamp;
 
 
-   procedure Set_Block_Expiry_Timestamp (H: in out Block_Header'class; Value: Unsigned_64) is
+   procedure Set_Block_Expiry_Timestamp (H: in out Instance'class; Value: Unsigned_64) is
    begin
       H.Store.Set_Unsigned_64 (Block_Expiry_Timestamp_Offset, Value);
    end Set_Block_Expiry_Timestamp;
 
 
-   function Get_Block_Expiry_Timestamp (H: in out Block_Header'class) return Unsigned_64 is
+   function Get_Block_Expiry_Timestamp (H: in out Instance'class) return Unsigned_64 is
    begin
       return H.Store.Get_Unsigned_64 (Block_Expiry_Timestamp_Offset);
    end Get_Block_Expiry_Timestamp;
 
 
-   procedure Set_Reserved_1a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32) is
+   procedure Set_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_32) is
       Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1a_Offset;
    begin
       H.Store.Set_Unsigned_32 (Offset, Value);
    end Set_Reserved_1a;
 
 
-   function Get_Reserved_1a (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32 is
+   function Get_Reserved_1a (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_32 is
       Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1a_Offset;
    begin
       return H.Store.Get_Unsigned_32 (Offset);
    end Get_Reserved_1a;
 
 
-   procedure Set_Reserved_1b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
+   procedure Set_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
       Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1b_Offset;
    begin
       H.Store.Set_Unsigned_16 (Offset, Value);
    end Set_Reserved_1b;
 
 
-   function Get_Reserved_1b (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
+   function Get_Reserved_1b (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
       Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Reserved_1b_Offset;
    begin
       return H.Store.Get_Unsigned_16 (Offset);
    end Get_Reserved_1b;
 
 
-   procedure Set_Block_Header_Crc16 (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
+   procedure Set_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32; Value: Unsigned_16) is
       Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Header_CRC16_Offset;
    begin
       H.Store.Set_Unsigned_16 (Offset, Value);
    end Set_Block_Header_Crc16;
 
 
-   function Get_Block_Header_Crc16 (H: in out Block_Header'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
+   function Get_Block_Header_Crc16 (H: in out Instance'class; For_Block_Header_Byte_Count: Unsigned_32) return Unsigned_16 is
       Offset: Unsigned_32 := For_Block_Header_Byte_Count - Block_Header_CRC16_Offset;
    begin
       return H.Store.Get_Unsigned_16 (Offset);
