@@ -2,7 +2,7 @@ separate (Container_Tests)
 
 function String_Access (Count: in out Integer) return Test_Result is
 
-   Container: Store := Store_Factory (Buffer'Access , Machine_Endianness);
+   Container: Instance := Store_Factory (Buffer'Access , Machine_Endianness);
 
    Str: String := "Hello";
 

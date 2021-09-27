@@ -13,7 +13,7 @@ package BRBON.Block.Header is
 
    -- A block header pointer
    --
-   type Block_Header_Ptr is access all Instance;
+   type Instance_Ptr is access all Instance;
 
    -- The block options
    --
@@ -424,7 +424,7 @@ private
 
    type Instance is tagged
       record
-         Store: BRBON.Container.Store;
+         Store: BRBON.Container.Instance;
          Endianness: BRBON.Types.Endianness; -- Set after verification/assignment of synch byte 4
       end record;
 

@@ -2,7 +2,7 @@ separate (Container_Tests)
 
 function Item_Access (Count: in out Integer) return Test_Result is
 
-   Container: Store := Store_Factory (Buffer'Access , Machine_Endianness);
+   Container: Instance := Store_Factory (Buffer'Access , Machine_Endianness);
 
    Opt: BR_Item_Options := To_BR_Item_Options (16#45#);
    Flg: BR_Item_Flags := To_BR_Item_Flags (16#3E#);

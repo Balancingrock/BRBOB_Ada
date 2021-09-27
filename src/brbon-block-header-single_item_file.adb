@@ -3,7 +3,7 @@ package body BRBON.Block.Header.Single_Item_File is
 
    function Factory (Memory_Area_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance is
       H: Instance;
-      Store: BRBON.Container.Store := BRBON.Container.Store_Factory (Memory_Area_Ptr, Using_Endianness);
+      Store: BRBON.Container.Instance := BRBON.Container.Store_Factory (Memory_Area_Ptr, Using_Endianness);
    begin
       H.Store := Store;
       H.Endianness := Using_Endianness;

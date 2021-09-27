@@ -2,12 +2,12 @@ separate (Container_Tests)
 
 function UInt32_Access (Count: in out Integer) return Test_Result is
 
-   Big_Container: Store := Store_Factory (Buffer'Access, Big);
-   Little_Container: Store := Store_Factory (LBuffer'Access, Little);
+   Big_Container: Instance := Store_Factory (Buffer'Access, Big);
+   Little_Container: Instance := Store_Factory (LBuffer'Access, Little);
    TCount: Integer := 0;
 
 
-   function Verify (Container: Store; Location: Unsigned_32; Expected: Unsigned_32) return Test_Result is
+   function Verify (Container: Instance; Location: Unsigned_32; Expected: Unsigned_32) return Test_Result is
 
       Actual: Unsigned_32 := Container.Get_Unsigned_32 (Location);
 
@@ -30,7 +30,7 @@ function UInt32_Access (Count: in out Integer) return Test_Result is
    end Verify;
 
 
-   function Test (Container: in out Store; Location: Unsigned_32; Value: Unsigned_32) return Test_Result is
+   function Test (Container: in out Instance; Location: Unsigned_32; Value: Unsigned_32) return Test_Result is
 
       Result: Test_Result;
 
