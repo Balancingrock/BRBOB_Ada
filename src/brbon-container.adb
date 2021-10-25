@@ -146,6 +146,11 @@ package body BRBON.Container is
 
    -- Operational
 
+   procedure Set_Data_Endianness (S: in out Instance'Class; Value: Endianness) is
+   begin
+      S.Swap := Value /= Machine_Endianness;
+   end Set_Data_Endianness;
+
    procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Type) is
    begin
       S.Data (Offset) := To_Unsigned_8 (Value);

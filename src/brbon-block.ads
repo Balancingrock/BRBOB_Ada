@@ -1,6 +1,9 @@
 with Interfaces; use Interfaces;
 
 with Ada.Unchecked_Conversion;
+with Ada.Finalization;
+
+with BRBON.Types; use BRBON.Types;
 
 
 package BRBON.Block is
@@ -22,5 +25,6 @@ package BRBON.Block is
 
    function To_Unsigned_16 is new Ada.Unchecked_Conversion (Instance_Type, Unsigned_16);
    function To_Block_Instance_Type is new Ada.Unchecked_Conversion (Unsigned_16, Instance_Type);
+
 
 end BRBON.Block;

@@ -113,6 +113,12 @@ package BRBON.Container is
    -- Operational
    -- =======================
 
+   -- Ensures that received data is correctly read (or updated).
+   -- Note: End users are discouraged from using this operation. Instead block factory methods should be used.
+   --
+   procedure Set_Data_Endianness (S: in out Instance'Class; Value: Endianness);
+   pragma Inline (Set_Data_Endianness);
+
    -- Write a BR_Item_Type to the byte at the given offset.
    --
    procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Type);
