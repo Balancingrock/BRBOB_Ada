@@ -6,6 +6,7 @@ with Types; use Types;
 with Test_Driver; use Test_Driver;
 
 with Container_Tests; use Container_Tests;
+with Single_Item_File_Tests; use Single_Item_File_Tests;
 
 
 procedure Main is
@@ -20,9 +21,10 @@ procedure Main is
 
    Result: Test_Result;
 
-   Test_Drivers: Array_Of_Test_Drivers (1..1) :=
+   Test_Drivers: Array_Of_Test_Drivers (1..2) :=
      (
-      others => (UStr ("Running Container tests:"), Container_Tests.Tests'Access)
+        (UStr ("Running Container tests:"), Container_Tests.Tests'Access),
+        (UStr ("Running Single_Item_File tests:"), Single_Item_File_Tests.Tests'Access)
      );
 
    Count: Integer := 1;
