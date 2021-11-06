@@ -1,5 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
+with Ada.Exceptions;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with Types; use Types;
@@ -7,6 +8,7 @@ with Test_Driver; use Test_Driver;
 
 with Container_Tests; use Container_Tests;
 with Single_Item_File_Tests; use Single_Item_File_Tests;
+with Serializable_Tests; use Serializable_Tests;
 
 
 procedure Main is
@@ -21,8 +23,12 @@ procedure Main is
 
    Result: Test_Result;
 
-   Test_Drivers: Array_Of_Test_Drivers (1..2) :=
+
+   -- Add new test tables to this table.
+   --
+   Test_Drivers: Array_Of_Test_Drivers (1..3) :=
      (
+        (UStr ("Running Serializable tests:"), Serializable_Tests.Tests'Access),
         (UStr ("Running Container tests:"), Container_Tests.Tests'Access),
         (UStr ("Running Single_Item_File tests:"), Single_Item_File_Tests.Tests'Access)
      );
@@ -31,20 +37,33 @@ procedure Main is
 
 begin
 
-   New_Line;
-
    for Driver of Test_Drivers loop
+      New_Line (2);
       Put_Line (Driver.Desc);
+      New_Line;
       Result := Run (Driver.Tests.all, Count);
       exit when Result /= Passed;
    end loop;
 
    if Result = Passed then
+      New_Line;
       Put_Line ("All Tests Passed");
    else
-      Put_Line ("Failed");
+      New_Line (2);
+      Put_Line ("Last test failed");
    end if;
 
    New_Line;
+
+exception
+
+   when E: others =>
+
+      New_Line (2);
+      Put ("Exception occured: ");
+      Put_Line(Ada.Exceptions.Exception_Message(E));
+      New_Line (2);
+      Put_Line ("Testing Failed");
+      New_Line;
 
 end Main;

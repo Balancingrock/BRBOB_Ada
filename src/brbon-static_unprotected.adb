@@ -32,9 +32,9 @@ package body BRBON.Static_Unprotected is
 
 
       -- Allocate memory area
-      I.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (1 .. Byte_Count);
+      I.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Byte_Count - 1);
       I.Container := BRBON.Container.Factory (Buffer_Ptr       => I.Memory_Ptr,
-                                                        Using_Endianness => Using_Endianness);
+                                              Using_Endianness => Using_Endianness);
 
       -- Create the block header
       BRBON.Block.Header.Single_Item_File.Create (In_Container => I.Container);

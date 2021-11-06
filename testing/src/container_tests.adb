@@ -1,5 +1,6 @@
+with Ada.Text_IO; use Ada.Text_IO;
+
 with Interfaces; use Interfaces;
-with Ada.text_IO; use Ada.Text_IO;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container; use BRBON.Container;

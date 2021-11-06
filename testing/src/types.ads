@@ -10,4 +10,6 @@ package Types is
 
    Break_Before: Integer := 0;
 
+   Test_Failed: Exception;
+
 end Types;

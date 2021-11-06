@@ -1,0 +1,9 @@
+separate (Serializable_Tests)
+
+function New_Serializable_Array_Of_Unsigned_8 (Count: in out Integer) return Test_Result is
+
+begin
+
+   return Passed;
+
+end New_Serializable_Array_Of_Unsigned_8;
