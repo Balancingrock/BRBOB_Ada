@@ -28,9 +28,9 @@ procedure Main is
    --
    Test_Drivers: Array_Of_Test_Drivers (1..3) :=
      (
-        (UStr ("Running Serializable tests:"), Serializable_Tests.Tests'Access),
-        (UStr ("Running Container tests:"), Container_Tests.Tests'Access),
-        (UStr ("Running Single_Item_File tests:"), Single_Item_File_Tests.Tests'Access)
+        (UStr ("Serializable tests:"), Serializable_Tests.Tests'Access),
+        (UStr ("Container tests:"), Container_Tests.Tests'Access),
+        (UStr ("Single_Item_File tests:"), Single_Item_File_Tests.Tests'Access)
      );
 
    Count: Integer := 1;
@@ -39,14 +39,14 @@ begin
 
    for Driver of Test_Drivers loop
       New_Line (2);
-      Put_Line (Driver.Desc);
+      Put_Line ("Running " & Driver.Desc);
       New_Line;
       Result := Run (Driver.Tests.all, Count);
       exit when Result /= Passed;
    end loop;
 
    if Result = Passed then
-      New_Line;
+      New_Line (2);
       Put_Line ("All Tests Passed");
    else
       New_Line (2);
@@ -60,8 +60,7 @@ exception
    when E: others =>
 
       New_Line (2);
-      Put ("Exception occured: ");
-      Put_Line(Ada.Exceptions.Exception_Message(E));
+      Put_Line ("Exception occured: " & Ada.Exceptions.Exception_Message(E));
       New_Line (2);
       Put_Line ("Testing Failed");
       New_Line;

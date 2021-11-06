@@ -7,15 +7,17 @@ with Serializable;
 separate (Serializable_Tests)
 
 
-function New_Serializable_Array_Of_Unsigned_8 (Count: in out Integer) return Test_Result is
+function Array_Length_1 (Count: in out Integer) return Test_Result is
 
 
-   Source: Array_Of_Unsigned_8 (0 .. 7) := (0, 1, 2, 3, 4, 5, 6, 7);
+   Source: Array_Of_Unsigned_8 (0 .. 0);
    Destination: Serializable.Instance;
    Byte: Unsigned_8;
    Index: Unsigned_32 := 0;
 
 begin
+
+   Source := (Source'First => 23);
 
    Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
 
@@ -37,4 +39,4 @@ exception
 
       return Failed;
 
-end New_Serializable_Array_Of_Unsigned_8;
+end Array_Length_1;

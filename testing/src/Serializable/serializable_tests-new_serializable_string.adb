@@ -22,7 +22,7 @@ begin
 
    while Serializable.Copy_Next_Byte (Destination, Byte) loop
       if Byte /= Expected (Index) then
-         Put ("Byte at position: "); Put (Index'Image); Put (", found: "); Put (Byte'Image); Put (", expected: "); Put (Expected (Index)'Image);
+         Put_Line ("Byte at position: " & Index'Image & ", found: " & Byte'Image & ", expected: " & Expected (Index)'Image);
          raise Test_Failed;
       else
          Index := Index + 1;

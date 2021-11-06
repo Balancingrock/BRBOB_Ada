@@ -11,7 +11,22 @@ package Serializable is
    -- When no valid byte can be supplied it returns False.
    -- Once False is returned it will not be called again.
    --
-   type Instance is private;
+   type Instance is tagged private;
+
+
+   -- Creates a new Serializable.Instanceby copying all the bytes from the given string.
+   -- @parameter Copy_Bytes_From The string from which the bytes will be copied.
+   -- @returns The new instance.
+   --
+   function New_Instance (Copy_Bytes_From: String) return Instance;
+
+
+   -- Creates a new Serializable.Instanceby copying all the bytes from the given array.
+   -- @parameter Copy_Bytes_From The array from which the bytes will be copied.
+   -- @returns The new instance.
+   --
+   function New_Instance (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance;
+
 
    -- Copies the next byte from this instance into the out parameter.
    -- Returns true if a copy was made, false if not.
@@ -23,23 +38,21 @@ package Serializable is
    function Copy_Next_Byte (Source: in out Instance; Byte: out Unsigned_8) return Boolean;
 
 
-   -- Creates a new Serializable.Instanceby copying all the bytes from the given string.
-   -- @parameter Copy_Bytes_From The string from which the bytes will be copied.
-   -- @returns The new instance.
+   -- Returns true if the instance is empty.
    --
-   function New_Instance (Copy_Bytes_From: String) return Instance;
+   function Is_Empty (Source: in out Instance) return Boolean;
+   pragma Inline (Is_Empty);
 
-   -- Creates a new Serializable.Instanceby copying all the bytes from the given array.
-   -- @parameter Copy_Bytes_From The array from which the bytes will be copied.
-   -- @returns The new instance.
+
+   -- Returns the number of bytes left in the instance.
    --
-   function New_Instance (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance;
-
+   function Remaining_Bytes (Source: in out Instance) return Integer;
+   pragma Inline (Remaining_Bytes);
 
 private
 
 
-   type Instance is
+   type Instance is tagged
       record
          Base_Ptr: Array_Of_Unsigned_8_Ptr;
          Remaining: Unsigned_32;

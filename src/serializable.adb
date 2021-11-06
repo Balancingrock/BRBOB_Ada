@@ -47,4 +47,15 @@ package body Serializable is
    end New_Instance;
 
 
+   function Is_Empty (Source: in out Instance) return Boolean is
+   begin
+      return Source.Remaining = 0;
+   end Is_Empty;
+
+
+   function Remaining_Bytes (Source: in out Instance) return Integer is
+   begin
+      return Integer (Source.Remaining);
+   end Remaining_Bytes;
+
 end Serializable;
