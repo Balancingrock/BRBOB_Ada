@@ -19,9 +19,11 @@ begin
 
    Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
 
+   Source := (others => 'A');
 
    while Serializable.Copy_Next_Byte (Destination, Byte) loop
       if Byte /= Expected (Index) then
+         New_Line (2);
          Put_Line ("Byte at position: " & Index'Image & ", found: " & Byte'Image & ", expected: " & Expected (Index)'Image);
          raise Test_Failed;
       else

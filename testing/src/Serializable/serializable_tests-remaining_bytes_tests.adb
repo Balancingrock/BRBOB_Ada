@@ -20,20 +20,23 @@ begin
    Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
 
    if Destination.Remaining_Bytes /= Index then
-      Put_Line ("Expected " & Index'Image & " bytes to remain, found: " & Destination.Remaining_Bytes'Image);
+      New_Line (2);
+      Put_Line ("1: Expected " & Index'Image & " bytes to remain, found: " & Destination.Remaining_Bytes'Image);
       raise Test_Failed;
    end if;
 
    while Serializable.Copy_Next_Byte (Destination, Byte) loop
       Index := Index - 1;
       if Destination.Remaining_Bytes /= Index then
-         Put_Line ("Expected " & Index'Image & " bytes to remain, found: " & Destination.Remaining_Bytes'Image);
+         New_Line (2);
+         Put_Line ("2: Expected " & Index'Image & " bytes to remain, found: " & Destination.Remaining_Bytes'Image);
          raise Test_Failed;
       end if;
    end loop;
 
    if Destination.Remaining_Bytes /= 0 then
-      Put_Line ("Expected 0 bytes to remain, found: " & Destination.Remaining_Bytes'Image);
+      New_Line (2);
+      Put_Line ("3: Expected 0 bytes to remain, found: " & Destination.Remaining_Bytes'Image);
       raise Test_Failed;
    end if;
 

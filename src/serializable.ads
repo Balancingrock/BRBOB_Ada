@@ -28,6 +28,18 @@ package Serializable is
    function New_Instance (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance;
 
 
+   -- Creates a new Serializable.Instance by referring to the bytes at the given location and length.
+   --
+   -- Note: The callee must guarantee that the bytes are available during the existence of the instance.
+   --
+   -- @parameter Use_In_Place A pointer to the array from which to return a series of bytes.
+   -- @parameter First The index of the first byte to be returned. First must be <= Last.
+   -- @parameter Last The index of the last byte to be returned. Last must be >= First.
+   -- @returns The new instance
+   --
+   function New_Instance (Use_In_Place: Array_Of_Unsigned_8_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance;
+
+
    -- Copies the next byte from this instance into the out parameter.
    -- Returns true if a copy was made, false if not.
    -- Note that after returning false once this instance is no longer usable.
@@ -55,7 +67,10 @@ private
    type Instance is tagged
       record
          Base_Ptr: Array_Of_Unsigned_8_Ptr;
-         Remaining: Unsigned_32;
+         First: Unsigned_32;
+         Cursor: Unsigned_32;
+         Last: Unsigned_32;
+         Must_Deallocate: Boolean;
       end record;
 
 
