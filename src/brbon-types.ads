@@ -47,8 +47,14 @@ package BRBON.Types is
 
    function To_Integer_8 is new Ada.Unchecked_Conversion (Unsigned_8, Integer_8);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Integer_8, Unsigned_8);
+   function To_Integer_16 is new Ada.Unchecked_Conversion (Unsigned_16, Integer_16);
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Integer_16, Unsigned_16);
+   function To_Integer_32 is new Ada.Unchecked_Conversion (Unsigned_32, Integer_32);
+   function To_Unsigned_32 is new Ada.Unchecked_Conversion (Integer_32, Unsigned_32);
+   function To_Integer_64 is new Ada.Unchecked_Conversion (Unsigned_64, Integer_64);
+   function To_Unsigned_64 is new Ada.Unchecked_Conversion (Integer_64, Unsigned_64);
 
-   -- All types available for storage into an Item_Manager.
+   -- All available storage types.
    --
    type BR_Item_Type is
      (

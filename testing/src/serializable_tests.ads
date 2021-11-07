@@ -11,6 +11,7 @@ package Serializable_Tests is
    function Is_Empty_Test (Count: in out Integer) return Test_Result;
    function Remaining_Bytes_Tests (Count: in out Integer) return Test_Result;
    function Use_In_Place_Test (Count: in out Integer) return Test_Result;
+   function Compare_Tests (Count: in out Integer) return Test_Result;
 
 
    Tests: aliased Array_Of_Tests :=
@@ -21,7 +22,8 @@ package Serializable_Tests is
       (UStr ("Array_Length_1"), Array_Length_1'Access),
       (UStr ("Is_Empty_Test"), Is_Empty_Test'Access),
       (UStr ("Remaining_Bytes_Tests"), Remaining_Bytes_Tests'Access),
-      (UStr ("Use_In_Place_Test"), Use_In_Place_Test'Access)
+      (UStr ("Use_In_Place_Test"), Use_In_Place_Test'Access),
+      (UStr ("Compare_Tests"), Compare_Tests'Access)
      );
 
 end Serializable_Tests;

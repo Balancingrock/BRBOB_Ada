@@ -57,4 +57,12 @@ package body BRBON.Static_Unprotected is
       return I.Container.Byte_Count;
    end Byte_Count;
 
+
+   function Create_In_Place_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance is
+   begin
+      return Serializable.New_Instance (Use_In_Place => I.Memory_Ptr,
+                                        First        => I.Memory_Ptr.all'First,
+                                        Last         => I.Memory_Ptr.all'Last);
+   end Create_In_Place_Serializable_Instance;
+
 end BRBON.Static_Unprotected;

@@ -2,19 +2,12 @@ with Interfaces.C;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
-with BRBON.Configure; use BRBON.Configure;
+with BRBON.Configure;
+with BRBON.Utils;
 
 
 package body Serializable is
 
-   procedure Dump_Instance (Source: in out Instance) is
-   begin
-      New_Line (2);
-      Put_Line ("Serializable.Instance.First            = " & Source.First'Image);
-      Put_Line ("Serializable.Instance.Cursor           = " & Source.Cursor'Image);
-      Put_Line ("Serializable.Instance.Last             = " & Source.Last'Image);
-      Put_Line ("Serializable.Instance.Must_Deallocate  = " & Source.Must_Deallocate'Image);
-   end Dump_Instance;
 
    function Copy_Next_Byte (Source: in out Instance; Byte: out Unsigned_8) return Boolean is
    begin
@@ -79,5 +72,45 @@ package body Serializable is
    begin
       return Integer (Source.Last) - Integer (Source.Cursor) + 1;
    end Remaining_Bytes;
+
+
+   function Compare (Source: in out Instance; Expected_Values: in out Instance) return Boolean is
+      Failed: Exception;
+      Byte: Unsigned_8;
+      Expected: Unsigned_8;
+   begin
+
+      if Source.Remaining_Bytes /= Expected_Values.Remaining_Bytes then
+         raise Failed;
+      end if;
+
+      while Source.Copy_Next_Byte (Byte) loop
+         if not Copy_Next_Byte (Expected_Values, Expected) then
+            raise Failed; -- should never happen, see test for remaining-bytes above.
+         end if;
+         if Byte /= Expected then
+            raise Failed;
+         end if;
+      end loop;
+
+      return True;
+
+   exception
+
+      when Failed =>
+
+         Source.Cursor := Source.Last + 1;
+         Expected_Values.Cursor := Expected_Values.Last + 1;
+
+         return False;
+
+   end Compare;
+
+
+   procedure Hex_Dump_Around_Cursor (Source: in out Instance) is
+   begin
+      BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor - 1);
+   end Hex_Dump_Around_Cursor;
+
 
 end Serializable;

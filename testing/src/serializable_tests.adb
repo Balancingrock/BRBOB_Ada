@@ -16,5 +16,6 @@ package body Serializable_Tests is
    function Is_Empty_Test (Count: in out Integer) return Test_Result is separate;
    function Remaining_Bytes_Tests (Count: in out Integer) return Test_Result is separate;
    function Use_In_Place_Test (Count: in out Integer) return Test_Result is separate;
+   function Compare_Tests (Count: in out Integer) return Test_Result is separate;
 
 end Serializable_Tests;

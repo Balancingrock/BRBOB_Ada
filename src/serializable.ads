@@ -61,6 +61,21 @@ package Serializable is
    function Remaining_Bytes (Source: in out Instance) return Integer;
    pragma Inline (Remaining_Bytes);
 
+
+   -- Compares two serializables.
+   -- Both serializables will be updated for the number of examined bytes.
+   -- If the operation returns False and the Remaining_Bytes is the same for both Instances
+   -- then the Remaining_Bytes may be used to calculate which byte caused the fail using:
+   --    (Index_Of_Failed_Byte := Source'Last - Source.Remaining_Bytes)
+   -- If the operation returns True then both the serializables have zero Remaining_Bytes.
+   --
+   function Compare (Source: in out Instance; Expected_Values: in out Instance) return Boolean;
+
+
+   -- Undocumented, used for test purposes only.
+   --
+   procedure Hex_Dump_Around_Cursor (Source: in out Instance);
+
 private
 
 

@@ -5,6 +5,7 @@ with Ada.Finalization;
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Block;
+with Serializable;
 
 
 package BRBON.Static_Unprotected is
@@ -37,6 +38,11 @@ package BRBON.Static_Unprotected is
    --
    function Byte_Count (I: in out Instance'Class) return Unsigned_32;
    pragma Inline (Byte_Count);
+
+
+   -- Returns a serializer that returns the bytes without copying the block.
+   --
+   function Create_In_Place_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance;
 
 private
 
