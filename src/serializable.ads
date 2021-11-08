@@ -76,6 +76,11 @@ package Serializable is
    --
    procedure Hex_Dump_With_Cursor (Source: in out Instance);
 
+
+   -- Undocumented, used for test purposes only.
+   --
+   procedure Put_All (Source: in out Instance);
+
 private
 
 

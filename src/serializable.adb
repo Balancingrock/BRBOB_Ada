@@ -119,4 +119,31 @@ package body Serializable is
    end Hex_Dump_With_Cursor;
 
 
+   procedure Put_All (Source: in out Instance) is
+      I: Unsigned_32 := Source.Base_Ptr.all'First;
+      Total: Unsigned_32 := Source.Last - Source.First + 1;
+      Ptr_Valid: String (1 .. 7);
+   begin
+      if Source.Remaining_Bytes < 1 and Source.Must_Deallocate then
+         Ptr_Valid := "Invalid";
+      else
+         Ptr_Valid := "Valid  ";
+         end if;
+      New_Line (2);
+      Put_Line ("Data ptr:        " & Ptr_Valid);
+      Put_Line ("Index of First: " & Source.First'Image);
+      Put_Line ("Index of Last:  " & Source.Last'Image);
+      Put_Line ("Index of Cursor:" & Source.Cursor'Image);
+      Put_Line ("Must_Deallocate: " & Source.Must_Deallocate'Image);
+      Put_Line ("Total nof Bytes:" & Total'Image);
+      Put_Line ("Remaining Bytes:" & Source.Remaining_Bytes'Image);
+      Put_Line ("Data:");
+      while I < Source.Base_Ptr.all'Last loop
+         BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, I, False);
+         New_Line;
+         I := I + 16;
+      end loop;
+   end Put_All;
+
+
 end Serializable;
