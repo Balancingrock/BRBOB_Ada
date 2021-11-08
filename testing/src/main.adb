@@ -2,6 +2,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
 with Ada.Exceptions;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Calendar; use Ada.Calendar;
 
 with Types; use Types;
 with Test_Driver; use Test_Driver;
@@ -35,7 +36,17 @@ procedure Main is
 
    Count: Integer := 1;
 
+
+   -- Elapsed time measurement
+   --
+   Start_Time: Time;
+   End_Time: Time;
+   Dur: Duration;
+   DurStr: Unbounded_String;
+
 begin
+
+   Start_Time := Clock;
 
    for Driver of Test_Drivers loop
       New_Line (2);
@@ -45,13 +56,21 @@ begin
       exit when Result /= Passed;
    end loop;
 
+   End_Time := Clock;
+
+   Dur := (End_Time - Start_Time) * 1000;
+   DurStr := To_Unbounded_String (Duration'Image (Dur));
+   Delete (DurStr, (Length (DurStr) - 5), Length (DurStr)); -- Remove excess zero's
+
    if Result = Passed then
       New_Line (2);
-      Put_Line ("All Tests Passed");
+      Put_Line ("All Tests Passed in" & DurStr & " mS");
    else
-      New_Line (2);
+      New_Line;
       Put_Line ("Last test failed");
    end if;
+
+
 
    New_Line;
 

@@ -20,6 +20,6 @@ package BRBON.Utils is
 
    procedure Put_Hex_32 (Value: Unsigned_32);
    procedure Put_Hex_8 (Value: Unsigned_8; Display_Cursor: Boolean := False);
-   Procedure Put_Hex_8_Two_Lines (Source: Array_Of_Unsigned_8; Around: Unsigned_32);
+   Procedure Put_Hex_8_Two_Lines (Source: Array_Of_Unsigned_8; Cursor: Unsigned_32; Show_Cursor: Boolean := False);
 
 end BRBON.Utils;

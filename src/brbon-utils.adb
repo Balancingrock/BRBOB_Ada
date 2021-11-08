@@ -81,65 +81,24 @@ package body BRBON.Utils is
       Put (Str2);
    end Put_Hex_8;
 
-   Procedure Put_Hex_8_Two_Lines (Source: Array_Of_Unsigned_8; Around: Unsigned_32) is
+   Procedure Put_Hex_8_Two_Lines (Source: Array_Of_Unsigned_8; Cursor: Unsigned_32; Show_Cursor: Boolean := False) is
 
-      Start: Unsigned_32 := Around and 16#FFFF_FFF0#;
-      Cursor_Start: constant Character := '(';
-      Cursor_End: constant Character := ')';
-      Close_Cursor: Boolean;
+      Start: Unsigned_32 := Source'First + (Cursor and 16#FFFF_FFF0#);
 
-   begin
+      Cursor_Start: Character := '(';
+      Cursor_End: Character := ')';
 
-      -- Line 1
-      Put_Hex_32 (Start); Put (" ");
-      Close_Cursor := False;
+      procedure Put_Hex_Line (Offset: Unsigned_32) is
 
-      for I in Unsigned_32 range 0 .. 15 loop
+         Close_Cursor: Boolean := False;
 
-         exit when Start + I > Source'Last;
+      begin
 
-         if Start + I = Around then
-            Put (Cursor_Start);
-            Close_Cursor := True;
-         else
-            if Close_Cursor then
-               Put (Cursor_End);
-               Close_Cursor := False;
-            else
-               Put (" ");
-            end if;
-         end if;
+         for I in Unsigned_32 range 0 .. 15 loop
 
-         Put_Hex_8 (Source (Start + I));
+            exit when Offset + I > Source'Last;
 
-         if I = 7 then
-            if Close_Cursor then
-               Put (Cursor_End);
-               Close_Cursor := False;
-            else
-               Put (" ");
-            end if;
-         end if;
-
-      end loop;
-
-      if Close_Cursor then
-         Put (Cursor_End);
-      end if;
-
-
-      -- Line 2
-      if Start + 16 <= Source'Last then
-
-         New_Line;
-         Put_Hex_32 (Start); Put (" ");
-         Close_Cursor := False;
-
-         for I in Unsigned_32 range 16 .. 31 loop
-
-            exit when Start + I > Source'Last;
-
-            if Start + I = Around then
+            if Offset + I = Cursor then
                Put (Cursor_Start);
                Close_Cursor := True;
             else
@@ -151,9 +110,9 @@ package body BRBON.Utils is
                end if;
             end if;
 
-            Put_Hex_8 (Source (Start + I));
+            Put_Hex_8 (Source (Offset + I));
 
-            if I = 16 + 7 then
+            if I = 7 then
                if Close_Cursor then
                   Put (Cursor_End);
                   Close_Cursor := False;
@@ -164,12 +123,26 @@ package body BRBON.Utils is
 
          end loop;
 
-         -- This will never happen, hence commented out (cursor at end => only 16 bytes output)
-         --
-         -- if Close_Cursor then
-         --    Put (Cursor_End);
-         -- end if;
+         if Close_Cursor then
+            Put (Cursor_End);
+         end if;
 
+      end Put_Hex_Line;
+
+   begin
+
+      If not Show_Cursor then
+         Cursor_Start := ' ';
+         Cursor_End := ' ';
+      end if;
+
+      Put_Hex_32 (Start); Put (" ");
+      Put_Hex_Line (Start);
+
+      if Start + 15 < Source'Last then
+         New_Line;
+         Put_Hex_32 (Start + 15); Put (" ");
+         Put_Hex_Line (Start + 15);
       end if;
 
    end Put_Hex_8_Two_Lines;

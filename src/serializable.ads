@@ -74,7 +74,7 @@ package Serializable is
 
    -- Undocumented, used for test purposes only.
    --
-   procedure Hex_Dump_Around_Cursor (Source: in out Instance);
+   procedure Hex_Dump_With_Cursor (Source: in out Instance);
 
 private
 
