@@ -73,6 +73,10 @@ package body Serializable is
       return Integer (Source.Last) - Integer (Source.Cursor) + 1;
    end Remaining_Bytes;
 
+   function Index_Of_Last_Byte (Source: in out Instance) return Unsigned_32 is
+   begin
+      return Source.Cursor - Source.First;
+   end Index_Of_Last_Byte;
 
    function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8) return Boolean is
       Failed: Exception;
@@ -130,16 +134,15 @@ package body Serializable is
    end Compare;
 
 
-   procedure Dump_2_Lines_Around_Cursor (Source: in out Instance; Show_Cursor: Boolean := False) is
+   procedure Dump_2_Lines (Source: in out Instance; Around: Unsigned_32 := 0; Show_Cursor: Boolean := false) is
+      I: Unsigned_32 := Source.First + Around;
    begin
       if Source.Remaining_Bytes > 0 or not Source.Must_Deallocate then
-         if Source.First = Source.Cursor then
-            BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor, Show_Cursor);
-         else
-            BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor - 1, Show_Cursor);
-         end if;
+         BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, I, Show_Cursor);
+      else
+         Put_Line ("The serializable has already deallocated");
       end if;
-   end Dump_2_Lines_Around_Cursor;
+   end Dump_2_Lines;
 
 
    procedure Put_All (Source: in out Instance) is

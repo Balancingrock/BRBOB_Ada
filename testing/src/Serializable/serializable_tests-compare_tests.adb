@@ -59,21 +59,21 @@ function Compare_Tests (Count: in out Integer) return Test_Result is
          T: Boolean;
       begin
          New_Line;
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
          T := Ser.Copy_Next_Byte (B);
-         Ser.Dump_2_Lines_Around_Cursor; New_Line (2);
+         Ser.Dump_2_Lines; New_Line (2);
       end;
 
    end Put_Hex_Tests;

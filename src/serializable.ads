@@ -62,6 +62,13 @@ package Serializable is
    pragma Inline (Remaining_Bytes);
 
 
+   -- Returns the index of the last byte that was read.
+   --
+   -- Note: Will return zero if no byte was read.
+   --
+   function Index_Of_Last_Byte (Source: in out Instance) return Unsigned_32;
+
+
    -- Compares a serializable (starting at the cursor) to a given array.
    -- The serializable will be updated for the number of examined bytes.
    -- If the operation returns False and the Remaining_Bytes is not zero
@@ -86,7 +93,7 @@ package Serializable is
 
    -- Undocumented, used for test purposes only.
    --
-   procedure Dump_2_Lines_Around_Cursor (Source: in out Instance; Show_Cursor: Boolean := False);
+   procedure Dump_2_Lines (Source: in out Instance; Around: Unsigned_32 := 0; Show_Cursor: Boolean := false);
 
 
    -- Undocumented, used for test purposes only.

@@ -1,3 +1,4 @@
+with Interfaces; use Interfaces;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with BRBON;
@@ -16,6 +17,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
    T_Serializer: Serializable.Instance;
    Expected_Bytes: Array_Of_Unsigned_8_Ptr;
    S: Serializable.Instance;
+   Cursor: Unsigned_32;
 
    Type_1_Block: Array_Of_Unsigned_8 :=
      (
@@ -35,9 +37,9 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
       -- Offset 16#08
       16#60#, 16#00#, 16#00#, 16#00#,
 
-      -- Block header byte count, ?
+      -- Block header byte count, 10 * 8 = 80 => 16#50# bytes
       -- Offset 16#0C
-      16#00#, 16#00#,
+      16#50#, 16#00#,
 
       -- Encrypted header byte count, unused => 0
       -- Offset 16#0E
@@ -308,18 +310,20 @@ begin
 
    if not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
 
+      Cursor := T_Serializer.Index_Of_Last_Byte;
+
       New_Line (2);
       Put_Line ("Block verification failed");
 
       New_Line;
       Put_Line ("Expected:");
       S := Serializable.Create_With_Copy (Type_1_Block);
-      S.Dump_2_Lines_Around_Cursor (Show_Cursor => False);
+      S.Dump_2_Lines (Around => Cursor);
 
 --
       New_Line (2);
       Put_Line ("Found:");
-      T_Serializer.Dump_2_Lines_Around_Cursor (Show_Cursor => True);
+      T_Serializer.Dump_2_Lines (Around => Cursor, Show_Cursor => True);
 
       return Failed;
 
