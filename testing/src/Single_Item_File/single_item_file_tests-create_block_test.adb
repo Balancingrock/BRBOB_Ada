@@ -127,7 +127,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
 
       -- Block Expiry Time Stamp
       -- Offset 16#40
-      16#7F#, 16#FF#, 16#FF#, 16#FF#,  16#FF#, 16#FF#, 16#FF#, 16#FF#,
+      16#11#, 16#FF#, 16#FF#, 16#FF#,  16#FF#, 16#FF#, 16#FF#, 16#7F#,
 
       -- Block Type dependent header (not used)
 
@@ -294,7 +294,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
 
 begin
 
-   Expected_Bytes := new Array_Of_Unsigned_8 (1 .. Type_1_Block'Length);
+   Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block'Length - 1);
    Expected_Bytes.all := Type_1_Block;
 
    T_Object := BRBON.Static_Unprotected.Factory
@@ -311,6 +311,14 @@ begin
    if not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
 
       Cursor := T_Serializer.Index_Of_Last_Byte;
+
+      S := Serializable.Create_With_Copy (Type_1_Block);
+
+      New_Line (2);
+      Put_Line ("Cursor = " & Cursor'Image);
+      T_Serializer.Put_All;
+      S.Put_All;
+
 
       New_Line (2);
       Put_Line ("Block verification failed");

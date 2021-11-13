@@ -31,14 +31,14 @@ package body Serializable is
    function Create_With_Copy (Copy_Bytes_From: String) return Instance is
       Source: String renames Copy_Bytes_From;
       A_Ptr: Array_Of_Unsigned_8_Ptr;
-      I: Unsigned_32 := 1;
+      I: Unsigned_32 := 0;
    begin
-      A_Ptr := new Array_Of_Unsigned_8 (1 .. Source'Length);
+      A_Ptr := new Array_Of_Unsigned_8 (0 .. Source'Length - 1);
       for C of Source loop
          A_Ptr.all(I) := Character'Pos (C);
          I := I + 1;
       end loop;
-      return (A_Ptr, 1, 1, A_Ptr.all'Last, True);
+      return (A_Ptr, 0, 0, A_Ptr.all'Last, True);
    end Create_With_Copy;
 
 
@@ -48,9 +48,9 @@ package body Serializable is
       Source: Array_Of_Unsigned_8 renames Copy_Bytes_From;
       A_Ptr: Array_Of_Unsigned_8_Ptr;
    begin
-      A_Ptr := new Array_Of_Unsigned_8 (1 .. Source'Length);
+      A_Ptr := new Array_Of_Unsigned_8 (0 .. Source'Length - 1);
       A_Ptr.all := Source;
-      return (A_Ptr, 1, 1, A_Ptr.all'Last, True);
+      return (A_Ptr, 0, 0, A_Ptr.all'Last, True);
    end Create_With_Copy;
 
 
@@ -75,7 +75,11 @@ package body Serializable is
 
    function Index_Of_Last_Byte (Source: in out Instance) return Unsigned_32 is
    begin
-      return Source.Cursor - Source.First;
+      --if Source.Remaining_Bytes = Integer (Source.Last - Source.First + 1) then
+      --   return Source.First;
+      --else
+         return Source.Cursor - Source.First;
+      --end if;
    end Index_Of_Last_Byte;
 
    function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8) return Boolean is
