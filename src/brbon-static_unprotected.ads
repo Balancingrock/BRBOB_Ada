@@ -42,7 +42,7 @@ package BRBON.Static_Unprotected is
 
    -- Returns a serializer that returns the bytes without copying the block.
    --
-   function Create_In_Place_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance;
+   function Create_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance;
 
 private
 

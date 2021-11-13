@@ -17,7 +17,7 @@ function New_Serializable_String (Count: in out Integer) return Test_Result is
 
 begin
 
-   Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
+   Destination := Serializable.Create_With_Copy (Copy_Bytes_From => Source);
 
    Source := (others => 'A');
 

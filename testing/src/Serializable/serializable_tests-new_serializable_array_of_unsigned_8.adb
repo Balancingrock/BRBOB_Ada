@@ -18,7 +18,7 @@ function New_Serializable_Array_Of_Unsigned_8 (Count: in out Integer) return Tes
 
 begin
 
-   Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
+   Destination := Serializable.Create_With_Copy (Copy_Bytes_From => Source);
 
    Source := (others => 9);
 

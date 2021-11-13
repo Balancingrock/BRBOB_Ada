@@ -18,14 +18,14 @@ package Serializable is
    -- @parameter Copy_Bytes_From The string from which the bytes will be copied.
    -- @returns The new instance.
    --
-   function New_Instance (Copy_Bytes_From: String) return Instance;
+   function Create_With_Copy (Copy_Bytes_From: String) return Instance;
 
 
    -- Creates a new Serializable.Instanceby copying all the bytes from the given array.
    -- @parameter Copy_Bytes_From The array from which the bytes will be copied.
    -- @returns The new instance.
    --
-   function New_Instance (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance;
+   function Create_With_Copy (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance;
 
 
    -- Creates a new Serializable.Instance by referring to the bytes at the given location and length.
@@ -37,7 +37,7 @@ package Serializable is
    -- @parameter Last The index of the last byte to be returned. Last must be >= First.
    -- @returns The new instance
    --
-   function New_Instance (Use_In_Place: Array_Of_Unsigned_8_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance;
+   function Create_Without_Copy (Use_In_Place: Array_Of_Unsigned_8_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance;
 
 
    -- Copies the next byte from this instance into the out parameter.
@@ -62,14 +62,26 @@ package Serializable is
    pragma Inline (Remaining_Bytes);
 
 
-   -- Compares two serializables.
-   -- Both serializables will be updated for the number of examined bytes.
-   -- If the operation returns False and the Remaining_Bytes is the same for both Instances
+   -- Compares a serializable (starting at the cursor) to a given array.
+   -- The serializable will be updated for the number of examined bytes.
+   -- If the operation returns False and the Remaining_Bytes is not zero
    -- then the Remaining_Bytes may be used to calculate which byte caused the fail using:
    --    (Index_Of_Failed_Byte := Source'Last - Source.Remaining_Bytes)
-   -- If the operation returns True then both the serializables have zero Remaining_Bytes.
+   -- If the operation returns True then the serializable has zero Remaining_Bytes.
    --
-   function Compare (Source: in out Instance; Expected_Values: in out Instance) return Boolean;
+   function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8) return Boolean;
+
+   -- Compares a serializable (starting at the cursor) to a given array, ignoring bytes that have their 'Dont_Care' flag set.
+   -- The serializable will be updated for the number of examined bytes.
+   -- If the operation returns False and the Remaining_Bytes is not zero
+   -- then the Remaining_Bytes may be used to calculate which byte caused the fail using:
+   --    (Index_Of_Failed_Byte := Source'Last - Source.Remaining_Bytes)
+   -- If the operation returns True then the serializable has zero Remaining_Bytes.
+   -- Any byte which has a corresponding flag set in the Dont_Care array will be treated as equal.
+   -- The Dont_Care array must have the same or more flags as there are bytes in the Expected_Values array.
+   -- An exception will be raised (out of bounds) otherwise.
+   --
+   function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8; Dont_Care: Array_Of_Boolean) return Boolean;
 
 
    -- Undocumented, used for test purposes only.

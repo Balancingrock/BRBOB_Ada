@@ -21,9 +21,9 @@ begin
    Source.all := (0, 1, 2, 3, 4, 5, 6, 7);
    Expected := Source.all;
 
-   Destination := Serializable.New_Instance (Use_In_Place => Source,
-                                             First        => Source.all'First,
-                                             Last         => Source.all'Last);
+   Destination := Serializable.Create_Without_Copy (Use_In_Place => Source,
+                                                    First        => Source.all'First,
+                                                    Last         => Source.all'Last);
 
    Source.all (5) := 9;
    Expected (5) := 9;

@@ -17,7 +17,7 @@ function Remaining_Bytes_Tests (Count: in out Integer) return Test_Result is
 
 begin
 
-   Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
+   Destination := Serializable.Create_With_Copy (Copy_Bytes_From => Source);
 
    if Destination.Remaining_Bytes /= Index then
       New_Line (2);

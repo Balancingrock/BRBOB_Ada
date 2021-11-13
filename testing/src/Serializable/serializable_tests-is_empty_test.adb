@@ -15,7 +15,7 @@ function Is_Empty_Test (Count: in out Integer) return Test_Result is
 
 begin
 
-   Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
+   Destination := Serializable.Create_With_Copy (Copy_Bytes_From => Source);
 
    if Destination.Is_Empty then
       Put_Line ("The serializable instance should not have been empty");

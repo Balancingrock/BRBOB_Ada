@@ -81,28 +81,28 @@ package body CRC_Package is
    -- ****************************
 
    function Calculate_CRC_16 (Str: String) return Unsigned_16 is
-      Source: Serializable.Instance := Serializable.New_Instance (Copy_Bytes_From => Str);
+      Source: Serializable.Instance := Serializable.Create_With_Copy (Copy_Bytes_From => Str);
    begin
       return Calculate_CRC_16 (Source);
    end Calculate_CRC_16;
 
 
    function Calculate_CRC_32 (Str: String) return Unsigned_32 is
-      Source: Serializable.Instance := Serializable.New_Instance (Copy_Bytes_From => Str);
+      Source: Serializable.Instance := Serializable.Create_With_Copy (Copy_Bytes_From => Str);
    begin
       return Calculate_CRC_32 (Source);
    end Calculate_CRC_32;
 
 
    function Calculate_CRC_16 (Arr: Array_Of_Unsigned_8) return Unsigned_16 is
-      Source: Serializable.Instance := Serializable.New_Instance (Copy_Bytes_From => Arr);
+      Source: Serializable.Instance := Serializable.Create_With_Copy (Copy_Bytes_From => Arr);
    begin
       return Calculate_CRC_16 (Source);
    end Calculate_CRC_16;
 
 
    function Calculate_CRC_32 (Arr: Array_Of_Unsigned_8) return Unsigned_32 is
-      Source: Serializable.Instance := Serializable.New_Instance (Copy_Bytes_From => Arr);
+      Source: Serializable.Instance := Serializable.Create_With_Copy (Copy_Bytes_From => Arr);
    begin
       return Calculate_CRC_32 (Source);
    end Calculate_CRC_32;

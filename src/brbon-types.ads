@@ -17,7 +17,9 @@ package BRBON.Types is
    type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of Unsigned_8;
    --
    type Array_Of_Unsigned_8_Ptr is access all Array_Of_Unsigned_8;
-   --
+
+   type Array_Of_Boolean is array (Unsigned_32 range <>) of Boolean;
+
    procedure Deallocate_Array_Of_Unsigned_8 is new Ada.Unchecked_Deallocation (Array_Of_Unsigned_8, Array_Of_Unsigned_8_Ptr);
 
    Short_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..1) := (others => 0);

@@ -19,7 +19,7 @@ begin
 
    Source := (Source'First => 23);
 
-   Destination := Serializable.New_Instance (Copy_Bytes_From => Source);
+   Destination := Serializable.Create_With_Copy (Copy_Bytes_From => Source);
 
 
    while Serializable.Copy_Next_Byte (Destination, Byte) loop

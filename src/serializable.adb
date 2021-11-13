@@ -28,7 +28,7 @@ package body Serializable is
 
    -- String
    --
-   function New_Instance (Copy_Bytes_From: String) return Instance is
+   function Create_With_Copy (Copy_Bytes_From: String) return Instance is
       Source: String renames Copy_Bytes_From;
       A_Ptr: Array_Of_Unsigned_8_Ptr;
       I: Unsigned_32 := 1;
@@ -39,27 +39,27 @@ package body Serializable is
          I := I + 1;
       end loop;
       return (A_Ptr, 1, 1, A_Ptr.all'Last, True);
-   end New_Instance;
+   end Create_With_Copy;
 
 
    -- Binary
    --
-   function New_Instance (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance is
+   function Create_With_Copy (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance is
       Source: Array_Of_Unsigned_8 renames Copy_Bytes_From;
       A_Ptr: Array_Of_Unsigned_8_Ptr;
    begin
       A_Ptr := new Array_Of_Unsigned_8 (1 .. Source'Length);
       A_Ptr.all := Source;
       return (A_Ptr, 1, 1, A_Ptr.all'Last, True);
-   end New_Instance;
+   end Create_With_Copy;
 
 
    -- No copy
    --
-   function New_Instance (Use_In_Place: Array_Of_Unsigned_8_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance is
+   function Create_Without_Copy (Use_In_Place: Array_Of_Unsigned_8_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance is
    begin
       return (Use_In_Place, First, First, Last, False);
-   end New_Instance;
+   end Create_Without_Copy;
 
 
    function Is_Empty (Source: in out Instance) return Boolean is
@@ -74,35 +74,58 @@ package body Serializable is
    end Remaining_Bytes;
 
 
-   function Compare (Source: in out Instance; Expected_Values: in out Instance) return Boolean is
+   function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8) return Boolean is
       Failed: Exception;
       Byte: Unsigned_8;
-      Expected: Unsigned_8;
+      I: Unsigned_32 := Expected_Values'First;
    begin
 
-      if Source.Remaining_Bytes /= Expected_Values.Remaining_Bytes then
+      if Source.Remaining_Bytes /= Expected_Values'Length then
          raise Failed;
       end if;
 
       while Source.Copy_Next_Byte (Byte) loop
-         if not Copy_Next_Byte (Expected_Values, Expected) then
-            raise Failed; -- should never happen, see test for remaining-bytes above.
+        if Byte /= Expected_Values (I) then
+               raise Failed;
          end if;
-         if Byte /= Expected then
-            raise Failed;
-         end if;
+         I := I + 1;
       end loop;
 
       return True;
 
    exception
 
-      when Failed =>
+      when Failed => return False;
 
-         Source.Cursor := Source.Last + 1;
-         Expected_Values.Cursor := Expected_Values.Last + 1;
+   end Compare;
 
-         return False;
+
+   function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8; Dont_Care: Array_Of_Boolean) return Boolean is
+      Failed: Exception;
+      Byte: Unsigned_8;
+      DI: Unsigned_32 := Dont_Care'First;
+      EI: Unsigned_32 := Expected_Values'First;
+   begin
+
+      if Source.Remaining_Bytes /= Expected_Values'Length then
+         raise Failed;
+      end if;
+
+      while Source.Copy_Next_Byte (Byte) loop
+         if not Dont_Care (DI) then
+            if Byte /= Expected_Values (EI) then
+               raise Failed;
+            end if;
+         end if;
+         DI := DI + 1;
+         EI := EI + 1;
+      end loop;
+
+      return True;
+
+   exception
+
+      when Failed => return False;
 
    end Compare;
 
