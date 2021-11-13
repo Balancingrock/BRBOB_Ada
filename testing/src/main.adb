@@ -66,7 +66,7 @@ begin
       New_Line (2);
       Put_Line ("All Tests Passed in" & DurStr & " mS");
    else
-      New_Line;
+      New_Line (2);
       Put_Line ("Last test failed");
    end if;
 

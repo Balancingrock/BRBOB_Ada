@@ -130,16 +130,16 @@ package body Serializable is
    end Compare;
 
 
-   procedure Hex_Dump_With_Cursor (Source: in out Instance) is
+   procedure Dump_2_Lines_Around_Cursor (Source: in out Instance; Show_Cursor: Boolean := False) is
    begin
       if Source.Remaining_Bytes > 0 or not Source.Must_Deallocate then
          if Source.First = Source.Cursor then
-            BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor, True);
+            BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor, Show_Cursor);
          else
-            BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor - 1, True);
+            BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, Source.Cursor - 1, Show_Cursor);
          end if;
       end if;
-   end Hex_Dump_With_Cursor;
+   end Dump_2_Lines_Around_Cursor;
 
 
    procedure Put_All (Source: in out Instance) is

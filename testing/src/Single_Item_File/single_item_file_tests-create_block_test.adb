@@ -15,6 +15,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
    T_Object: BRBON.Static_Unprotected.Instance;
    T_Serializer: Serializable.Instance;
    Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+   S: Serializable.Instance;
 
    Type_1_Block: Array_Of_Unsigned_8 :=
      (
@@ -302,18 +303,23 @@ begin
    T_Serializer := T_Object.Create_Serializable_Instance;
 
 
-   T_Serializer.Put_All;
+--   T_Serializer.Put_All;
 
-   T_Serializer.Hex_Dump_With_Cursor;
 
    if not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
 
       New_Line (2);
+      Put_Line ("Block verification failed");
+
+      New_Line;
       Put_Line ("Expected:");
+      S := Serializable.Create_With_Copy (Type_1_Block);
+      S.Dump_2_Lines_Around_Cursor (Show_Cursor => False);
+
 --
       New_Line (2);
       Put_Line ("Found:");
-      T_Serializer.Hex_Dump_With_Cursor;
+      T_Serializer.Dump_2_Lines_Around_Cursor (Show_Cursor => True);
 
       return Failed;
 
