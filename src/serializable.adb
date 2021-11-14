@@ -75,11 +75,11 @@ package body Serializable is
 
    function Index_Of_Last_Byte (Source: in out Instance) return Unsigned_32 is
    begin
-      --if Source.Remaining_Bytes = Integer (Source.Last - Source.First + 1) then
-      --   return Source.First;
-      --else
-         return Source.Cursor - Source.First;
-      --end if;
+      if Source.Remaining_Bytes = Integer (Source.Last - Source.First + 1) then
+         raise constraint_error;
+      else
+         return Source.Cursor - Source.First - 1;
+      end if;
    end Index_Of_Last_Byte;
 
    function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8) return Boolean is
@@ -171,7 +171,7 @@ package body Serializable is
       while I < Source.Base_Ptr.all'Last loop
          BRBON.Utils.Put_Hex_8_Two_Lines (Source.Base_Ptr.all, I, False);
          New_Line;
-         I := I + 16;
+         I := I + 32;
       end loop;
    end Put_All;
 

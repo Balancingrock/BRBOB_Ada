@@ -63,8 +63,8 @@ package Serializable is
 
 
    -- Returns the index of the last byte that was read.
-   --
-   -- Note: Will return zero if no byte was read.
+   -- This function only returns a valid result after the first read.
+   -- It raises the constraint_error exception when called before the first byte is read.
    --
    function Index_Of_Last_Byte (Source: in out Instance) return Unsigned_32;
 

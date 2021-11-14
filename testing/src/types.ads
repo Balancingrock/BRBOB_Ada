@@ -1,4 +1,5 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Directories; use Ada.Directories;
 
 package Types is
 
@@ -6,7 +7,7 @@ package Types is
 
    function UStr (Str: String) return Unbounded_String renames Ada.Strings.Unbounded.To_Unbounded_String;
 
-   Test_Files_Root: String := "/home/rien/Projects/Software/Ada/BRBON/testing/files/";
+   Test_Files_Root: String := Current_Directory & "/files/";
 
    Break_Before: Integer := 0;
 

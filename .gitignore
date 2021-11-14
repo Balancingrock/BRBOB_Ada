@@ -2,3 +2,6 @@ lib/
 obj/
 files/
 src/.#*
+.DS_Store
+*.ali
+*.o

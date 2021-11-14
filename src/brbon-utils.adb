@@ -88,17 +88,17 @@ package body BRBON.Utils is
       Cursor_Start: Character := '(';
       Cursor_End: Character := ')';
 
-      procedure Put_Hex_Line (Offset: Unsigned_32) is
+      procedure Put_Hex_Line (Offset: in out Unsigned_32) is
 
          Close_Cursor: Boolean := False;
-
+                  
       begin
 
          for I in Unsigned_32 range 0 .. 15 loop
 
-            exit when Offset + I > Source'Last;
+            exit when Offset > Source'Last;
 
-            if Offset + I = Cursor then
+            if Offset = Cursor then
                Put (Cursor_Start);
                Close_Cursor := True;
             else
@@ -110,7 +110,7 @@ package body BRBON.Utils is
                end if;
             end if;
 
-            Put_Hex_8 (Source (Offset + I));
+            Put_Hex_8 (Source (Offset));
 
             if I = 7 then
                if Close_Cursor then
@@ -121,6 +121,8 @@ package body BRBON.Utils is
                end if;
             end if;
 
+            Offset := Offset + 1;
+            
          end loop;
 
          if Close_Cursor then
@@ -139,10 +141,10 @@ package body BRBON.Utils is
       Put_Hex_32 (Start); Put (" ");
       Put_Hex_Line (Start);
 
-      if Start + 15 < Source'Last then
+      if Start < Source'Last then
          New_Line;
-         Put_Hex_32 (Start + 15); Put (" ");
-         Put_Hex_Line (Start + 15);
+         Put_Hex_32 (Start); Put (" ");
+         Put_Hex_Line (Start);
       end if;
 
    end Put_Hex_8_Two_Lines;

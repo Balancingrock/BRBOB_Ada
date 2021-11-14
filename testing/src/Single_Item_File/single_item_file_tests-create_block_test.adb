@@ -33,11 +33,11 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
       -- Offset 16#06
       16#00#, 16#00#,
 
-      -- Block Byte Count, minimum length => 96 bytes (16#50)
+      -- Block Byte Count, minimum length => 96 bytes (16#60#)
       -- Offset 16#08
       16#60#, 16#00#, 16#00#, 16#00#,
 
-      -- Block header byte count, 10 * 8 = 80 => 16#50# bytes
+      -- Block header byte count, 10 * 8 = 80 bytes (16#50#) 
       -- Offset 16#0C
       16#50#, 16#00#,
 
@@ -127,7 +127,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
 
       -- Block Expiry Time Stamp
       -- Offset 16#40
-      16#11#, 16#FF#, 16#FF#, 16#FF#,  16#FF#, 16#FF#, 16#FF#, 16#7F#,
+      16#FF#, 16#FF#, 16#FF#, 16#FF#,  16#FF#, 16#FF#, 16#FF#, 16#7F#,
 
       -- Block Type dependent header (not used)
 
@@ -170,11 +170,11 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
       -- Offset 16#06
       false, false,
 
-      -- Block Byte Count, minimum length => 96 bytes (16#50)
+      -- Block Byte Count, minimum length => 96 bytes (16#60)
       -- Offset 16#08
       false, false, false, false,
 
-      -- Block header byte count, ?
+      -- Block header byte count, 80 bytes (16#50#)
       -- Offset 16#0C
       false, false,
 
@@ -277,7 +277,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
 
       -- Block Header CRC16
       -- Offset 16#4E
-      false, false,
+      true, true,
 
       -- Item storage (8 bytes)
       -- Offset 16#50
@@ -305,20 +305,9 @@ begin
    T_Serializer := T_Object.Create_Serializable_Instance;
 
 
---   T_Serializer.Put_All;
-
-
    if not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
 
       Cursor := T_Serializer.Index_Of_Last_Byte;
-
-      S := Serializable.Create_With_Copy (Type_1_Block);
-
-      New_Line (2);
-      Put_Line ("Cursor = " & Cursor'Image);
-      T_Serializer.Put_All;
-      S.Put_All;
-
 
       New_Line (2);
       Put_Line ("Block verification failed");
@@ -328,7 +317,6 @@ begin
       S := Serializable.Create_With_Copy (Type_1_Block);
       S.Dump_2_Lines (Around => Cursor);
 
---
       New_Line (2);
       Put_Line ("Found:");
       T_Serializer.Dump_2_Lines (Around => Cursor, Show_Cursor => True);
