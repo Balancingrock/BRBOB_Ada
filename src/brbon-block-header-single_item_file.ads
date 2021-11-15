@@ -58,19 +58,18 @@ package BRBON.Block.Header.Single_Item_File is
    --
    procedure Create
       (
-         In_Container: in out BRBON.Container.Instance,
-         Minimum_Byte_Count: Unsigned_32;
-         Options: BRBON.Block.Options;
-         Using_Endianness: Endianness;
-         Origin: String;
-         Identifier: String;
-         Extension: String;
-         Path_Prefix: String;
-         Acquisition_URL: String;
-         Target_List: String;
-         Public_Key_URL: String;
-         Creation_Timestamp: Unsigned_64;
-         Expiry_Timestamp: Unsigned_64;
+       In_Container: in out BRBON.Container.Instance;
+       Header_Byte_Count: Unsigned_16;
+       Options: BRBON.Block.Options;
+       Origin: String;
+       Identifier: String;
+       Extension: String;
+       Path_Prefix: String;
+       Acquisition_URL: String;
+       Target_List: String;
+       Public_Key_URL: String;
+       Creation_Timestamp: Unsigned_64;
+       Expiry_Timestamp: Unsigned_64
       );
 
 

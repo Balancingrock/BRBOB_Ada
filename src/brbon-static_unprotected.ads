@@ -37,7 +37,7 @@ package BRBON.Static_Unprotected is
          Block_Type: Block.Instance_Type;
          Minimum_Byte_Count: Unsigned_32;
          Options: BRBON.Block.Options := BRBON.Block.No_Options;
-         Using_Endianness: Endianness := BRBON.Configure.MachineEndianness;
+         Using_Endianness: Endianness := BRBON.Configure.Machine_Endianness;
          Origin: String := "";
          Identifier: String := "";
          Extension: String := "";
@@ -46,7 +46,7 @@ package BRBON.Static_Unprotected is
          Target_List: String := "";
          Public_Key_URL: String := "";
          Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
-         Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#;
+         Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
       ) return Instance;
 
 

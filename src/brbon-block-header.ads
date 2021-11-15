@@ -55,15 +55,13 @@ package BRBON.Block.Header is
 
    No_Options: constant Options := To_Options (0);
 
-   -- The block header minimum byte count is given by the fixed layout byte count + the trailing long word.
-   -- To calculate the block header byte count add the type dependent byte count and field storage byte count.
+   -- The size of the fixed part of a block header
    --
-   Minimum_Byte_Count: constant array (BRBON.Block.Instance_Type) of Unsigned_16 :=
-     (
-      0,                -- BRBON.Block.Illegal
-      9 * 8 + 0 + 0 + 8 -- BRBON.Block.Single_Item_File
-     );
+   Block_Header_Fixed_Part_Byte_Count: constant Unsigned_16 := 9 * 8;
 
+   -- The size of the fixed part of a block header after the type dependent header and the field storage
+   --
+   Block_Header_Past_Storage_Field_Byte_Count: constant Unsigned_16 := 8;
 
    -- ===================
    -- Low Level Interface
