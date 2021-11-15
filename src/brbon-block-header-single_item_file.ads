@@ -56,7 +56,22 @@ package BRBON.Block.Header.Single_Item_File is
    -- @param Using_Endianness The endianness to be used in the header (and therefore the entire block).
    -- @return A Block_Header of which the storage area is filled with a header of type 1.
    --
-   procedure Create (In_Container: in out BRBON.Container.Instance);
+   procedure Create
+      (
+         In_Container: in out BRBON.Container.Instance,
+         Minimum_Byte_Count: Unsigned_32;
+         Options: BRBON.Block.Options;
+         Using_Endianness: Endianness;
+         Origin: String;
+         Identifier: String;
+         Extension: String;
+         Path_Prefix: String;
+         Acquisition_URL: String;
+         Target_List: String;
+         Public_Key_URL: String;
+         Creation_Timestamp: Unsigned_64;
+         Expiry_Timestamp: Unsigned_64;
+      );
 
 
 end BRBON.Block.Header.Single_Item_File;

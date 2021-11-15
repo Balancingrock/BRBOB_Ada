@@ -127,30 +127,6 @@ package BRBON.Types is
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Bits_8, Unsigned_8);
 
 
-   -- The type of blocks available
-   --
---   type BR_Block_Type is
---     (
---      Illegal,
---      Single_Item_File
---     );
---   for BR_Block_Type'Size use 8;
---   for BR_Block_Type use
---     (
---      Illegal => 0,
---      Single_Item_File => 1
---     );
-
---   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Block_Type, Unsigned_8);
---   function To_BR_Block_Type is new Ada.Unchecked_Conversion (Unsigned_8, BR_Block_Type);
-
---   Minimum_Block_Byte_Count: array (BR_Block_Type'Range) of Unsigned_32 :=
---     (
---      Illegal => 0,
---      Single_Item_File => 8 + 8 + 8 + 8
---     );
-
-
    -- Access to bytes in the byte store
    --
    type Unsigned_8_Ptr is access all Unsigned_8;

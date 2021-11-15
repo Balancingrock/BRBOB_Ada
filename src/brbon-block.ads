@@ -27,4 +27,14 @@ package BRBON.Block is
    function To_Block_Instance_Type is new Ada.Unchecked_Conversion (Unsigned_16, Instance_Type);
 
 
+   -- The options for a Block
+   --
+   type Options is (No_Options, Reacquisition_Possible);
+   for Options'Size use 16;
+   for Options use
+      (
+         No_Options             => 0,
+         Reacquisition_Possible => 16#01#
+      );
+   
 end BRBON.Block;

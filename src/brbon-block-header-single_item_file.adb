@@ -3,7 +3,22 @@ with BRBON.Utils;
 package body BRBON.Block.Header.Single_Item_File is
 
 
-   procedure Create (In_Container: in out BRBON.Container.Instance) is
+   procedure Create
+      (
+         In_Container: in out BRBON.Container.Instance;
+         Minimum_Byte_Count: Unsigned_32;
+         Options: BRBON.Block.Options;
+         Using_Endianness: Endianness;
+         Origin: String;
+         Identifier: String;
+         Extension: String;
+         Path_Prefix: String;
+         Acquisition_URL: String;
+         Target_List: String;
+         Public_Key_URL: String;
+         Creation_Timestamp: Unsigned_64;
+         Expiry_Timestamp: Unsigned_64;
+      ) is
 
       C: BRBON.Container.Instance renames In_Container;
       Now: constant Unsigned_64 := Utils.Milli_Sec_Since_Jan_1_1970;

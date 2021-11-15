@@ -11,8 +11,22 @@ with BRBON.Block.Header.Single_Item_File;
 
 package body BRBON.Static_Unprotected is
 
-
-   function Factory (Block_Type: Block.Instance_Type; Minimum_Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Instance is
+   function Factory
+      (
+         Block_Type: Block.Instance_Type;
+         Minimum_Byte_Count: Unsigned_32;
+         Options: BRBON.Block.Options := BRBON.Block.No_Options;
+         Using_Endianness: Endianness := BRBON.Configure.MachineEndianness;
+         Origin: String := "";
+         Identifier: String := "";
+         Extension: String := "";
+         Path_Prefix: String := "";
+         Acquisition_URL: String := "";
+         Target_List: String := "";
+         Public_Key_URL: String := "";
+         Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
+         Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#;
+      ) return Instance is
 
       Byte_Count: Unsigned_32 := 0;
       I: Instance;
@@ -37,7 +51,20 @@ package body BRBON.Static_Unprotected is
                                               Using_Endianness => Using_Endianness);
 
       -- Create the block header
-      BRBON.Block.Header.Single_Item_File.Create (In_Container => I.Container);
+      BRBON.Block.Header.Single_Item_File.Create
+         (
+            In_Container => I.Container,
+            Options => Options,
+            Origin => Origin,
+            Identifier => Identifier,
+            Extension => Extension,
+            Path_Prefix => Path_Prefix,
+            Acquisition_URL => Acquisition_URL,
+            Target_List => Target_List,
+            Public_Key_URL => Public_Key_URL,
+            Creation_Timestamp => Creation_Timestamp,
+            Expiry_Timestamp => Expiry_Timestamp
+          );
 
       return I;
 

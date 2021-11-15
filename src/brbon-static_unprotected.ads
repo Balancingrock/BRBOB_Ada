@@ -3,6 +3,8 @@ with Interfaces; use Interfaces;
 with Ada.Finalization;
 
 with BRBON.Types; use BRBON.Types;
+with BRBON.Utils;
+with BRBON.Configure;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Block;
 with Serializable;
@@ -30,7 +32,22 @@ package BRBON.Static_Unprotected is
    -- @param Using_Endianness The endianness to be used for multi-byte items.
    -- @returns A Static_Unprotected instance.
    --
-   function Factory (Block_Type: Block.Instance_Type; Minimum_Byte_Count: Unsigned_32; Using_Endianness: Endianness) return Instance;
+   function Factory
+      (
+         Block_Type: Block.Instance_Type;
+         Minimum_Byte_Count: Unsigned_32;
+         Options: BRBON.Block.Options := BRBON.Block.No_Options;
+         Using_Endianness: Endianness := BRBON.Configure.MachineEndianness;
+         Origin: String := "";
+         Identifier: String := "";
+         Extension: String := "";
+         Path_Prefix: String := "";
+         Acquisition_URL: String := "";
+         Target_List: String := "";
+         Public_Key_URL: String := "";
+         Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
+         Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#;
+      ) return Instance;
 
 
    -- The byte count of the buffer, including overhead.
