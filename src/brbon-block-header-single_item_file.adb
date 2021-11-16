@@ -6,7 +6,7 @@ package body BRBON.Block.Header.Single_Item_File is
    procedure Create
       (
        In_Container: in out BRBON.Container.Instance;
-       Header_Byte_Count: Integer_16;
+       Header_Byte_Count: Unsigned_16;
        Options: BRBON.Block.Options;
        Origin: String;
        Identifier: String;
@@ -40,7 +40,7 @@ package body BRBON.Block.Header.Single_Item_File is
       Set_Block_Options (C, Block.Header.No_Options);
 
       Set_Block_Byte_Count (C, C.Byte_Count);
-      Set_Block_Header_Byte_Count (C, C.); -- Type 1 does not use the type dependent header or the field storage
+      Set_Block_Header_Byte_Count (C, Header_Byte_Count); -- Type 1 does not use the type dependent header or the field storage
       Set_Block_Encrypted_Header_Byte_Count (C, 0);
 
       Set_Block_Origin_Crc16 (C, 0);

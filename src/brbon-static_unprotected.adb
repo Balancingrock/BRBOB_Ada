@@ -4,6 +4,7 @@ with Ada.Unchecked_Conversion;
 
 with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
+with BRBON.Block.Footer;
 with BRBON.Block.Header;
 with BRBON.Block.Header.Single_Item_File;
 
@@ -27,7 +28,13 @@ package body BRBON.Static_Unprotected is
          Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
       ) return Instance is
 
-      Byte_Count: Unsigned_32 := 0;
+      Header_Storage_Field_Byte_Count: Unsigned_16;
+      Header_Type_Dependent_Byte_count: Unsigned_16;
+      Header_Byte_Count: Unsigned_16;
+
+      Content_Byte_Count: Unsigned_32;
+      Block_Byte_Count: Unsigned_32;
+
       I: Instance;
 
    begin
@@ -36,34 +43,43 @@ package body BRBON.Static_Unprotected is
       if Block_Type /= BRBON.Block.Single_Item_File then raise BRBON.Illegal_Block_Type; end if;
 
 
-      -- Check byte count
+      -- Calculate the size of the storage field in de header
+      --
+      Header_Storage_Field_Byte_Count := Unsigned_16 (Origin'Length + Identifier'Length + Extension'Length + Path_Prefix'Length + Acquisition_URL'Length + Target_List'Length + Public_Key_URL'Length);
+
+      -- Get the type dependent size
+      --
       case Block_Type is
          when BRBON.Block.Illegal => raise BRBON.Buffer_Error;
-         when BRBON.Block.Single_Item_File =>
-            declare
-               Header_Storage_Field_Byte_Count: Unsigned_16 := Unsigned_16 (Origin'Length + Identifier'Length + Extension'Length + Path_Prefix'Length + Acquisition_URL'Length + Target_List'Length + Public_Key_URL'Length);
-               Type_Dependent_Header_Byte_Count: Unsigned_16 := 0;
-            begin
-               Byte_Count := BRBON.Utils.Round_Up_To_Nearest_Multiple_of_8
-                 (Unsigned_32
-                    (BRBON.Block.Header.Block_Header_Fixed_Part_Byte_Count
-                     + Type_Dependent_Header_Byte_Count
-                     + Header_Storage_Field_Byte_Count
-                     + Minimum_Byte_Count
-                     + BRBON.Block.Header.Block_Header_Past_Storage_Field_Byte_Count);
-            end;
+         when BRBON.Block.Single_Item_File => Header_Type_Dependent_Byte_Count := 0;
       end case;
 
+      -- Calculate the header size
+      --
+      Header_Byte_Count := BRBON.Block.Header.Block_Header_Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Header_Storage_Field_Byte_Count + BRBON.Block.Header.Block_Header_Past_Storage_Field_Byte_Count;
+
+      -- Calculate the size of the block content field
+      --
+      Content_Byte_Count := BRBON.Utils.Round_Up_To_Nearest_Multiple_of_8 (Minimum_Byte_Count);
+
+      -- Calculate the size of the block
+      --
+      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + BRBON.Block.Footer.Footer_Byte_Count (Single_Item_File));
 
       -- Allocate memory area
-      I.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Byte_Count - 1);
-      I.Container := BRBON.Container.Factory (Buffer_Ptr       => I.Memory_Ptr,
-                                              Using_Endianness => Using_Endianness);
+      --
+      I.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
+
+      -- Create the container for the block
+      --
+      I.Container := BRBON.Container.Factory (Buffer_Ptr => I.Memory_Ptr, Using_Endianness => Using_Endianness);
 
       -- Create the block header
+      --
       BRBON.Block.Header.Single_Item_File.Create
         (
          In_Container => I.Container,
+         Header_Byte_Count => Header_Byte_Count,
          Options => Options,
          Origin => Origin,
          Identifier => Identifier,
