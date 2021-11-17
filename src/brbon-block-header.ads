@@ -416,4 +416,9 @@ package BRBON.Block.Header is
    procedure Update_Block_Header_Crc16 (C: in out BRBON.Container.Instance);
 
 
+   -- Exception raised when some header element is out of bounds or has an unexpected value.
+   -- The error text has additional information.
+   --
+   Block_Header_Error: Exception;
+
 end BRBON.Block.Header;
