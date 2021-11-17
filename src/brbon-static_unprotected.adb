@@ -66,7 +66,7 @@ package body BRBON.Static_Unprotected is
       --
       Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + BRBON.Block.Footer.Footer_Byte_Count (Single_Item_File));
 
-      -- Allocate memory area
+      -- Allocate memory area for the container that will enclose the block
       --
       I.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
 

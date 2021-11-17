@@ -22,6 +22,7 @@ package BRBON.Static_Unprotected is
    --
    type Instance_Ptr is access all Instance;
 
+
    -- Creates a new instance with a header of the requested type.
    -- @param Block_Type The type of the block to be created.
    --   Exception Illegal_Buffer_Type is raised if this is not a Single_Item_File (The only type supported at this time)
@@ -61,6 +62,8 @@ package BRBON.Static_Unprotected is
    --
    function Create_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance;
 
+
+   --
 private
 
    type Instance is new Ada.Finalization.Controlled with

@@ -293,7 +293,9 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
      );
 
 begin
-
+   
+   -- Setup
+   
    Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block'Length - 1);
    Expected_Bytes.all := Type_1_Block;
 
@@ -305,8 +307,12 @@ begin
    T_Serializer := T_Object.Create_Serializable_Instance;
 
 
+   -- Test
+   
    if not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
 
+      -- Output
+      
       Cursor := T_Serializer.Index_Of_Last_Byte;
 
       New_Line (2);
