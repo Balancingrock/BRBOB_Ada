@@ -4,11 +4,15 @@ with Ada.Unchecked_Conversion;
 with Ada.Finalization;
 
 with BRBON.Types; use BRBON.Types;
+with BRBON.Container;
 
 
 package BRBON.Block is
 
 
+   type Instance is new Ada.Finalization.Controlled with private;
+   
+   
    -- The types of blocks available
    --
    type Instance_Type is
@@ -36,5 +40,14 @@ package BRBON.Block is
          No_Options             => 0,
          Reacquisition_Possible => 16#01#
       );
+   
+private
+   
+   type Instance is new Ada.Finalization.Controlled with record
+      Container: BRBON.Container.Instance;
+      Memory_Ptr: Array_Of_Unsigned_8_Ptr; -- The Container does not export its pointer, a copy must be kept.
+      First_Free_Byte_In_Header_Field: Unsigned_16;
+      First_Free_Byte_In_Content_Area: Unsigned_32;
+   end record;
    
 end BRBON.Block;

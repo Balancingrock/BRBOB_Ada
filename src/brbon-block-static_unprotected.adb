@@ -9,11 +9,11 @@ with BRBON.Block.Header;
 with BRBON.Block.Header.Single_Item_File;
 
 
-package body BRBON.Static_Unprotected is
+package body BRBON.Block.Static_Unprotected is
 
    function Factory
       (
-         Block_Type: Block.Instance_Type;
+         Block_Type: BRBON.Block.Instance_Type;
          Minimum_Byte_Count: Unsigned_32;
          Options: BRBON.Block.Options := BRBON.Block.No_Options;
          Using_Endianness: Endianness := BRBON.Configure.Machine_Endianness;
@@ -35,7 +35,7 @@ package body BRBON.Static_Unprotected is
       Content_Byte_Count: Unsigned_32;
       Block_Byte_Count: Unsigned_32;
 
-      I: Instance;
+      Block: Instance;
 
    begin
 
@@ -56,7 +56,7 @@ package body BRBON.Static_Unprotected is
 
       -- Calculate the header size
       --
-      Header_Byte_Count := BRBON.Block.Header.Block_Header_Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Header_Storage_Field_Byte_Count + BRBON.Block.Header.Block_Header_Past_Storage_Field_Byte_Count;
+      Header_Byte_Count := BRBON.Block.Header.Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Header_Storage_Field_Byte_Count + BRBON.Block.Header.Past_Storage_Field_Byte_Count;
 
       -- Calculate the size of the block content field
       --
@@ -68,17 +68,17 @@ package body BRBON.Static_Unprotected is
 
       -- Allocate memory area for the container that will enclose the block
       --
-      I.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
+      Block.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
 
       -- Create the container for the block
       --
-      I.Container := BRBON.Container.Factory (Buffer_Ptr => I.Memory_Ptr, Using_Endianness => Using_Endianness);
+      Block.Container := BRBON.Container.Factory (Buffer_Ptr => Block.Memory_Ptr, Using_Endianness => Using_Endianness);
 
       -- Create the block header
       --
       BRBON.Block.Header.Single_Item_File.Create
         (
-         In_Container => I.Container,
+         In_Container => Block.Container,
          Header_Byte_Count => Header_Byte_Count,
          Options => Options,
          Origin => Origin,
@@ -92,7 +92,10 @@ package body BRBON.Static_Unprotected is
          Expiry_Timestamp => Expiry_Timestamp
         );
 
-      return I;
+      Block.First_Free_Byte_In_Header_Field := BRBON.Block.Header.Fixed_Part_Byte_Count;
+      Block.First_Free_Byte_In_Content_Area := Unsigned_32 (Header_Byte_Count);
+
+      return Block;
 
    end Factory;
 
@@ -118,4 +121,4 @@ package body BRBON.Static_Unprotected is
                                         Last         => I.Memory_Ptr.all'Last);
    end Create_Serializable_Instance;
 
-end BRBON.Static_Unprotected;
+end BRBON.Block.Static_Unprotected;

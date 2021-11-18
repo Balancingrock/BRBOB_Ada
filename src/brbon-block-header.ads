@@ -57,11 +57,11 @@ package BRBON.Block.Header is
 
    -- The size of the fixed part of a block header
    --
-   Block_Header_Fixed_Part_Byte_Count: constant Unsigned_16 := 9 * 8;
+   Fixed_Part_Byte_Count: constant Unsigned_16 := 9 * 8;
 
    -- The size of the fixed part of a block header after the type dependent header and the field storage
    --
-   Block_Header_Past_Storage_Field_Byte_Count: constant Unsigned_16 := 8;
+   Past_Storage_Field_Byte_Count: constant Unsigned_16 := 8;
 
    -- ===================
    -- Low Level Interface

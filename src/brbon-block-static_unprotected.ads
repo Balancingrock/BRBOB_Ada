@@ -10,17 +10,18 @@ with BRBON.Block;
 with Serializable;
 
 
-package BRBON.Static_Unprotected is
+package BRBON.Block.Static_Unprotected is
+
 
    -- The store that contains a static BRBON hierarchy on which unprotected access is possible.
    -- This is the fasted possible acces to items in a BRBON store.
    --
-   type Instance is new Ada.Finalization.Controlled with private;
+   type Instance is new BRBON.Block.Instance with null record;
 
 
    -- Access type for the static unprotected store.
    --
-   type Instance_Ptr is access all Instance;
+   --type Instance_Ptr is access all Instance;
 
 
    -- Creates a new instance with a header of the requested type.
@@ -35,7 +36,7 @@ package BRBON.Static_Unprotected is
    --
    function Factory
       (
-         Block_Type: Block.Instance_Type;
+         Block_Type: BRBON.Block.Instance_Type;
          Minimum_Byte_Count: Unsigned_32;
          Options: BRBON.Block.Options := BRBON.Block.No_Options;
          Using_Endianness: Endianness := BRBON.Configure.Machine_Endianness;
@@ -63,13 +64,4 @@ package BRBON.Static_Unprotected is
    function Create_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance;
 
 
-   --
-private
-
-   type Instance is new Ada.Finalization.Controlled with
-      record
-         Memory_Ptr: Array_Of_Unsigned_8_Ptr; -- The Container does not export its pointer, a copy must be kept.
-         Container: BRBON.Container.Instance;
-      end record;
-
-end BRBON.Static_Unprotected;
+end BRBON.Block.Static_Unprotected;

@@ -2,7 +2,7 @@ with Interfaces; use Interfaces;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with BRBON;
-with BRBON.Static_Unprotected;
+with BRBON.Block.Static_Unprotected;
 with BRBON.Block;
 with BRBON.Configure;
 with BRBON.Types; use BRBON.Types;
@@ -13,7 +13,7 @@ separate (Single_Item_File_Tests)
 
 function Create_Block_Test (Count: in out Integer) return Test_Result is
 
-   T_Object: BRBON.Static_Unprotected.Instance;
+   T_Object: BRBON.Block.Static_Unprotected.Instance;
    T_Serializer: Serializable.Instance;
    Expected_Bytes: Array_Of_Unsigned_8_Ptr;
    S: Serializable.Instance;
@@ -299,7 +299,7 @@ begin
    Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block'Length - 1);
    Expected_Bytes.all := Type_1_Block;
 
-   T_Object := BRBON.Static_Unprotected.Factory
+   T_Object := BRBON.Block.Static_Unprotected.Factory
      (Block_Type         => BRBON.Block.Single_Item_File,
       Minimum_Byte_Count => 8,
       Using_Endianness   => BRBON.Configure.Machine_Endianness);

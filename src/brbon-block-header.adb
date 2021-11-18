@@ -514,11 +514,11 @@ package body BRBON.Block.Header is
    end Get_Block_Origin;
 
    procedure Set_Block_Origin (C: in out BRBON.Container.Instance; To_String: String) is
-      Offset: Unsigned_16;
+      Offset: Unsigned_16 := 0;
       Byte_Count: Unsigned_16 := Unsigned_16 (To_String'Length);
       Crc_16: Unsigned_16 := CRC_Package.Calculate_CRC_16 (To_string);
    begin
-      null;
+      Set_Block_Origin_Offset (C, Offset);
    end Set_Block_Origin;
 
 end Brbon.Block.Header;
