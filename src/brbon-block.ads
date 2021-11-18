@@ -6,6 +6,8 @@ with Ada.Finalization;
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container;
 
+with Serializable;
+
 
 package BRBON.Block is
 
@@ -40,6 +42,30 @@ package BRBON.Block is
          No_Options             => 0,
          Reacquisition_Possible => 16#01#
       );
+   
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Options, Unsigned_16);
+   function To_Options is new Ada.Unchecked_Conversion (Unsigned_16, Options);
+   
+
+   -- The type of block
+   --
+   function Type_Of_Block (I: Instance'Class) return Instance_Type;
+   
+   
+   -- The total number of bytes that will be used by the block if it is saved or transferred.
+   --
+   function Byte_Count (I: Instance'Class) return Unsigned_32;
+
+   
+   -- =================================================================
+   -- | The following operations are for test-use only. Do not use.   |
+   -- | (they are not stable and may have unanticipated side effects) |
+   -- =================================================================
+   
+   -- Undocumented, for testing only, do not use!
+   --
+   function Test_Serializer (I: Instance'Class) return Serializable.Instance;
+   
    
 private
    
