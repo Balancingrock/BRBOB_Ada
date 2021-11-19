@@ -174,4 +174,9 @@ package BRBON.Types is
    type Array_Of_Table_Column_Specification is array (Integer range <>) of Table_Column_Specification;
 
 
+   -- Raised when a method is not implemented yet.
+   --
+   Not_Implemented_Yet: exception;
+
+
 end BRBON.Types;
