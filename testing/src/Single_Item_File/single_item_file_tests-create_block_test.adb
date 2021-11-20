@@ -304,7 +304,7 @@ begin
       Minimum_Byte_Count => 8,
       Using_Endianness   => BRBON.Configure.Machine_Endianness);
 
-   T_Serializer := T_Object.Create_Serializable_Instance;
+   T_Serializer := T_Object.Test_Serializer;
 
 
    -- Test

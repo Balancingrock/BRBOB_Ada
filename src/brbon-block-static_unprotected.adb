@@ -100,7 +100,7 @@ package body BRBON.Block.Static_Unprotected is
    end Factory;
 
 
-   procedure Finalization (I: in out Instance'Class) is
+   procedure Finalization (I: in out Instance) is
    begin
       Deallocate_Array_Of_Unsigned_8 (I.Memory_Ptr);
    end Finalization;
@@ -108,17 +108,22 @@ package body BRBON.Block.Static_Unprotected is
 
    -- Operational Interface
 
-   function Byte_Count (I: in out Instance'Class) return Unsigned_32 is
+   function Byte_Count (I: in out Instance) return Unsigned_32 is
    begin
       return I.Container.Byte_Count;
    end Byte_Count;
 
-
-   function Create_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance is
+   function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32 is
+      B: constant Unsigned_32 := I.Byte_Count;
+      F: constant Unsigned_32 := I.First_Free_Byte_In_Content_Area;
+      V: constant Unsigned_32 := F + BRBON.Block.Footer.Footer_Byte_Count (BRBON.Block.Single_Item_File);
    begin
-      return Serializable.Create_Without_Copy (Use_In_Place => I.Memory_Ptr,
-                                        First        => I.Memory_Ptr.all'First,
-                                        Last         => I.Memory_Ptr.all'Last);
-   end Create_Serializable_Instance;
+      if V > B then
+         return 0; -- cannot return negative
+      else
+         return B - V;
+      end if;
+   end Free_Area_Byte_Count;
+
 
 end BRBON.Block.Static_Unprotected;

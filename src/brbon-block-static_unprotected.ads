@@ -55,13 +55,11 @@ package BRBON.Block.Static_Unprotected is
    -- The byte count of the buffer, including overhead.
    -- Use the operation "Free_Byte_Count" to determine the remaining usable space.
    --
-   function Byte_Count (I: in out Instance'Class) return Unsigned_32;
-   pragma Inline (Byte_Count);
+   overriding function Byte_Count (I: in out Instance) return Unsigned_32;
 
 
-   -- Returns a serializer that returns the bytes without copying the block.
-   --
-   function Create_Serializable_Instance (I: in out Instance'Class) return Serializable.Instance;
+
+   function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;
 
 
 end BRBON.Block.Static_Unprotected;
