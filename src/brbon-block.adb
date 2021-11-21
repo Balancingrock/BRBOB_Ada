@@ -2,15 +2,15 @@ with Interfaces; use Interfaces;
 
 with Ada.Exceptions;
 
-with BRBON.Block.Header;
+with BRBON.Header;
 
 
 package body BRBON.Block is
 
 
-   function Type_Of_Block (I: in out Instance) return Instance_Type is
+   function Type_Of_Block (I: in out Instance) return Block_Type is
    begin
-      return BRBON.Block.Header.Get_Block_Type (I.Container);
+      return BRBON.Header.Get_Block_Type (I.Container);
    end Type_Of_Block;
 
 

@@ -56,6 +56,38 @@ package BRBON.Types is
    function To_Integer_64 is new Ada.Unchecked_Conversion (Unsigned_64, Integer_64);
    function To_Unsigned_64 is new Ada.Unchecked_Conversion (Integer_64, Unsigned_64);
 
+
+   -- The types of blocks available
+   --
+   type Block_Type is
+     (
+      Illegal,
+      Single_Item_File
+     );
+   for Block_Type'Size use 16;
+   for Block_Type use
+     (
+      Illegal => 0,
+      Single_Item_File => 1
+     );
+
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Type, Unsigned_16);
+   function To_Block_Type is new Ada.Unchecked_Conversion (Unsigned_16, Block_Type);
+
+
+   -- The options for a Block
+   --
+   type Block_Options is (No_Block_Options, Reacquisition_Possible);
+   for Block_Options'Size use 16;
+   for Block_Options use
+      (
+         No_Block_Options       => 0,
+         Reacquisition_Possible => 16#01#
+      );
+
+   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Options, Unsigned_16);
+   function To_Block_Options is new Ada.Unchecked_Conversion (Unsigned_16, Block_Options);
+
    -- All available storage types.
    --
    type BR_Item_Type is
@@ -140,7 +172,7 @@ package BRBON.Types is
    type BR_Item_Options is new Bits_8;
    function To_BR_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, BR_Item_Options);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Item_Options, Unsigned_8);
-   No_Options : BR_Item_Options := (False, False, False, False, False, False, False, False);
+   No_Item_Options : BR_Item_Options := (False, False, False, False, False, False, False, False);
 
 
    -- Item flags for transitionary events to be recorded in an item (currently unused)

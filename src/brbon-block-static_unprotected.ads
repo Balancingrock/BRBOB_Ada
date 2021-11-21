@@ -36,9 +36,9 @@ package BRBON.Block.Static_Unprotected is
    --
    function Factory
       (
-         Block_Type: BRBON.Block.Instance_Type;
+         Type_Of_Block: Block_Type;
          Minimum_Byte_Count: Unsigned_32;
-         Options: BRBON.Block.Options := BRBON.Block.No_Options;
+         Options: Block_Options := No_Block_Options;
          Using_Endianness: Endianness := BRBON.Configure.Machine_Endianness;
          Origin: String := "";
          Identifier: String := "";

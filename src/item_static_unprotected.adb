@@ -60,7 +60,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Null);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -85,7 +85,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Bool);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -112,7 +112,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Int8);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -139,7 +139,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Int16);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -166,7 +166,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Int32);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -192,7 +192,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Int64);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -219,7 +219,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_UInt8);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -246,7 +246,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_UInt16);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -273,7 +273,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_UInt32);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -299,7 +299,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_UInt64);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -326,7 +326,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Float32);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -352,7 +352,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Float64);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -380,7 +380,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_String);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -410,7 +410,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_CRC_String);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -438,7 +438,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Binary);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -468,7 +468,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_CRC_Binary);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -500,7 +500,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Array);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -533,7 +533,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Dictionary);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -562,7 +562,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Sequence);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -647,7 +647,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Table);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -672,7 +672,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_UUID);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -724,7 +724,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Color);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);
@@ -791,7 +791,7 @@ package body Item_Static_Unprotected is
    begin
 
       I.Assign_Item_Type (BR_Font);
-      I.Assign_Item_Options (No_Options);
+      I.Assign_Item_Options (No_Item_Options);
       I.Assign_Item_Flags (No_Flags);
       I.Assign_Item_Byte_Count (Byte_Count);
       I.Assign_Item_Parent_Offset (Parent_Offset);

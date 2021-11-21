@@ -4,18 +4,18 @@ with Ada.Unchecked_Conversion;
 
 with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
-with BRBON.Block.Footer;
-with BRBON.Block.Header;
-with BRBON.Block.Header.Single_Item_File;
+with BRBON.Footer;
+with BRBON.Header;
+with BRBON.Header.Single_Item_File;
 
 
 package body BRBON.Block.Static_Unprotected is
 
    function Factory
       (
-         Block_Type: BRBON.Block.Instance_Type;
+         Type_Of_Block: Block_Type;
          Minimum_Byte_Count: Unsigned_32;
-         Options: BRBON.Block.Options := BRBON.Block.No_Options;
+         Options: Block_Options := No_Block_Options;
          Using_Endianness: Endianness := BRBON.Configure.Machine_Endianness;
          Origin: String := "";
          Identifier: String := "";
@@ -40,7 +40,8 @@ package body BRBON.Block.Static_Unprotected is
    begin
 
       -- Check if block type is supported
-      if Block_Type /= BRBON.Block.Single_Item_File then raise BRBON.Illegal_Block_Type; end if;
+      --
+      if Type_Of_Block /= Single_Item_File then raise BRBON.Illegal_Block_Type; end if;
 
 
       -- Calculate the size of the storage field in de header
@@ -49,14 +50,14 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Get the type dependent size
       --
-      case Block_Type is
-         when BRBON.Block.Illegal => raise BRBON.Buffer_Error;
-         when BRBON.Block.Single_Item_File => Header_Type_Dependent_Byte_Count := 0;
+      case Type_Of_Block is
+         when Illegal => raise BRBON.Buffer_Error;
+         when Single_Item_File => Header_Type_Dependent_Byte_Count := 0;
       end case;
 
       -- Calculate the header size
       --
-      Header_Byte_Count := BRBON.Block.Header.Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Header_Storage_Field_Byte_Count + BRBON.Block.Header.Past_Storage_Field_Byte_Count;
+      Header_Byte_Count := BRBON.Header.Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Header_Storage_Field_Byte_Count + BRBON.Header.Past_Storage_Field_Byte_Count;
 
       -- Calculate the size of the block content field
       --
@@ -64,7 +65,7 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Calculate the size of the block
       --
-      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + BRBON.Block.Footer.Footer_Byte_Count (Single_Item_File));
+      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + BRBON.Footer.Footer_Byte_Count (Single_Item_File));
 
       -- Allocate memory area for the container that will enclose the block
       --
@@ -76,7 +77,7 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Create the block header
       --
-      BRBON.Block.Header.Single_Item_File.Create
+      BRBON.Header.Single_Item_File.Create
         (
          In_Container => Block.Container,
          Header_Byte_Count => Header_Byte_Count,
@@ -92,7 +93,7 @@ package body BRBON.Block.Static_Unprotected is
          Expiry_Timestamp => Expiry_Timestamp
         );
 
-      Block.First_Free_Byte_In_Header_Field := BRBON.Block.Header.Fixed_Part_Byte_Count;
+--      Block.Header.First_Free_Byte_In_Field_Area := BRBON.Header.Fixed_Part_Byte_Count;
       Block.First_Free_Byte_In_Content_Area := Unsigned_32 (Header_Byte_Count);
 
       return Block;
@@ -116,7 +117,7 @@ package body BRBON.Block.Static_Unprotected is
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32 is
       B: constant Unsigned_32 := I.Byte_Count;
       F: constant Unsigned_32 := I.First_Free_Byte_In_Content_Area;
-      V: constant Unsigned_32 := F + BRBON.Block.Footer.Footer_Byte_Count (BRBON.Block.Single_Item_File);
+      V: constant Unsigned_32 := F + BRBON.Footer.Footer_Byte_Count (Single_Item_File);
    begin
       if V > B then
          return 0; -- cannot return negative
