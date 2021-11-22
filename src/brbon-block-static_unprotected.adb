@@ -93,8 +93,9 @@ package body BRBON.Block.Static_Unprotected is
          Expiry_Timestamp => Expiry_Timestamp
         );
 
---      Block.Header.First_Free_Byte_In_Field_Area := BRBON.Header.Fixed_Part_Byte_Count;
-      Block.First_Free_Byte_In_Content_Area := Unsigned_32 (Header_Byte_Count);
+      Block.First_Free_Byte_In_Header_Field_Storage := BRBON.Header.Fixed_Part_Byte_Count;
+      Block.First_Free_Byte_In_Payload := Unsigned_32 (Header_Byte_Count);
+      Block.Last_Free_Byte_In_Payload := Block.Container.Byte_Count - BRBON.Footer.Footer_Byte_Count (Single_Item_File) - 1;
 
       return Block;
 
@@ -116,7 +117,7 @@ package body BRBON.Block.Static_Unprotected is
 
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32 is
       B: constant Unsigned_32 := I.Byte_Count;
-      F: constant Unsigned_32 := I.First_Free_Byte_In_Content_Area;
+      F: constant Unsigned_32 := I.First_Free_Byte_In_Payload;
       V: constant Unsigned_32 := F + BRBON.Footer.Footer_Byte_Count (Single_Item_File);
    begin
       if V > B then

@@ -130,7 +130,7 @@ package body BRBON.Header is
 
    function Verify_Synchronization_Bytes (C: in out BRBON.Container.Instance) return Boolean is
    begin
-      --if Verify_Synchronization_Byte_1 (C) = false then return false; end if;
+      if Verify_Synchronization_Byte_1 (C) = false then return false; end if;
       if Verify_Synchronization_Byte_2 (C) = false then return false; end if;
       if Verify_Synchronization_Byte_3 (C) = false then return false; end if;
       return Verify_Synchronization_Byte_4 (C);
@@ -498,31 +498,5 @@ package body BRBON.Header is
       Set_Block_Header_Crc16 (C, For_Block_Header_Byte_Count => Byte_Count, Value => Crc16);
    end Update_Block_Header_Crc16;
 
-
-   function Get_Block_Origin (C: in out BRBON.Container.Instance) return String is
-      Offset: Unsigned_32 := Unsigned_32 (Get_Block_Origin_Offset (C));
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Block_Origin_Byte_Count (C));
-      Crc_16: Unsigned_16 := Get_Block_Origin_Crc16 (C);
-      Str: String := C.Get_String (Offset, Byte_Count);
-      Cal_Crc_16: Unsigned_16 := CRC_Package.Calculate_CRC_16 (Str);
-   begin
-      if Crc_16 = Cal_Crc_16 then
-         return Str;
-      else
-         Ada.Exceptions.Raise_Exception (Block_Header_Error'Identity, "Origin CRC-16 validation error.\n The stored CRC-16 is not equal to the CRC-16 calculated over the stored string");
-      end if;
-   end Get_Block_Origin;
-
-   procedure Set_Block_Origin (C: in out BRBON.Container.Instance; To_String: String) is
-      Origin_Offset: Unsigned_16 := 0;
-      Origin_Byte_Count: Unsigned_16 := Unsigned_16 (To_String'Length);
-      Origin_Crc_16: Unsigned_16 := CRC_Package.Calculate_CRC_16 (To_string);
-   begin
-      -- Check if there is space available for the origin in the header data field
-      -- if Last_Field_Byte_Offset - C.F
-      Set_Block_Origin_Offset (C, Origin_Offset);
-      Set_Block_Origin_Crc16 (C, Origin_Crc_16);
-
-   end Set_Block_Origin;
 
 end Brbon.Header;

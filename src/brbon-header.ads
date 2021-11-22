@@ -8,56 +8,6 @@ with BRBON.Container;
 package BRBON.Header is
 
 
-   type Instance is tagged private;
-
-
-   -- The block options
-   --
---   type Options is
---      record
---         ReAcquisitionIsPossible: Boolean;
---         Bit_01: Boolean;
---         Bit_02: Boolean;
---         Bit_03: Boolean;
---         Bit_04: Boolean;
---         Bit_05: Boolean;
---         Bit_06: Boolean;
---         Bit_07: Boolean;
---         Bit_08: Boolean;
---         Bit_09: Boolean;
---         Bit_10: Boolean;
---         Bit_11: Boolean;
---         Bit_12: Boolean;
---         Bit_13: Boolean;
---         Bit_14: Boolean;
---         Bit_15: Boolean;
---      end record;
---   for Options use
---      record
---         ReAcquisitionIsPossible at 0 range 0..0;
---         Bit_01 at 0 range 1..1;
---         Bit_02 at 0 range 2..2;
---         Bit_03 at 0 range 3..3;
---         Bit_04 at 0 range 4..4;
---         Bit_05 at 0 range 5..5;
---         Bit_06 at 0 range 6..6;
---         Bit_07 at 0 range 7..7;
---         Bit_08 at 0 range 8..8;
---         Bit_09 at 0 range 9..9;
---         Bit_10 at 0 range 10..10;
---         Bit_11 at 0 range 11..11;
---         Bit_12 at 0 range 12..12;
---        Bit_13 at 0 range 13..13;
---        Bit_14 at 0 range 14..14;
---        Bit_15 at 0 range 15..15;
---     end record;
---   for Options'Size use 16;
-
---   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Options, Unsigned_16);
---   function To_Options is new Ada.Unchecked_Conversion (Unsigned_16, Options);
-
---   No_Options: constant Options := To_Options (0);
-
    -- The size of the fixed part of a block header
    --
    Fixed_Part_Byte_Count: constant Unsigned_16 := 9 * 8;
@@ -424,10 +374,5 @@ package BRBON.Header is
    --
    Block_Header_Error: Exception;
 
-private
-
-   type Instance is tagged record
-      First_Free_Byte_In_Field_Area: Unsigned_16;
-   end record;
 
 end BRBON.Header;
