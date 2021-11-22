@@ -8,7 +8,7 @@ with Crc_Package;
 with BRBON.Container; use BRBON.Container;
 
 
-package body BRBON.Header is
+package body BRBON.Header.old is
 
    Block_Synchronization_Byte_1_Offset:      constant Unsigned_32 := 16#00#; -- 1 byte
    Block_Synchronization_Byte_2_Offset:      constant Unsigned_32 := 16#01#; -- 1 byte

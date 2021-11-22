@@ -8,6 +8,71 @@ with BRBON.Container;
 
 package body BRBON.Block is
 
+   -- ==========================================================================
+   -- == BRBON.Header.Header_Interface implementation                         ==
+   -- ==========================================================================
+
+   procedure Set_Synchronization_Byte_1 (I: in out Instance) is
+   begin
+      I.Container.Set_Unsigned_8 (BRBON.Header.Block_Synchronization_Byte_1_Offset, BRBON.Header.Block_Synchronization_Byte_1_Expected_Value);
+   end Set_Synchronization_Byte_1;
+
+
+   function Verify_Synchronization_Byte_1 (I: in out Instance) return Boolean is
+   begin
+      return I.Container.Get_Unsigned_8 (Block_Synchronization_Byte_1_Offset) = Block_Synchronization_Byte_1_Expected_Value;
+   end Verify_Synchronization_Byte_1;
+
+
+   procedure Set_Synchronization_Byte_2 (I: in out Instance) is
+   begin
+      I.Container.Set_Unsigned_8 (Block_Synchronization_Byte_2_Offset, Block_Synchronization_Byte_2_Expected_Value);
+   end Set_Synchronization_Byte_2;
+
+
+   function Verify_Synchronization_Byte_2 (I: in out Instance) return Boolean is
+   begin
+      return I.Container.Get_Unsigned_8 (Block_Synchronization_Byte_2_Offset) = Block_Synchronization_Byte_2_Expected_Value;
+   end Verify_Synchronization_Byte_2;
+
+
+   procedure Set_Synchronization_Byte_3 (I: in out Instance) is
+   begin
+      I.Container.Set_Unsigned_8 (Block_Synchronization_Byte_3_Offset, Block_Synchronization_Byte_3_Expected_Value);
+   end Set_Synchronization_Byte_3;
+
+
+   function Verify_Synchronization_Byte_3 (I: in out Instance) return Boolean is
+   begin
+      return I.Container.Get_Unsigned_8 (Block_Synchronization_Byte_3_Offset) = Block_Synchronization_Byte_3_Expected_Value;
+   end Verify_Synchronization_Byte_3;
+
+
+   procedure Set_Synchronization_Byte_4 (I: in out Instance) is
+   begin
+      if I.Container.Uses_Endianness = Little then
+         I.Container.Set_Unsigned_8 (Block_Synchronization_Byte_4_Offset, Block_Synchronization_Byte_4_Little_Endian_Expected_Value);
+      else
+         I.Container.Set_Unsigned_8 (Block_Synchronization_Byte_4_Offset, Block_Synchronization_Byte_4_Big_Endian_Expected_Value);
+      end if;
+   end Set_Synchronization_Byte_4;
+
+
+   function Verify_Synchronization_Byte_4 (I: in out Instance) return Boolean is
+   begin
+      if I.Container.Get_Unsigned_8 (Block_Synchronization_Byte_4_Offset) = Block_Synchronization_Byte_4_Little_Endian_Expected_Value then
+         I.Container.Set_Data_Endianness (Little);
+         return true;
+      elsif I.Container.Get_Unsigned_8 (Block_Synchronization_Byte_4_Offset) = Block_Synchronization_Byte_4_Big_Endian_Expected_Value then
+         I.Container.Set_Data_Endianness (Big);
+         return true;
+      else
+         return false;
+      end if;
+   end Verify_Synchronization_Byte_4;
+
+
+   -- Block defined operations
 
    function Type_Of_Block (I: in out Instance) return Block_Type is
    begin
