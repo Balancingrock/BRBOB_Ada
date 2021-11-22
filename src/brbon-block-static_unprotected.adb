@@ -127,5 +127,10 @@ package body BRBON.Block.Static_Unprotected is
       end if;
    end Free_Area_Byte_Count;
 
+   procedure Header_Update_Header_Crc16 (I: in out Instance) is
+   begin
+      null;
+   end Header_Update_Header_Crc16;
+
 
 end BRBON.Block.Static_Unprotected;

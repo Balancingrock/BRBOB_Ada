@@ -16,7 +16,7 @@ package BRBON.Block.Static_Unprotected is
    -- The store that contains a static BRBON hierarchy on which unprotected access is possible.
    -- This is the fasted possible acces to items in a BRBON store.
    --
-   type Instance is new BRBON.Block.Instance with null record;
+   type Instance is new Block.Instance with null record;
 
 
    -- Access type for the static unprotected store.
@@ -57,6 +57,8 @@ package BRBON.Block.Static_Unprotected is
    --
    overriding function Byte_Count (I: in out Instance) return Unsigned_32;
 
+
+   overriding procedure Header_Update_Header_Crc16 (I: in out Instance);
 
 
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;

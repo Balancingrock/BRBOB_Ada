@@ -374,13 +374,13 @@ package BRBON.Block is
 
    -- Set the CRC16 value for the entire block header.
    --
-   procedure Header_Set_Block_Header_Crc16 (I: in out Instance; Value: Unsigned_16);
-   pragma inline (Header_Set_Block_Header_Crc16);
+   procedure Header_Set_Header_Crc16 (I: in out Instance; Value: Unsigned_16);
+   pragma inline (Header_Set_Header_Crc16);
 
    -- Return the CRC16 value for the entire block header.
    --
-   function Header_Get_Block_Header_Crc16 (I: in out Instance) return Unsigned_16;
-   pragma inline (Header_Get_Block_Header_Crc16);
+   function Header_Get_Header_Crc16 (I: in out Instance) return Unsigned_16;
+   pragma inline (Header_Get_Header_Crc16);
 
    -- Update the block header crc value in accordance with the block header contents.
    -- Note: All values in the header must have been set to their final values before calling this operation.
@@ -399,8 +399,7 @@ package BRBON.Block is
    -- Undocumented, for testing only, do not use!
    --
    function Test_Serializer (I: in out Instance) return Serializable.Instance;
-   
-   procedure Set_Synchronization_Byte_1 (I: in out Instance);
+
    
 private
    

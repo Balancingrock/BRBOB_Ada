@@ -46,7 +46,7 @@ with Interfaces; use Interfaces;
 --with BRBON.Types; use BRBON.Types;
 
 
-package BRBON.Header.Single_Item_File is
+package BRBON.Block.Single_Item_File is
 
 
    -- Create a single-file-item block header in the given memory area with the given endianness.
@@ -73,4 +73,4 @@ package BRBON.Header.Single_Item_File is
       );
 
 
-end BRBON.Header.Single_Item_File;
+end BRBON.Block.Single_Item_File;
