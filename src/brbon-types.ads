@@ -62,13 +62,13 @@ package BRBON.Types is
    type Block_Type is
      (
       Illegal,
-      Single_Item_File
+      Single_Item
      );
    for Block_Type'Size use 16;
    for Block_Type use
      (
       Illegal => 0,
-      Single_Item_File => 1
+      Single_Item => 1
      );
 
    function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Type, Unsigned_16);

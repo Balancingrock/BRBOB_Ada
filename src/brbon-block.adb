@@ -450,6 +450,27 @@ package body BRBON.Block is
    end Header_Update_Block_Header_Crc16;
 
 
+   -- ===
+   -- Child support operations
+   --
+
+   procedure Create_Single_Item_Block_Header
+     (
+       In_Block: in out Instance;
+       Field_Storage_Byte_Count: Unsigned_16 := 1;
+       Options: Block_Options := No_Block_Options;
+       Origin: String := "localhost";
+       Identifier: String := "";
+       Extension: String := "";
+       Path_Prefix: String := "";
+       Acquisition_URL: String := "";
+       Target_List: String := "";
+       Public_Key_URL: String := "";
+       Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
+       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
+     ) is separate;
+
+
    -- =====================================================
    -- Block defined operations
 

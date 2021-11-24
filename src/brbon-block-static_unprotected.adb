@@ -6,7 +6,6 @@ with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
 with BRBON.Footer;
 with BRBON.Header;
-with BRBON.Header.Single_Item_File;
 
 
 package body BRBON.Block.Static_Unprotected is
@@ -35,7 +34,7 @@ package body BRBON.Block.Static_Unprotected is
       Content_Byte_Count: Unsigned_32;
       Block_Byte_Count: Unsigned_32;
 
-      Block: Instance;
+      New_Block: Instance;
 
    begin
 
@@ -69,17 +68,17 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Allocate memory area for the container that will enclose the block
       --
-      Block.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
+      New_Block.Memory_Ptr := new BRBON.Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
 
       -- Create the container for the block
       --
-      Block.Container := BRBON.Container.Factory (Buffer_Ptr => Block.Memory_Ptr, Using_Endianness => Using_Endianness);
+      New_Block.Container := BRBON.Container.Factory (Buffer_Ptr => New_Block.Memory_Ptr, Using_Endianness => Using_Endianness);
 
       -- Create the block header
       --
-      BRBON.Header.Single_Item_File.Create
+      Block.Single_Item_File.Create
         (
-         In_Container => Block.Container,
+         In_Block => New_Block,
          Header_Byte_Count => Header_Byte_Count,
          Options => Options,
          Origin => Origin,
@@ -93,11 +92,11 @@ package body BRBON.Block.Static_Unprotected is
          Expiry_Timestamp => Expiry_Timestamp
         );
 
-      Block.First_Free_Byte_In_Header_Field_Storage := BRBON.Header.Fixed_Part_Byte_Count;
-      Block.First_Free_Byte_In_Payload := Unsigned_32 (Header_Byte_Count);
-      Block.Last_Free_Byte_In_Payload := Block.Container.Byte_Count - BRBON.Footer.Footer_Byte_Count (Single_Item_File) - 1;
+      New_Block.First_Free_Byte_In_Header_Field_Storage := BRBON.Header.Fixed_Part_Byte_Count;
+      New_Block.First_Free_Byte_In_Payload := Unsigned_32 (Header_Byte_Count);
+      New_Block.Last_Free_Byte_In_Payload := New_Block.Container.Byte_Count - BRBON.Footer.Footer_Byte_Count (Single_Item_File) - 1;
 
-      return Block;
+      return New_Block;
 
    end Factory;
 

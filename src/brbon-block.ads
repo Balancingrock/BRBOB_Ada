@@ -7,6 +7,8 @@ with BRBON.Types; use BRBON.Types;
 with BRBON.Container;
 with BRBON.Header;
 with BRBON.Footer;
+with BRBON.Utils;
+
 
 with Serializable;
 
@@ -387,6 +389,7 @@ package BRBON.Block is
    --
    procedure Header_Update_Header_Crc16 (I: in out Instance) is abstract;
 
+   --
    -- Header access ends
    -- ==========================================================================
    
@@ -400,6 +403,31 @@ package BRBON.Block is
    --
    function Test_Serializer (I: in out Instance) return Serializable.Instance;
 
+   
+   -- ==========================================================================
+   -- Service operations for child classes of the block
+   --
+   
+   -- Creates a block header in the given block for a single item block.
+   -- When the Field_Storage_Byte_Count is 1, it will automatically size the field to contain all the given strings.
+   -- Note that a field storage size of 1 is impossible, as it will always be a multiple of 8 bytes.
+   --
+   procedure Create_Single_Item_Block_Header
+     (
+       In_Block: in out Instance;
+       Field_Storage_Byte_Count: Unsigned_16 := 1;
+       Options: Block_Options := No_Block_Options;
+       Origin: String := "localhost";
+       Identifier: String := "";
+       Extension: String := "";
+       Path_Prefix: String := "";
+       Acquisition_URL: String := "";
+       Target_List: String := "";
+       Public_Key_URL: String := "";
+       Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
+       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
+      );
+   
    
 private
    
