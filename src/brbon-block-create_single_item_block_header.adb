@@ -22,10 +22,20 @@ procedure Create_Single_Item_Block_Header
 
       -- Calculate the space needed for the variable part of the block header
       --
-      Variable_Part_Byte_Count: Unsigned_32 := BRBON.Utils.Round_Up_To_Nearest_Multiple_of_8
+      Variable_Part_Byte_Count: Unsigned_16 := BRBON.Utils.Round_Up_To_Nearest_Multiple_of_8
         (
-         Unsigned_32 (Origin'Length + Identifier'Length + Extension'Length + Path_Prefix'Length + Acquisition_URL'Length + Target_List'Length + Public_Key_URL'Length)
+           Utils.Round_Up_To_Nearest_Multiple_of_8 (Origin'Length)
+           + Utils.Round_Up_To_Nearest_Multiple_of_8 (Identifier'Length)
+           + Utils.Round_Up_To_Nearest_Multiple_of_8 (Extension'Length)
+           + Utils.Round_Up_To_Nearest_Multiple_of_8 (Path_Prefix'Length)
+           + Utils.Round_Up_To_Nearest_Multiple_of_8 (Acquisition_URL'Length)
+           + Utils.Round_Up_To_Nearest_Multiple_of_8 (Target_List'Length)
+           + Utils.Round_Up_To_Nearest_Multiple_of_8 (Public_Key_URL'Length)
         );
+
+      -- Calucate the size of the header
+      --
+      Header_Byte_Count: Unsigned_16 := Unsigned_16 (Header.Header_Field_Storage_Type_1_Offset) + Variable_Part_Byte_Count + Header.Past_Storage_Field_Byte_Count;
 
 begin
 
@@ -67,8 +77,8 @@ begin
    B.Header_Set_Modification_Timestamp (Creation_Timestamp);
    B.Header_Set_Expiry_Timestamp (Expiry_Timestamp);
 
-   B.Header_Set_Reserved_1a (B.Get_Header_Byte_Count, 0);
-   B.Header_Set_Reserved_1b (B.Get_Header_Byte_Count, 0);
+   B.Header_Set_Reserved_1a (0);
+   B.Header_Set_Reserved_1b (0);
    B.Header_Update_Block_Header_Crc16;
 
 

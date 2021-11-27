@@ -354,32 +354,41 @@ package BRBON.Block is
    function Header_Get_Expiry_Timestamp (I: in out Instance) return Unsigned_64;
    pragma inline (Header_Get_Expiry_Timestamp);
 
-   -- Set the reserved field 1 value, first 32 bits.
+   -- Set the reserved field 1 value, first 16 bits.
+   -- Note: If the header-byte-count is not set this operation will fail and possibly overwrite
+   -- other header or user data. Most likely leading to an invalid block.
    --
    procedure Header_Set_Reserved_1a (I: in out Instance; Value: Unsigned_32);
    pragma inline (Header_Set_Reserved_1a);
 
-   -- Return the reserved 1 value, first 32 bits.
+   -- Return the reserved 1 value, first 16 bits.
+   -- Note: If the header-byte-count is not set this operation will most likely return the wrong value.
    --
    function Header_Get_Reserved_1a (I: in out Instance) return Unsigned_32;
    pragma inline (Header_Get_Reserved_1a);
 
    -- Set the reserved field 1 value, last 16 bits.
+   -- Note: If the header-byte-count is not set this operation will fail and possibly overwrite
+   -- other header or user data. Most likely leading to an invalid block.
    --
    procedure Header_Set_Reserved_1b (I: in out Instance; Value: Unsigned_16);
    pragma inline (Header_Set_Reserved_1b);
 
    -- Return the reserved 1 value, first 16 bits.
+   -- Note: If the header-byte-count is not set this operation will most likely return the wrong value.
    --
    function Header_Get_Reserved_1b (I: in out Instance) return Unsigned_16;
    pragma inline (Header_Get_Reserved_1b);
 
    -- Set the CRC16 value for the entire block header.
+   -- Note: If the header-byte-count is not set this operation will fail and possibly overwrite
+   -- other header or user data. Most likely leading to an invalid block.
    --
    procedure Header_Set_Header_Crc16 (I: in out Instance; Value: Unsigned_16);
    pragma inline (Header_Set_Header_Crc16);
 
    -- Return the CRC16 value for the entire block header.
+   -- Note: If the header-byte-count is not set this operation will most likely return the wrong value.
    --
    function Header_Get_Header_Crc16 (I: in out Instance) return Unsigned_16;
    pragma inline (Header_Get_Header_Crc16);
