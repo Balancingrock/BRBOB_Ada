@@ -450,30 +450,31 @@ package body BRBON.Block is
    end Header_Update_Block_Header_Crc16;
 
 
-   -- ===
+   -- ========================================================
    -- Child support operations
-   --
+   -- ========================================================
 
    procedure Create_Single_Item_Block_Header
      (
-       In_Block: in out Instance;
-       Field_Storage_Byte_Count: Unsigned_16 := 1;
-       Options: Block_Options := No_Block_Options;
-       Origin: String := "localhost";
-       Identifier: String := "";
-       Extension: String := "";
-       Path_Prefix: String := "";
-       Acquisition_URL: String := "";
-       Target_List: String := "";
-       Public_Key_URL: String := "";
-       Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
-       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
+      In_Block: in out Instance'Class;
+      Field_Storage_Byte_Count: Unsigned_16;
+      Header_Byte_Count: Unsigned_16;
+      Options: Block_Options;
+      Origin: String;
+      Identifier: String;
+      Extension: String;
+      Path_Prefix: String;
+      Acquisition_URL: String;
+      Target_List: String;
+      Public_Key_URL: String;
+      Creation_Timestamp: Unsigned_64;
+      Expiry_Timestamp: Unsigned_64
      ) is separate;
 
 
    -- =====================================================
-   -- Block defined operations
-
+   -- Block API
+   -- ======================================================
 
    procedure Write_To_File (I: in out Instance; To_Path: String) is
    begin
@@ -493,7 +494,7 @@ package body BRBON.Block is
 
    procedure Ensure_Block_Consistency (I: in out Instance) is
    begin
-      raise BRBON.Types.Not_Implemented_Yet;
+      raise Types.Not_Implemented_Yet;
    end Ensure_Block_Consistency;
 
 

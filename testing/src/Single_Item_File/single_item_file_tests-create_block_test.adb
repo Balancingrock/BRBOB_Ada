@@ -300,7 +300,7 @@ begin
    Expected_Bytes.all := Type_1_Block;
 
    T_Object := BRBON.Block.Static_Unprotected.Factory
-     (Type_Of_Block      => Single_Item_File,
+     (Type_Of_Block      => BRBON.Types.Single_Item,
       Minimum_Byte_Count => 8,
       Using_Endianness   => BRBON.Configure.Machine_Endianness);
 

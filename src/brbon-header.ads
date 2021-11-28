@@ -68,7 +68,7 @@ package BRBON.Header is
 
    -- The size of the fixed part of a block header after the type dependent header and the field storage
    --
-   Past_Storage_Field_Byte_Count: constant Unsigned_16 := 8;
+   Past_Field_Storage_Byte_Count: constant Unsigned_16 := 8;
 
 
 

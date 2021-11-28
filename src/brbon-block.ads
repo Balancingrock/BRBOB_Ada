@@ -421,21 +421,26 @@ package BRBON.Block is
    -- When the Field_Storage_Byte_Count is 1, it will automatically size the field to contain all the given strings.
    -- Note that a field storage size of 1 is impossible, as it will always be a multiple of 8 bytes.
    --
+   -- This is not a BRBON-API call hence no default values are given. Note that all values will be taken as is and
+   -- applied without checks. Failure to ensure proper values will result in an invalid block header with possible
+   -- end user data lost.
+   --
    procedure Create_Single_Item_Block_Header
      (
-       In_Block: in out Instance;
-       Field_Storage_Byte_Count: Unsigned_16 := 1;
-       Options: Block_Options := No_Block_Options;
-       Origin: String := "localhost";
-       Identifier: String := "";
-       Extension: String := "";
-       Path_Prefix: String := "";
-       Acquisition_URL: String := "";
-       Target_List: String := "";
-       Public_Key_URL: String := "";
-       Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
-       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
-      );
+      In_Block: in out Instance'Class;
+      Field_Storage_Byte_Count: Unsigned_16;
+      Header_Byte_Count: Unsigned_16;
+      Options: Block_Options;
+      Origin: String;
+      Identifier: String;
+      Extension: String;
+      Path_Prefix: String;
+      Acquisition_URL: String;
+      Target_List: String;
+      Public_Key_URL: String;
+      Creation_Timestamp: Unsigned_64;
+      Expiry_Timestamp: Unsigned_64
+     );
    
    
 private

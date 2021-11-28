@@ -31,24 +31,30 @@ package BRBON.Block.Static_Unprotected is
    --   The actual number of bytes allocated will be higher than this number, modified for alignement and overhead.
    --   Depending on the block type, the actual count can be about 100~150 bytes higher than requested.
    --   Use the operation Byte_Count to determine the actual byte count of the buffer.
+   -- @param Header_Field_Storage_Byte_Count Sets the minimum size for this area in the header. Note that if the strings
+   --   in the other parameters need more space, more space will be assigned. Leave the default value in to automatically
+   --   assign the needed space. This space will always be a multiple of 8 bytes. The necessary length can be calculated
+   --   by taking the length of each string (in the parameters) and rounding each up to an 8 byte multiple before adding
+   --   them all together.
    -- @param Using_Endianness The endianness to be used for multi-byte items.
    -- @returns A Static_Unprotected instance.
    --
    function Factory
       (
-         Type_Of_Block: Block_Type;
-         Minimum_Byte_Count: Unsigned_32;
-         Options: Block_Options := No_Block_Options;
-         Using_Endianness: Endianness := BRBON.Configure.Machine_Endianness;
-         Origin: String := "";
-         Identifier: String := "";
-         Extension: String := "";
-         Path_Prefix: String := "";
-         Acquisition_URL: String := "";
-         Target_List: String := "";
-         Public_Key_URL: String := "";
-         Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
-         Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
+       Type_Of_Block: Block_Type;
+       Minimum_Byte_Count: Unsigned_32;
+       Header_Field_Storage_Byte_Count: Unsigned_16 := 1;
+       Options: Block_Options := No_Block_Options;
+       Using_Endianness: Endianness := Configure.Machine_Endianness;
+       Origin: String := "";
+       Identifier: String := "";
+       Extension: String := "";
+       Path_Prefix: String := "";
+       Acquisition_URL: String := "";
+       Target_List: String := "";
+       Public_Key_URL: String := "";
+       Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
+       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
       ) return Instance;
 
 
