@@ -309,37 +309,36 @@ begin
 
    -- Test
    
-   if not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
-
-      if T_Serializer.Is_Full then
-         
-         New_Line (2);
-         Put_Line ("Compare failed due to size mismatch");
-         Put_Line ("Expected:" & Type_1_Block'Length'Image & " bytes, found:" & T_Serializer.Remaining_Bytes'Image & " bytes.");
-      
-      else
-      
-         Cursor := T_Serializer.Index_Of_Last_Byte;
-
-         New_Line (2);
-         Put_Line ("Block verification failed");
-
-         New_Line;
-         Put_Line ("Expected:");
-         S := Serializable.Create_With_Copy (Type_1_Block);
-         S.Dump_2_Lines (Around => Cursor);
-
-         New_Line (2);
-         Put_Line ("Found:");
-         T_Serializer.Dump_2_Lines (Around => Cursor, Show_Cursor => True);
-
-      end if;
-      
+   if T_Serializer.Remaining_Bytes /= Expected_Bytes'Length then
+               
+      New_Line (2);
+      Put_Line ("Compare failed due to size mismatch");
+      Put_Line ("Expected:" & Type_1_Block'Length'Image & " bytes, found:" & T_Serializer.Remaining_Bytes'Image & " bytes.");
+   
       return Failed;
+      
+   elsif not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
+      
+      Cursor := T_Serializer.Index_Of_Last_Byte;
+      
+      New_Line (2);
+      Put_Line ("Block verification failed");
 
-   else
+      New_Line;
+      Put_Line ("Expected:");
+      S := Serializable.Create_With_Copy (Type_1_Block);
+      S.Dump_2_Lines (Around => Cursor);
+
+      New_Line (2);
+      Put_Line ("Found:");
+      T_Serializer.Dump_2_Lines (Around => Cursor, Show_Cursor => True);
+
+      return Failed;
+      
+   else 
+      
       return Passed;
+      
    end if;
-
-
+      
 end Create_Block_Test;

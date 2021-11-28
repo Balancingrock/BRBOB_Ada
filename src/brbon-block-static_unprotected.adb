@@ -1,4 +1,5 @@
 -- with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 with Ada.Unchecked_Conversion;
 
@@ -56,6 +57,9 @@ package body BRBON.Block.Static_Unprotected is
         + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Public_Key_URL'Length));
 
 
+      New_Line (2); Put_Line ("Field Storage Byte Count = " & Field_Storage_Byte_Count'Image);
+
+
       -- Get the type dependent size
       --
       case Type_Of_Block is
@@ -67,13 +71,23 @@ package body BRBON.Block.Static_Unprotected is
       --
       Header_Byte_Count := Header.Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Field_Storage_Byte_Count + Header.Past_Field_Storage_Byte_Count;
 
+      New_Line (2); Put_Line ("Header Byte Count = " & Header_Byte_Count'Image);
+
+
       -- Calculate the size of the block content field
       --
       Content_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Minimum_Byte_Count);
 
+      New_Line (2); Put_Line ("Content Byte Count = " & Content_Byte_Count'Image);
+
+
       -- Calculate the size of the block
       --
       Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + Footer.Footer_Byte_Count (Single_Item));
+
+
+      New_Line (2); Put_Line ("Block Byte Count = " & Block_Byte_Count'Image);
+
 
       -- Allocate memory area for the container that will enclose the block
       --
