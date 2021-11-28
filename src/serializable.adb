@@ -1,6 +1,7 @@
 with Interfaces.C;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Exceptions;
 
 with BRBON.Configure;
 with BRBON.Utils;
@@ -62,6 +63,11 @@ package body Serializable is
    end Create_Without_Copy;
 
 
+   function Is_Full (Source: in out Instance) return Boolean is
+   begin
+      return Source.Cursor = Source.First;
+   end Is_Full;
+
    function Is_Empty (Source: in out Instance) return Boolean is
    begin
       return Source.Cursor > Source.Last;
@@ -76,7 +82,7 @@ package body Serializable is
    function Index_Of_Last_Byte (Source: in out Instance) return Unsigned_32 is
    begin
       if Source.Remaining_Bytes = Integer (Source.Last - Source.First + 1) then
-         raise constraint_error;
+         Ada.Exceptions.Raise_Exception (constraint_error'Identity, "Serializable has not returned a byte yet.");
       else
          return Source.Cursor - Source.First - 1;
       end if;

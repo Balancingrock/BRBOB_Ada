@@ -50,6 +50,12 @@ package Serializable is
    function Copy_Next_Byte (Source: in out Instance; Byte: out Unsigned_8) return Boolean;
 
 
+   -- Returns true if no bytes have been generated.
+   --
+   function Is_Full (Source: in out Instance) return Boolean;
+   pragma Inline (Is_Full);
+
+
    -- Returns true if the instance is empty.
    --
    function Is_Empty (Source: in out Instance) return Boolean;
@@ -84,6 +90,7 @@ package Serializable is
    -- then the Remaining_Bytes may be used to calculate which byte caused the fail using:
    --    (Index_Of_Failed_Byte := Source'Last - Source.Remaining_Bytes)
    -- If the operation returns True then the serializable has zero Remaining_Bytes.
+   -- If the operation returns False and Is_Full still returns true, then a size mismatch was found.
    -- Any byte which has a corresponding flag set in the Dont_Care array will be treated as equal.
    -- The Dont_Care array must have the same or more flags as there are bytes in the Expected_Values array.
    -- An exception will be raised (out of bounds) otherwise.
