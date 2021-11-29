@@ -8,7 +8,7 @@ with Types; use Types;
 with Test_Driver; use Test_Driver;
 
 with Container_Tests; use Container_Tests;
-with Single_Item_File_Tests; use Single_Item_File_Tests;
+with Single_Item_Tests; use Single_Item_Tests;
 with Serializable_Tests; use Serializable_Tests;
 
 
@@ -31,7 +31,7 @@ procedure Main is
      (
         (UStr ("Serializable tests:"), Serializable_Tests.Tests'Access),
         (UStr ("Container tests:"), Container_Tests.Tests'Access),
-        (UStr ("Single_Item_File tests:"), Single_Item_File_Tests.Tests'Access)
+        (UStr ("Single Item tests:"), Single_Item_Tests.Tests'Access)
      );
 
    Count: Integer := 1;

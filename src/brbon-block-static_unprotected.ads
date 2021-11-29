@@ -34,8 +34,7 @@ package BRBON.Block.Static_Unprotected is
    -- @param Header_Field_Storage_Byte_Count Sets the minimum size for this area in the header. Note that if the strings
    --   in the other parameters need more space, more space will be assigned. Leave the default value in to automatically
    --   assign the needed space. This space will always be a multiple of 8 bytes. The necessary length can be calculated
-   --   by taking the length of each string (in the parameters) and rounding each up to an 8 byte multiple before adding
-   --   them all together.
+   --   by summing the length of each string (in the parameters) and rounding up to a multiple of 8 bytes.
    -- @param Using_Endianness The endianness to be used for multi-byte items.
    -- @returns A Static_Unprotected instance.
    --

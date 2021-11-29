@@ -48,13 +48,19 @@ package body BRBON.Block.Static_Unprotected is
       -- Calculate the size of the storage field in de header
       --
       Field_Storage_Byte_Count :=
-        Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Origin'Length))
-        + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Identifier'Length))
-        + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Extension'Length))
-        + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Path_Prefix'Length))
-        + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Acquisition_URL'Length))
-        + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Target_List'Length))
-        + Utils.Round_Up_To_Nearest_Multiple_of_8 (Unsigned_16 (Public_Key_URL'Length));
+        Utils.Round_Up_To_Nearest_Multiple_of_8
+          (
+           Unsigned_16
+             (
+              Origin'Length
+              + Identifier'Length
+              + Extension'Length
+              + Path_Prefix'Length
+              + Acquisition_URL'Length
+              + Target_List'Length
+              + Public_Key_URL'Length
+             )
+          );
 
 
       -- Get the type dependent size
