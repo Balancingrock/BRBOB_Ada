@@ -13,13 +13,13 @@ package BRBON.Utils is
    function Min (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A < B then A else B);
    pragma Inline (Min);
 
-   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_8) return Unsigned_8 is (if A = 0 then 0 else (A + 8) and 16#F8#);
+   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_8) return Unsigned_8 is (if A rem 8 = 0 then A else (A + 8) and 16#F8#);
    pragma Inline (Round_Up_To_Nearest_Multiple_of_8);
 
-   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_16) return Unsigned_16 is (if A = 0 then 0 else (A + 8) and 16#FFF8#);
+   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_16) return Unsigned_16 is (if A rem 8 = 0 then A else (A + 8) and 16#FFF8#);
    pragma Inline (Round_Up_To_Nearest_Multiple_of_8);
 
-   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_32) return Unsigned_32 is (if A = 0 then 0 else (A + 8) and 16#FFFF_FFF8#);
+   function Round_Up_To_Nearest_Multiple_of_8 (A: Unsigned_32) return Unsigned_32 is (if A rem 8 = 0 then A else (A + 8) and 16#FFFF_FFF8#);
    pragma Inline (Round_Up_To_Nearest_Multiple_of_8);
 
    function Round_Down_To_Nearest_Multiple_of_32 (A: Unsigned_32) return Unsigned_32 is (A and 16#FFFF_FFE0#);
