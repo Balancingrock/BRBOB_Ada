@@ -19,7 +19,7 @@ function Create_Block_Test (Count: in out Integer) return Test_Result is
    S: Serializable.Instance;
    Cursor: Unsigned_32;
 
-   Type_1_Block: Array_Of_Unsigned_8 :=
+   Type_1_Block_No_Parameters: Array_Of_Unsigned_8 :=
      (
       -- 4 Sync bytes, 16#96, 16#7F, 16#81, little endian => 16#5A, big endian => 16#A5
       -- Offset 16#00
@@ -296,8 +296,8 @@ begin
    
    -- Setup
    
-   Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block'Length - 1);
-   Expected_Bytes.all := Type_1_Block;
+   Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+   Expected_Bytes.all := Type_1_Block_No_Parameters;
 
    T_Object := BRBON.Block.Static_Unprotected.Factory
      (Type_Of_Block      => BRBON.Types.Single_Item,
@@ -313,11 +313,11 @@ begin
                
       New_Line (2);
       Put_Line ("Compare failed due to size mismatch");
-      Put_Line ("Expected:" & Type_1_Block'Length'Image & " bytes, found:" & T_Serializer.Remaining_Bytes'Image & " bytes.");
+      Put_Line ("Expected:" & Type_1_Block_No_Parameters'Length'Image & " bytes, found:" & T_Serializer.Remaining_Bytes'Image & " bytes.");
    
       return Failed;
       
-   elsif not T_Serializer.Compare (Type_1_Block, Type_1_Block_Dont_Care) then
+   elsif not T_Serializer.Compare (Type_1_Block_No_Parameters, Type_1_Block_Dont_Care) then
       
       Cursor := T_Serializer.Index_Of_Last_Byte;
       
@@ -326,7 +326,7 @@ begin
 
       New_Line;
       Put_Line ("Expected:");
-      S := Serializable.Create_With_Copy (Type_1_Block);
+      S := Serializable.Create_With_Copy (Type_1_Block_No_Parameters);
       S.Dump_2_Lines (Around => Cursor);
 
       New_Line (2);
