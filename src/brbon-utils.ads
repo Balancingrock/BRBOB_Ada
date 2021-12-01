@@ -7,8 +7,14 @@ with BRBON.Types; use BRBON.Types;
 
 package BRBON.Utils is
 
+   function Max (A: Unsigned_16; B: Unsigned_16) return Unsigned_16 is (if A > B then A else B);
+   pragma Inline (Max);
+
    function Max (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A > B then A else B);
    pragma Inline (Max);
+
+   function Min (A: Unsigned_16; B: Unsigned_16) return Unsigned_16 is (if A < B then A else B);
+   pragma Inline (Min);
 
    function Min (A: Unsigned_32; B: Unsigned_32) return Unsigned_32 is (if A < B then A else B);
    pragma Inline (Min);

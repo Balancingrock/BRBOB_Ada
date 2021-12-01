@@ -116,7 +116,6 @@ package body BRBON.Block.Static_Unprotected is
         );
 
 
-      New_Block.First_Free_Byte_In_Header_Field_Storage := Header.Fixed_Part_Byte_Count;
       New_Block.First_Free_Byte_In_Payload := Unsigned_32 (Header_Byte_Count);
       New_Block.Last_Free_Byte_In_Payload := New_Block.Container.Byte_Count - Footer.Footer_Byte_Count (Types.Single_Item) - 1;
 
@@ -152,7 +151,7 @@ package body BRBON.Block.Static_Unprotected is
 
    procedure Header_Update_Header_Crc16 (I: in out Instance) is
    begin
-      null;
+      raise BRBON.Incomplete_Code;
    end Header_Update_Header_Crc16;
 
 

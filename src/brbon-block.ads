@@ -403,6 +403,18 @@ package BRBON.Block is
    -- ==========================================================================
    
    
+   -- Set the origin of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Origin (I: in out Instance; Value: String);
+   
+   
+   -- Returns the origin of the block as a string.
+   -- If no origin is present, an empty string will be returned.
+   --
+   function Get_Origin (I: in out Instance) return String;
+   
+   
    -- =================================================================
    -- | The following operations are for test-use only. Do not use.   |
    -- | (they are not stable and may have unanticipated side effects) |
@@ -442,6 +454,9 @@ package BRBON.Block is
       Expiry_Timestamp: Unsigned_64
      );
    
+      
+
+   
    
 private
    
@@ -450,8 +465,6 @@ private
       Container: BRBON.Container.Instance;
       Memory_Ptr: Array_Of_Unsigned_8_Ptr; -- The Container does not export its pointer, a copy must be kept.
       Start_Of_Header_Field_Storage: Unsigned_16;
-      First_Free_Byte_In_Header_Field_Storage: Unsigned_16; -- range self.Start_Of_Header_Field_Storage .. self.Last_Free_Byte_In_header_Field_Storage + 1
-      Last_Free_Byte_In_header_Field_Storage: Unsigned_16; -- quasi constant
       Start_Of_Payload: Unsigned_32; -- quasi constant
       First_Free_Byte_In_Payload: Unsigned_32; -- range self.Start_Of_Payload .. self.Last_Free_Byte_In_Payload + 1
       Last_Free_Byte_In_Payload: Unsigned_32; -- will never decrease, may increase for some child classes
@@ -464,10 +477,17 @@ private
    procedure Ensure_Block_Consistency (I: in out Instance);
    
    
-   -- Adds the given string to the header field storage area and returns the offset of the start location.
-   -- Returns zero if there is insufficient space available.
-   --
-   function Add_To_Header_Field (I: in out Instance; Value: String) return Unsigned_16;
+   type U32_Getter is access function (I: in out Instance) return Unsigned_32;
    
-      
+   type U16_Getter is access function (I: in out Instance) return Unsigned_16;
+   
+   type U8_Getter is access function (I: in out Instance) return Unsigned_8;
+   
+   type U32_Setter is access procedure (I: in out Instance; Value: Unsigned_32);
+   
+   type U16_Setter is access procedure (I: in out Instance; Value: Unsigned_16);
+   
+   type U8_Setter is access procedure (I: in out Instance; Value: Unsigned_8);
+
+   
 end BRBON.Block;

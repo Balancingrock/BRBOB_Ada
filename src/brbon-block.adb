@@ -450,6 +450,120 @@ package body BRBON.Block is
    end Header_Update_Block_Header_Crc16;
 
 
+   function Field_Storage_Highest_Used_Byte_Offset (I: in out Instance) return Unsigned_16 is
+
+      Highest_Offset: Unsigned_16 := 0;
+
+      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U8_Getter) is
+         End_Offset: Unsigned_16;
+      begin
+         if Size.all(I) > 0 then
+            End_Offset := Offset(I) + Unsigned_16 (Size(I));
+            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
+         end if;
+      end Update_For;
+
+      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U16_Getter) is
+         End_Offset: Unsigned_16;
+      begin
+         if Size.all(I) > 0 then
+            End_Offset := Offset(I) + Size(I);
+            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
+         end if;
+      end Update_For;
+
+   begin
+
+      Update_For (I, Header_Get_Origin_Offset'Access, Header_Get_Origin_Byte_Count'Access);
+      Update_For (I, Header_Get_Identifier_Offset'Access, Header_Get_Identifier_Byte_Count'Access);
+      Update_For (I, Header_Get_Extension_Offset'Access, Header_Get_Extension_Byte_Count'Access);
+      Update_For (I, Header_Get_Path_Prefix_Offset'Access, Header_Get_Path_Prefix_Byte_Count'Access);
+      Update_For (I, Header_Get_Acquisition_URL_Offset'Access, Header_Get_Acquisition_URL_Byte_Count'Access);
+      Update_For (I, Header_Get_Target_List_Offset'Access, Header_Get_Target_List_Byte_Count'Access);
+      Update_For (I, Header_Get_Public_Key_URL_Offset'Access, Header_Get_Public_Key_URL_Byte_Count'Access);
+
+      return Highest_Offset;
+
+   end Field_Storage_Highest_Used_Byte_Offset;
+
+
+   function Field_Storage_Used_Bytes (I: in out Instance) return Unsigned_16 is
+      Sum: Unsigned_16 := 0;
+   begin
+      Sum := Unsigned_16 (I.Header_Get_Origin_Byte_Count);
+      Sum := Sum + Unsigned_16 (I.Header_Get_Identifier_Byte_Count);
+      Sum := Sum + Unsigned_16 (I.Header_Get_Extension_Byte_Count);
+      Sum := Sum + Unsigned_16 (I.Header_Get_Path_Prefix_Byte_Count);
+      Sum := Sum + I.Header_Get_Acquisition_URL_Byte_Count;
+      Sum := Sum + I.Header_Get_Target_List_Byte_Count;
+      Sum := Sum + I.Header_Get_Public_Key_URL_Byte_Count;
+      return Sum;
+   end Field_Storage_Used_Bytes;
+
+
+   function Field_Storage_Free_Bytes (I: in out Instance) return Unsigned_16 is
+   begin
+      return I.Header_Get_Header_Byte_Count - I.Field_Storage_Used_Bytes;
+   end Field_Storage_Free_Bytes;
+
+
+   procedure Field_Storage_Compact_Bytes (I: in out Instance) is
+      Origin: String := I.Get_Origin;
+      Identifier: String := I.Get_Identifier;
+      Extension: String := I.Get_Extension;
+      Path_Prefix: String := I.Get_Path_Prefix;
+      Acquisition_URL: String := I.Get_Acquisition_URL;
+      Target_List: String := I.Get_Target_List;
+      Public_Key_URL: String := I.Get_Public_Key_URL;
+      Next_Offset: Unsigned_32 := Header_Field_Storage_Type_1_Offset;
+      Free_Bytes: Unsigned_16 := I.Header_Get_Header_Byte_Count;
+
+      procedure Add (Str: String) is
+      begin
+         if Str'Length > Free_Bytes then
+            Raise_Exception (BRBON.Storage_Error'Identity, "String length exceeds available area");
+         else
+            I.Container.Set_String (Next_Offset, Str);
+            Next_Offset := Next_Offset + Unsigned_32 (Str'Length);
+            Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
+         end if;
+      end Add;
+
+   begin
+
+      if Origin'Length > 0 then
+         I.Header_Set_Origin_Offset := Unsigned_16 (Next_Offset);
+         I.Header_Set_Origin_Byte_Count := Unsigned_8 (Origin'Length);
+         Add (Origin)
+      end if;
+
+      Add (Identifier);
+      Add (Extension);
+      Add (Path_Prefix);
+      Add (Acquisition_URL);
+      Add (Target_List);
+      Add (Public_Key_URL);
+
+   end Field_Storage_Compact_Bytes;
+
+   procedure Set_Origin (I: in out Instance; Value: String) is
+   begin
+      raise BRBON.Incomplete_Code;
+   end Set_Origin;
+
+
+   function Get_Origin (I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Origin_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Origin_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Origin;
+
+
    -- ========================================================
    -- Child support operations
    -- ========================================================
@@ -498,20 +612,6 @@ package body BRBON.Block is
    end Ensure_Block_Consistency;
 
 
-   function Add_To_Header_Field (I: in out Instance; Value: String) return Unsigned_16 is
-      Free_Bytes: Unsigned_16 := (I.Last_Free_Byte_In_Header_Field_Storage + 1) - I.First_Free_Byte_In_Header_Field_Storage; -- Sequence prevents negative intermediate
-      Origin_Offset: Unsigned_16;
-   begin
-      -- Check if there is space available for the string in the header field
-      if Value'Length > Free_Bytes then
-         return 0; -- not enough space available
-      else
-         Container.Set_String (I.Container, Unsigned_32 (I.First_Free_Byte_In_Header_Field_Storage), Value);
-         Origin_Offset := I.First_Free_Byte_In_Header_Field_Storage;
-         I.First_Free_Byte_In_Header_Field_Storage := I.First_Free_Byte_In_Header_Field_Storage + Unsigned_16 (Value'Length);
-         return Origin_Offset;
-      end if;
-   end Add_To_Header_Field;
 
 
 --   function Get_Block_Origin (I: in out Instance) return String is
