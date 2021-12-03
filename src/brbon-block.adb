@@ -2,6 +2,8 @@ with Interfaces; use Interfaces;
 
 with Ada.Exceptions;
 
+with CRC_Package;
+
 with BRBON; use BRBON;
 with BRBON.Header;
 with BRBON.Container;
@@ -470,12 +472,19 @@ package body BRBON.Block is
       Offset: Unsigned_32 := BRBON.Header.Header_Field_Storage_Type_1_Offset;
       Free_Bytes: Unsigned_16 := I.Header_Get_Header_Byte_Count;
 
-      procedure Add (UStr: Ada.Strings.Unbounded.Unbounded_String; Set_Offset: U16_Setter; Set_Byte_Count: U8_Setter) is
+      procedure Add
+        (
+         UStr: Ada.Strings.Unbounded.Unbounded_String;
+         Set_Offset: U16_Setter;
+         Set_Byte_Count: U8_Setter;
+         Set_CRC_16: U16_Setter
+        )
+      is
          Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
+         Set_Offset (I, Unsigned_16 (Offset));
+         Set_Byte_Count (I, Unsigned_8 (Str'Length));
          if Str'Length > 0 then
-            Set_Offset (I, Unsigned_16 (Offset));
-            Set_Byte_Count (I, Unsigned_8 (Str'Length));
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "String length exceeds available area");
             else
@@ -483,15 +492,24 @@ package body BRBON.Block is
                Offset := Offset + Unsigned_32 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
+            Set_CRC_16 (I, CRC_Package.Calculate_CRC_16 (Str));
+         else
+            Set_CRC_16 (I, 0);
          end if;
       end Add;
 
-      procedure Add (UStr: Ada.Strings.Unbounded.Unbounded_String; Set_Offset: U16_Setter; Set_Byte_Count: U16_Setter) is
+      procedure Add
+        (
+         UStr: Ada.Strings.Unbounded.Unbounded_String;
+         Set_Offset: U16_Setter;
+         Set_Byte_Count: U16_Setter
+        )
+      is
          Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
+         Set_Offset (I, Unsigned_16 (Offset));
+         Set_Byte_Count (I, Unsigned_16 (Str'Length));
          if Str'Length > 0 then
-            Set_Offset (I, Unsigned_16 (Offset));
-            Set_Byte_Count (I, Unsigned_16 (Str'Length));
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "String length exceeds available area");
             else
@@ -503,10 +521,10 @@ package body BRBON.Block is
       end Add;
    begin
 
-      Add (Strings.Origin, Header_Set_Origin_Offset'Access, Header_Set_Origin_Byte_Count'Access);
-      Add (Strings.Identifier, Header_Set_Identifier_Offset'Access, Header_Set_Identifier_Byte_Count'Access);
-      Add (Strings.Extension, Header_Set_Extension_Offset'Access, Header_Set_Extension_Byte_Count'Access);
-      Add (Strings.Path_Prefix, Header_Set_Path_Prefix_Offset'Access, Header_Set_Path_Prefix_Byte_Count'Access);
+      Add (Strings.Origin, Header_Set_Origin_Offset'Access, Header_Set_Origin_Byte_Count'Access, Header_Set_Origin_Crc16'Access);
+      Add (Strings.Identifier, Header_Set_Identifier_Offset'Access, Header_Set_Identifier_Byte_Count'Access, Header_Set_Identifier_Crc16'Access);
+      Add (Strings.Extension, Header_Set_Extension_Offset'Access, Header_Set_Extension_Byte_Count'Access, Header_Set_Extension_Crc16'Access);
+      Add (Strings.Path_Prefix, Header_Set_Path_Prefix_Offset'Access, Header_Set_Path_Prefix_Byte_Count'Access, Header_Set_Path_Prefix_Crc16'Access);
 
       Add (Strings.Acquisition_URL, Header_Set_Acquisition_URL_Offset'Access, Header_Set_Acquisition_URL_Byte_Count'Access);
       Add (Strings.Target_List, Header_Set_Target_List_Offset'Access, Header_Set_Target_List_Byte_Count'Access);

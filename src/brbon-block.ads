@@ -412,6 +412,9 @@ package BRBON.Block is
    -- Set the origin of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
    --
+   -- This operation has side effects: All strings, byte-counts, offsets and CRC16 values in the field storage
+   -- will be updated and the strings may be shifted (in the field storage).
+   --
    procedure Set_Origin (I: in out Instance; Value: String);
    
    
@@ -423,6 +426,9 @@ package BRBON.Block is
    
    -- Set the identifier of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   -- This operation has side effects: All strings, byte-counts, offsets and CRC16 values in the field storage
+   -- will be updated and the strings may be shifted (in the field storage).
    --
    procedure Set_Identifier (I: in out Instance; Value: String);
    
@@ -436,6 +442,9 @@ package BRBON.Block is
    -- Set the extension of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
    --
+   -- This operation has side effects: All strings, byte-counts, offsets and CRC16 values in the field storage
+   -- will be updated and the strings may be shifted (in the field storage).
+   --
    procedure Set_Extension (I: in out Instance; Value: String);
    
    
@@ -447,6 +456,9 @@ package BRBON.Block is
    
    -- Set the path prefix of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   -- This operation has side effects: All strings, byte-counts, offsets and CRC16 values in the field storage
+   -- will be updated and the strings may be shifted (in the field storage).
    --
    procedure Set_Path_Prefix (I: in out Instance; Value: String);
    
@@ -472,6 +484,9 @@ package BRBON.Block is
    -- Set the target list of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
    --
+   -- This operation has side effects: All strings, byte-counts, offsets and CRC16 values in the field storage
+   -- will be updated and the strings may be shifted (in the field storage).
+   --
    procedure Set_Target_List (I: in out Instance; Value: String);
    
    
@@ -483,6 +498,9 @@ package BRBON.Block is
    
    -- Set the public key URL of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   -- This operation has side effects: All strings, byte-counts, offsets and CRC16 values in the field storage
+   -- will be updated and the strings may be shifted (in the field storage).
    --
    procedure Set_Public_Key_URL (I: in out Instance; Value: String);
    
