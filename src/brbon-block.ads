@@ -2,6 +2,7 @@ with Interfaces; use Interfaces;
 
 with Ada.Unchecked_Conversion;
 with Ada.Finalization;
+with Ada.Strings.Unbounded;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container;
@@ -14,7 +15,7 @@ with Serializable;
 
 
 package BRBON.Block is
-
+ 
 
    type Instance is abstract new Ada.Finalization.Controlled with private;
       
@@ -403,6 +404,11 @@ package BRBON.Block is
    -- ==========================================================================
    
    
+   -- ==========================================================================
+   -- API
+   -- ==========================================================================
+      
+   
    -- Set the origin of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
    --
@@ -413,6 +419,78 @@ package BRBON.Block is
    -- If no origin is present, an empty string will be returned.
    --
    function Get_Origin (I: in out Instance) return String;
+   
+   
+   -- Set the identifier of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Identifier (I: in out Instance; Value: String);
+   
+   
+   -- Returns the identifier of the block as a string.
+   -- If no identifier is present, an empty string will be returned.
+   --
+   function Get_Identifier (I: in out Instance) return String;
+   
+   
+   -- Set the extension of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Extension (I: in out Instance; Value: String);
+   
+   
+   -- Returns the extension of the block as a string.
+   -- If no extension is present, an empty string will be returned.
+   --
+   function Get_Extension (I: in out Instance) return String;
+   
+   
+   -- Set the path prefix of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Path_Prefix (I: in out Instance; Value: String);
+   
+   
+   -- Returns the path prefix of the block as a string.
+   -- If no path prefix is present, an empty string will be returned.
+   --
+   function Get_Path_Prefix (I: in out Instance) return String;
+   
+   
+   -- Set the acquisition URL of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Acquisition_URL (I: in out Instance; Value: String);
+   
+   
+   -- Returns the acquisition URL of the block as a string.
+   -- If no acquisition URL is present, an empty string will be returned.
+   --
+   function Get_Acqquisition_URL(I: in out Instance) return String;
+   
+   
+   -- Set the target list of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Target_List (I: in out Instance; Value: String);
+   
+   
+   -- Returns the target list of the block as a string.
+   -- If no target list is present, an empty string will be returned.
+   --
+   function Get_Target_List (I: in out Instance) return String;
+   
+   
+   -- Set the public key URL of the block to the specified string.
+   -- Will raise the Memory_Error if the string cannot be accomodated.
+   --
+   procedure Set_Public_Key_URL (I: in out Instance; Value: String);
+   
+   
+   -- Returns the public key URL of the block as a string.
+   -- If no public key URL is present, an empty string will be returned.
+   --
+   function Get_Public_Key_URL(I: in out Instance) return String;
    
    
    -- =================================================================
@@ -454,13 +532,21 @@ package BRBON.Block is
       Expiry_Timestamp: Unsigned_64
      );
    
-      
-
-   
    
 private
    
-
+   type Field_Storage_Strings is
+      record
+         Origin: Ada.Strings.Unbounded.Unbounded_String;
+         Identifier: Ada.Strings.Unbounded.Unbounded_String;
+         Extension: Ada.Strings.Unbounded.Unbounded_String;
+         Path_Prefix: Ada.Strings.Unbounded.Unbounded_String;
+         Acquisition_URL: Ada.Strings.Unbounded.Unbounded_String;
+         Target_List: Ada.Strings.Unbounded.Unbounded_String;
+         Public_Key_URL: Ada.Strings.Unbounded.Unbounded_String;
+      end record;
+   
+   
    type Instance is abstract new Ada.Finalization.Controlled with record
       Container: BRBON.Container.Instance;
       Memory_Ptr: Array_Of_Unsigned_8_Ptr; -- The Container does not export its pointer, a copy must be kept.
@@ -470,6 +556,22 @@ private
       Last_Free_Byte_In_Payload: Unsigned_32; -- will never decrease, may increase for some child classes
    end record;
 
+   
+   -- Returns all field storage strings
+   --
+   function Read_Field_Storage_Strings (I: in out Instance) return Field_Storage_Strings;
+   
+   
+   -- Updates the field storage strings to the new values.
+   -- If the field storage is not large enough, a Memory_Error will be raised.
+   --
+   procedure Write_Field_Storage_Strings (I: in out Instance; Strings: Field_Storage_Strings);
+   
+   
+   -- Returns the offset of the highest used byte in the field-storage.
+   --
+   -- function Field_Storage_Highest_Used_Byte_Offset (I: in out Instance) return Unsigned_16;
+      
    
    -- Ensures that all fields in the block and header structure are consistent with the content and size of the block.
    -- This affects things like byte-count(s), CRC-values, footer content and maybe more.

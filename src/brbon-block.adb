@@ -450,105 +450,133 @@ package body BRBON.Block is
    end Header_Update_Block_Header_Crc16;
 
 
-   function Field_Storage_Highest_Used_Byte_Offset (I: in out Instance) return Unsigned_16 is
-
-      Highest_Offset: Unsigned_16 := 0;
-
-      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U8_Getter) is
-         End_Offset: Unsigned_16;
-      begin
-         if Size.all(I) > 0 then
-            End_Offset := Offset(I) + Unsigned_16 (Size(I));
-            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
-         end if;
-      end Update_For;
-
-      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U16_Getter) is
-         End_Offset: Unsigned_16;
-      begin
-         if Size.all(I) > 0 then
-            End_Offset := Offset(I) + Size(I);
-            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
-         end if;
-      end Update_For;
-
+   function Read_Field_Storage_Strings (I: in out Instance) return Field_Storage_Strings is
    begin
-
-      Update_For (I, Header_Get_Origin_Offset'Access, Header_Get_Origin_Byte_Count'Access);
-      Update_For (I, Header_Get_Identifier_Offset'Access, Header_Get_Identifier_Byte_Count'Access);
-      Update_For (I, Header_Get_Extension_Offset'Access, Header_Get_Extension_Byte_Count'Access);
-      Update_For (I, Header_Get_Path_Prefix_Offset'Access, Header_Get_Path_Prefix_Byte_Count'Access);
-      Update_For (I, Header_Get_Acquisition_URL_Offset'Access, Header_Get_Acquisition_URL_Byte_Count'Access);
-      Update_For (I, Header_Get_Target_List_Offset'Access, Header_Get_Target_List_Byte_Count'Access);
-      Update_For (I, Header_Get_Public_Key_URL_Offset'Access, Header_Get_Public_Key_URL_Byte_Count'Access);
-
-      return Highest_Offset;
-
-   end Field_Storage_Highest_Used_Byte_Offset;
-
-
-   function Field_Storage_Used_Bytes (I: in out Instance) return Unsigned_16 is
-      Sum: Unsigned_16 := 0;
-   begin
-      Sum := Unsigned_16 (I.Header_Get_Origin_Byte_Count);
-      Sum := Sum + Unsigned_16 (I.Header_Get_Identifier_Byte_Count);
-      Sum := Sum + Unsigned_16 (I.Header_Get_Extension_Byte_Count);
-      Sum := Sum + Unsigned_16 (I.Header_Get_Path_Prefix_Byte_Count);
-      Sum := Sum + I.Header_Get_Acquisition_URL_Byte_Count;
-      Sum := Sum + I.Header_Get_Target_List_Byte_Count;
-      Sum := Sum + I.Header_Get_Public_Key_URL_Byte_Count;
-      return Sum;
-   end Field_Storage_Used_Bytes;
+      return
+        (
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Origin),
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Identifier),
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Extension),
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Path_Prefix),
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Acqquisition_URL),
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Target_List),
+         Ada.Strings.Unbounded.To_Unbounded_String (I.Get_Public_Key_Url)
+        );
+   end Read_Field_Storage_Strings;
 
 
-   function Field_Storage_Free_Bytes (I: in out Instance) return Unsigned_16 is
-   begin
-      return I.Header_Get_Header_Byte_Count - I.Field_Storage_Used_Bytes;
-   end Field_Storage_Free_Bytes;
+   procedure Write_Field_Storage_Strings (I: in out Instance; Strings: Field_Storage_Strings) is
 
-
-   procedure Field_Storage_Compact_Bytes (I: in out Instance) is
-      Origin: String := I.Get_Origin;
-      Identifier: String := I.Get_Identifier;
-      Extension: String := I.Get_Extension;
-      Path_Prefix: String := I.Get_Path_Prefix;
-      Acquisition_URL: String := I.Get_Acquisition_URL;
-      Target_List: String := I.Get_Target_List;
-      Public_Key_URL: String := I.Get_Public_Key_URL;
-      Next_Offset: Unsigned_32 := Header_Field_Storage_Type_1_Offset;
+      Offset: Unsigned_32 := BRBON.Header.Header_Field_Storage_Type_1_Offset;
       Free_Bytes: Unsigned_16 := I.Header_Get_Header_Byte_Count;
 
-      procedure Add (Str: String) is
+      procedure Add (UStr: Ada.Strings.Unbounded.Unbounded_String; Set_Offset: U16_Setter; Set_Byte_Count: U8_Setter) is
+         Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
-         if Str'Length > Free_Bytes then
-            Raise_Exception (BRBON.Storage_Error'Identity, "String length exceeds available area");
-         else
-            I.Container.Set_String (Next_Offset, Str);
-            Next_Offset := Next_Offset + Unsigned_32 (Str'Length);
-            Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
+         if Str'Length > 0 then
+            Set_Offset (I, Unsigned_16 (Offset));
+            Set_Byte_Count (I, Unsigned_8 (Str'Length));
+            if Str'Length > Free_Bytes then
+               Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "String length exceeds available area");
+            else
+               I.Container.Set_String (Offset, Str);
+               Offset := Offset + Unsigned_32 (Str'Length);
+               Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
+            end if;
          end if;
       end Add;
 
+      procedure Add (UStr: Ada.Strings.Unbounded.Unbounded_String; Set_Offset: U16_Setter; Set_Byte_Count: U16_Setter) is
+         Str: String := Ada.Strings.Unbounded.To_String (UStr);
+      begin
+         if Str'Length > 0 then
+            Set_Offset (I, Unsigned_16 (Offset));
+            Set_Byte_Count (I, Unsigned_16 (Str'Length));
+            if Str'Length > Free_Bytes then
+               Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "String length exceeds available area");
+            else
+               I.Container.Set_String (Offset, Str);
+               Offset := Offset + Unsigned_32 (Str'Length);
+               Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
+            end if;
+         end if;
+      end Add;
    begin
 
-      if Origin'Length > 0 then
-         I.Header_Set_Origin_Offset := Unsigned_16 (Next_Offset);
-         I.Header_Set_Origin_Byte_Count := Unsigned_8 (Origin'Length);
-         Add (Origin)
-      end if;
+      Add (Strings.Origin, Header_Set_Origin_Offset'Access, Header_Set_Origin_Byte_Count'Access);
+      Add (Strings.Identifier, Header_Set_Identifier_Offset'Access, Header_Set_Identifier_Byte_Count'Access);
+      Add (Strings.Extension, Header_Set_Extension_Offset'Access, Header_Set_Extension_Byte_Count'Access);
+      Add (Strings.Path_Prefix, Header_Set_Path_Prefix_Offset'Access, Header_Set_Path_Prefix_Byte_Count'Access);
 
-      Add (Identifier);
-      Add (Extension);
-      Add (Path_Prefix);
-      Add (Acquisition_URL);
-      Add (Target_List);
-      Add (Public_Key_URL);
+      Add (Strings.Acquisition_URL, Header_Set_Acquisition_URL_Offset'Access, Header_Set_Acquisition_URL_Byte_Count'Access);
+      Add (Strings.Target_List, Header_Set_Target_List_Offset'Access, Header_Set_Target_List_Byte_Count'Access);
+      Add (Strings.Public_Key_URL, Header_Set_Public_Key_URL_Offset'Access, Header_Set_Public_Key_URL_Byte_Count'Access);
 
-   end Field_Storage_Compact_Bytes;
+   end Write_Field_Storage_Strings;
+
+
+--   function Field_Storage_Highest_Used_Byte_Offset (I: in out Instance) return Unsigned_16 is
+--
+--      Highest_Offset: Unsigned_16 := 0;
+--
+--      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U8_Getter) is
+--         End_Offset: Unsigned_16;
+--      begin
+--         if Size.all(I) > 0 then
+--            End_Offset := Offset(I) + Unsigned_16 (Size(I));
+--            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
+--         end if;
+--      end Update_For;
+--
+--      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U16_Getter) is
+--         End_Offset: Unsigned_16;
+--      begin
+--         if Size.all(I) > 0 then
+--            End_Offset := Offset(I) + Size(I);
+--            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
+--         end if;
+--      end Update_For;
+--
+--   begin
+--
+--      Update_For (I, Header_Get_Origin_Offset'Access, Header_Get_Origin_Byte_Count'Access);
+--      Update_For (I, Header_Get_Identifier_Offset'Access, Header_Get_Identifier_Byte_Count'Access);
+--      Update_For (I, Header_Get_Extension_Offset'Access, Header_Get_Extension_Byte_Count'Access);
+--      Update_For (I, Header_Get_Path_Prefix_Offset'Access, Header_Get_Path_Prefix_Byte_Count'Access);
+--      Update_For (I, Header_Get_Acquisition_URL_Offset'Access, Header_Get_Acquisition_URL_Byte_Count'Access);
+--      Update_For (I, Header_Get_Target_List_Offset'Access, Header_Get_Target_List_Byte_Count'Access);
+--      Update_For (I, Header_Get_Public_Key_URL_Offset'Access, Header_Get_Public_Key_URL_Byte_Count'Access);
+--
+--      return Highest_Offset;
+--
+--   end Field_Storage_Highest_Used_Byte_Offset;
+
+
+--   function Field_Storage_Used_Bytes (I: in out Instance) return Unsigned_16 is
+--      Sum: Unsigned_16 := 0;
+--   begin
+--      Sum := Unsigned_16 (I.Header_Get_Origin_Byte_Count);
+--      Sum := Sum + Unsigned_16 (I.Header_Get_Identifier_Byte_Count);
+--      Sum := Sum + Unsigned_16 (I.Header_Get_Extension_Byte_Count);
+--      Sum := Sum + Unsigned_16 (I.Header_Get_Path_Prefix_Byte_Count);
+--      Sum := Sum + I.Header_Get_Acquisition_URL_Byte_Count;
+--      Sum := Sum + I.Header_Get_Target_List_Byte_Count;
+--      Sum := Sum + I.Header_Get_Public_Key_URL_Byte_Count;
+--      return Sum;
+--   end Field_Storage_Used_Bytes;
+
+
+--   function Field_Storage_Free_Bytes (I: in out Instance) return Unsigned_16 is
+--   begin
+--      return I.Header_Get_Header_Byte_Count - I.Field_Storage_Used_Bytes;
+--   end Field_Storage_Free_Bytes;
+
 
    procedure Set_Origin (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
-      raise BRBON.Incomplete_Code;
+      Field_Strings.Origin := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
    end Set_Origin;
 
 
@@ -562,6 +590,127 @@ package body BRBON.Block is
          return I.Container.Get_String (Offset, Byte_Count);
       end if;
    end Get_Origin;
+
+
+   procedure Set_Identifier (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
+   begin
+      Field_Strings.Identifier := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
+   end Set_Identifier;
+
+
+   function Get_Identifier (I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Identifier_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Identifier_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Identifier;
+
+
+   procedure Set_Extension (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
+   begin
+      Field_Strings.Extension := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
+   end Set_Extension;
+
+
+   function Get_Extension (I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Extension_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Extension_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Extension;
+
+
+   procedure Set_Path_Prefix (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
+   begin
+      Field_Strings.Path_Prefix := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
+   end Set_Path_Prefix;
+
+
+   function Get_Path_Prefix (I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Path_Prefix_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Path_Prefix_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Path_Prefix;
+
+
+   procedure Set_Acquisition_URL (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
+   begin
+      Field_Strings.Acquisition_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
+   end Set_Acquisition_URL;
+
+
+   function Get_Acqquisition_URL(I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Acquisition_URL_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Acquisition_URL_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Acqquisition_URL;
+
+
+   procedure Set_Target_List (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
+   begin
+      Field_Strings.Target_List := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
+   end Set_Target_List;
+
+
+   function Get_Target_List (I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Target_List_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Target_List_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Target_List;
+
+
+   procedure Set_Public_Key_URL (I: in out Instance; Value: String) is
+      Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
+   begin
+      Field_Strings.Public_Key_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      Write_Field_Storage_Strings (I, Field_Strings);
+   end Set_Public_Key_URL;
+
+
+   function Get_Public_Key_URL(I: in out Instance) return String is
+      Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Public_Key_URL_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (I.Header_Get_Public_Key_URL_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return I.Container.Get_String (Offset, Byte_Count);
+      end if;
+   end Get_Public_Key_URL;
+
 
 
    -- ========================================================
