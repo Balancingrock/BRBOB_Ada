@@ -41,6 +41,7 @@ package body BRBON.Block.Static_Unprotected is
 
    begin
 
+
       -- Check if block type is supported
       --
       if Type_Of_Block /= Single_Item then raise BRBON.Illegal_Block_Type; end if;

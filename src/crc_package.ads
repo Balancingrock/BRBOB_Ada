@@ -12,22 +12,26 @@ package CRC_Package is
    subtype CRC_32 is Unsigned_32;
 
 
-   -- Returns the CRC-16 over the given string.
+   -- Returns the CRC-16/ARC over the given string.
+   -- Initial Value = 0, Polynomal = 16#A001#
    --
    function Calculate_CRC_16 (Str: String) return CRC_16;
 
 
    -- Returns the CRC-32 over the given string.
+   -- Initial value 16#FFFF_FFFF#
    --
    function Calculate_CRC_32 (Str: String) return CRC_32;
 
 
    -- Returns the CRC-16 starting at the pointer for the given length.
+   -- Initial Value = 0, Polynomal = 16#A001#
    --
    function Calculate_CRC_16 (Arr: Array_Of_Unsigned_8) return CRC_16;
 
 
    -- Returns the CRC-32 starting at the pointer for the given length.
+   -- Initial value 16#FFFF_FFFF#
    --
    function Calculate_CRC_32 (Arr: Array_Of_Unsigned_8) return CRC_32;
 

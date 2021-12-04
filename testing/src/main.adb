@@ -7,6 +7,7 @@ with Ada.Calendar; use Ada.Calendar;
 with Types; use Types;
 with Test_Driver; use Test_Driver;
 
+with CRC_Tests; use CRC_Tests;
 with Container_Tests; use Container_Tests;
 with Single_Item_Tests; use Single_Item_Tests;
 with Serializable_Tests; use Serializable_Tests;
@@ -27,8 +28,9 @@ procedure Main is
 
    -- Add new test tables to this table.
    --
-   Test_Drivers: Array_Of_Test_Drivers (1..3) :=
+   Test_Drivers: Array_Of_Test_Drivers :=
      (
+        (UStr ("CRC Tests:"), CRC_Tests.Tests'Access),
         (UStr ("Serializable tests:"), Serializable_Tests.Tests'Access),
         (UStr ("Container tests:"), Container_Tests.Tests'Access),
         (UStr ("Single Item tests:"), Single_Item_Tests.Tests'Access)

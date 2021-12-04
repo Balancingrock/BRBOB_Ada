@@ -30,7 +30,7 @@ package body CRC_Package is
    -- CRC-32
    -- ======================
 
-   Crc_32_Table: Array (Integer range 0..255) of Unsigned_32 :=
+   Crc_32_Table: Array (Unsigned_8) of Unsigned_32 :=
      (
       16#00000000#, 16#77073096#, 16#ee0e612c#, 16#990951ba#, 16#076dc419#, 16#706af48f#, 16#e963a535#, 16#9e6495a3#,
       16#0edb8832#, 16#79dcb8a4#, 16#e0d5e91e#, 16#97d2d988#, 16#09b64c2b#, 16#7eb17cbd#, 16#e7b82d07#, 16#90bf1d91#,
@@ -70,7 +70,7 @@ package body CRC_Package is
       Byte: Unsigned_8;
    begin
       while Serializable.Copy_Next_Byte (Source, Byte) loop
-         A := Crc_32_Table (Integer ((A and 16#FF#) xor Unsigned_32 (Byte))) xor (Shift_Right (A, 8));
+         A := Crc_32_Table (Unsigned_8 (A and 16#FF#) xor Byte) xor (Shift_Right (A, 8));
       end loop;
       return A xor 16#FFFF_FFFF#;
    end Calculate_CRC_32;

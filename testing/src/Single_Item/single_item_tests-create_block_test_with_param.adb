@@ -33,13 +33,13 @@ function Create_Block_Test_With_Param (Count: in out Integer) return Test_Result
       -- Offset 16#06
       16#00#, 16#00#,
 
-      -- Block Byte Count, minimum length => 96 bytes (16#60#)
+      -- Block Byte Count, minimum length => 160 bytes (16#A0#)
       -- Offset 16#08
-      16#60#, 16#00#, 16#00#, 16#00#,
+      16#A0#, 16#00#, 16#00#, 16#00#,
 
-      -- Block header byte count, 10 * 8 = 80 bytes (16#50#)
+      -- Block header byte count, 17 * 8 = 136 bytes (16#88#)
       -- Offset 16#0C
-      16#50#, 16#00#,
+      16#88#, 16#00#,
 
       -- Encrypted header byte count, unused => 0
       -- Offset 16#0E
@@ -47,105 +47,113 @@ function Create_Block_Test_With_Param (Count: in out Integer) return Test_Result
 
       -- Block Origin CRC16, unused => 0
       -- Offset 16#10
-      16#00#, 16#00#,
+      16#79#, 16#7E#,
 
       -- Block Identifier CRC16, unused => 0
       -- Offset 16#12
-      16#00#, 16#00#,
+      16#A9#, 16#7E#,
 
       -- Block Extension CRC16, unused => 0
       -- Offset 16#14
-      16#00#, 16#00#,
+      16#62#, 16#3D#,
 
       -- Block Path Prefix CRC16, unused => 0
       -- Offset 16#16
-      16#00#, 16#00#,
+      16#BF#, 16#60#,
 
       -- Block Origin byte count, unused => 0
       -- Offset 16#18
-      16#00#,
+      16#09#,
 
       -- Block identifier byte count, unused => 0
       -- Offset 16#19
-      16#00#,
+      16#08#,
 
       -- Block extension byte count, unused => 0
       -- Offset 16#1A
-      16#00#,
+      16#03#,
 
       -- Block path prefix byte count, unused => 0
       -- Offset 16#1B
-      16#00#,
+      16#0A#,
 
       -- Block Origin offset, unused => 0
       -- Offset 16#1C
-      16#00#, 16#00#,
+      16#48#, 16#00#,
 
       -- Block identifier offset, unused => 0
       -- Offset 16#1E
-      16#00#, 16#00#,
+      16#51#, 16#00#,
 
       -- Block extension offset, unused => 0
       -- Offset 16#20
-      16#00#, 16#00#,
+      16#59#, 16#00#,
 
       -- Block path prefix offset, unused => 0
       -- Offset 16#22
-      16#00#, 16#00#,
+      16#5C#, 16#00#,
 
       -- Block acquisition url byte count, unused => 0
       -- Offset 16#24
-      16#00#, 16#00#,
+      16#09#, 16#00#,
 
       -- Block acquisition url offset, unused => 0
       -- Offset 16#26
-      16#00#, 16#00#,
+      16#66#, 16#00#,
 
       -- Block Target List Byte Offset, unused => 0
       -- Offset 16#028
-      16#00#, 16#00#,
+      16#06#, 16#00#,
 
       -- Block Target List Offset, unused => 0
       -- Offset 16#02A
-      16#00#, 16#00#,
+      16#6F#, 16#00#,
 
       -- Block public key url byte count, unused => 0
       -- Offset 16#2C
-      16#00#, 16#00#,
+      16#04#, 16#00#,
 
       -- Block public key url offset, unused => 0
       -- Offset 16#2E
-      16#00#, 16#00#,
+      16#75#, 16#00#,
 
       -- Block Creation Time Stamp
       -- Offset 16#30
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#21#, 16#43#, 16#65#, 16#87#,  16#78#, 16#56#, 16#34#, 16#12#,
 
       -- Block Modification Time Stamp
       -- Offset 16#38
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#21#, 16#43#, 16#65#, 16#87#,  16#78#, 16#56#, 16#34#, 16#12#,
 
       -- Block Expiry Time Stamp
       -- Offset 16#40
-      16#FF#, 16#FF#, 16#FF#, 16#FF#,  16#FF#, 16#FF#, 16#FF#, 16#7F#,
+      16#88#, 16#99#, 16#AA#, 16#BB#,  16#CC#, 16#DD#, 16#EE#, 16#FF#,
 
       -- Block Type dependent header (not used)
 
-      -- Block Header Field Storage (not used)
+      -- Block Header Field Storage (56 bytes)
+      -- Offset 16#48
+      16#6C#, 16#6F#, 16#63#, 16#61#,  16#6C#, 16#68#, 16#6F#, 16#73#,
+      16#74#, 16#54#, 16#65#, 16#73#,  16#74#, 16#66#, 16#69#, 16#6C#,
+      16#65#, 16#74#, 16#78#, 16#74#,  16#4F#, 16#70#, 16#65#, 16#6E#,
+      16#41#, 16#63#, 16#63#, 16#65#,  16#73#, 16#73#, 16#6C#, 16#6F#,
+      16#63#, 16#61#, 16#6C#, 16#68#,  16#6F#, 16#73#, 16#74#, 16#46#,
+      16#6F#, 16#72#, 16#41#, 16#6C#,  16#6C#, 16#4E#, 16#6F#, 16#6E#,
+      16#65#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
 
       -- Reserved
 
-      -- Offset 16#48
+      -- Offset 16#80
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#,
 
       -- Block Header CRC16
-      -- Offset 16#4E
-      16#00#, 16#00#,
+      -- Offset 16#86
+      16#FF#, 16#5E#,
 
-      -- Item storage (8 bytes)
-      -- Offset 16#50
+      -- Item storage (16 bytes)
+      -- Offset 16#88
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
-
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
 
       -- Block Footer for Block Type 1
       -- Reserved
@@ -256,11 +264,11 @@ function Create_Block_Test_With_Param (Count: in out Integer) return Test_Result
 
       -- Block Creation Time Stamp
       -- Offset 16#30
-      true, true, true, true,  true, true, true, true,
+      false, false, false, false,  false, false, false, false,
 
       -- Block Modification Time Stamp
       -- Offset 16#38
-      true, true, true, true,  true, true, true, true,
+      false, false, false, false,  false, false, false, false,
 
       -- Block Expiry Time Stamp
       -- Offset 16#40
@@ -268,21 +276,29 @@ function Create_Block_Test_With_Param (Count: in out Integer) return Test_Result
 
       -- Block Type dependent header (not used)
 
-      -- Block Header Field Storage (not used)
+      -- Block Header Field Storage (56 bytes)
+      -- Offset 16#48
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
 
       -- Reserved
 
-      -- Offset 16#48
+      -- Offset 16#80
       false, false, false, false,  false, false,
 
       -- Block Header CRC16
-      -- Offset 16#4E
-      true, true,
+      -- Offset 16#86
+      false, false,
 
-      -- Item storage (8 bytes)
-      -- Offset 16#50
+      -- Item storage (16 bytes)
+      -- Offset 16#88
       false, false, false, false,  false, false, false, false,
-
+      false, false, false, false,  false, false, false, false,
 
       -- Block Footer for Block Type 1
       -- Reserved
