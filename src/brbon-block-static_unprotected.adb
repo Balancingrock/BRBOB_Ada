@@ -7,6 +7,7 @@ with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
 with BRBON.Footer;
 with BRBON.Header;
+with Ada.Exceptions;
 
 
 package body BRBON.Block.Static_Unprotected is
@@ -150,8 +151,10 @@ package body BRBON.Block.Static_Unprotected is
    end Free_Area_Byte_Count;
 
    procedure Header_Update_Header_Crc16 (I: in out Instance) is
+      HC: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count);
+      Crc: Unsigned_16 := I.Container.Get_CRC_16_Over_Range (Start => 0, Count => HC);
    begin
-      raise BRBON.Incomplete_Code;
+      I.Header_Set_Header_Crc16 (Crc);
    end Header_Update_Header_Crc16;
 
 

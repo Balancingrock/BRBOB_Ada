@@ -495,6 +495,7 @@ package body BRBON.Block is
             Set_CRC_16 (I, CRC_Package.Calculate_CRC_16 (Str));
          else
             Set_CRC_16 (I, 0);
+            Set_Offset (I, 0);
          end if;
       end Add;
 
@@ -517,6 +518,8 @@ package body BRBON.Block is
                Offset := Offset + Unsigned_32 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
+         else
+            Set_Offset (I, 0);
          end if;
       end Add;
 

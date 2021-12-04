@@ -1,5 +1,6 @@
 with Portal_Package; use Portal_Package;
 with BRBON.Utils;
+with Ada.Exceptions;
 
 package body Item_Manager is
 
@@ -103,7 +104,7 @@ package body Item_Manager is
    --
    procedure Increase_Storage_Byte_Count (Mgr: in out Item_Manager; Value: Unsigned_32) is
    begin
-      raise BRBON.Incomplete_Code;
+      Ada.Exceptions.Raise_Exception (BRBON.Implementation'Identity, "Item_Manager.Increase_Storage_Byte_Count not yet implemented");
    end Increase_Storage_Byte_Count;
 
 
@@ -112,7 +113,7 @@ package body Item_Manager is
    --
    function Unused_Storage (Mgr: in Item_Manager) return Unsigned_32 is
    begin
-      raise BRBON.Incomplete_Code;
+      Ada.Exceptions.Raise_Exception (BRBON.Implementation'Identity, "Item_Manager.Increase_Storage_Byte_Count not yet implemented");
       return 0;
    end Unused_Storage;
 

@@ -309,6 +309,7 @@ package BRBON.Container is
    function Get_CRC_16_Over_Range (S: Instance'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16;
    pragma Inline (Get_CRC_16_Over_Range);
 
+
 private
 
       type Instance is tagged

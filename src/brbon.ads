@@ -136,7 +136,7 @@ package BRBON is
 
    -- Raised when an attempt is made to execute an incompletely coded routine
    --
-   Incomplete_Code: exception;
+   Implementation: exception;
 
    -- This exception is raised when a bit pattern in the raw data could not be mapped to a corresponding enum.
    --
