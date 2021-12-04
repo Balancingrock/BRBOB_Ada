@@ -519,6 +519,7 @@ package body BRBON.Block is
             end if;
          end if;
       end Add;
+
    begin
 
       Add (Strings.Origin, Header_Set_Origin_Offset'Access, Header_Set_Origin_Byte_Count'Access, Header_Set_Origin_Crc16'Access);
