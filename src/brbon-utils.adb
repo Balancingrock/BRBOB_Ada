@@ -91,9 +91,12 @@ package body BRBON.Utils is
       procedure Put_Hex_Line (Offset: in out Unsigned_32) is
 
          Close_Cursor: Boolean := False;
-                  
+         Again: Unsigned_32 := Offset;
+         
       begin
 
+         -- Line of hex
+         
          for I in Unsigned_32 range 0 .. 15 loop
 
             exit when Offset > Source'Last;
@@ -126,9 +129,30 @@ package body BRBON.Utils is
          end loop;
 
          if Close_Cursor then
-            Put (Cursor_End);
+            Put (Cursor_End & " ");
+         else
+            Put ("  ");
          end if;
 
+         
+         for I in Unsigned_32 range 0 .. 15 loop
+            
+            exit when Again > Source'Last;
+            
+            if Source (Again) < 16#20# or else Source (Again) > 16#7F# then
+               Put (" .");
+            else
+               Put (" " & Character'Val (Integer (Source (Again))));
+            end if;
+            
+            if I = 7 then
+               Put (" ");
+            end if;
+            
+            Again := Again + 1;
+            
+         end loop;
+         
       end Put_Hex_Line;
 
    begin
