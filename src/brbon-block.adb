@@ -593,12 +593,29 @@ package body BRBON.Block is
 --      return I.Header_Get_Header_Byte_Count - I.Field_Storage_Used_Bytes;
 --   end Field_Storage_Free_Bytes;
 
+   function Field_Storage_Strings_Byte_Count (F: Field_Storage_Strings) return Unsigned_16 is
+      Sum: Unsigned_16 := 0;
+   begin
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Origin));
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Identifier));
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Extension));
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Path_Prefix));
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Acquisition_URL));
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Target_List));
+      Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Public_Key_URL));
+      return Sum;
+   end Field_Storage_Strings_Byte_Count;
+
 
    procedure Set_Origin (I: in out Instance; Value: String) is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Origin := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new origin (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+      end if;
    end Set_Origin;
 
 
@@ -618,7 +635,11 @@ package body BRBON.Block is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Identifier := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new identifier (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+      end if;
    end Set_Identifier;
 
 
@@ -638,7 +659,11 @@ package body BRBON.Block is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Extension := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new extension (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+         end if;
    end Set_Extension;
 
 
@@ -658,7 +683,11 @@ package body BRBON.Block is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Path_Prefix := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new path prefix (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+         end if;
    end Set_Path_Prefix;
 
 
@@ -678,7 +707,11 @@ package body BRBON.Block is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Acquisition_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new acquisition URL (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+      end if;
    end Set_Acquisition_URL;
 
 
@@ -698,7 +731,11 @@ package body BRBON.Block is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Target_List := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new target list (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+      end if;
    end Set_Target_List;
 
 
@@ -718,7 +755,11 @@ package body BRBON.Block is
       Field_Strings: Field_Storage_Strings := Read_Field_Storage_Strings (I);
    begin
       Field_Strings.Public_Key_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      Write_Field_Storage_Strings (I, Field_Strings);
+      if Field_Storage_Strings_Byte_Count (Field_Strings) > I.Header_Get_Header_Byte_Count then
+         Ada.Exceptions.Raise_Exception (BRBON.Storage_Error'Identity, "Not enough space available in block header field storage for new public key URL (" & Value & ")");
+      else
+         Write_Field_Storage_Strings (I, Field_Strings);
+      end if;
    end Set_Public_Key_URL;
 
 
