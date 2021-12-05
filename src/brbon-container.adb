@@ -37,6 +37,7 @@
 with Ada.Unchecked_Conversion;
 with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 with Ada.Text_IO; use Ada.Text_IO;
+
 with GNAT.Byte_Swapping;
 
 with BRBON.Utils;
@@ -44,6 +45,7 @@ with CRC_Package;
 
 
 package body BRBON.Container is
+
 
    -- Swap functions
    --
@@ -63,8 +65,8 @@ package body BRBON.Container is
    begin
       -- if Byte_Count < (Minimum_Item_Byte_Count (BR_Bool) + Minimum_Block_Byte_Count (Single_Item_File)) then raise Buffer_Error with "Buffer too small"; end if;
       S.Data := Buffer_Ptr;
-      S.Swap := Using_Endianness /= Machine_Endianness;
-      if Zero_Storage then S.Data.all := (others => 0); end if;
+      S.Swap := Using_Endianness /= Configure.Machine_Endianness;
+      if Configure.Zero_Storage then S.Data.all := (others => 0); end if;
       return S;
    end Factory;
 
@@ -85,7 +87,7 @@ package body BRBON.Container is
       end if;
       Array_Of_Unsigned_8'Read (In_Stream, Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
       S.Data := Buffer_Ptr;
-      S.Swap := Using_Endianness /= Machine_Endianness;
+      S.Swap := Using_Endianness /= Configure.Machine_Endianness;
       return S;
    end Factory;
 
@@ -110,17 +112,17 @@ package body BRBON.Container is
 
    function Uses_Endianness (S: in out Instance) return Endianness is
    begin
-      if Machine_Endianness = Big then
+      if Configure.Machine_Endianness = Types.Big then
          if S.Swap then
-            return Little;
+            return Types.Little;
          else
-            return Big;
+            return Types.Big;
          end if;
       else
          if S.Swap then
-            return Big;
+            return Types.Big;
          else
-            return Little;
+            return Types.Little;
          end if;
       end if;
    end Uses_Endianness;
@@ -148,10 +150,10 @@ package body BRBON.Container is
 
    procedure Set_Data_Endianness (S: in out Instance'Class; Value: Endianness) is
    begin
-      S.Swap := Value /= Machine_Endianness;
+      S.Swap := Value /= Configure.Machine_Endianness;
    end Set_Data_Endianness;
 
-   procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Type) is
+   procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Type) is
    begin
       S.Data (Offset) := To_Unsigned_8 (Value);
    end Set_Item_Type;
@@ -160,35 +162,35 @@ package body BRBON.Container is
       T: Unsigned_8 := S.Data (Offset);
    begin
       if T = 0 then return False; end if;
-      return T <= To_Unsigned_8 (BR_Item_Type'Last);
+      return T <= To_Unsigned_8 (Item_Type'Last);
    end Valid_Item_Type;
 
-   function Get_Item_Type (S: Instance'Class; Offset: Unsigned_32) return BR_Item_Type is
+   function Get_Item_Type (S: Instance'Class; Offset: Unsigned_32) return Item_Type is
    begin
       if not S.Valid_Item_Type (Offset) then raise BRBON.Illegal_Item_Type; end if;
-      return To_BR_Item_Type (S.Data (Offset));
+      return To_Item_Type (S.Data (Offset));
    end Get_Item_Type;
 
 
-   procedure Set_Item_Options (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Options) is
+   procedure Set_Item_Options (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Options) is
    begin
       S.Data (Offset) := To_Unsigned_8 (Value);
    end Set_Item_Options;
 
-   function Get_Item_Options (S: Instance'Class; Offset: Unsigned_32) return BR_Item_Options is
+   function Get_Item_Options (S: Instance'Class; Offset: Unsigned_32) return Item_Options is
    begin
-      return To_BR_Item_Options (S.Data (Offset));
+      return To_Item_Options (S.Data (Offset));
    end Get_Item_Options;
 
 
-   procedure Set_Item_Flags (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Flags) is
+   procedure Set_Item_Flags (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Flags) is
    begin
       S.Data (Offset) := To_Unsigned_8 (Value);
    end Set_Item_Flags;
 
-   function Get_Item_Flags (S: Instance'Class; Offset: Unsigned_32) return BR_Item_Flags is
+   function Get_Item_Flags (S: Instance'Class; Offset: Unsigned_32) return Item_Flags is
    begin
-      return To_BR_Item_Flags (S.Data (Offset));
+      return To_Item_Flags (S.Data (Offset));
    end Get_Item_Flags;
 
 

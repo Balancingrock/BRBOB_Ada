@@ -42,7 +42,7 @@ with Interfaces; use Interfaces;
 with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 
 with BRBON.Types; use BRBON.Types;
-with BRBON.Configure; use BRBON.Configure;
+with BRBON.Configure;
 
 
 -- @summary
@@ -121,7 +121,7 @@ package BRBON.Container is
 
    -- Write a BR_Item_Type to the byte at the given offset.
    --
-   procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Type);
+   procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Type);
    pragma Inline (Set_Item_Type);
 
    -- Return true if the byte at the given offset contains a valid BR-Item_Type coding.
@@ -131,27 +131,27 @@ package BRBON.Container is
 
    -- Return the BR_Item_Type from the given offset. Will raise BRBON.Illegal_Item_Type when the bit pattern does not represent a valid type.
    --
-   function Get_Item_Type (S: Instance'Class; Offset: Unsigned_32) return BR_Item_Type;
+   function Get_Item_Type (S: Instance'Class; Offset: Unsigned_32) return Item_Type;
    pragma Inline (Get_Item_Type);
 
    -- Write the item options to the byte at the given offset.
    --
-   procedure Set_Item_Options (S: in out Instance'Class; Offset: Unsigned_32; Value: BR_Item_Options);
+   procedure Set_Item_Options (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Options);
    pragma Inline (Set_Item_Options);
 
    -- Return the item options from the given offset.
 
-   function Get_Item_Options (S: Instance'Class; Offset: Unsigned_32) return BR_Item_Options;
+   function Get_Item_Options (S: Instance'Class; Offset: Unsigned_32) return Item_Options;
    pragma Inline (Get_Item_Options);
 
    -- Write the Item Flags to the byte at the given offset.
    --
-   procedure Set_Item_Flags (S:in out  Instance'Class; Offset: Unsigned_32; Value: BR_Item_Flags);
+   procedure Set_Item_Flags (S:in out  Instance'Class; Offset: Unsigned_32; Value: Item_Flags);
    pragma Inline (Set_Item_Flags);
 
    -- Return the item flags from the byte at the given offset.
    --
-   function Get_Item_Flags (S: Instance'Class; Offset: Unsigned_32) return BR_Item_Flags;
+   function Get_Item_Flags (S: Instance'Class; Offset: Unsigned_32) return Item_Flags;
    pragma Inline (Get_Item_Flags);
 
    -- Write a boolean value to the byte at the given offset.

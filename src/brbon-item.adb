@@ -1,80 +1,54 @@
+with Ada.Exceptions;
+
+
 package body BRBON.Item is
 
+   -- Item offsets
+   --
+   Type_Offset: constant Unsigned_32 := 0;
+   Options_Offset: constant Unsigned_32 := 1;
+   Flags_Offset: constant Unsigned_32 := 2;
+   Name_Field_Byte_Count_Offset: constant Unsigned_32 := 3;
+   Byte_Count_Offset: constant Unsigned_32 := 4;
+   Parent_Offset_Offset: constant Unsigned_32 := 8;
+   Small_Value_Offset: constant Unsigned_32 := 12;
+   Payload_Offset: constant Unsigned_32 := 16;
 
-   function Get_Type (I: in out Instance) return Item_Type is
+
+
+   -- Internal specifications
+
+   procedure Create_Null_Type (C: Container.Instance; L: Unsigned_32);
+
+
+   -- API
+
+   procedure Create_Item (Of_Type: Types.Item_Type; In_Container: Container.Instance; At_Location: Unsigned_32) is
+
+      T: Item_Type renames Of_Type;
+      C: Container.Instance renames In_Container;
+      L: Unsigned_32 renames At_Location;
+
    begin
-      return Null_Type;
-   end Get_Type;
 
-   procedure Set_Type (I: in out Instance; T: Item_Type) is
+      case T is
+         when Illegal =>
+            Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "");
+         when Null_Type =>
+            Create_Null_Type (C, L);
+         when others =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Not implemented yet");
+      end case;
+
+   end Create_Item;
+
+
+   -- Internal bodies
+
+   procedure Create_Null_Type (C: Container.Instance; L: Unsigned_32) is
    begin
-      null;
-   end Set_Type;
+      C.Set_Item_Type (L, To_Unsigned_8 (Null_Type));
 
-
-   function Get_Options (I: in out Instance) return Item_Options is
-   begin
-      return Item_Options (0);
-   end Get_Options;
-
-   procedure Set_Options (I: in out Instance; O: Item_Options) is
-   begin
-      null;
-   end Set_Options;
-
-
-   function Get_Flags (I: in out Instance) return Item_Flags is
-   begin
-      return Item_Flags (0);
-   end Get_Flags;
-
-   procedure Set_Flags (I: in out Instance; F: Item_Flags) is
-   begin
-      null;
-   end Set_Flags;
-
-
-   function Get_Name_Field_Byte_Count (I: in out Instance) return Unsigned_8 is
-   begin
-      return 0;
-   end Get_Name_Field_Byte_Count;
-
-   procedure Set_Name_Field_Byte_Count (I: in out Instance; Byte_Count: Unsigned_8) is
-   begin
-      null;
-   end Set_Name_Field_Byte_Count;
-
-
-   function Get_Byte_Count (I: in out Instance) return Unsigned_32 is
-   begin
-      return 0;
-   end Get_Byte_Count;
-
-   procedure Set_Byte_Count (I: in out Instance; Byte_Count: Unsigned_32) is
-   begin
-      null;
-   end Set_Byte_Count;
-
-
-   function Get_Parent_Offset (I: in out Instance) return Unsigned_32 is
-   begin
-      return 0;
-   end Get_Parent_Offset;
-
-   procedure Set_Parent_Offset (I: in out Instance; Offset: Unsigned_32) is
-   begin
-      null;
-   end Set_Parent_Offset;
-
-
-   function Get_Small_Value (I: in out Instance) return Unsigned_32 is
-   begin
-      return 0;
-   end Get_Small_Value;
-
-   procedure Set_Small_Value (I: in out Instance; Small_Value: Unsigned_32) is
-   begin
-      null;
-   end Set_Small_Value;
+   end Create_Null_Type;
 
 end BRBON.Item;

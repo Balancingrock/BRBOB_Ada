@@ -3,6 +3,7 @@ with Interfaces; use Interfaces;
 with Ada.Finalization;
 
 with BRBON.Types; use BRBON.Types;
+with BRBON.Item;
 with BRBON.Utils;
 with BRBON.Configure;
 with BRBON.Container; use BRBON.Container;
@@ -54,5 +55,6 @@ package BRBON.Block.Static_Unprotected is
 
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;
 
+   procedure Create_Root_Item (I: in out Instance; Of_Type: Item.Item_Type; With_Byte_Count: Unsigned_32);
 
 end BRBON.Block.Static_Unprotected;

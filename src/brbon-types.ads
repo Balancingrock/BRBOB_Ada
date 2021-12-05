@@ -7,6 +7,7 @@ with System;
 
 package BRBON.Types is
 
+
    -- The endianness to be used to store data.
    --
    type Endianness is (Big, Little);
@@ -57,8 +58,9 @@ package BRBON.Types is
    function To_Unsigned_64 is new Ada.Unchecked_Conversion (Integer_64, Unsigned_64);
 
 
-   -- The types of blocks available
-   --
+   -- ==========================================================================
+   -- For blocks
+
    type Block_Type is
      (
       Illegal,
@@ -75,8 +77,6 @@ package BRBON.Types is
    function To_Block_Type is new Ada.Unchecked_Conversion (Unsigned_16, Block_Type);
 
 
-   -- The options for a Block
-   --
    type Block_Options is (No_Block_Options, Reacquisition_Possible);
    for Block_Options'Size use 16;
    for Block_Options use
@@ -88,127 +88,114 @@ package BRBON.Types is
    function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Options, Unsigned_16);
    function To_Block_Options is new Ada.Unchecked_Conversion (Unsigned_16, Block_Options);
 
-   -- All available storage types.
-   --
-   type BR_Item_Type is
+
+   -- ==========================================================================
+   -- For items
+
+   type Item_Type is
      (
-      BR_Null,         -- A null has no associated value, it simply exists.
-      BR_Bool,         -- Corresponding to Standard.Boolean.
-      BR_Int8,         -- An integer with a size of 8 bits (Byte, char).
-      BR_Int16,        -- An integer with a size of 16 bits.
-      BR_Int32,        -- An integer with a size of 32 bits.
-      BR_Int64,        -- An integer with a size of 64 bits.
-      BR_UInt8,        -- An integer with a size of 8 bits and range 0 .. 2**8-1.
-      BR_UInt16,       -- An integer with a size of 16 bits and range 0 .. 2**16-1.
-      BR_UInt32,       -- An integer with a size of 32 bits and range 0 .. 2**32-1.
-      BR_UInt64,       -- An integer with a size of 64 bits and range of 0 .. 2**64-1.
-      BR_Float32,      -- An IEEE 754 32 bit float. Accurate to about 6 decimals, range approx 1.1e-38 to 3.4e38.
-      BR_Float64,      -- An IEEE 754 64 bit float. Accurate to about 15 digits, range aprox 2.2e-308 to 1.7e+308.
-      BR_String,       -- Corresponds to Standard.String.
-      BR_CRC_String,   -- A string with an associated CRC-16 code for fast searches.
-      BR_Binary,       -- A series of bytes, corresponds to array (1..Count) of Br_UInt8.
-      BR_CRC_Binary,   -- A binary with associated CRC-16 code fro fast searches.
-      BR_Array,        -- An array of Item_Types.
-      BR_Dictionary,   -- A dictionary associates a key (string) with a value (Brbon.Item_Type).
-      BR_Sequence,     -- A sequence of Brbon.Item_Type's.
-      BR_Table,        -- A 2 dimension array of Brbon.Item_Type's addressed by column (string or index) and row (index).
-      BR_UUID,         -- A UUID, an array of 16 Br_UInt8 values returned as array or string.
-      BR_Color,        -- A RGBA (Red Green Blue Alpha) for color specifications.
-      BR_Font          -- A font specification (family name and font name).
+      Illegal,
+      Null_Type,
+      Bool_Type,
+      Int_8_Type, Int_16_Type, Int_32_Type, Int_64_Type,
+      UInt_8_Type, UInt_16_Type, UInt_32_Type, UInt_64_Type,
+      Float_32_Type, Float_64_Type,
+      String_Type, Crc_String_Type,
+      Binary_Type, Crc_Binary_Type,
+      Array_Type, Dictionary_Type, Sequence_Type, Table_Type,
+      UUID_Type,
+      RGBA_Type,
+      Font_Type
      );
-   for BR_Item_Type'Size use 8;
-   for BR_Item_Type use (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
-   function To_BR_Item_Type is new Ada.Unchecked_Conversion (Unsigned_8, BR_Item_Type);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Item_Type, Unsigned_8);
+   for Item_Type'Size use 8;
 
-   -- Minimum items sizes for items without a name, including the value length if the value length is fixed and assuming empty when the value size is variable.
-   -- Always a multiple of 8.
-   --
-   Minimum_Item_Byte_Count: Array (BR_Item_Type'Range) of Unsigned_32 :=
+   for Item_Type use
      (
-      BR_Null => 32,
-      BR_Bool => 32,
-      BR_Int8 => 32,
-      BR_Int16 => 32,
-      BR_Int32 => 32,
-      BR_Int64 => 32 + 8,
-      BR_UInt8 => 32,
-      BR_UInt16 => 32,
-      BR_UInt32 => 32,
-      BR_UInt64 => 32 + 8,
-      BR_Float32 => 32,
-      BR_Float64 => 32 + 8,
-      BR_String => 32 + 8,
-      BR_CRC_String => 32 + 8,
-      BR_Binary => 32 + 4,
-      BR_CRC_Binary => 32 + 8,
-      BR_Array => 32 + 16,
-      BR_Sequence => 32 + 8,
-      BR_Dictionary => 32 + 8,
-      BR_Table => 32 + 16,
-      BR_UUID => 32 + 16,
-      BR_Color => 32,
-      BR_Font => 32 + 8);
+      Illegal         => 0,
+      Null_Type       => 16#01#,
+      Bool_Type       => 16#02#,
+      Int_8_Type      => 16#03#,
+      Int_16_Type     => 16#04#,
+      Int_32_Type     => 16#05#,
+      Int_64_Type     => 16#06#,
+      UInt_8_Type     => 16#07#,
+      UInt_16_Type    => 16#08#,
+      UInt_32_Type    => 16#09#,
+      UInt_64_Type    => 16#0A#,
+      Float_32_Type   => 16#0B#,
+      Float_64_Type   => 16#0C#,
+      String_Type     => 16#0D#,
+      Crc_String_Type => 16#0E#,
+      Binary_Type     => 16#0F#,
+      Crc_Binary_Type => 16#10#,
+      Array_Type      => 16#11#,
+      Dictionary_Type => 16#12#,
+      Sequence_Type   => 16#13#,
+      Table_Type      => 16#14#,
+      UUID_Type       => 16#15#,
+      RGBA_Type       => 16#16#,
+      Font_Type       => 16#17#
+     );
 
-   -- A packed array of 8 bits, used for Options and Flags.
-   --
-   type Bits_8 is array (Integer range 0..7) of Boolean with Pack;
-   --
-   function To_Bits_8 is new Ada.Unchecked_Conversion (Unsigned_8, Bits_8);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Bits_8, Unsigned_8);
+   function To_Item_Type is new Ada.Unchecked_Conversion (Unsigned_8, Item_Type);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Type, Unsigned_8);
 
 
-   -- Access to bytes in the byte store
-   --
-   type Unsigned_8_Ptr is access all Unsigned_8;
-
-
-   type String_Ptr is access all String;
-
-
-   -- Option associated with stored items (currently unused)
-   --
-   type BR_Item_Options is new Bits_8;
-   function To_BR_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, BR_Item_Options);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Item_Options, Unsigned_8);
-   No_Item_Options : BR_Item_Options := (False, False, False, False, False, False, False, False);
-
-
-   -- Item flags for transitionary events to be recorded in an item (currently unused)
-   --
-   type BR_Item_Flags is new Bits_8;
-   function To_BR_Item_Flags is new Ada.Unchecked_Conversion (Unsigned_8, BR_Item_Flags);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (BR_Item_Flags, Unsigned_8);
-   No_Flags : BR_Item_Flags := (False, False, False, False, False, False, False, False);
-
-
-   -- Item Name
-   --
-   subtype BR_Item_Name_Index is Integer range 1..245;
-   package BR_Item_Name_Bounded_String is new Ada.Strings.Bounded.Generic_Bounded_Length (BR_Item_Name_Index'Last);
-   subtype BR_Item_Name is BR_Item_Name_Bounded_String.Bounded_String;
-   --
-   No_Name: constant BR_Item_Name := BR_Item_Name_Bounded_String.To_Bounded_String("");
-
-
-   -- Table column descriptor
-   --
-   type Table_Column_Specification is
+   type Item_Flags is
       record
-         Column_Name: BR_Item_Name;
-         Column_Type: BR_Item_Type;
-         Field_Byte_Count: Unsigned_32;
-         Name_Offset: Unsigned_32 := 0;
-         Field_Offset: Unsigned_32 := 0;
+         Flag_0: Boolean;
+         Flag_1: Boolean;
+         Flag_2: Boolean;
+         Flag_3: Boolean;
+         Flag_4: Boolean;
+         Flag_5: Boolean;
+         Flag_6: Boolean;
+         Flag_7: Boolean;
       end record;
-   --
-   type Array_Of_Table_Column_Specification is array (Integer range <>) of Table_Column_Specification;
+
+   for Item_Flags use
+      record
+         Flag_0 at 0 range 0..0;
+         Flag_1 at 0 range 1..1;
+         Flag_2 at 0 range 2..2;
+         Flag_3 at 0 range 3..3;
+         Flag_4 at 0 range 4..4;
+         Flag_5 at 0 range 5..5;
+         Flag_6 at 0 range 6..6;
+         Flag_7 at 0 range 7..7;
+      end record;
+
+   function To_Item_Flags is new Ada.Unchecked_Conversion (Unsigned_8, Item_Flags);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Flags, Unsigned_8);
 
 
-   -- Raised when a method is not implemented yet.
-   --
-   Not_Implemented_Yet: exception;
+   type Item_Options is
+      record
+         Option_0: Boolean;
+         Option_1: Boolean;
+         Option_2: Boolean;
+         Option_3: Boolean;
+         Option_4: Boolean;
+         Option_5: Boolean;
+         Option_6: Boolean;
+         Option_7: Boolean;
+      end record;
+
+   for Item_Options use
+      record
+         Option_0 at 0 range 0..0;
+         Option_1 at 0 range 1..1;
+         Option_2 at 0 range 2..2;
+         Option_3 at 0 range 3..3;
+         Option_4 at 0 range 4..4;
+         Option_5 at 0 range 5..5;
+         Option_6 at 0 range 6..6;
+         Option_7 at 0 range 7..7;
+      end record;
+
+   function To_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, Item_Options);
+   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Options, Unsigned_8);
 
 
 end BRBON.Types;

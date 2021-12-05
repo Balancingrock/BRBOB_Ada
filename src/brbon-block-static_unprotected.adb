@@ -44,7 +44,9 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Check if block type is supported
       --
-      if Type_Of_Block /= Single_Item then raise BRBON.Illegal_Block_Type; end if;
+      if Type_Of_Block /= Single_Item then
+         Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Block type not (yet) supported (" & Type_Of_Block'Image & ")");
+      end if;
 
 
       -- Calculate the size of the storage field in de header
@@ -147,6 +149,64 @@ package body BRBON.Block.Static_Unprotected is
    end Free_Area_Byte_Count;
 
 
+   procedure Create_Root_Item (I: in out Instance; Of_Type: Item.Item_Type; With_Byte_Count: Unsigned_32) is
+   begin
 
+      if With_Byte_Count > I.Free_Area_Byte_Count then
+         Ada.Exceptions.Raise_Exception (Storage_Error'Identity, "Block storage insufficient for requested byte count");
+      end if;
+
+      case Of_Type is
+         when Item.Illegal =>
+            Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create top level item 'illegal'");
+         when Item.Null_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Null_Type");
+         when Item.Bool_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Bool_Type");
+         when Item.Int_8_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_8_Type");
+         when Item.Int_16_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_16_Type");
+         when Item.Int_32_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_32_Type");
+         when Item.Int_64_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_64_Type");
+         when Item.UInt_8_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_8_Type");
+         when Item.UInt_16_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_16_Type");
+         when Item.UInt_32_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_32_Type");
+         when Item.UInt_64_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_64_Type");
+         when Item.Float_32_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Float_32_Type");
+         when Item.Float_64_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Float_64_Type");
+         when Item.String_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for String_Type");
+         when Item.Crc_String_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Crc_String_Type");
+         when Item.Binary_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Binary_Type");
+         when Item.Crc_Binary_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Crc_Binary_Type");
+         when Item.Array_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Array_Type");
+         when Item.Dictionary_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Dictionary_Type");
+         when Item.Sequence_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Sequence_Type");
+         when Item.Table_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Table_Type");
+         when Item.UUID_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UUID_Type");
+         when Item.RGBA_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for RGBA_Type");
+         when Item.Font_Type =>
+            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Font_Type");
+      end case;
+
+   end Create_Root_Item;
 
 end BRBON.Block.Static_Unprotected;
