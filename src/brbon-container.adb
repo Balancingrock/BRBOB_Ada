@@ -420,4 +420,10 @@ package body BRBON.Container is
       return CRC_Package.Calculate_CRC_16 (Arr => S.Data (Start .. (Start + Count - 1)));
    end Get_CRC_16_Over_Range;
 
+
+   function Get_CRC_32_Over_Range (S: Instance'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32 is
+   begin
+      return CRC_Package.Calculate_CRC_32 (Arr => S.Data (Start .. (Start + Count - 1)));
+   end Get_CRC_32_Over_Range;
+
 end BRBON.Container;

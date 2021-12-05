@@ -20,9 +20,9 @@ package BRBON.Block is
    type Instance is abstract new Ada.Finalization.Controlled with private;
       
    
-   -- The total number of bytes that will be used by the block if it is saved or transferred.
+   -- The total number of bytes that will be used by the block if it is saved or transferred now.
    --
-   function Byte_Count (I: in out Instance) return Unsigned_32 is abstract;
+   function Byte_Count (I: in out Instance) return Unsigned_32;
 
    
    -- The byte count of the area that can be used for item storage.
@@ -394,11 +394,6 @@ package BRBON.Block is
    function Header_Get_Header_Crc16 (I: in out Instance) return Unsigned_16;
    pragma inline (Header_Get_Header_Crc16);
 
-   -- Update the block header crc value in accordance with the block header contents.
-   -- Note: All values in the header must have been set to their final values before calling this operation.
-   --
-   procedure Header_Update_Header_Crc16 (I: in out Instance) is abstract;
-
    --
    -- Header access ends
    -- ==========================================================================
@@ -408,6 +403,17 @@ package BRBON.Block is
    -- API
    -- ==========================================================================
       
+   -- Update the header crc value.
+   -- Note: Updates to the header after calling this operation will invalidate the CRC.
+   --
+   procedure Update_Header_CRC (I: in out Instance);
+   
+   
+   -- Update the block CRC.
+   -- Note: Any updates to the block after calling this operation will invalidate the CRC.
+   --
+   procedure Update_Block_CRC (I: in out Instance);
+   
    
    -- Set the origin of the block to the specified string.
    -- Will raise the Memory_Error if the string cannot be accomodated.
@@ -509,6 +515,11 @@ package BRBON.Block is
    -- If no public key URL is present, an empty string will be returned.
    --
    function Get_Public_Key_URL(I: in out Instance) return String;
+   
+   
+   -- Returns the number of free bytes in the field storage.
+   --
+   function Field_Storage_Free_Bytes (I: in out Instance) return Unsigned_16;
    
    
    -- =================================================================

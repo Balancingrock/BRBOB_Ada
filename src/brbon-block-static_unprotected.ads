@@ -19,11 +19,6 @@ package BRBON.Block.Static_Unprotected is
    type Instance is new Block.Instance with null record;
 
 
-   -- Access type for the static unprotected store.
-   --
-   --type Instance_Ptr is access all Instance;
-
-
    -- Creates a new instance with a header of the requested type.
    -- @param Block_Type The type of the block to be created.
    --   Exception Illegal_Buffer_Type is raised if this is not a Single_Item_File (The only type supported at this time)
@@ -55,15 +50,6 @@ package BRBON.Block.Static_Unprotected is
        Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
        Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
       ) return Instance;
-
-
-   -- The byte count of the buffer, including overhead.
-   -- Use the operation "Free_Byte_Count" to determine the remaining usable space.
-   --
-   overriding function Byte_Count (I: in out Instance) return Unsigned_32;
-
-
-   overriding procedure Header_Update_Header_Crc16 (I: in out Instance);
 
 
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;

@@ -11,8 +11,9 @@ with BRBON.Container;
 
 package body BRBON.Block is
 
+
    -- ==========================================================================
-   -- == BRBON.Header.Header_Interface implementation                         ==
+   -- Header Interface
    -- ==========================================================================
 
    procedure Header_Set_Synchronization_Byte_1 (I: in out Instance) is
@@ -444,14 +445,6 @@ package body BRBON.Block is
    end Header_Get_Header_Crc16;
 
 
-   procedure Header_Update_Block_Header_Crc16 (I: in out Instance) is
-      Byte_Count: constant Unsigned_16 := Unsigned_16 (Header_Get_Byte_Count (I));
-      Crc16: constant Unsigned_16 := I.Container.Get_CRC_16_Over_Range (Start => 0, Count => Unsigned_32 (Byte_Count));
-   begin
-      Header_Set_Header_Crc16 (I, Value => Crc16);
-   end Header_Update_Block_Header_Crc16;
-
-
    function Read_Field_Storage_Strings (I: in out Instance) return Field_Storage_Strings is
    begin
       return
@@ -537,62 +530,6 @@ package body BRBON.Block is
    end Write_Field_Storage_Strings;
 
 
---   function Field_Storage_Highest_Used_Byte_Offset (I: in out Instance) return Unsigned_16 is
---
---      Highest_Offset: Unsigned_16 := 0;
---
---      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U8_Getter) is
---         End_Offset: Unsigned_16;
---      begin
---         if Size.all(I) > 0 then
---            End_Offset := Offset(I) + Unsigned_16 (Size(I));
---            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
---         end if;
---      end Update_For;
---
---      procedure Update_For (I: in out Instance; Offset: U16_Getter; Size: U16_Getter) is
---         End_Offset: Unsigned_16;
---      begin
---         if Size.all(I) > 0 then
---            End_Offset := Offset(I) + Size(I);
---            Highest_Offset := BRBON.Utils.Max (Highest_Offset, End_Offset);
---         end if;
---      end Update_For;
---
---   begin
---
---      Update_For (I, Header_Get_Origin_Offset'Access, Header_Get_Origin_Byte_Count'Access);
---      Update_For (I, Header_Get_Identifier_Offset'Access, Header_Get_Identifier_Byte_Count'Access);
---      Update_For (I, Header_Get_Extension_Offset'Access, Header_Get_Extension_Byte_Count'Access);
---      Update_For (I, Header_Get_Path_Prefix_Offset'Access, Header_Get_Path_Prefix_Byte_Count'Access);
---      Update_For (I, Header_Get_Acquisition_URL_Offset'Access, Header_Get_Acquisition_URL_Byte_Count'Access);
---      Update_For (I, Header_Get_Target_List_Offset'Access, Header_Get_Target_List_Byte_Count'Access);
---      Update_For (I, Header_Get_Public_Key_URL_Offset'Access, Header_Get_Public_Key_URL_Byte_Count'Access);
---
---      return Highest_Offset;
---
---   end Field_Storage_Highest_Used_Byte_Offset;
-
-
---   function Field_Storage_Used_Bytes (I: in out Instance) return Unsigned_16 is
---      Sum: Unsigned_16 := 0;
---   begin
---      Sum := Unsigned_16 (I.Header_Get_Origin_Byte_Count);
---      Sum := Sum + Unsigned_16 (I.Header_Get_Identifier_Byte_Count);
---      Sum := Sum + Unsigned_16 (I.Header_Get_Extension_Byte_Count);
---      Sum := Sum + Unsigned_16 (I.Header_Get_Path_Prefix_Byte_Count);
---      Sum := Sum + I.Header_Get_Acquisition_URL_Byte_Count;
---      Sum := Sum + I.Header_Get_Target_List_Byte_Count;
---      Sum := Sum + I.Header_Get_Public_Key_URL_Byte_Count;
---      return Sum;
---   end Field_Storage_Used_Bytes;
-
-
---   function Field_Storage_Free_Bytes (I: in out Instance) return Unsigned_16 is
---   begin
---      return I.Header_Get_Header_Byte_Count - I.Field_Storage_Used_Bytes;
---   end Field_Storage_Free_Bytes;
-
    function Field_Storage_Strings_Byte_Count (F: Field_Storage_Strings) return Unsigned_16 is
       Sum: Unsigned_16 := 0;
    begin
@@ -605,6 +542,13 @@ package body BRBON.Block is
       Sum := Sum + Unsigned_16 (Ada.Strings.Unbounded.Length (F.Public_Key_URL));
       return Sum;
    end Field_Storage_Strings_Byte_Count;
+
+
+   function Field_Storage_Free_Bytes (I: in out Instance) return Unsigned_16 is
+      FS: Field_Storage_Strings := I.Read_Field_Storage_Strings;
+   begin
+      return I.Header_Get_Header_Byte_Count - Field_Storage_Strings_Byte_Count (FS);
+   end Field_Storage_Free_Bytes;
 
 
    procedure Set_Origin (I: in out Instance; Value: String) is
@@ -775,6 +719,30 @@ package body BRBON.Block is
    end Get_Public_Key_URL;
 
 
+   --
+
+
+   function Byte_Count (I: in out Instance) return Unsigned_32 is
+   begin
+      return I.Header_Get_Byte_Count;
+   end Byte_Count;
+
+
+   procedure Update_Block_CRC (I: in out Instance) is
+      BC: constant Unsigned_32 := I.Header_Get_Byte_Count;
+      Crc: constant Unsigned_32 := I.Container.Get_CRC_32_Over_Range (Start => 0, Count => BC - 4);
+   begin
+      I.Container.Set_Unsigned_32 (Offset => BC - 4, Value => Crc);
+   end Update_Block_CRC;
+
+
+   procedure Update_Header_CRC (I: in out Instance) is
+      HC: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count);
+      Crc: Unsigned_16 := I.Container.Get_CRC_16_Over_Range (Start => 0, Count => HC);
+   begin
+      I.Header_Set_Header_Crc16 (Crc);
+   end Update_Header_CRC;
+
 
    -- ========================================================
    -- Child support operations
@@ -820,24 +788,9 @@ package body BRBON.Block is
 
    procedure Ensure_Block_Consistency (I: in out Instance) is
    begin
-      raise Types.Not_Implemented_Yet;
+         I.Update_Header_CRC;
+         I.Update_Block_CRC;
    end Ensure_Block_Consistency;
 
-
-
-
---   function Get_Block_Origin (I: in out Instance) return String is
---      Offset: Unsigned_32 := Unsigned_32 (Get_Block_Origin_Offset (I.Container));
---      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Block_Origin_Byte_Count (I.Container));
---      Crc_16: Unsigned_16 := Get_Block_Origin_Crc16 (I.Container);
---      Str: String := C.Get_String (Offset, Byte_Count);
---      Cal_Crc_16: Unsigned_16 := CRC_Package.Calculate_CRC_16 (Str);
---   begin
---      if Crc_16 = Cal_Crc_16 then
---         return Str;
---      else
---         Ada.Exceptions.Raise_Exception (Block_Header_Error'Identity, "Origin CRC-16 validation error.\n The stored CRC-16 is not equal to the CRC-16 calculated over the stored string");
---      end if;
---   end Get_Block_Origin;
 
 end BRBON.Block;

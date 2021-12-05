@@ -309,6 +309,13 @@ package BRBON.Container is
    function Get_CRC_16_Over_Range (S: Instance'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16;
    pragma Inline (Get_CRC_16_Over_Range);
 
+   -- Return the CRC-32 over the specified range.
+   -- @param Start The first byte to be included in the CRC-32.
+   -- @param Count The number of bytes to include in the CRC-32.
+   -- @return The CRC-32 of the specified bytes.
+   --
+   function Get_CRC_32_Over_Range (S: Instance'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_CRC_32_Over_Range);
 
 private
 

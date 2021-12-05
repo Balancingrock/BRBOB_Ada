@@ -134,11 +134,6 @@ package body BRBON.Block.Static_Unprotected is
 
    -- Operational Interface
 
-   function Byte_Count (I: in out Instance) return Unsigned_32 is
-   begin
-      return I.Container.Byte_Count;
-   end Byte_Count;
-
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32 is
       B: constant Unsigned_32 := I.Byte_Count;
       F: constant Unsigned_32 := I.First_Free_Byte_In_Payload;
@@ -151,12 +146,7 @@ package body BRBON.Block.Static_Unprotected is
       end if;
    end Free_Area_Byte_Count;
 
-   procedure Header_Update_Header_Crc16 (I: in out Instance) is
-      HC: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count);
-      Crc: Unsigned_16 := I.Container.Get_CRC_16_Over_Range (Start => 0, Count => HC);
-   begin
-      I.Header_Set_Header_Crc16 (Crc);
-   end Header_Update_Header_Crc16;
+
 
 
 end BRBON.Block.Static_Unprotected;

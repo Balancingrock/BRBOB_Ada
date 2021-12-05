@@ -67,26 +67,26 @@ package BRBON.Item is
 
    type Item_Options is new Unsigned_8;
 
-   function Get_Type (I: in out Instance'Class) return Item_Type;
-   procedure Set_Type (I: in out Instance'Class; T: Item_Type);
+   function Get_Type (I: in out Instance) return Item_Type;
+   procedure Set_Type (I: in out Instance; T: Item_Type);
 
-   function Get_Options (I: in out Instance'Class) return Item_Options;
-   procedure Set_Options (I: in out Instance'Class; O: Item_Options);
+   function Get_Options (I: in out Instance) return Item_Options;
+   procedure Set_Options (I: in out Instance; O: Item_Options);
 
-   function Get_Flags (I: in out Instance'Class) return Item_Flags;
-   procedure Set_Flags (I: in out Instance'Class; F: Item_Flags);
+   function Get_Flags (I: in out Instance) return Item_Flags;
+   procedure Set_Flags (I: in out Instance; F: Item_Flags);
 
-   function Get_Name_Field_Byte_Count (I: in out Instance'Class) return Unsigned_8;
-   procedure Set_Name_Field_Byte_Count (I: in out Instance'Class; Byte_Count: Unsigned_8);
+   function Get_Name_Field_Byte_Count (I: in out Instance) return Unsigned_8;
+   procedure Set_Name_Field_Byte_Count (I: in out Instance; Byte_Count: Unsigned_8);
 
-   function Get_Byte_Count (I: in out Instance'Class) return Unsigned_32;
-   procedure Set_Byte_Count (I: in out Instance'Class; Byte_Count: Unsigned_32);
+   function Get_Byte_Count (I: in out Instance) return Unsigned_32;
+   procedure Set_Byte_Count (I: in out Instance; Byte_Count: Unsigned_32);
 
-   function Get_Parent_Offset (I: in out Instance'Class) return Unsigned_32;
-   procedure Set_Parent_Offset (I: in out Instance'Class; Offset: Unsigned_32);
+   function Get_Parent_Offset (I: in out Instance) return Unsigned_32;
+   procedure Set_Parent_Offset (I: in out Instance; Offset: Unsigned_32);
 
-   function Get_Small_Value (I: in out Instance'Class) return Unsigned_32;
-   procedure Set_Small_Value (I: in out Instance'Class; Small_Value: Unsigned_32);
+   function Get_Small_Value (I: in out Instance) return Unsigned_32;
+   procedure Set_Small_Value (I: in out Instance; Small_Value: Unsigned_32);
 
 private
 
