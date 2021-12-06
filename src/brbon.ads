@@ -85,65 +85,34 @@
 --
 --  - BRBON.Thread_Safe This adds protective mechanisms to the Dynamic interface to support multi-tasking.
 --
+-- Note: If a package is absent, it has not been implemented yet ;-)
+--
 package BRBON is
 
-   -- Possible exceptions
-   -- ===================
 
-   -- Raised when a block does not match the byte store it is in.
+   -- Raised when a name has an unexpected or illegal value.
    --
-   Endianness_Mismatch: exception;
+   Name_Error: exception;
 
-   -- Raised when a block does not contain the right block header markers.
-   --
-   Invalid_Block: exception;
-
-   -- Raised when a block contains unspecified option flags.
-   --
-   Illegal_Block_Options: exception;
-
-   -- Raised when a byte store is opened as a block but does not have a valid block structure.
-   --
-   Invalid_Block_Structure: exception;
-
-   -- Raised when an index is out of range
-   --
-   Index_Out_Of_Range: exception;
 
    -- Raised when an attempt is made to create an illegal block type
    --
    Illegal_Block_Type: exception;
 
-   -- Raised when an operation is attempted on the wrong type
-   --
-   Type_Conflict: exception;
 
-   -- Raised when a buffer is too small
+   -- Raised when somthing does not fit in its alotted space.
    --
-   Buffer_Error: exception;
+   Storage_Warning: exception;
 
-   -- Raised when the storage area runs out of space.
-   --
-   Storage_Error: exception;
 
    -- Raised when a BRBON structure contains an illegal type pattern.
    --
    Illegal_Item_Type: exception;
 
-   -- Raised when a string to Item_Name conversion failed.
-   --
-   Item_Name_Too_Long: exception;
 
    -- Raised when an attempt is made to execute an incompletely coded routine
    --
    Implementation: exception;
 
-   -- This exception is raised when a bit pattern in the raw data could not be mapped to a corresponding enum.
-   --
-   Enum_Mapping_Failed: exception;
-
-   -- Raised when a file related operation failed. The text details the kind of error.
-   --
-   File_IO_Error: exception;
 
 end BRBON;

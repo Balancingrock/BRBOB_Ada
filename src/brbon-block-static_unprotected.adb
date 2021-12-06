@@ -70,7 +70,7 @@ package body BRBON.Block.Static_Unprotected is
       -- Get the type dependent size
       --
       case Type_Of_Block is
-         when Illegal => raise BRBON.Buffer_Error;
+         when Illegal => Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Impossible to create an illegal-type block");
          when Single_Item => Header_Type_Dependent_Byte_Count := 0;
       end case;
 
@@ -149,64 +149,39 @@ package body BRBON.Block.Static_Unprotected is
    end Free_Area_Byte_Count;
 
 
-   procedure Create_Root_Item (I: in out Instance; Of_Type: Item.Item_Type; With_Byte_Count: Unsigned_32) is
+   procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) is
+
+      Name_Assistent: Item.Name_Field_Assistent := Item.Create_Name_Field_Assistent (With_Name);
+
    begin
 
-      if With_Byte_Count > I.Free_Area_Byte_Count then
-         Ada.Exceptions.Raise_Exception (Storage_Error'Identity, "Block storage insufficient for requested byte count");
+      -- Don't create illegal types
+      --
+      if Of_Type = Types.Illegal then
+         Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create top level item 'illegal'");
       end if;
 
-      case Of_Type is
-         when Item.Illegal =>
-            Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create top level item 'illegal'");
-         when Item.Null_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Null_Type");
-         when Item.Bool_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Bool_Type");
-         when Item.Int_8_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_8_Type");
-         when Item.Int_16_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_16_Type");
-         when Item.Int_32_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_32_Type");
-         when Item.Int_64_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Int_64_Type");
-         when Item.UInt_8_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_8_Type");
-         when Item.UInt_16_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_16_Type");
-         when Item.UInt_32_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_32_Type");
-         when Item.UInt_64_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UInt_64_Type");
-         when Item.Float_32_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Float_32_Type");
-         when Item.Float_64_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Float_64_Type");
-         when Item.String_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for String_Type");
-         when Item.Crc_String_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Crc_String_Type");
-         when Item.Binary_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Binary_Type");
-         when Item.Crc_Binary_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Crc_Binary_Type");
-         when Item.Array_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Array_Type");
-         when Item.Dictionary_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Dictionary_Type");
-         when Item.Sequence_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Sequence_Type");
-         when Item.Table_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Table_Type");
-         when Item.UUID_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for UUID_Type");
-         when Item.RGBA_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for RGBA_Type");
-         when Item.Font_Type =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Block.Static_Unprotected.Create_Root_Item not yet implemented for Font_Type");
-      end case;
+      -- Don't accept names that are too long
+      --
+      if With_Name'Length > Types.Max_Name_Length then
+         Ada.Exceptions.Raise_Exception (Name_Error'Identity, "Name length exceeds maximum (" & Types.Max_Name_Length'Image & ")");
+      end if;
 
-   end Create_Root_Item;
+      -- Ensure the type fits in the available area
+      if Item.Item_Byte_Count_For_Minimum_Length_Payload (Of_Type, Name_Assistent) > I.Free_Area_Byte_Count then
+         Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "Block storage insufficient for requested byte count");
+      end if;
+
+
+      Item.Create_Item (Of_Type          => Of_Type,
+                        In_Container     => I.Container,
+                        At_Offset        => I.First_Free_Byte_In_Payload,
+                        With_Name        => Name_Assistent,
+                        Using_Byte_Count => With_Byte_Count,
+                        Parent_Offset    => 0);
+
+      -- I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
+
+   end Add_Root_Item;
 
 end BRBON.Block.Static_Unprotected;

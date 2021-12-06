@@ -4,8 +4,8 @@ function Item_Access (Count: in out Integer) return Test_Result is
 
    Container: Instance := Factory (Buffer'Access , Machine_Endianness);
 
-   Opt: BR_Item_Options := To_BR_Item_Options (16#45#);
-   Flg: BR_Item_Flags := To_BR_Item_Flags (16#3E#);
+   Opt: Item_Options := To_Item_Options (16#45#);
+   Flg: Item_Flags := To_Item_Flags (16#3E#);
 
 begin
 
@@ -15,25 +15,25 @@ begin
    end if;
 
    if Container.Valid_Item_Type (0) then
-      Put_Line (" - Failed, 0 is not a valid BR_Item_Type");
+      Put_Line (" - Failed, 0 is not a valid Item_Type");
       return Failed;
    end if;
 
-   Container.Set_Item_Type (0, BR_Binary);
+   Container.Set_Item_Type (0, Binary_Type);
 
    if not Container.Valid_Item_Type (0) then
-      Put_Line (" - Failed, expected a valid BR_Item_Type");
+      Put_Line (" - Failed, expected a valid Item_Type");
       return Failed;
    end if;
 
-   if Container.Get_Item_Type (0) /= BR_Binary then
+   if Container.Get_Item_Type (0) /= Binary_Type then
       Put_Line (" - Failed, expected BR_Binary");
       return Failed;
    end if;
 
    declare
-      Inval: Unsigned_8 := To_Unsigned_8 (BR_Item_Type'Last) + 1;
-      Inv: BR_Item_Type;
+      Inval: Unsigned_8 := To_Unsigned_8 (Item_Type'Last) + 1;
+      Inv: Item_Type;
    begin
       Container.Set_Unsigned_8 (0, Unsigned_8 (Inval));
       if Container.Valid_Item_Type (0) then

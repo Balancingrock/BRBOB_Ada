@@ -83,7 +83,7 @@ package body BRBON.Container is
       File_Size := Unsigned_64 (Size (File));
       In_Stream := Stream(File);
       if File_Size > Buffer_Ptr.all'Length then
-         raise BRBON.Storage_Error with "File too large for buffer";
+         raise BRBON.Storage_Warning with "File too large for buffer";
       end if;
       Array_Of_Unsigned_8'Read (In_Stream, Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
       S.Data := Buffer_Ptr;

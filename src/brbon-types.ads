@@ -92,6 +92,9 @@ package BRBON.Types is
    -- ==========================================================================
    -- For items
 
+   Minimum_Item_Byte_Count: constant Unsigned_32 := 32;
+
+
    type Item_Type is
      (
       Illegal,
@@ -169,6 +172,8 @@ package BRBON.Types is
    function To_Item_Flags is new Ada.Unchecked_Conversion (Unsigned_8, Item_Flags);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Flags, Unsigned_8);
 
+   No_Item_Flags: Item_Flags := (false, false, false, false, false, false, false, false);
+
 
    type Item_Options is
       record
@@ -197,9 +202,13 @@ package BRBON.Types is
    function To_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, Item_Options);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Options, Unsigned_8);
 
+   No_Item_Options: Item_Options := (false, false, false, false, false, false, false, false);
+
 
    -- ====================================================
    -- For Item Names
-   
-   
+
+   Max_Name_Length: constant Integer := 248;
+
+
 end BRBON.Types;

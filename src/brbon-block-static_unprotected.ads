@@ -55,6 +55,6 @@ package BRBON.Block.Static_Unprotected is
 
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;
 
-   procedure Create_Root_Item (I: in out Instance; Of_Type: Item.Item_Type; With_Byte_Count: Unsigned_32);
+   procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String);
 
 end BRBON.Block.Static_Unprotected;

@@ -1,5 +1,4 @@
-with BRBON.Types; use BRBON.Types;
-with Item_Static_Unprotected; use Item_Static_Unprotected;
+with BRBON.Types;
 
 package Portal_Package is
 
@@ -24,6 +23,6 @@ package Portal_Package is
 
    -- Read the type of the item associated with this portal.
    --
-   function Get_Item_Type (Ptr: Portal_Ptr) return BR_Item_Type;
+   function Get_Item_Type (Ptr: Portal_Ptr) return BRBON.Types.Item_Type;
 
 end Portal_Package;
