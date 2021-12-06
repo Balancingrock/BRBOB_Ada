@@ -38,9 +38,9 @@ package body BRBON.Item is
    
    procedure Create_Item
     (
-     Of_Type: Types.Item_Type;
      In_Container: in out Container.Instance;
      At_Offset: Unsigned_32;
+     Of_Type: Types.Item_Type;
      With_Name: Name_Field_Assistent;
      Using_Byte_Count: Unsigned_32 := 0;
      Parent_Offset: Unsigned_32 := 0
@@ -66,6 +66,83 @@ package body BRBON.Item is
 
    end Create_Item;
 
+   
+   function Get_Item_Type (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Type is
+   begin
+      raise Implementation;
+      return Types.Illegal;
+   end Get_Item_Type;
+   
+   
+   function Get_Item_Options (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Options is
+   begin
+      raise Implementation;
+      return Types.No_Item_Options;
+   end Get_Item_Options;
+   
+   
+   function Get_Item_Flags (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Flags is
+   begin
+      raise Implementation;
+      return Types.No_Item_Flags;
+   end Get_Item_Flags;
+   
+   
+   function Get_Item_Name_Field_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Name_Field_Byte_Count;
+   
+   
+   function Get_Item_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Byte_Count;
+   
+   
+   function Get_Item_Small_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Small_Value;
+   
+   
+   function Get_Item_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Parent_Offset;
+   
+   
+   function Get_Item_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Name_CRC;
+   
+   
+   function Get_Item_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Name_Byte_Count;
+   
+   
+   function Get_Item_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32) return String is
+   begin
+      raise Implementation;
+      return "";
+   end Get_Item_Name_String;
+   
+   
+   function Get_Item_Name_Quick_Check_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Item_Name_Quick_Check_Value;
+   
    
    function Create_Name_Field_Assistent (S: String) return Name_Field_Assistent is
 
@@ -104,6 +181,13 @@ package body BRBON.Item is
 
    end Create_Name_Field_Assistent;
 
+   
+   function Get_Quick_Check_Value (NFA: in out Name_Field_Assistent) return Unsigned_32 is
+   begin
+      raise Implementation;
+      return 0;
+   end Get_Quick_Check_Value;
+   
    
    function Item_Byte_Count_For_Minimum_Length_Payload (T: Types.Item_Type; N: Name_Field_Assistent) return Unsigned_32 is
       Byte_Count: Unsigned_32 := Types.Minimum_Item_Byte_Count;

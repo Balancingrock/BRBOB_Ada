@@ -180,7 +180,7 @@ package body BRBON.Block.Static_Unprotected is
                         Using_Byte_Count => With_Byte_Count,
                         Parent_Offset    => 0);
 
-      -- I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
+      I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Item_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
 
    end Add_Root_Item;
 
