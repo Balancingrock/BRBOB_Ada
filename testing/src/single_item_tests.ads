@@ -12,7 +12,7 @@ package Single_Item_Tests is
      (
       (UStr ("Create Single_Item block, no param"), Create_Block_Test_No_Param'Access),
       (UStr ("Create Single_Item block, with param"), Create_Block_Test_With_Param'Access),
-      (UStr ("Create Single_Item block with Null_Type root"), Create_Block_With_Null_Type'Access)
+      (UStr ("Create Single_Item block with Null_Type"), Create_Block_With_Null_Type'Access)
      );
 
 end Single_Item_Tests;

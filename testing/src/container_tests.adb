@@ -22,7 +22,6 @@ package body Container_Tests is
    function Int16_Access (Count: in out Integer) return Test_Result is separate;
    function Int32_Access (Count: in out Integer) return Test_Result is separate;
    function Int64_Access (Count: in out Integer) return Test_Result is separate;
-   function Item_Access (Count: in out Integer) return Test_Result is separate;
    function Float32_Access (Count: in out Integer) return Test_Result is separate;
    function Float64_Access (Count: in out Integer) return Test_Result is separate;
    function String_Access (Count: in out Integer) return Test_Result is separate;
