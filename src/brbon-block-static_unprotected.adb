@@ -168,11 +168,13 @@ package body BRBON.Block.Static_Unprotected is
       end if;
 
       -- Ensure the type fits in the available area
+      --
       if Item.Item_Byte_Count_For_Minimum_Length_Payload (Of_Type, Name_Assistent) > I.Free_Area_Byte_Count then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "Block storage insufficient for requested byte count");
       end if;
 
-
+      -- Create the item structure
+      --
       Item.Create_Item (Of_Type          => Of_Type,
                         In_Container     => I.Container,
                         At_Offset        => I.First_Free_Byte_In_Payload,
@@ -180,6 +182,8 @@ package body BRBON.Block.Static_Unprotected is
                         Using_Byte_Count => With_Byte_Count,
                         Parent_Offset    => 0);
 
+      -- Set the free byte pointer
+      --
       I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Item_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
 
    end Add_Root_Item;

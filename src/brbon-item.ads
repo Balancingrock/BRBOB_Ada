@@ -38,17 +38,69 @@ package BRBON.Item is
 
 
    function Get_Item_Type (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Type;
-   function Get_Item_Options (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Options;
-   function Get_Item_Flags (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Flags;
-   function Get_Item_Name_Field_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
-   function Get_Item_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
-   function Get_Item_Small_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
-   function Get_Item_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
-   function Get_Item_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16;
-   function Get_Item_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
-   function Get_Item_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32) return String;
-   function Get_Item_Name_Quick_Check_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_Item_Type);
 
+   function Get_Item_Options (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Options;
+   pragma Inline (Get_Item_Options);
+
+   function Get_Item_Flags (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Flags;
+   pragma Inline (Get_Item_Flags);
+
+   function Get_Item_Name_Field_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
+   pragma Inline (Get_Item_Name_Field_Byte_Count);
+
+   function Get_Item_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_Item_Byte_Count);
+
+   function Get_Item_Small_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_Item_Small_Value);
+
+   function Get_Item_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_Item_Parent_Offset);
+
+   function Get_Item_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16;
+   pragma Inline (Get_Item_Name_CRC);
+
+   function Get_Item_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
+   pragma Inline (Get_Item_Name_Byte_Count);
+
+   function Get_Item_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32) return String;
+   pragma Inline (Get_Item_Name_String);
+
+   function Get_Item_Name_Quick_Check_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_Item_Name_Quick_Check_Value);
+
+   procedure Set_Item_Type (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Type);
+   pragma Inline (Set_Item_Type);
+
+   procedure Set_Item_Options (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Options);
+   pragma Inline (Set_Item_Options);
+
+   procedure Set_Item_Flags (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Flags);
+   pragma Inline (Set_Item_Flags);
+
+   procedure Set_Item_Name_Field_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   pragma Inline (Set_Item_Name_Field_Byte_Count);
+
+   procedure Set_Item_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   pragma Inline (Set_Item_Byte_Count);
+
+   procedure Set_Item_Small_Value (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   pragma Inline (Set_Item_Small_Value);
+
+   procedure Set_Item_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   pragma Inline (Set_Item_Parent_Offset);
+
+   procedure Set_Item_Name (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Name_Field_Assistent);
+
+   procedure Set_Item_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_16);
+   pragma Inline (Set_Item_Name_CRC);
+
+   procedure Set_Item_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   pragma Inline (Set_Item_Name_Byte_Count);
+
+   procedure Set_Item_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: String);
+   pragma Inline (Set_Item_Name_String);
 
 private
 

@@ -69,79 +69,139 @@ package body BRBON.Item is
    
    function Get_Item_Type (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Type is
    begin
-      raise Implementation;
-      return Types.Illegal;
+      return Types.To_Item_Type (C.Get_Unsigned_8 (Item_Offset + Type_Offset));
    end Get_Item_Type;
    
    
    function Get_Item_Options (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Options is
    begin
-      raise Implementation;
-      return Types.No_Item_Options;
+      return Types.To_Item_Options (C.Get_Unsigned_8 (Item_Offset + Options_Offset));
    end Get_Item_Options;
    
    
    function Get_Item_Flags (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Flags is
    begin
-      raise Implementation;
-      return Types.No_Item_Flags;
+      return Types.To_Item_Flags (C.Get_Unsigned_8 (Item_Offset + Flags_Offset));
    end Get_Item_Flags;
    
    
    function Get_Item_Name_Field_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_8 (Item_Offset + Name_Field_Byte_Count_Offset);
    end Get_Item_Name_Field_Byte_Count;
    
    
    function Get_Item_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_32 (Item_Offset + Byte_Count_Offset);
    end Get_Item_Byte_Count;
    
    
    function Get_Item_Small_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_32 (Item_Offset + Small_Value_Offset);
    end Get_Item_Small_Value;
    
    
    function Get_Item_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_32 (Item_Offset + Parent_Offset_Offset);
    end Get_Item_Parent_Offset;
    
    
    function Get_Item_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_16 (Item_Offset + Name_Field_CRC_Offset);
    end Get_Item_Name_CRC;
    
    
    function Get_Item_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_8 (Item_Offset + Name_Field_ASCII_Byte_Count_Offset);
    end Get_Item_Name_Byte_Count;
    
    
    function Get_Item_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32) return String is
+      Length: Unsigned_32 := Unsigned_32 (Get_Item_Name_Byte_Count (C, Item_Offset));
    begin
-      raise Implementation;
-      return "";
+      return C.Get_String (Item_Offset + Name_Field_ASCII_Code_Offset, Length);
    end Get_Item_Name_String;
    
    
    function Get_Item_Name_Quick_Check_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
    begin
-      raise Implementation;
-      return 0;
+      return C.Get_Unsigned_32 (Item_Offset + Name_Field_CRC_Offset);
    end Get_Item_Name_Quick_Check_Value;
+   
+   
+   procedure Set_Item_Type (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Type) is
+   begin
+      C.Set_Unsigned_8 (Item_Offset + Type_Offset, Types.To_Unsigned_8 (Value));
+   end Set_Item_Type;
+
+   
+   procedure Set_Item_Options (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Options) is
+   begin
+      C.Set_Unsigned_8 (Item_Offset + Options_Offset, Types.To_Unsigned_8 (Value));
+   end Set_Item_Options;
+
+   
+   procedure Set_Item_Flags (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Flags) is
+   begin
+      C.Set_Unsigned_8 (Item_Offset + Flags_Offset, Types.To_Unsigned_8 (Value));
+   end Set_Item_Flags;
+
+   
+   procedure Set_Item_Name_Field_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_8) is
+   begin
+      C.Set_Unsigned_8 (Item_Offset + Name_Field_Byte_Count_Offset, Value);
+   end Set_Item_Name_Field_Byte_Count;
+
+   
+   procedure Set_Item_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   begin
+      C.Set_Unsigned_32 (Item_Offset + Byte_Count_Offset, Value);
+   end Set_Item_Byte_Count;
+
+   
+   procedure Set_Item_Small_Value (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   begin
+      C.Set_Unsigned_32 (Item_Offset + Small_Value_Offset, Value);
+   end Set_Item_Small_Value;
+
+   
+   procedure Set_Item_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   begin
+      C.Set_Unsigned_32 (Item_Offset + Parent_Offset_Offset, Value);
+   end Set_Item_Parent_Offset;
+
+   
+   procedure Set_Item_Name (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Name_Field_Assistent) is
+   begin
+      C.Set_Unsigned_8 (Item_Offset + Name_Field_Byte_Count_Offset, Value.Name_Field_Byte_Count);
+      C.Set_Unsigned_16 (Item_Offset + Name_Field_CRC_Offset, Value.CRC);
+      C.Set_Unsigned_8 (Item_Offset + Name_Field_ASCII_Byte_Count_Offset, Value.Ascii_Code'Length);
+      C.Set_Unsigned_8_Array (Item_Offset + Name_Field_ASCII_Code_Offset, Value.Ascii_Code);
+   end Set_Item_Name;
+   
+   
+   procedure Set_Item_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_16) is
+   begin
+      C.Set_Unsigned_16 (Item_Offset + Name_Field_CRC_Offset, Value);
+   end Set_Item_Name_CRC;
+
+   
+   procedure Set_Item_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_8) is
+   begin
+      C.Set_Unsigned_8 (Item_Offset + Name_Field_ASCII_Byte_Count_Offset, Value);
+   end Set_Item_Name_Byte_Count;
+
+   
+   procedure Set_Item_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: String) is
+   begin
+      C.Set_String (Item_Offset + Name_Field_ASCII_Code_Offset, Value);
+   end Set_Item_Name_String;
+   
    
    
    function Create_Name_Field_Assistent (S: String) return Name_Field_Assistent is
@@ -247,13 +307,13 @@ package body BRBON.Item is
     ) is
     
    begin
-      C.Set_Item_Type (O + Type_Offset, Types.Null_Type);
-      C.Set_Item_Options (O + Options_Offset, Types.No_Item_Options);
-      C.Set_Item_Flags (O + Flags_Offset, Types.No_Item_Flags);
-      C.Set_Unsigned_8 (O + Name_Field_Byte_Count_Offset, N.Name_Field_Byte_Count);
-      C.Set_Unsigned_32 (O + Byte_Count_Offset, B);
-      C.Set_Unsigned_32 (O + Parent_Offset_Offset, P);
-      C.Set_Unsigned_32 (O + Small_Value_Offset, 0);
+      Item.Set_Item_Type (C, O, Types.Null_Type);
+      Item.Set_Item_Options (C, O, Types.No_Item_Options);
+      Item.Set_Item_Flags (C, O, Types.No_Item_Flags);
+      Item.Set_Item_Byte_Count (C, O, B);
+      Item.Set_Item_Small_Value (C, O, 0);
+      Item.Set_Item_Parent_Offset (C, O, P);
+      Item.Set_Item_Name (C, O,  N);
    end Create_Null_Type;
 
 end BRBON.Item;

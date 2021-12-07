@@ -153,46 +153,6 @@ package body BRBON.Container is
       S.Swap := Value /= Configure.Machine_Endianness;
    end Set_Data_Endianness;
 
-   procedure Set_Item_Type (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Type) is
-   begin
-      S.Data (Offset) := To_Unsigned_8 (Value);
-   end Set_Item_Type;
-
-   function Valid_Item_Type (S: Instance'Class; Offset: Unsigned_32) return Boolean is
-      T: Unsigned_8 := S.Data (Offset);
-   begin
-      if T = 0 then return False; end if;
-      return T <= To_Unsigned_8 (Item_Type'Last);
-   end Valid_Item_Type;
-
-   function Get_Item_Type (S: Instance'Class; Offset: Unsigned_32) return Item_Type is
-   begin
-      if not S.Valid_Item_Type (Offset) then raise BRBON.Illegal_Item_Type; end if;
-      return To_Item_Type (S.Data (Offset));
-   end Get_Item_Type;
-
-
-   procedure Set_Item_Options (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Options) is
-   begin
-      S.Data (Offset) := To_Unsigned_8 (Value);
-   end Set_Item_Options;
-
-   function Get_Item_Options (S: Instance'Class; Offset: Unsigned_32) return Item_Options is
-   begin
-      return To_Item_Options (S.Data (Offset));
-   end Get_Item_Options;
-
-
-   procedure Set_Item_Flags (S: in out Instance'Class; Offset: Unsigned_32; Value: Item_Flags) is
-   begin
-      S.Data (Offset) := To_Unsigned_8 (Value);
-   end Set_Item_Flags;
-
-   function Get_Item_Flags (S: Instance'Class; Offset: Unsigned_32) return Item_Flags is
-   begin
-      return To_Item_Flags (S.Data (Offset));
-   end Get_Item_Flags;
-
 
    procedure Set_Bool (S:in out Instance'Class; Offset: Unsigned_32; Value: Boolean) is
    begin

@@ -33,13 +33,13 @@ function Create_Block_With_Null_Type (Count: in out Integer) return Test_Result 
       -- Offset 16#06
       16#00#, 16#00#,
 
-      -- Block Byte Count, minimum length => 160 bytes (16#A0#)
+      -- Block Byte Count, minimum length => - bytes (16#D8#)
       -- Offset 16#08
-      16#A0#, 16#00#, 16#00#, 16#00#,
+      16#D8#, 16#00#, 16#00#, 16#00#,
 
-      -- Block header byte count, 17 * 8 = 136 bytes (16#88#)
+      -- Block header byte count, 16#50#
       -- Offset 16#0C
-      16#88#, 16#00#,
+      16#50#, 16#00#,
 
       -- Encrypted header byte count, unused => 0
       -- Offset 16#0E
@@ -47,75 +47,75 @@ function Create_Block_With_Null_Type (Count: in out Integer) return Test_Result 
 
       -- Block Origin CRC16, unused => 0
       -- Offset 16#10
-      16#79#, 16#7E#,
+      16#00#, 16#00#,
 
       -- Block Identifier CRC16, unused => 0
       -- Offset 16#12
-      16#A9#, 16#7E#,
+      16#00#, 16#00#,
 
       -- Block Extension CRC16, unused => 0
       -- Offset 16#14
-      16#62#, 16#3D#,
+      16#00#, 16#00#,
 
       -- Block Path Prefix CRC16, unused => 0
       -- Offset 16#16
-      16#BF#, 16#60#,
+      16#00#, 16#00#,
 
       -- Block Origin byte count, unused => 0
       -- Offset 16#18
-      16#09#,
+      16#00#,
 
       -- Block identifier byte count, unused => 0
       -- Offset 16#19
-      16#08#,
+      16#00#,
 
       -- Block extension byte count, unused => 0
       -- Offset 16#1A
-      16#03#,
+      16#00#,
 
       -- Block path prefix byte count, unused => 0
       -- Offset 16#1B
-      16#0A#,
+      16#00#,
 
       -- Block Origin offset, unused => 0
       -- Offset 16#1C
-      16#48#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block identifier offset, unused => 0
       -- Offset 16#1E
-      16#51#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block extension offset, unused => 0
       -- Offset 16#20
-      16#59#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block path prefix offset, unused => 0
       -- Offset 16#22
-      16#5C#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block acquisition url byte count, unused => 0
       -- Offset 16#24
-      16#09#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block acquisition url offset, unused => 0
       -- Offset 16#26
-      16#66#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block Target List Byte Offset, unused => 0
       -- Offset 16#028
-      16#06#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block Target List Offset, unused => 0
       -- Offset 16#02A
-      16#6F#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block public key url byte count, unused => 0
       -- Offset 16#2C
-      16#04#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block public key url offset, unused => 0
       -- Offset 16#2E
-      16#75#, 16#00#,
+      16#00#, 16#00#,
 
       -- Block Creation Time Stamp
       -- Offset 16#30
@@ -131,27 +131,35 @@ function Create_Block_With_Null_Type (Count: in out Integer) return Test_Result 
 
       -- Block Type dependent header (not used)
 
-      -- Block Header Field Storage (56 bytes)
+      -- Block Header Field Storage (not used)
       -- Offset 16#48
-      16#6C#, 16#6F#, 16#63#, 16#61#,  16#6C#, 16#68#, 16#6F#, 16#73#,
-      16#74#, 16#54#, 16#65#, 16#73#,  16#74#, 16#66#, 16#69#, 16#6C#,
-      16#65#, 16#74#, 16#78#, 16#74#,  16#4F#, 16#70#, 16#65#, 16#6E#,
-      16#41#, 16#63#, 16#63#, 16#65#,  16#73#, 16#73#, 16#6C#, 16#6F#,
-      16#63#, 16#61#, 16#6C#, 16#68#,  16#6F#, 16#73#, 16#74#, 16#46#,
-      16#6F#, 16#72#, 16#41#, 16#6C#,  16#6C#, 16#4E#, 16#6F#, 16#6E#,
-      16#65#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+
 
       -- Reserved
 
-      -- Offset 16#80
+      -- Offset 16#48
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#,
 
       -- Block Header CRC16
-      -- Offset 16#86
+      -- Offset 16#4E
       16#FF#, 16#5E#,
 
       -- Item storage (16 bytes)
-      -- Offset 16#88
+      -- Offset 16#50
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
 
@@ -178,7 +186,7 @@ function Create_Block_With_Null_Type (Count: in out Integer) return Test_Result 
       -- Offset 16#06
       false, false,
 
-      -- Block Byte Count, minimum length => 96 bytes (16#60)
+      -- Block Byte Count, minimum length => - bytes (16#D8)
       -- Offset 16#08
       false, false, false, false,
 
@@ -276,27 +284,34 @@ function Create_Block_With_Null_Type (Count: in out Integer) return Test_Result 
 
       -- Block Type dependent header (not used)
 
-      -- Block Header Field Storage (56 bytes)
+      -- Block Header Field Storage (not used)
       -- Offset 16#48
-      false, false, false, false,  false, false, false, false,
-      false, false, false, false,  false, false, false, false,
-      false, false, false, false,  false, false, false, false,
-      false, false, false, false,  false, false, false, false,
-      false, false, false, false,  false, false, false, false,
-      false, false, false, false,  false, false, false, false,
-      false, false, false, false,  false, false, false, false,
 
       -- Reserved
 
-      -- Offset 16#80
+      -- Offset 16#48
       false, false, false, false,  false, false,
 
       -- Block Header CRC16
-      -- Offset 16#86
+      -- Offset 16#4E
       false, false,
 
       -- Item storage (16 bytes)
-      -- Offset 16#88
+      -- Offset 16#50
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
+      false, false, false, false,  false, false, false, false,
       false, false, false, false,  false, false, false, false,
       false, false, false, false,  false, false, false, false,
 
@@ -318,19 +333,23 @@ begin
 
    T_Object := BRBON.Block.Static_Unprotected.Factory
      (Type_Of_Block                   => BRBON.Types.Single_Item,
-      Minimum_Byte_Count              => 16,
+      Minimum_Byte_Count              => 128,
       Header_Field_Storage_Byte_Count => 0,
       Options                         => BRBON.Types.No_Block_Options,
       Using_Endianness                => BRBON.Configure.Machine_Endianness,
-      Origin                          => "localhost",
-      Identifier                      => "Testfile",
-      Extension                       => "txt",
-      Path_Prefix                     => "OpenAccess",
-      Acquisition_URL                 => "localhost",
-      Target_List                     => "ForAll",
-      Public_Key_URL                  => "None",
+      Origin                          => "",
+      Identifier                      => "",
+      Extension                       => "",
+      Path_Prefix                     => "",
+      Acquisition_URL                 => "",
+      Target_List                     => "",
+      Public_Key_URL                  => "",
       Creation_Timestamp              => 16#1234_5678_8765_4321#,
       Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Null_Type,
+                           With_Byte_Count => 0,
+                           With_Name       => "");
 
    T_Serializer := T_Object.Test_Serializer;
 
