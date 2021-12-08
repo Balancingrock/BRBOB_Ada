@@ -23,6 +23,7 @@ package BRBON.Types is
 
    procedure Deallocate_Array_Of_Unsigned_8 is new Ada.Unchecked_Deallocation (Array_Of_Unsigned_8, Array_Of_Unsigned_8_Ptr);
 
+   Empty_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..0) := (others => 0);
    Short_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..1) := (others => 0);
 
 
@@ -199,7 +200,7 @@ package BRBON.Types is
    function To_Item_Flags is new Ada.Unchecked_Conversion (Unsigned_8, Item_Flags);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Flags, Unsigned_8);
 
-   No_Item_Flags: Item_Flags := (false, false, false, false, false, false, false, false);
+   No_Item_Flags: constant Item_Flags := (false, false, false, false, false, false, false, false);
 
 
    type Item_Options is
@@ -229,7 +230,7 @@ package BRBON.Types is
    function To_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, Item_Options);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Options, Unsigned_8);
 
-   No_Item_Options: Item_Options := (false, false, false, false, false, false, false, false);
+   No_Item_Options: constant Item_Options := (false, false, false, false, false, false, false, false);
 
 
    -- ====================================================

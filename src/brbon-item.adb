@@ -4,6 +4,7 @@ with Ada.Unchecked_Conversion;
 with CRC_Package;
 
 with BRBON.Utils;
+with BRBON.Types; use BRBON.Types;
 
 
 package body BRBON.Item is
@@ -17,7 +18,7 @@ package body BRBON.Item is
    Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
    Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
    Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
-                                                       
+                     
    -- TTOOFFNC BBBBBBBB
    -- PPPPPPPP SSSSSSSS                   
    
@@ -28,8 +29,6 @@ package body BRBON.Item is
 
 
    -- Internal specifications
-   
-   procedure Create_Null_Type (C: in out Container.Instance; O: Unsigned_32; N: Name_Field_Assistent; B: Unsigned_32; P: Unsigned_32);
    
 
 
@@ -55,15 +54,61 @@ package body BRBON.Item is
       B: Unsigned_32 renames Using_Byte_Count;
       P: Unsigned_32 renames Parent_Offset;
 
+      Value_Offset: Unsigned_32 := At_Offset + Types.Minimum_Item_Byte_Count + Unsigned_32 (With_Name.Name_Field_Byte_Count);
+      
    begin
 
+      if T = Types.Illegal then
+         Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create illegal item type");
+      end if;
+      
+      Item.Set_Item_Type (C, O, T);
+      Item.Set_Item_Options (C, O, Types.No_Item_Options);
+      Item.Set_Item_Flags (C, O, Types.No_Item_Flags);
+      Item.Set_Item_Byte_Count (C, O, B);
+      Item.Set_Item_Parent_Offset (C, O, P);
+      Item.Set_Item_Name (C, O, N);
+      
       case T is
-         when Types.Illegal =>
-            Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create illegal item type");
-         when Types.Null_Type =>
-            Create_Null_Type (C, O, N, B, P);
-         when others =>
-            Ada.Exceptions.Raise_Exception (Implementation'Identity, "Not implemented yet");
+         when Illegal => null; -- Cannot happen
+         when Types.Null_Type | Types.Bool_Type | Types.Int_8_Type | Types.Int_16_Type | Types.Int_32_Type | Types.UInt_8_Type | Types.UInt_16_Type | Types.UInt_32_Type | Types.Float_32_Type | Types.RGBA_Type =>
+            Item.Set_Item_Small_Value (C, O, 0);
+         when Types.Int_64_Type =>
+            C.Set_Integer_64 (Value_Offset, 0);
+         when Types.UInt_64_Type =>
+            C.Set_Unsigned_64 (Value_Offset, 0);
+         when Types.Float_64_Type =>
+            C.Set_Float_64 (Value_Offset, 0.0);
+         when Types.String_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+         when Types.Crc_String_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+            C.Set_Unsigned_32 (Value_Offset + 4, 0);
+         when Types.Binary_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+         when Types.Crc_Binary_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+            C.Set_Unsigned_32 (Value_Offset + 4, 0);
+         when Types.Array_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+            C.Set_Unsigned_32 (Value_Offset + 4, 0);
+            C.Set_Unsigned_32 (Value_Offset + 8, 0);
+            C.Set_Unsigned_32 (Value_Offset + 12, 0);
+         when Types.Dictionary_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+            C.Set_Unsigned_32 (Value_Offset + 4, 0);
+         when Types.Sequence_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+            C.Set_Unsigned_32 (Value_Offset + 4, 0);
+         when Types.Table_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
+            C.Set_Unsigned_32 (Value_Offset + 4, 0);
+            C.Set_Unsigned_32 (Value_Offset + 8, 0);
+            C.Set_Unsigned_32 (Value_Offset + 12, 0);
+         when Types.UUID_Type =>
+            C.Set_Unsigned_64 (Value_Offset, 0);
+         when Types.Font_Type =>
+            C.Set_Unsigned_32 (Value_Offset, 0);
       end case;
 
    end Create_Item;
@@ -272,23 +317,4 @@ package body BRBON.Item is
    -- ==========================================================================
    
    
-   procedure Create_Null_Type
-    (
-     C: in out Container.Instance;
-     O: Unsigned_32;
-     N: Name_Field_Assistent;
-     B: Unsigned_32;
-     P: Unsigned_32
-    ) is
-    
-   begin
-      Item.Set_Item_Type (C, O, Types.Null_Type);
-      Item.Set_Item_Options (C, O, Types.No_Item_Options);
-      Item.Set_Item_Flags (C, O, Types.No_Item_Flags);
-      Item.Set_Item_Byte_Count (C, O, B);
-      Item.Set_Item_Small_Value (C, O, 0);
-      Item.Set_Item_Parent_Offset (C, O, P);
-      Item.Set_Item_Name (C, O, N);
-   end Create_Null_Type;
-
 end BRBON.Item;
