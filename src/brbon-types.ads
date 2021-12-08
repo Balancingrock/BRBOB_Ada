@@ -92,7 +92,7 @@ package BRBON.Types is
    -- ==========================================================================
    -- For items
 
-   Minimum_Item_Byte_Count: constant Unsigned_32 := 32;
+   Minimum_Item_Byte_Count: constant Unsigned_32 := 16;
 
 
    type Item_Type is
@@ -144,6 +144,33 @@ package BRBON.Types is
    function To_Item_Type is new Ada.Unchecked_Conversion (Unsigned_8, Item_Type);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Type, Unsigned_8);
 
+   Item_Overhead_Byte_Count: Array (Item_Type) of Unsigned_32 :=
+     (
+      0,  -- Illegal
+      0,  -- Null
+      0,  -- Bool
+      0,  -- Int_8
+      0,  -- Int_16
+      0,  -- Int_32
+      8,  -- Int_64
+      0,  -- UInt_8
+      0,  -- UInt_16
+      0,  -- UInt_32
+      8,  -- UInt_64
+      0,  -- Float_32
+      8,  -- Float_64
+      8,  -- String (includes 4 bytes of the string itself)
+      8,  -- Crc_String
+      8,  -- Binary (includes 4 bytes of the binary itself)
+      8,  -- Crc_Binary
+      32, -- Array
+      8,  -- Dictionary
+      8,  -- Sequence
+      16, -- Table (no column descriptors included)
+      16, -- UUID
+      0,  -- RGBA
+      8   -- Font (includes 2 bytes from the font & family)
+     );
 
    type Item_Flags is
       record

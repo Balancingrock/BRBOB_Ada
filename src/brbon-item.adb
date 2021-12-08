@@ -17,6 +17,10 @@ package body BRBON.Item is
    Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
    Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
    Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
+                                                       
+   -- TTOOFFNC BBBBBBBB
+   -- PPPPPPPP SSSSSSSS                   
+   
    --
    Name_Field_CRC_Offset: constant Unsigned_32 := 16;
    Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 18;
@@ -24,8 +28,6 @@ package body BRBON.Item is
 
 
    -- Internal specifications
-
-   procedure Assign_Item_Name (C: in out Container.Instance; O: Unsigned_32; N: Name_Field_Assistent);
    
    procedure Create_Null_Type (C: in out Container.Instance; O: Unsigned_32; N: Name_Field_Assistent; B: Unsigned_32; P: Unsigned_32);
    
@@ -57,7 +59,7 @@ package body BRBON.Item is
 
       case T is
          when Types.Illegal =>
-            Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "");
+            Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create illegal item type");
          when Types.Null_Type =>
             Create_Null_Type (C, O, N, B, P);
          when others =>
@@ -178,10 +180,12 @@ package body BRBON.Item is
    
    procedure Set_Item_Name (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Name_Field_Assistent) is
    begin
-      C.Set_Unsigned_8 (Item_Offset + Name_Field_Byte_Count_Offset, Value.Name_Field_Byte_Count);
-      C.Set_Unsigned_16 (Item_Offset + Name_Field_CRC_Offset, Value.CRC);
-      C.Set_Unsigned_8 (Item_Offset + Name_Field_ASCII_Byte_Count_Offset, Value.Ascii_Code'Length);
-      C.Set_Unsigned_8_Array (Item_Offset + Name_Field_ASCII_Code_Offset, Value.Ascii_Code);
+      if Value.Name_Field_Byte_Count > 0 then
+         C.Set_Unsigned_8 (Item_Offset + Name_Field_Byte_Count_Offset, Value.Name_Field_Byte_Count);
+         C.Set_Unsigned_16 (Item_Offset + Name_Field_CRC_Offset, Value.CRC);
+         C.Set_Unsigned_8 (Item_Offset + Name_Field_ASCII_Byte_Count_Offset, Unsigned_8 (Value.Ascii_Code'Length));
+         C.Set_Unsigned_8_Array (Item_Offset + Name_Field_ASCII_Code_Offset, Value.Ascii_Code (1 .. Unsigned_32 (Value.Ascii_Byte_Count)));
+      end if;
    end Set_Item_Name;
    
    
@@ -203,13 +207,27 @@ package body BRBON.Item is
    end Set_Item_Name_String;
    
    
+   --
+   function Get_Minimum_Item_Byte_Count (NFA: Name_Field_Assistent) return Unsigned_32 is
+   begin
+      return Unsigned_32 (NFA.Name_Field_Byte_Count) + Types.Minimum_Item_Byte_Count;
+   end Get_Minimum_Item_Byte_Count;
    
    function Create_Name_Field_Assistent (S: String) return Name_Field_Assistent is
 
-      Assistent: Name_Field_Assistent (S'Length);
+      Assistent: Name_Field_Assistent;
       Index: Unsigned_32 := 1;
       
    begin
+      
+      -- Avoid empty names
+      --
+      if S'Length = 0 then
+         Assistent.CRC := 0;
+         Assistent.Name_Field_Byte_Count := 0;
+         Assistent.Ascii_Byte_Count := 0;
+         return Assistent;
+      end if;
       
       -- Don't accept too long names
       --
@@ -217,6 +235,10 @@ package body BRBON.Item is
          Ada.Exceptions.Raise_Exception (Name_Error'Identity, "Name length exceeds maximum (" & Types.Max_Name_Length'Image & ")");
       end if;
 
+      -- Set the actual name length
+      --
+      Assistent.Ascii_Byte_Count := Unsigned_8 (S'Length);
+      
       -- Set the CRC
       --
       Assistent.CRC := CRC_Package.Calculate_CRC_16 (S);
@@ -231,70 +253,23 @@ package body BRBON.Item is
 
       -- Set the field size
       --
-      if S'Length > 0 then
-         Assistent.Name_Field_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_Of_8 (3 + S'Length);
-      else
-         Assistent.Name_Field_Byte_Count := 0;
-      end if;
+      Assistent.Name_Field_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_Of_8 (3 + S'Length);
 
       return Assistent;
 
    end Create_Name_Field_Assistent;
 
    
-   function Get_Quick_Check_Value (NFA: in out Name_Field_Assistent) return Unsigned_32 is
+   function Get_Quick_Check_Value (NFA: Name_Field_Assistent) return Unsigned_32 is
    begin
       raise Implementation;
       return 0;
    end Get_Quick_Check_Value;
    
    
-   function Item_Byte_Count_For_Minimum_Length_Payload (T: Types.Item_Type; N: Name_Field_Assistent) return Unsigned_32 is
-      Byte_Count: Unsigned_32 := Types.Minimum_Item_Byte_Count;
-   begin
-      Byte_Count := Byte_Count + Unsigned_32 (N.Name_Field_Byte_Count);
-      case T is
-         when Types.Illegal => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot determine minimum byte count for illegal item-type.");
-         when Types.Null_Type => Byte_Count := Byte_Count + 0;
-         when Types.Bool_Type => Byte_Count := Byte_Count + 0;
-         when Types.Int_8_Type => Byte_Count := Byte_Count + 0;
-         when Types.Int_16_Type => Byte_Count := Byte_Count + 0;
-         when Types.Int_32_Type => Byte_Count := Byte_Count + 0;
-         when Types.Int_64_Type => Byte_Count := Byte_Count + 8;
-         when Types.UInt_8_Type => Byte_Count := Byte_Count + 0;
-         when Types.UInt_16_Type => Byte_Count := Byte_Count + 0;
-         when Types.UInt_32_Type => Byte_Count := Byte_Count + 0;
-         when Types.UInt_64_Type => Byte_Count := Byte_Count + 8;
-         when Types.Float_32_Type => Byte_Count := Byte_Count + 0;
-         when Types.Float_64_Type => Byte_Count := Byte_Count + 8;
-         when Types.String_Type => Byte_Count := Byte_Count + 8;
-         when Types.Crc_String_Type => Byte_Count := Byte_Count + 16;
-         when Types.Binary_Type => Byte_Count := Byte_Count + 8;
-         when Types.Crc_Binary_Type => Byte_Count := Byte_Count + 16;
-         when Types.Array_Type => Byte_Count := Byte_Count + 24;
-         when Types.Dictionary_Type => Byte_Count := Byte_Count + 16;
-         when Types.Sequence_Type => Byte_Count := Byte_Count + 16;
-         when Types.Table_Type => Byte_Count := Byte_Count + 40;
-         when Types.UUID_Type => Byte_Count := Byte_Count + 16;
-         when Types.RGBA_Type => Byte_Count := Byte_Count + 0;
-         when Types.Font_Type => Byte_Count := Byte_Count + 16;
-      end case;
-      return Byte_Count;            
-   end Item_Byte_Count_For_Minimum_Length_Payload;
-   
-   
    -- ==========================================================================
    -- Internal bodies
    -- ==========================================================================
-
-   
-   procedure Assign_Item_Name (C: in out Container.Instance; O: Unsigned_32; N: Name_Field_Assistent) is
-   begin
-      C.Set_Unsigned_8 (O + Name_Field_Byte_Count_Offset, N.Name_Field_Byte_Count);
-      C.Set_Unsigned_16 (O + Name_Field_CRC_Offset, N.CRC);
-      C.Set_Unsigned_8 (O + Name_Field_ASCII_Byte_Count_Offset, N.Ascii_Code'Length);
-      C.Set_Unsigned_8_Array (O + Name_Field_ASCII_Code_Offset, N.Ascii_Code);
-   end Assign_Item_Name;
    
    
    procedure Create_Null_Type
@@ -313,7 +288,7 @@ package body BRBON.Item is
       Item.Set_Item_Byte_Count (C, O, B);
       Item.Set_Item_Small_Value (C, O, 0);
       Item.Set_Item_Parent_Offset (C, O, P);
-      Item.Set_Item_Name (C, O,  N);
+      Item.Set_Item_Name (C, O, N);
    end Create_Null_Type;
 
 end BRBON.Item;

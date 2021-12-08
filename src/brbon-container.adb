@@ -361,7 +361,9 @@ package body BRBON.Container is
       subtype Str_T is String (1 .. Value'Length);
       function To_Arr_T is new Ada.Unchecked_Conversion (Str_T, Arr_T);
    begin
-      S.Data (Offset .. Offset + Value'Length - 1) := To_Arr_T (Value);
+      if Value'Length > 0 then
+         S.Data (Offset .. Offset + Value'Length - 1) := To_Arr_T (Value);
+      end if;
    end Set_String;
 
 
@@ -373,7 +375,9 @@ package body BRBON.Container is
 
    procedure Set_Unsigned_8_Array (S: in out Instance'Class; Offset: Unsigned_32; Value: Array_Of_Unsigned_8) is
    begin
-      S.Data (Offset .. Offset + Value'Last) := Value;
+      if Value'Length > 0 then
+         S.Data (Offset .. Offset + Value'Length - 1) := Value;
+      end if;
    end Set_Unsigned_8_Array;
 
 

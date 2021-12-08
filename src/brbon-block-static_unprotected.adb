@@ -152,6 +152,7 @@ package body BRBON.Block.Static_Unprotected is
    procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) is
 
       Name_Assistent: Item.Name_Field_Assistent := Item.Create_Name_Field_Assistent (With_Name);
+      Item_Byte_Count: Unsigned_32;
 
    begin
 
@@ -167,9 +168,16 @@ package body BRBON.Block.Static_Unprotected is
          Ada.Exceptions.Raise_Exception (Name_Error'Identity, "Name length exceeds maximum (" & Types.Max_Name_Length'Image & ")");
       end if;
 
+      -- Determine the byte count of the new item
+      --
+      Item_Byte_Count :=
+        Item.Get_Minimum_Item_Byte_Count (Name_Assistent)
+        + Types.Item_Overhead_Byte_Count (Of_Type)
+        + Utils.Round_Up_To_Nearest_Multiple_of_8 (With_Byte_Count);
+
       -- Ensure the type fits in the available area
       --
-      if Item.Item_Byte_Count_For_Minimum_Length_Payload (Of_Type, Name_Assistent) > I.Free_Area_Byte_Count then
+      if Item_Byte_Count > I.Free_Area_Byte_Count then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "Block storage insufficient for requested byte count");
       end if;
 
@@ -179,7 +187,7 @@ package body BRBON.Block.Static_Unprotected is
                         In_Container     => I.Container,
                         At_Offset        => I.First_Free_Byte_In_Payload,
                         With_Name        => Name_Assistent,
-                        Using_Byte_Count => With_Byte_Count,
+                        Using_Byte_Count => Item_Byte_Count,
                         Parent_Offset    => 0);
 
       -- Set the free byte pointer

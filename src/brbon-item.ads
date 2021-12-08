@@ -1,5 +1,6 @@
 with Ada.Unchecked_Conversion;
 
+with System;
 with Interfaces; use Interfaces;
 
 with BRBON.Types;
@@ -9,19 +10,13 @@ with BRBON.Container;
 package BRBON.Item is
 
 
-   type Name_Field_Assistent (String_Byte_Count: Unsigned_32) is private;
-
-   function Get_Quick_Check_Value (NFA: in out Name_Field_Assistent) return Unsigned_32;
+   type Name_Field_Assistent is private;
 
    function Create_Name_Field_Assistent (S: String) return Name_Field_Assistent;
 
+   function Get_Quick_Check_Value (NFA: Name_Field_Assistent) return Unsigned_32;
 
-   -- Returns the byte count of an item if it will have the smallest size payload possible.
-   -- For composite/container types this means 1 (smallest possible) child item, element or field.
-   -- Note that for composite/container types this will error on the low side, actual byte counts
-   -- will usually need to be much higher.
-   --
-   function Item_Byte_Count_For_Minimum_Length_Payload (T: Types.Item_Type; N: Name_Field_Assistent) return Unsigned_32;
+   function Get_Minimum_Item_Byte_Count (NFA: Name_Field_Assistent) return Unsigned_32;
 
 
    -- Creates the layout for the requested type in the container at the requested offset.
@@ -104,11 +99,24 @@ package BRBON.Item is
 
 private
 
-   type Name_Field_Assistent (String_Byte_Count: Unsigned_32) is tagged
+   Tag_Length: constant := Standard'Address_Size / System.Storage_Unit;
+
+   type Name_Field_Assistent is
       record
          CRC: Unsigned_16;
          Name_Field_Byte_Count: Unsigned_8;
-         Ascii_Code: Types.Array_Of_Unsigned_8 (1 .. String_Byte_Count);
+         Ascii_Code: Types.Array_Of_Unsigned_8 (1 .. 245);
+         Ascii_Byte_Count: Unsigned_8;
+      end record;
+
+   for Name_Field_Assistent'Size use Standard'Address_Size + 16 + 8 + 245*8 + 8;
+
+   for Name_Field_Assistent use
+      record
+         CRC                   at Tag_Length + 0 range 0..15;
+         Name_Field_Byte_Count at Tag_Length + 2 range 0..7;
+         Ascii_Code            at Tag_Length + 3 range 0..(245*8-1);
+         Ascii_Byte_Count      at Tag_Length + 248 range 0..7;
       end record;
 
 end BRBON.Item;
