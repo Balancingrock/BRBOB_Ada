@@ -10,5 +10,10 @@ library project Brbon is
       for Vcs_Kind use "git";
    end Ide;
 
+   for Source_Files use ("brbon.ads", "brbon-block.adb", "brbon-block.ads", "brbon-block-create_single_item_block_header.adb", "brbon-block-static_unprotected.adb", "brbon-block-static_unprotected.ads", "brbon-configure.ads",
+      "brbon-container.adb", "brbon-container.ads", "brbon-footer.ads", "brbon-header.ads", "brbon-item.adb", "brbon-item.ads", "brbon-item-null_type.adb", "brbon-item-null_type.ads", "brbon-name_field_assistent.adb",
+      "brbon-name_field_assistent.ads", "brbon-types.ads", "brbon-utils.adb", "brbon-utils.ads", "color_package.ads", "crc_package.adb", "crc_package.ads", "font_package.ads", "pointer_math.ads", "portal_package.adb",
+      "portal_package.ads", "serializable.adb", "serializable.ads", "uuid_package.ads");
+
 end Brbon;
 
