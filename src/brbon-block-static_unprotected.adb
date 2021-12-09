@@ -185,7 +185,7 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Create the item structure
       --
-      Item.Create_Item (Of_Type          => Of_Type,
+      Item.Create_Item_Layout (Of_Type          => Of_Type,
                         In_Container     => I.Container,
                         At_Offset        => I.First_Free_Byte_In_Payload,
                         With_Name        => Name_Assistent,

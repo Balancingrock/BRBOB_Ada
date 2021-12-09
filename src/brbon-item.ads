@@ -10,9 +10,10 @@ with BRBON.Name_Field_Assistent;
 
 package BRBON.Item is
 
+
    -- Creates the layout for the requested type in the container at the requested offset.
    --
-   procedure Create_Item
+   procedure Create_Item_Layout
     (
      In_Container: in out Container.Instance;
      At_Offset: Unsigned_32;
@@ -22,6 +23,8 @@ package BRBON.Item is
      Parent_Offset: Unsigned_32 := 0
     );
 
+
+   -- Fixed layout
 
    function Get_Type (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Type;
    pragma Inline (Get_Type);
@@ -44,18 +47,6 @@ package BRBON.Item is
    function Get_Parent_Offset (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_Parent_Offset);
 
-   function Get_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16;
-   pragma Inline (Get_Name_CRC);
-
-   function Get_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
-   pragma Inline (Get_Name_Byte_Count);
-
-   function Get_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32) return String;
-   pragma Inline (Get_Name_String);
-
-   function Get_Name_Quick_Check_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
-   pragma Inline (Get_Name_Quick_Check_Value);
-
    procedure Set_Type (C: in out Container.Instance; Item_Offset: Unsigned_32; Value: Types.Item_Type);
    pragma Inline (Set_Type);
 
@@ -77,7 +68,22 @@ package BRBON.Item is
    procedure Set_Parent_Offset (C: Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_32);
    pragma Inline (Set_Parent_Offset);
 
+
+   -- Name Field access
+
    procedure Set_Name (C: Container.Instance; Item_Offset: Unsigned_32; Value: Name_Field_Assistent.Instance);
+
+   function Get_Name_Quick_Check_Value (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Get_Name_Quick_Check_Value);
+
+   function Get_Name_CRC (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16;
+   pragma Inline (Get_Name_CRC);
+
+   function Get_Name_Byte_Count (C: in out Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
+   pragma Inline (Get_Name_Byte_Count);
+
+   function Get_Name_String (C: in out Container.Instance; Item_Offset: Unsigned_32) return String;
+   pragma Inline (Get_Name_String);
 
    procedure Set_Name_CRC (C: Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_16);
    pragma Inline (Set_Name_CRC);
@@ -87,5 +93,6 @@ package BRBON.Item is
 
    procedure Set_Name_String (C: Container.Instance; Item_Offset: Unsigned_32; Value: String);
    pragma Inline (Set_Name_String);
+
 
 end BRBON.Item;

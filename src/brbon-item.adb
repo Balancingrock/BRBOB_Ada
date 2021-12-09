@@ -37,7 +37,7 @@ package body BRBON.Item is
    -- ==========================================================================
 
    
-   procedure Create_Item
+   procedure Create_Item_Layout
     (
      In_Container: in out Container.Instance;
      At_Offset: Unsigned_32;
@@ -111,7 +111,7 @@ package body BRBON.Item is
             Container.Set_Unsigned_32 (C, Value_Offset, 0);
       end case;
 
-   end Create_Item;
+   end Create_Item_Layout;
 
    
    function Get_Type (C: in out Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Type is
