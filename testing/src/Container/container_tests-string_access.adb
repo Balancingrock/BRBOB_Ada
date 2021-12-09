@@ -8,10 +8,10 @@ function String_Access (Count: in out Integer) return Test_Result is
 
 begin
 
-   Container.Set_String (0, Str);
+   Set_String (Container, 0, Str);
 
    declare
-      Act: String := Container.Get_String (0, 5);
+      Act: String := Get_String (Container, 0, 5);
    begin
       if Act /= Str then
          Put_Line (" - Failed, Expected: " & Str & ", Found: " & Act);

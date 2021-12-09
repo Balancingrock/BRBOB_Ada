@@ -42,7 +42,7 @@ begin
    B.Header_Set_Type (Types.Single_Item);
    B.Header_Set_Options (Options);
 
-   B.Header_Set_Byte_Count (B.Container.Byte_Count);
+   B.Header_Set_Byte_Count (Container.Byte_Count (B.Container));
    B.Header_Set_Header_Byte_Count (Header_Byte_Count); -- Type 1 does not use the type dependent header or the field storage
    B.Header_Set_Encrypted_Header_Byte_Count (0);
 

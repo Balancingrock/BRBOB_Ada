@@ -14,12 +14,12 @@ function Read_Write (Count: in out Integer) return Test_Result is
 
 begin
 
-   Container.Set_String (0, Str);
+   Set_String (Container, 0, Str);
 
    -- Write file
    --
    begin
-      Container.Write_To_File (Path);
+      Write_To_File (Container, Path);
    exception
       when Ada.IO_Exceptions.Name_Error =>
          Put_Line (" - Failed: Cannot store file in given path: " & Path);
@@ -30,7 +30,7 @@ begin
    --
    declare
       Second: Instance := Factory (Buffer'Access, Path, Machine_Endianness);
-      Act: String := Second.Get_String (Offset => 0, Length => 5);
+      Act: String := Get_String (Second, Offset => 0, Length => 5);
    begin
       if Str /= Act then
          Put_Line (" - Failed, Read " & Act & " Expected: " & Str);

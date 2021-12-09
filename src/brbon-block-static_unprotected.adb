@@ -2,12 +2,14 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Ada.Unchecked_Conversion;
+with Ada.Exceptions;
 
 with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
 with BRBON.Footer;
 with BRBON.Header;
-with Ada.Exceptions;
+with BRBON.Name_Field_Assistent;
+
 
 
 package body BRBON.Block.Static_Unprotected is
@@ -121,7 +123,7 @@ package body BRBON.Block.Static_Unprotected is
 
 
       New_Block.First_Free_Byte_In_Payload := Unsigned_32 (Header_Byte_Count);
-      New_Block.Last_Free_Byte_In_Payload := New_Block.Container.Byte_Count - Footer.Footer_Byte_Count (Types.Single_Item) - 1;
+      New_Block.Last_Free_Byte_In_Payload := Container.Byte_Count (New_Block.Container) - Footer.Footer_Byte_Count (Types.Single_Item) - 1;
 
       return New_Block;
 
@@ -151,7 +153,7 @@ package body BRBON.Block.Static_Unprotected is
 
    procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) is
 
-      Name_Assistent: Item.Name_Field_Assistent := Item.Create_Name_Field_Assistent (With_Name);
+      Name_Assistent: Name_Field_Assistent.Instance := Name_Field_Assistent.Create_Name_Field_Assistent (With_Name);
       Item_Byte_Count: Unsigned_32;
 
    begin
@@ -171,7 +173,7 @@ package body BRBON.Block.Static_Unprotected is
       -- Determine the byte count of the new item
       --
       Item_Byte_Count :=
-        Item.Get_Minimum_Item_Byte_Count (Name_Assistent)
+        Name_Field_Assistent.Get_Minimum_Item_Byte_Count (Name_Assistent)
         + Types.Item_Overhead_Byte_Count (Of_Type)
         + Utils.Round_Up_To_Nearest_Multiple_of_8 (With_Byte_Count);
 
@@ -192,7 +194,7 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Set the free byte pointer
       --
-      I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Item_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
+      I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
 
    end Add_Root_Item;
 

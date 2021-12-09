@@ -9,7 +9,7 @@ function UInt64_Access (Count: in out Integer) return Test_Result is
 
    function Verify (Container: Instance; Location: Unsigned_32; Expected: Unsigned_64) return Test_Result is
 
-      Actual: Unsigned_64 := Container.Get_Unsigned_64 (Location);
+      Actual: Unsigned_64 := Get_Unsigned_64 (Container, Location);
 
    begin
 
@@ -43,13 +43,13 @@ function UInt64_Access (Count: in out Integer) return Test_Result is
 
       -- Step 2, assignment & test
 
-      Container.Set_Unsigned_64 (Location, Value);
+      Set_Unsigned_64 (Container, Location, Value);
       Result := Verify (Container, Location, Value);
       if Result = Failed then return Failed; end if;
 
       -- Undo the test
 
-      Container.Set_Unsigned_64 (Location, 0);
+      Set_Unsigned_64 (Container, Location, 0);
       Result := Verify (Container, Location, 0);
 
       return Passed;
@@ -78,8 +78,8 @@ begin
    if Result = Failed then return Failed; end if;
 
 
-   Big_Container.Set_Unsigned_64 (Offset => 0, Value => 16#0123456789ABCDEF#);
-   Big_Container.Set_Unsigned_64 (Offset => 8, Value => 16#1122334455667788#);
+   Set_Unsigned_64 (Big_Container, Offset => 0, Value => 16#0123456789ABCDEF#);
+   Set_Unsigned_64 (Big_Container, Offset => 8, Value => 16#1122334455667788#);
 
    TCount := 4;
    Result := Verify_Small_Bytes (Big_Container, 0, (16#01#, 16#23#, 16#45#, 16#67#, 16#89#, 16#AB#, 16#CD#, 16#EF#, 16#11#, 16#22#, 16#33#, 16#44#, 16#55#, 16#66#, 16#77#, 16#88#));
@@ -101,8 +101,8 @@ begin
    if Result = Failed then return Failed; end if;
 
 
-   Little_Container.Set_Unsigned_64 (Offset => 0, Value => 16#0123456789ABCDEF#);
-   Little_Container.Set_Unsigned_64 (Offset => 8, Value => 16#1122334455667788#);
+   Set_Unsigned_64 (Little_Container, Offset => 0, Value => 16#0123456789ABCDEF#);
+   Set_Unsigned_64 (Little_Container, Offset => 8, Value => 16#1122334455667788#);
 
    TCount := 8;
    Result := Verify_Small_Bytes (Little_Container, 0, (16#EF#, 16#CD#, 16#AB#, 16#89#, 16#67#, 16#45#, 16#23#, 16#01#, 16#88#, 16#77#, 16#66#, 16#55#, 16#44#, 16#33#, 16#22#, 16#11#));

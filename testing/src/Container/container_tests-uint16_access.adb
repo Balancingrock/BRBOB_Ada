@@ -10,7 +10,7 @@ function UInt16_Access (Count: in out Integer) return Test_Result is
 
    function Verify (Container: Instance; Location: Unsigned_32; Expected: Unsigned_16) return Test_Result is
 
-      Actual: Unsigned_16 := Container.Get_Unsigned_16 (Location);
+      Actual: Unsigned_16 := Get_Unsigned_16 (Container, Location);
 
    begin
 
@@ -44,13 +44,13 @@ function UInt16_Access (Count: in out Integer) return Test_Result is
 
       -- Step 2, assignment & test
 
-      Container.Set_Unsigned_16 (Location, Value);
+      Set_Unsigned_16 (Container, Location, Value);
       Result := Verify (Container, Location, Value);
       if Result = Failed then return Failed; end if;
 
       -- Undo the test
 
-      Container.Set_Unsigned_16 (Location, 0);
+      Set_Unsigned_16 (Container, Location, 0);
       Result := Verify (Container, Location, 0);
 
       return Passed;
@@ -79,8 +79,8 @@ begin
    if Result = Failed then return Failed; end if;
 
 
-   Big_Container.Set_Unsigned_16 (Offset => 0, Value => 16#0123#);
-   Big_Container.Set_Unsigned_16 (Offset => 2, Value => 16#ABCD#);
+   Set_Unsigned_16 (Big_Container, Offset => 0, Value => 16#0123#);
+   Set_Unsigned_16 (Big_Container, Offset => 2, Value => 16#ABCD#);
 
    TCount := 4;
    Result := Verify_Small_Bytes (Big_Container, 0, (16#01#, 16#23#, 16#AB#, 16#CD#));
@@ -102,8 +102,8 @@ begin
    if Result = Failed then return Failed; end if;
 
 
-   Little_Container.Set_Unsigned_16 (Offset => 0, Value => 16#0123#);
-   Little_Container.Set_Unsigned_16 (Offset => 2, Value => 16#ABCD#);
+   Set_Unsigned_16 (Little_Container, Offset => 0, Value => 16#0123#);
+   Set_Unsigned_16 (Little_Container, Offset => 2, Value => 16#ABCD#);
 
    TCount := 8;
    Result := Verify_Small_Bytes (Little_Container, 0, (16#23#, 16#01#, 16#CD#, 16#AB#));

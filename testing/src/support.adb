@@ -40,7 +40,7 @@ package body Support is
 
    begin
 
-      Container.Test_Support_Get_Bytes (Start => 0, Dest => Actual);
+      Test_Support_Get_Bytes (Container, Start => 0, Dest => Actual);
 
       if Actual /= Expected then
          Put_Line (" - Failed, Expected: " & Put_As_Line (Expected) & ", Found: " & Put_As_Line (Actual));

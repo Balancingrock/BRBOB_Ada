@@ -6,7 +6,7 @@ function Int8_Access (Count: in out Integer) return Test_Result is
 
 
    function Verify (Location: Unsigned_32; Expected: Integer_8) return Test_Result is
-      Actual: Integer_8 := Container.Get_Integer_8 (Location);
+      Actual: Integer_8 := Get_Integer_8 (Container, Location);
    begin
       if  Expected /= Actual then
          declare
@@ -34,13 +34,13 @@ function Int8_Access (Count: in out Integer) return Test_Result is
 
       -- Step 2, assignment & test
 
-      Container.Set_Integer_8 (Location, Value);
+      Set_Integer_8 (Container, Location, Value);
       Result := Verify (Location, Value);
       if Result = Failed then return Failed; end if;
 
       -- Undo the test
 
-      Container.Set_Integer_8 (Location, 0);
+      Set_Integer_8 (Container, Location, 0);
       Result := Verify (Location, 0);
 
       return Passed;
@@ -63,8 +63,8 @@ begin
    if Result = Failed then return Failed; end if;
 
 
-   Container.Set_Integer_8 (Offset => 0, Value => 5);
-   Container.Set_Integer_8 (Offset => 1, Value => 12);
+   Set_Integer_8 (Container, Offset => 0, Value => 5);
+   Set_Integer_8 (Container, Offset => 1, Value => 12);
 
    Result := Verify_Small_Bytes (Container, 0, (5, 12));
 

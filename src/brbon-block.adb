@@ -18,57 +18,57 @@ package body BRBON.Block is
 
    procedure Header_Set_Synchronization_Byte_1 (I: in out Instance) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Synchronization_Byte_1_Offset, Header.Synchronization_Byte_1_Expected_Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Synchronization_Byte_1_Offset, Header.Synchronization_Byte_1_Expected_Value);
    end Header_Set_Synchronization_Byte_1;
 
 
    function Header_Verify_Synchronization_Byte_1 (I: in out Instance) return Boolean is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Synchronization_Byte_1_Offset) = Header.Synchronization_Byte_1_Expected_Value;
+      return Container.Get_Unsigned_8 (I.Container, Header.Synchronization_Byte_1_Offset) = Header.Synchronization_Byte_1_Expected_Value;
    end Header_Verify_Synchronization_Byte_1;
 
 
    procedure Header_Set_Synchronization_Byte_2 (I: in out Instance) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Synchronization_Byte_2_Offset, Header.Synchronization_Byte_2_Expected_Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Synchronization_Byte_2_Offset, Header.Synchronization_Byte_2_Expected_Value);
    end Header_Set_Synchronization_Byte_2;
 
 
    function Header_Verify_Synchronization_Byte_2 (I: in out Instance) return Boolean is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Synchronization_Byte_2_Offset) = Header.Synchronization_Byte_2_Expected_Value;
+      return Container.Get_Unsigned_8 (I.Container, Header.Synchronization_Byte_2_Offset) = Header.Synchronization_Byte_2_Expected_Value;
    end Header_Verify_Synchronization_Byte_2;
 
 
    procedure Header_Set_Synchronization_Byte_3 (I: in out Instance) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Synchronization_Byte_3_Offset, Header.Synchronization_Byte_3_Expected_Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Synchronization_Byte_3_Offset, Header.Synchronization_Byte_3_Expected_Value);
    end Header_Set_Synchronization_Byte_3;
 
 
    function Header_Verify_Synchronization_Byte_3 (I: in out Instance) return Boolean is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Synchronization_Byte_3_Offset) = Header.Synchronization_Byte_3_Expected_Value;
+      return Container.Get_Unsigned_8 (I.Container, Header.Synchronization_Byte_3_Offset) = Header.Synchronization_Byte_3_Expected_Value;
    end Header_Verify_Synchronization_Byte_3;
 
 
    procedure Header_Set_Synchronization_Byte_4 (I: in out Instance) is
    begin
-      if I.Container.Uses_Endianness = Little then
-         I.Container.Set_Unsigned_8 (Header.Synchronization_Byte_4_Offset, Header.Synchronization_Byte_4_Little_Endian_Expected_Value);
+      if Container.Uses_Endianness (I.Container) = Little then
+         Container.Set_Unsigned_8 (I.Container, Header.Synchronization_Byte_4_Offset, Header.Synchronization_Byte_4_Little_Endian_Expected_Value);
       else
-         I.Container.Set_Unsigned_8 (Header.Synchronization_Byte_4_Offset, Header.Synchronization_Byte_4_Big_Endian_Expected_Value);
+         Container.Set_Unsigned_8 (I.Container, Header.Synchronization_Byte_4_Offset, Header.Synchronization_Byte_4_Big_Endian_Expected_Value);
       end if;
    end Header_Set_Synchronization_Byte_4;
 
 
    function Header_Verify_Synchronization_Byte_4 (I: in out Instance) return Boolean is
    begin
-      if I.Container.Get_Unsigned_8 (Header.Synchronization_Byte_4_Offset) = Header.Synchronization_Byte_4_Little_Endian_Expected_Value then
-         I.Container.Set_Data_Endianness (Little);
+      if Container.Get_Unsigned_8 (I.Container, Header.Synchronization_Byte_4_Offset) = Header.Synchronization_Byte_4_Little_Endian_Expected_Value then
+         Container.Set_Data_Endianness (I.Container, Little);
          return true;
-      elsif I.Container.Get_Unsigned_8 (Header.Synchronization_Byte_4_Offset) = Header.Synchronization_Byte_4_Big_Endian_Expected_Value then
-         I.Container.Set_Data_Endianness (Big);
+      elsif Container.Get_Unsigned_8 (I.Container, Header.Synchronization_Byte_4_Offset) = Header.Synchronization_Byte_4_Big_Endian_Expected_Value then
+         Container.Set_Data_Endianness (I.Container, Big);
          return true;
       else
          return false;
@@ -78,7 +78,7 @@ package body BRBON.Block is
 
    function Header_Get_Endianness (I: in out Instance) return Endianness is
    begin
-      return I.Container.Uses_Endianness;
+      return Container.Uses_Endianness (I.Container);
    end Header_Get_Endianness;
 
 
@@ -93,355 +93,355 @@ package body BRBON.Block is
 
    procedure Header_Set_Type (I: in out Instance; Value: Block_Type) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Type_Offset, To_Unsigned_16 (Value));
+      Container.Set_Unsigned_16 (I.Container, Header.Type_Offset, To_Unsigned_16 (Value));
    end Header_Set_Type;
 
 
    function Header_Get_Type (I: in out Instance) return Block_Type is
    begin
-      return To_Block_Type (I.Container.Get_Unsigned_16 (Header.Type_Offset));
+      return To_Block_Type (Container.Get_Unsigned_16 (I.Container, Header.Type_Offset));
    end Header_Get_Type;
 
 
    procedure Header_Set_Options (I: in out Instance; Value: Block_Options) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Options_Offset, To_Unsigned_16 (Value));
+      Container.Set_Unsigned_16 (I.Container, Header.Options_Offset, To_Unsigned_16 (Value));
    end Header_Set_Options;
 
 
    function Header_Get_Options (I: in out Instance) return Block_Options is
    begin
-      return To_Block_Options (I.Container.Get_Unsigned_16 (Header.Options_Offset));
+      return To_Block_Options (Container.Get_Unsigned_16 (I.Container, Header.Options_Offset));
    end Header_Get_Options;
 
 
    procedure Header_Set_Byte_Count (I: in out Instance; Value: Unsigned_32) is
    begin
-      I.Container.Set_Unsigned_32 (Header.Byte_Count_Offset, Value);
+      Container.Set_Unsigned_32 (I.Container, Header.Byte_Count_Offset, Value);
    end Header_Set_Byte_Count;
 
 
    function Header_Get_Byte_Count (I: in out Instance) return Unsigned_32 is
    begin
-      return I.Container.Get_Unsigned_32 (Header.Byte_Count_Offset);
+      return Container.Get_Unsigned_32 (I.Container, Header.Byte_Count_Offset);
    end Header_Get_Byte_Count;
 
 
    procedure Header_Set_Header_Byte_Count (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Header_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Header_Byte_Count_Offset, Value);
    end Header_Set_Header_Byte_Count;
 
 
    function Header_Get_Header_Byte_Count (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Header_Byte_Count_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Header_Byte_Count_Offset);
    end Header_Get_Header_Byte_Count;
 
 
    procedure Header_Set_Encrypted_Header_Byte_Count (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Encrypted_Header_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Encrypted_Header_Byte_Count_Offset, Value);
    end Header_Set_Encrypted_Header_Byte_Count;
 
 
    function Header_Get_Encrypted_Header_Byte_Count (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Encrypted_Header_Byte_Count_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Encrypted_Header_Byte_Count_Offset);
    end Header_Get_Encrypted_Header_Byte_Count;
 
 
    procedure Header_Set_Origin_Crc16 (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Origin_CRC16_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Origin_CRC16_Offset, Value);
    end Header_Set_Origin_Crc16;
 
 
    function Header_Get_Origin_Crc16 (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Origin_CRC16_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Origin_CRC16_Offset);
    end Header_Get_Origin_Crc16;
 
 
    procedure Header_Set_Identifier_Crc16 (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Identifier_CRC16_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Identifier_CRC16_Offset, Value);
    end Header_Set_Identifier_Crc16;
 
 
    function Header_Get_Identifier_Crc16 (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Identifier_CRC16_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Identifier_CRC16_Offset);
    end Header_Get_Identifier_Crc16;
 
 
    procedure Header_Set_Extension_Crc16 (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Extension_CRC16_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Extension_CRC16_Offset, Value);
    end Header_Set_Extension_Crc16;
 
 
    function Header_Get_Extension_Crc16 (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Extension_CRC16_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Extension_CRC16_Offset);
    end Header_Get_Extension_Crc16;
 
 
    procedure Header_Set_Path_Prefix_Crc16 (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Path_Prefix_CRC16_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Path_Prefix_CRC16_Offset, Value);
    end Header_Set_Path_Prefix_Crc16;
 
 
    function Header_Get_Path_Prefix_Crc16 (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Path_Prefix_CRC16_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Path_Prefix_CRC16_Offset);
    end Header_Get_Path_Prefix_Crc16;
 
 
    procedure Header_Set_Origin_Byte_Count (I: in out Instance; Value: Unsigned_8) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Origin_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Origin_Byte_Count_Offset, Value);
    end Header_Set_Origin_Byte_Count;
 
 
    function Header_Get_Origin_Byte_Count (I: in out Instance) return Unsigned_8 is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Origin_Byte_Count_Offset);
+      return Container.Get_Unsigned_8 (I.Container, Header.Origin_Byte_Count_Offset);
    end Header_Get_Origin_Byte_Count;
 
 
    procedure Header_Set_Identifier_Byte_Count (I: in out Instance; Value: Unsigned_8) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Identifier_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Identifier_Byte_Count_Offset, Value);
    end Header_Set_Identifier_Byte_Count;
 
 
    function Header_Get_Identifier_Byte_Count (I: in out Instance) return Unsigned_8 is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Identifier_Byte_Count_Offset);
+      return Container.Get_Unsigned_8 (I.Container, Header.Identifier_Byte_Count_Offset);
    end Header_Get_Identifier_Byte_Count;
 
 
    procedure Header_Set_Extension_Byte_Count (I: in out Instance; Value: Unsigned_8) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Extension_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Extension_Byte_Count_Offset, Value);
    end Header_Set_Extension_Byte_Count;
 
 
    function Header_Get_Extension_Byte_Count (I: in out Instance) return Unsigned_8 is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Extension_Byte_Count_Offset);
+      return Container.Get_Unsigned_8 (I.Container, Header.Extension_Byte_Count_Offset);
    end Header_Get_Extension_Byte_Count;
 
 
    procedure Header_Set_Path_Prefix_Byte_Count (I: in out Instance; Value: Unsigned_8) is
    begin
-      I.Container.Set_Unsigned_8 (Header.Path_Prefix_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_8 (I.Container, Header.Path_Prefix_Byte_Count_Offset, Value);
    end Header_Set_Path_Prefix_Byte_Count;
 
 
    function Header_Get_Path_Prefix_Byte_Count (I: in out Instance) return Unsigned_8 is
    begin
-      return I.Container.Get_Unsigned_8 (Header.Path_Prefix_Byte_Count_Offset);
+      return Container.Get_Unsigned_8 (I.Container, Header.Path_Prefix_Byte_Count_Offset);
    end Header_Get_Path_Prefix_Byte_Count;
 
 
    procedure Header_Set_Origin_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Origin_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Origin_Offset_Offset, Value);
    end Header_Set_Origin_Offset;
 
 
    function Header_Get_Origin_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Origin_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Origin_Offset_Offset);
    end Header_Get_Origin_Offset;
 
 
    procedure Header_Set_Identifier_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Identifier_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Identifier_Offset_Offset, Value);
    end Header_Set_Identifier_Offset;
 
 
    function Header_Get_Identifier_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Identifier_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Identifier_Offset_Offset);
    end Header_Get_Identifier_Offset;
 
 
    procedure Header_Set_Extension_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Extension_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Extension_Offset_Offset, Value);
    end Header_Set_Extension_Offset;
 
 
    function Header_Get_Extension_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Extension_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Extension_Offset_Offset);
    end Header_Get_Extension_Offset;
 
 
    procedure Header_Set_Path_Prefix_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Path_Prefix_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Path_Prefix_Offset_Offset, Value);
    end Header_Set_Path_Prefix_Offset;
 
 
    function Header_Get_Path_Prefix_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Path_Prefix_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Path_Prefix_Offset_Offset);
    end Header_Get_Path_Prefix_Offset;
 
 
    procedure Header_Set_Acquisition_URL_Byte_Count (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Acquisition_URL_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Acquisition_URL_Byte_Count_Offset, Value);
    end Header_Set_Acquisition_URL_Byte_Count;
 
 
    function Header_Get_Acquisition_URL_Byte_Count (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Acquisition_URL_Byte_Count_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Acquisition_URL_Byte_Count_Offset);
    end Header_Get_Acquisition_URL_Byte_Count;
 
 
    procedure Header_Set_Acquisition_URL_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Acquisition_URL_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Acquisition_URL_Offset_Offset, Value);
    end Header_Set_Acquisition_URL_Offset;
 
 
    function Header_Get_Acquisition_URL_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Acquisition_URL_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Acquisition_URL_Offset_Offset);
    end Header_Get_Acquisition_URL_Offset;
 
 
    procedure Header_Set_Target_List_Byte_Count (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Target_List_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Target_List_Byte_Count_Offset, Value);
    end Header_Set_Target_List_Byte_Count;
 
 
    function Header_Get_Target_List_Byte_Count (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Target_List_Byte_Count_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Target_List_Byte_Count_Offset);
    end Header_Get_Target_List_Byte_Count;
 
 
    procedure Header_Set_Target_List_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Target_List_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Target_List_Offset_Offset, Value);
    end Header_Set_Target_List_Offset;
 
 
    function Header_Get_Target_List_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Target_List_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Target_List_Offset_Offset);
    end Header_Get_Target_List_Offset;
 
 
    procedure Header_Set_Public_Key_URL_Byte_Count (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Public_Key_URL_Byte_Count_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Public_Key_URL_Byte_Count_Offset, Value);
    end Header_Set_Public_Key_URL_Byte_Count;
 
 
    function Header_Get_Public_Key_URL_Byte_Count (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Public_Key_URL_Byte_Count_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Public_Key_URL_Byte_Count_Offset);
    end Header_Get_Public_Key_URL_Byte_Count;
 
 
    procedure Header_Set_Public_Key_URL_Offset (I: in out Instance; Value: Unsigned_16) is
    begin
-      I.Container.Set_Unsigned_16 (Header.Public_Key_URL_Offset_Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Header.Public_Key_URL_Offset_Offset, Value);
    end Header_Set_Public_Key_URL_Offset;
 
 
    function Header_Get_Public_Key_URL_Offset (I: in out Instance) return Unsigned_16 is
    begin
-      return I.Container.Get_Unsigned_16 (Header.Public_Key_URL_Offset_Offset);
+      return Container.Get_Unsigned_16 (I.Container, Header.Public_Key_URL_Offset_Offset);
    end Header_Get_Public_Key_URL_Offset;
 
 
    procedure Header_Set_Creation_Timestamp (I: in out Instance; Value: Unsigned_64) is
    begin
-      I.Container.Set_Unsigned_64 (Header.Creation_Timestamp_Offset, Value);
+      Container.Set_Unsigned_64 (I.Container, Header.Creation_Timestamp_Offset, Value);
    end Header_Set_Creation_Timestamp;
 
 
    function Header_Get_Creation_Timestamp (I: in out Instance) return Unsigned_64 is
    begin
-      return I.Container.Get_Unsigned_64 (Header.Creation_Timestamp_Offset);
+      return Container.Get_Unsigned_64 (I.Container, Header.Creation_Timestamp_Offset);
    end Header_Get_Creation_Timestamp;
 
 
    procedure Header_Set_Modification_Timestamp (I: in out Instance; Value: Unsigned_64) is
    begin
-      I.Container.Set_Unsigned_64 (Header.Modification_Timestamp_Offset, Value);
+      Container.Set_Unsigned_64 (I.Container, Header.Modification_Timestamp_Offset, Value);
    end Header_Set_Modification_Timestamp;
 
 
    function Header_Get_Modification_Timestamp (I: in out Instance) return Unsigned_64 is
    begin
-      return I.Container.Get_Unsigned_64 (Header.Modification_Timestamp_Offset);
+      return Container.Get_Unsigned_64 (I.Container, Header.Modification_Timestamp_Offset);
    end Header_Get_Modification_Timestamp;
 
 
    procedure Header_Set_Expiry_Timestamp (I: in out Instance; Value: Unsigned_64) is
    begin
-      I.Container.Set_Unsigned_64 (Header.Expiry_Timestamp_Offset, Value);
+      Container.Set_Unsigned_64 (I.Container, Header.Expiry_Timestamp_Offset, Value);
    end Header_Set_Expiry_Timestamp;
 
 
    function Header_Get_Expiry_Timestamp (I: in out Instance) return Unsigned_64 is
    begin
-      return I.Container.Get_Unsigned_64 (Header.Expiry_Timestamp_Offset);
+      return Container.Get_Unsigned_64 (I.Container, Header.Expiry_Timestamp_Offset);
    end Header_Get_Expiry_Timestamp;
 
 
    procedure Header_Set_Reserved_1a (I: in out Instance; Value: Unsigned_32) is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Reserved_1a_Distance_Before_Header_End;
    begin
-      I.Container.Set_Unsigned_32 (Offset, Value);
+      Container.Set_Unsigned_32 (I.Container, Offset, Value);
    end Header_Set_Reserved_1a;
 
 
    function Header_Get_Reserved_1a (I: in out Instance) return Unsigned_32 is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Reserved_1a_Distance_Before_Header_End;
    begin
-      return I.Container.Get_Unsigned_32 (Offset);
+      return Container.Get_Unsigned_32 (I.Container, Offset);
    end Header_Get_Reserved_1a;
 
 
    procedure Header_Set_Reserved_1b (I: in out Instance; Value: Unsigned_16) is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Reserved_1b_Distance_Before_Header_End;
    begin
-      I.Container.Set_Unsigned_16 (Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Offset, Value);
    end Header_Set_Reserved_1b;
 
 
    function Header_Get_Reserved_1b (I: in out Instance) return Unsigned_16 is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Reserved_1b_Distance_Before_Header_End;
    begin
-      return I.Container.Get_Unsigned_16 (Offset);
+      return Container.Get_Unsigned_16 (I.Container, Offset);
    end Header_Get_Reserved_1b;
 
 
    procedure Header_Set_Header_Crc16 (I: in out Instance; Value: Unsigned_16) is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Header_CRC16_Distance_Before_Header_End;
    begin
-      I.Container.Set_Unsigned_16 (Offset, Value);
+      Container.Set_Unsigned_16 (I.Container, Offset, Value);
    end Header_Set_Header_Crc16;
 
 
    function Header_Get_Header_Crc16 (I: in out Instance) return Unsigned_16 is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Header_CRC16_Distance_Before_Header_End;
    begin
-      return I.Container.Get_Unsigned_16 (Offset);
+      return Container.Get_Unsigned_16 (I.Container, Offset);
    end Header_Get_Header_Crc16;
 
 
@@ -481,7 +481,7 @@ package body BRBON.Block is
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Warning'Identity, "String length exceeds available area");
             else
-               I.Container.Set_String (Offset, Str);
+               Container.Set_String (I.Container, Offset, Str);
                Offset := Offset + Unsigned_32 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
@@ -507,7 +507,7 @@ package body BRBON.Block is
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Warning'Identity, "String length exceeds available area");
             else
-               I.Container.Set_String (Offset, Str);
+               Container.Set_String (I.Container, Offset, Str);
                Offset := Offset + Unsigned_32 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
@@ -570,7 +570,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Origin;
 
@@ -594,7 +594,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Identifier;
 
@@ -618,7 +618,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Extension;
 
@@ -642,7 +642,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Path_Prefix;
 
@@ -666,7 +666,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Acqquisition_URL;
 
@@ -690,7 +690,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Target_List;
 
@@ -714,7 +714,7 @@ package body BRBON.Block is
       if Byte_Count = 0 then
          return "";
       else
-         return I.Container.Get_String (Offset, Byte_Count);
+         return Container.Get_String (I.Container, Offset, Byte_Count);
       end if;
    end Get_Public_Key_URL;
 
@@ -730,15 +730,15 @@ package body BRBON.Block is
 
    procedure Update_Block_CRC (I: in out Instance) is
       BC: constant Unsigned_32 := I.Header_Get_Byte_Count;
-      Crc: constant Unsigned_32 := I.Container.Get_CRC_32_Over_Range (Start => 0, Count => BC - 4);
+      Crc: constant Unsigned_32 := Container.Get_CRC_32_Over_Range (I.Container, Start => 0, Count => BC - 4);
    begin
-      I.Container.Set_Unsigned_32 (Offset => BC - 4, Value => Crc);
+      Container.Set_Unsigned_32 (I.Container, Offset => BC - 4, Value => Crc);
    end Update_Block_CRC;
 
 
    procedure Update_Header_CRC (I: in out Instance) is
       HC: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count);
-      Crc: Unsigned_16 := I.Container.Get_CRC_16_Over_Range (Start => 0, Count => HC);
+      Crc: Unsigned_16 := Container.Get_CRC_16_Over_Range (I.Container, Start => 0, Count => HC);
    begin
       I.Header_Set_Header_Crc16 (Crc);
    end Update_Header_CRC;
@@ -773,7 +773,7 @@ package body BRBON.Block is
    procedure Write_To_File (I: in out Instance; To_Path: String) is
    begin
       I.Ensure_Block_Consistency;
-      I.Container.Write_To_File (To_Path);
+      Container.Write_To_File (I.Container, To_Path);
    end Write_To_File;
 
 

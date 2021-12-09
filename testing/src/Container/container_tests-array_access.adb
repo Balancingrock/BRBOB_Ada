@@ -8,10 +8,10 @@ function Array_Access (Count: in out Integer) return Test_Result is
 
 begin
 
-   Container.Set_Unsigned_8_Array (0, Arr);
+   Set_Unsigned_8_Array (Container, 0, Arr);
 
    declare
-      Act: Array_Of_Unsigned_8 := Container.Get_Unsigned_8_Array (0, 3);
+      Act: Array_Of_Unsigned_8 := Get_Unsigned_8_Array (Container, 0, 3);
    begin
       if Act /= Arr then
          Put_Line (" - Failed, Expected: " & Put_As_Line (Arr) & ", Found: " & Put_As_Line (Act));
