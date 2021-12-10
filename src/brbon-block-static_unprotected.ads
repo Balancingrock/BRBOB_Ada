@@ -57,4 +57,13 @@ package BRBON.Block.Static_Unprotected is
 
    procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String);
 
+
+   -- Item Access
+
+   function Get_Bool (P: Portal) return Boolean;
+   procedure Set_Bool (P: Portal; Value: Boolean);
+   function Get_Int_8 (P: Portal) return Integer_8);
+   procedure Set_Int_8 (P: Portal; Value: Integer_8);
+
+
 end BRBON.Block.Static_Unprotected;

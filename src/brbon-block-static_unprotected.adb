@@ -14,6 +14,24 @@ with BRBON.Name_Field_Assistent;
 
 package body BRBON.Block.Static_Unprotected is
 
+
+   -- Body internals
+
+   function Get_Bool (C: Container.Instance; Item_Offset: Unsigned_32) return Boolean is
+   begin
+      return Container.Get_Bool (C, Item.Get_Value_Offset (C, Item_Offset));
+   end Get_Bool;
+
+   procedure Set_Bool (C: Container.Instance; Item_Offset: Unsigned_32; Value: Boolean) is
+   begin
+      Container.Set_Bool (C, Item.Get_Value_Offset (C, Item_Offset), Value);
+   end Set_Bool;
+
+
+
+
+   -- Implement API
+
    function Factory
       (
        Type_Of_Block: Block_Type;
