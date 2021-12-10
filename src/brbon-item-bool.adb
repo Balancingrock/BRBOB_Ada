@@ -8,7 +8,7 @@ package body BRBON.Item.Bool is
       With_Name: Name_Field_Assistent.Instance;
       Using_Byte_Count: Unsigned_32 := 0;
       Parent_Offset: Unsigned_32 := 0;
-      Value: Boolean
+      Initial_Value: Boolean := False
      ) is
 
    begin
@@ -23,7 +23,7 @@ package body BRBON.Item.Bool is
          Parent_Offset
         );
 
-      Set_Bool (C, At_Offset, Value);
+      Set_Bool (In_Container, At_Offset, Initial_Value);
 
    end Create_Layout;
 

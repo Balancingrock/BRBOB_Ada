@@ -4,7 +4,8 @@ with BRBON.Item;
 with BRBon.Container;
 with BRBON.Name_Field_Assistent;
 
-package BRBON.Item.Bool is
+
+package BRBON.Item.UInt_8 is
 
    procedure Create_Layout
     (
@@ -13,13 +14,13 @@ package BRBON.Item.Bool is
      With_Name: Name_Field_Assistent.Instance;
      Using_Byte_Count: Unsigned_32 := 0;
      Parent_Offset: Unsigned_32 := 0;
-     Initial_Value: Boolean := False
+     Initial_Value: Unsigned_8 := 0
     );
 
-   function Get_Bool (C: Container.Instance; Item_Offset: Unsigned_32) return Boolean;
-   pragma Inline (Get_Bool);
+   function Get_UInt_8 (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8;
+   pragma Inline (Get_UInt_8);
 
-   procedure Set_Bool (C: Container.Instance; Item_Offset: Unsigned_32; Value: Boolean);
-   pragma Inline (Set_Bool);
+   procedure Set_UInt_8 (C: Container.Instance; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   pragma Inline (Set_UInt_8);
 
-end BRBON.Item.Bool;
+end BRBON.Item.UInt_8;
