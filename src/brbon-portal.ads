@@ -13,7 +13,7 @@ private
 
    type Instance is
       record
-         Container: Container.Instance_Ptr;
+         Container: BRBON.Container.Instance_Ptr;
          Item_Offset: Unsigned_32;
       end record;
 

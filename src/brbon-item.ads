@@ -10,6 +10,112 @@ with BRBON.Name_Field_Assistent;
 
 package BRBON.Item is
 
+   -- ==========================================================================
+   -- Item offsets, relative to item start
+   -- ==========================================================================
+   --
+   -- Layout: TTOOFFNC BBBBBBBB PPPPPPPP SSSSSSSS
+
+   Type_Offset: constant Unsigned_32 := 0;                          -- 1 byte
+   Options_Offset: constant Unsigned_32 := 1;                       -- 1 byte
+   Flags_Offset: constant Unsigned_32 := 2;                         -- 1 byte
+   Name_Field_Byte_Count_Offset: constant Unsigned_32 := 3;         -- 1 byte
+   Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
+   Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
+   Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
+   Name_Field_Offset: constant Unsigned_32 := 16;
+
+
+   -- --------------------------------------------------------------------------
+   -- Name Field, relative to name field start
+   -- --------------------------------------------------------------------------
+   --
+   -- Layout: CCCCBBAA AAAAAAAA
+
+   Name_Field_CRC_Offset: constant Unsigned_32 := 0;
+   Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 2;
+   Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 3;         -- Up to 248 bytes
+
+
+   -- --------------------------------------------------------------------------
+   -- Value Offsets, relative to value start
+   -- --------------------------------------------------------------------------
+
+   -- String Type, relative to value start
+   --
+   String_Byte_Count_Offset: Unsigned_32 := 0;
+   String_Byte_Code_Offset: Unsigned_32 := 4;
+
+   -- CRC String Type, relative to value start
+   --
+   CRC_String_CRC_Offset: Unsigned_32 := 0;
+   CRC_String_Byte_Count_Offset: Unsigned_32 := 4;
+   CRC_String_Byte_Code_Offset: Unsigned_32 := 8;
+
+   -- Binary, relative to value start
+   --
+   Binary_Byte_Count_Offset: Unsigned_32 := 0;
+   Binary_Byte_Code_Offset: Unsigned_32 := 4;
+
+   -- CRC Binary Type, relative to value start
+   --
+   CRC_Binary_CRC_Offset: Unsigned_32 := 0;
+   CRC_Binary_Byte_Count_Offset: Unsigned_32 := 4;
+   CRC_Binary_Byte_Code_Offset: Unsigned_32 := 8;
+
+   -- Array, relative to value start
+   --
+   Array_Reserved_1_Offset: Unsigned_32 := 0;
+   Array_Element_Type_Offset: Unsigned_32 := 4;
+   Array_Reserved_2_Offset: Unsigned_32 := 5;
+   Array_Reserved_3_Offset: Unsigned_32 := 6;
+   Array_Element_Count_Offset: Unsigned_32 := 8;
+   Array_Element_Byte_Count_Offset: Unsigned_32 := 12;
+   Array_Element_Start_Offset: Unsigned_32 := 16;
+
+   -- Sequence, relative to value start
+   --
+   Sequence_Reserved_Offset: Unsigned_32 := 0;
+   Sequence_Item_Count_Offset: Unsigned_32 := 4;
+   Sequence_Items_Start_Offset: Unsigned_32 := 8;
+
+   -- Dictionary, relative to value start
+   --
+   Dictionary_Reserved_Offset: Unsigned_32 := 0;
+   Dictionary_Item_Count_Offset: Unsigned_32 := 4;
+   Dictionary_Items_Start_Offset: Unsigned_32 := 8;
+
+   -- Table, relative to value start
+   --
+   Table_Row_Count_Offset: Unsigned_32 := 0;
+   Table_Column_Count_Offset: Unsigned_32 := 4;
+   Table_Fields_Start_Offset: Unsigned_32 := 8;
+   Table_Row_Byte_Count_Offset: Unsigned_32 := 12;
+   Table_Column_Descriptors_Start_Offset: Unsigned_32 := 16;
+
+   -- Table - Column Descriptor, relative to start of descriptor
+   --
+   Table_Column_Descriptor_Name_CRC_Offset: Unsigned_32 := 0;
+   Table_Column_Descriptor_Name_Field_Byte_Count_Offset: Unsigned_32 := 2;
+   Table_Column_Descriptor_Field_Type_Offset: Unsigned_32 := 3;
+   Table_Column_Descriptor_Name_Field_Offset_Offset: Unsigned_32 := 4;
+   Table_Column_Descriptor_Field_Offset_Offset: Unsigned_32 := 8;
+   Table_Column_Descriptor_Field_Byte_Count_Offset: Unsigned_32 := 12;
+
+   -- Color, relative to start of small-value
+   --
+   Color_Red_Offset: Unsigned_32 := 0;
+   Color_Green_Offset: Unsigned_32 := 1;
+   Color_Blue_Offset: Unsigned_32 := 2;
+   Color_Alpha_Offset: Unsigned_32 := 3;
+
+   -- Font, relative to start of value
+   --
+   Font_Size_Offset: Unsigned_32 := 0;
+   Font_Family_Byte_Count_Offset: Unsigned_32 := 4;
+   Font_Name_Byte_Count_Offset: Unsigned_32 := 5;
+   Font_Family_Byte_Code_Start_Offset: Unsigned_32 := 6;
+
 
    -- Creates the layout for the requested type in the container at the requested offset.
    --
@@ -24,6 +130,7 @@ package BRBON.Item is
     );
 
    -- Returns the offset of the item value. This is either the small-value or the payload.
+   -- Note: The offset returned is the offset from the beginning of the array!
    --
    function Get_Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_Value_Offset);

@@ -59,11 +59,60 @@ package BRBON.Block.Static_Unprotected is
 
 
    -- Item Access
-
+   --
    function Get_Bool (P: Portal) return Boolean;
+   pragma Inline (Get_Bool);
+   --
    procedure Set_Bool (P: Portal; Value: Boolean);
+   pragma Inline (Set_Bool);
+   --
    function Get_Int_8 (P: Portal) return Integer_8);
+   pragma Inline (Get_Int_8);
+   --
    procedure Set_Int_8 (P: Portal; Value: Integer_8);
+   pragma Inline (Set_Int_8);
+   --
+   function Get_Int_16 (P: Portal) return Integer_16);
+   pragma Inline (Get_Int_16);
+   --
+   procedure Set_Int_16 (P: Portal; Value: Integer_16);
+   pragma Inline (Set_Int_16);
+   --
+   function Get_Int_32 (P: Portal) return Integer_32);
+   pragma Inline (Get_Int_32);
+   --
+   procedure Set_Int_32 (P: Portal; Value: Integer_32);
+   pragma Inline (Set_Int_32);
+   --
+   function Get_Int_64 (P: Portal) return Integer_64);
+   pragma Inline (Get_Int_64);
+   --
+   procedure Set_Int_64 (P: Portal; Value: Integer_64);
+   pragma Inline (Set_Int_64);
+   --
+   function Get_UInt_8 (P: Portal) return Unsigned_8);
+   pragma Inline (Get_UInt_8);
+   --
+   procedure Set_UInt_8 (P: Portal; Value: Unsigned_8);
+   pragma Inline (Set_UInt_8);
+   --
+   function Get_UInt_16 (P: Portal) return Unsigned_16);
+   pragma Inline (Get_UInt_16);
+   --
+   procedure Set_UInt_16 (P: Portal; Value: Unsigned_16);
+   pragma Inline (Set_UInt_16);
+   --
+   function Get_UInt_32 (P: Portal) return Unsigned_32);
+   pragma Inline (Get_UInt_32);
+   --
+   procedure Set_UInt_32 (P: Portal; Value: Unsigned_32);
+   pragma Inline (Set_UInt_32);
+   --
+   function Get_UInt_64 (P: Portal) return Unsigned_64);
+   pragma Inline (Get_UInt_64);
+   --
+   procedure Set_UInt_64 (P: Portal; Value: Unsigned_64);
+   pragma Inline (Set_UInt_64);
 
 
 end BRBON.Block.Static_Unprotected;

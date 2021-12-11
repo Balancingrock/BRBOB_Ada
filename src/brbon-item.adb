@@ -9,29 +9,6 @@ with BRBON.Types; use BRBON.Types;
 
 package body BRBON.Item is
 
-   -- Item offsets
-   --
-   Type_Offset: constant Unsigned_32 := 0;                          -- 1 byte
-   Options_Offset: constant Unsigned_32 := 1;                       -- 1 byte
-   Flags_Offset: constant Unsigned_32 := 2;                         -- 1 byte
-   Name_Field_Byte_Count_Offset: constant Unsigned_32 := 3;         -- 1 byte
-   Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
-   Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
-   Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
-                     
-   -- TTOOFFNC BBBBBBBB
-   -- PPPPPPPP SSSSSSSS                   
-   
-   --
-   Name_Field_CRC_Offset: constant Unsigned_32 := 16;
-   Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 18;
-   Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 19;        -- Up to 248 bytes
-
-
-   -- Internal specifications
-   
-
-
    -- ==========================================================================
    -- API
    -- ==========================================================================
@@ -114,10 +91,12 @@ package body BRBON.Item is
    end Create_Layout;
 
    
-   Use_Small_Value: constant Array (Types.Item_Type) of Boolean :=
+   -- Get_Value_Offset
+   --
+   Use_Small_Value_LUT: constant Array (Types.Item_Type) of Boolean :=
      -- Ill  Null  Bool  i8    i16   i32   i64    u8    u16   u32   u64    f32   f64    str    cstr   bin    cbin   arr    dict   seq    tab    uuid   rgb   font
      (False, True, True, True, True, True, False, True, True, True, False, True, False, False, False, False, False, False, False, False, False, False, True, False);
-                                              
+   --                                         
    function Get_Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
       
       T: Types.Item_Type := Item.Get_Type (C, Item_Offset);
@@ -128,7 +107,7 @@ package body BRBON.Item is
          Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Container contains illegal item type (16#00#)");
       end if;
 
-      if Use_Small_Value (T) then
+      if Use_Small_Value_LUT (T) then
          return Item_Offset + Small_Value_Offset;
       else
          return Item_Offset + Types.Minimum_Item_Byte_Count + Unsigned_32 (Item.Get_Name_Field_Byte_Count (C, Item_Offset));

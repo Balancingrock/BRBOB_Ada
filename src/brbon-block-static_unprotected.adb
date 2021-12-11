@@ -216,4 +216,150 @@ package body BRBON.Block.Static_Unprotected is
 
    end Add_Root_Item;
 
+
+   function Get_Bool (P: Portal) return Boolean is
+   begin
+      return Container.Get_Bool (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_Bool;
+   --
+   procedure Set_Bool (P: Portal; Value: Boolean) is
+   begin
+      Container.Set_Bool (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_Bool;
+
+
+   function Get_Int_8 (P: Portal) return Integer_8) is
+   begin
+      return Container.Get_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_Int_8;
+   --
+   procedure Set_Int_8 (P: Portal; Value: Integer_8) is
+   begin
+      Container.Set_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_Int_8;
+
+
+   function Get_Int_16 (P: Portal) return Integer_16) is
+   begin
+      return Container.Get_Integer_16 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_Int_16;
+   --
+   procedure Set_Int_16 (P: Portal; Value: Integer_16) is
+   begin
+      Container.Set_Integer_16 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_Int_16;
+
+
+   function Get_Int_32 (P: Portal) return Integer_32) is
+   begin
+      return Container.Get_Integer_32 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_Int_32;
+   --
+   procedure Set_Int_32 (P: Portal; Value: Integer_32) is
+   begin
+      Container.Set_Integer_32 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_Int_32;
+
+
+   function Get_Int_64 (P: Portal) return Integer_64) is
+   begin
+      return Container.Get_Integer_64 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_Int_64;
+   --
+   procedure Set_Int_64 (P: Portal; Value: Integer_64) is
+   begin
+      Container.Set_Integer_64 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_Int_64;
+
+
+   function Get_UInt_8 (P: Portal) return Unsigned_8) is
+   begin
+      return Container.Get_Unsigned_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_UInt_8;
+   --
+   procedure Set_UInt_8 (P: Portal; Value: Unsigned_8) is
+   begin
+      Container.Set_Unsigned_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_UInt_8;
+
+
+   function Get_UInt_16 (P: Portal) return Unsigned_16) is
+   begin
+      return Container.Get_Unsigned_16 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_UInt_16;
+   --
+   procedure Set_UInt_16 (P: Portal; Value: Unsigned_16) is
+   begin
+      Container.Set_Unsigned_16 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_UInt_16;
+
+
+   function Get_UInt_32 (P: Portal) return Unsigned_32) is
+   begin
+      return Container.Get_Unsigned_32 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_UInt_32;
+   --
+   procedure Set_UInt_32 (P: Portal; Value: Unsigned_32) is
+   begin
+      Container.Set_Unsigned_32 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_UInt_32;
+
+
+   function Get_UInt_64 (P: Portal) return Unsigned_64) is
+   begin
+      return Container.Get_Unsigned_64 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get_UInt_64;
+   --
+   procedure Set_UInt_64 (P: Portal; Value: Unsigned_64) is
+   begin
+      Container.Set_Unsigned_64 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset, Value);
+   end Set_UInt_64;
+
+
+
+   --
+   function Get_String (P: Portal) return String) is
+      Value_Offset: Unsigned_32 := Item.Get_Value_Offset (P.Container.all, P.Item_Offset);
+      Byte_Count: Unsigned_32 := Container.Get_Unsigned_32 (P.Container.all, Value_Offset + String_Byte_Count_Offset);
+   begin
+      return Container.Get_String (P.Container.all, Value_Offset + String_Byte_Code_Offset, Byte_Count);
+   end Get_String;
+   --
+   procedure Set_String (P: Portal; Value: String) is
+      Value_Offset: Unsigned_32 := Item.Get_Value_Offset (P.Container.all, P.Item_Offset);
+   begin
+      Container.Set_String (P.Container.all, Value_Offset + String_Byte_Code_Offset);
+      Container.Set_Unsigned_32 (P.Container.all, Value_Offset + String_Byte_Count_Offset, String'Length);
+   end Set_String;
+
+
+   Crc_String_Crc_Offset: Unsigned_32 := 0;
+   Crc_String_Byte_Count_Offset: Unsigned_32 :=
+   function Get_Crc_String (P: Portal) return String) is
+   begin
+      return Container.Get_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get;
+   --
+   procedure Set_Crc_String (P: Portal; Value: String);
+
+
+   function Get_Binary (P: Portal) return Array_Of_Unsigned_8) is
+   begin
+      return Container.Get_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get;
+   procedure Set_Binary (P: Portal; Value: Array_Of_Unsigned_8);
+   --
+   function Get_Crc_Binary (P: Portal) return Array_Of_Unsigned_8) is
+   begin
+      return Container.Get_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get;
+   procedure Set_Crc_Binary (P: Portal; Value: Array_Of_Unsigned_8);
+   --
+   function Get_UUID (P:Portal) return UUID is
+   begin
+      return Container.Get_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+   end Get;
+   procedure Set_UUID (P: Portal; Value: UUID);
+
+
 end BRBON.Block.Static_Unprotected;
