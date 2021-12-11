@@ -382,9 +382,10 @@ package body BRBON.Block.Static_Unprotected is
 
 
    function Get_UUID (P:Portal.Instance) return UUID_Package.UUID is
+      Value_Offset: Unsigned_32 := Item.Get_Value_Offset (P.Container, P.Item_Offset);
    begin
       raise Implementation;
-      return Container.Get_Integer_8 (P.Container.all, P.Item_Offset + Item.Small_Value_Offset);
+      return Container.Get_Unsigned_8_Array (P.Container, Value_Offset, 16);
    end Get_UUID;
 
    procedure Set_UUID (P: Portal.Instance; Value: UUID_Package.UUID) is
