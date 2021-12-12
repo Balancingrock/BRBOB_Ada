@@ -20,18 +20,6 @@ package body BRBON.Block.Static_Unprotected is
 
    -- Body internals
 
-   function Get_Bool (C: Container.Instance; Item_Offset: Unsigned_32) return Boolean is
-   begin
-      return Container.Get_Bool (C, Item.Get_Value_Offset (C, Item_Offset));
-   end Get_Bool;
-
-   procedure Set_Bool (C: Container.Instance; Item_Offset: Unsigned_32; Value: Boolean) is
-   begin
-      Container.Set_Bool (C, Item.Get_Value_Offset (C, Item_Offset), Value);
-   end Set_Bool;
-
-
-
 
    -- Implement API
 
@@ -383,15 +371,21 @@ package body BRBON.Block.Static_Unprotected is
 
    function Get_UUID (P:Portal.Instance) return UUID_Package.UUID is
       Value_Offset: Unsigned_32 := Item.Get_Value_Offset (P.Container, P.Item_Offset);
+      Bytes: Array_Of_Unsigned_8 := Container.Get_Unsigned_8_Array (P.Container, Value_Offset, 16);
    begin
-      raise Implementation;
-      return Container.Get_Unsigned_8_Array (P.Container, Value_Offset, 16);
+      return UUID_Package.Factory (Bytes);
    end Get_UUID;
 
    procedure Set_UUID (P: Portal.Instance; Value: UUID_Package.UUID) is
+      Value_Offset: Unsigned_32 := Item.Get_Value_Offset (P.Container, P.Item_Offset);
    begin
-      raise Implementation;
+      Container.Set_Unsigned_8_Array (P.Container, Value_Offset, UUID_Package.Get_Bytes(Value));
    end Set_UUID;
+
+
+--   function Get_Color (P: Portal.Instance) return Color_Package.Color is
+--   begin
+--   end Get_Color;
 
 
 end BRBON.Block.Static_Unprotected;

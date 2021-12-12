@@ -11,6 +11,7 @@ with BRBON.Block;
 with BRBON.Portal;
 
 with Serializable;
+with UUID_Package;
 
 
 package BRBON.Block.Static_Unprotected is
@@ -115,6 +116,36 @@ package BRBON.Block.Static_Unprotected is
    --
    procedure Set_UInt_64 (P: Portal.Instance; Value: Unsigned_64);
    pragma Inline (Set_UInt_64);
+   --
+   function Get_String (P: Portal.Instance) return String;
+   pragma Inline (Get_String);
+   --
+   procedure Set_String (P: Portal.Instance; Value: String);
+   pragma Inline (Set_String);
+   --
+   function Get_CRC_String (P: Portal.Instance) return String;
+   pragma Inline (Get_CRC_String);
+   --
+   procedure Set_CRC_String (P: Portal.Instance; Value: String);
+   pragma Inline (Set_CRC_String);
+   --
+   function Get_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
+   pragma Inline (Get_Binary);
+   --
+   procedure Set_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
+   pragma Inline (Set_Binary);
+   --
+   function Get_CRC_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
+   pragma Inline (Get_CRC_Binary);
+   --
+   procedure Set_CRC_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
+   pragma Inline (Set_CRC_Binary);
+   --
+   function Get_UUID (P:Portal.Instance) return UUID_Package.UUID;
+   pragma Inline (Get_UUID);
+   --
+   procedure Set_UUID (P: Portal.Instance; Value: UUID_Package.UUID);
+   pragma Inline (Set_UUID);
 
 
 end BRBON.Block.Static_Unprotected;
