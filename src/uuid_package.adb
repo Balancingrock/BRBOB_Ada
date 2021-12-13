@@ -3,6 +3,7 @@ with Interfaces; use Interfaces;
 with Ada.Numerics.Discrete_Random;
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Unchecked_Conversion;
+
 with BRBON;
 
 package body UUID_Package is
@@ -95,12 +96,28 @@ package body UUID_Package is
       return I.Bytes;
    end Get_Bytes;
 
-
+   Byte_LUT: Array (Unsigned_8 range 0..15) of Character := ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
+   --
    function Get_String (I: UUID) return UUID_String is
-      -- Example:
+      Str: UUID_String;
+      K: Integer := 1;
    begin
-      raise BRBON.Implementation;
-      return "123456789012345678901234567890123456";
+      for B of I.Bytes loop
+         declare
+            H_Nibble: Unsigned_8 := Shift_Right ((B and 16#F0#), 4);
+            L_Nibble: Unsigned_8 := B and 16#0F#;
+         begin
+            Str (K) := Byte_LUT (H_Nibble);
+            K := K + 1;
+            Str (K) := Byte_LUT (L_Nibble);
+            K := K + 1;
+            if (K = 9) or else (K = 14) or else (K = 19) or else (K = 24) then
+               Str (K) := '-';
+               K := K + 1;
+            end if;
+         end;
+      end loop;
+      return Str;
    end Get_String;
 
 

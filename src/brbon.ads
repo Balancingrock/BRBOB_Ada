@@ -69,13 +69,13 @@
 --    BRBON standard. However the structure cannot be modified in size after it was created and the
 --    API user must make sure no to exceed the byte-counts used during creation.
 --
---    This level may be usefull for read-only access to predefined (received) data sets (files). Or
---    for situations where a data structure is generated in a single pass without the need for
---    changes afterwards.
+--    This level may be usefull for read-only access to predefined (received) data sets (files).
+--    Note that there are no protections in place to prevent type mismatches.
 --
 --  - BRBON.Static_Protected This is the most ADA-like interface. The BRBON structure is generated
 --    once, and can be updated afterwards, but it is not possible to change the byte-count's of the
---    items that were generated during creation.
+--    items that were generated during creation. Exceptions will be raised if the API user violates
+--    an earlier creation.
 --
 --  - BRBON.Dynamic This is akin to a database interface, data can be read and written and byte-counts
 --    will be changed on the fly as needed. The disadvantage is that data may need to be moved around

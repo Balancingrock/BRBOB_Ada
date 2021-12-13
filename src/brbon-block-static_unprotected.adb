@@ -383,9 +383,23 @@ package body BRBON.Block.Static_Unprotected is
    end Set_UUID;
 
 
---   function Get_Color (P: Portal.Instance) return Color_Package.Color is
---   begin
---   end Get_Color;
+   function Get_Color (P:Portal.Instance) return Color_Package.Color is
+      R, G, B, A: Unsigned_8;
+   begin
+      R := Container.Get_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Red_Offset);
+      G := Container.Get_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Green_Offset);
+      B := Container.Get_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Blue_Offset);
+      A := Container.Get_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Alpha_Offset);
+      return Color_Package.Factory (R, G, B, A);
+   end Get_Color;
+
+   procedure Set_Color (P: Portal.Instance; Value: Color_Package.Color) is
+   begin
+      Container.Set_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Red_Offset, Color_Package.Get_Red_Component (Value));
+      Container.Set_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Green_Offset, Color_Package.Get_Green_Component (Value));
+      Container.Set_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Blue_Offset, Color_Package.Get_Blue_Component (Value));
+      Container.Set_Unsigned_8 (P.Container, P.Item_Offset + Item.Small_Value_Offset + Item.Color_Alpha_Offset, Color_Package.Get_Alpha_Component (Value));
+   end Set_Color;
 
 
 end BRBON.Block.Static_Unprotected;

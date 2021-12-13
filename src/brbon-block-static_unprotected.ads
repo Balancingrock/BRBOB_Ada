@@ -12,6 +12,7 @@ with BRBON.Portal;
 
 with Serializable;
 with UUID_Package;
+with Color_Package;
 
 
 package BRBON.Block.Static_Unprotected is
@@ -146,6 +147,12 @@ package BRBON.Block.Static_Unprotected is
    --
    procedure Set_UUID (P: Portal.Instance; Value: UUID_Package.UUID);
    pragma Inline (Set_UUID);
+   --
+   function Get_Color (P:Portal.Instance) return Color_Package.Color;
+   pragma Inline (Get_Color);
+   --
+   procedure Set_Color (P: Portal.Instance; Value: Color_Package.Color);
+   pragma Inline (Set_Color);
 
 
 end BRBON.Block.Static_Unprotected;
