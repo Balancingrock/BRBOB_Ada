@@ -10,7 +10,8 @@ package BRBON.Configure is
 
 
    -- When set to True, any storage space used for the first time will be set to 0.
-   -- Mostly usefull for testing, to ensure an expected content.
+   -- Mostly usefull for testing, to ensure an expected content. Set to false for
+   -- best performance.
    --
    Zero_Storage: constant Boolean := True;
 

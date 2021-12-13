@@ -195,11 +195,11 @@ package body BRBON.Block.Static_Unprotected is
       -- Create the item structure
       --
       Item.Create_Layout (Of_Type          => Of_Type,
-                        In_Container     => I.Container,
-                        At_Offset        => I.First_Free_Byte_In_Payload,
-                        With_Name        => Name_Assistent,
-                        Using_Byte_Count => Item_Byte_Count,
-                        Parent_Offset    => 0);
+                          In_Container     => I.Container,
+                          At_Offset        => I.First_Free_Byte_In_Payload,
+                          With_Name        => Name_Assistent,
+                          Using_Byte_Count => Item_Byte_Count,
+                          Parent_Offset    => 0);
 
       -- Set the free byte pointer
       --
