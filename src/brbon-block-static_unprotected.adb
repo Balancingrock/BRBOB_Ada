@@ -208,6 +208,12 @@ package body BRBON.Block.Static_Unprotected is
    end Add_Root_Item;
 
 
+   function Get_Root_Item (I: in out Instance) return Portal.Instance is
+   begin
+      return Portal.Factory (I.Container, Unsigned_32 (I.Header_Get_Header_Byte_Count));
+   end Get_Root_Item;
+
+
    function Get_Bool (I: Portal.Instance) return Boolean is
    begin
       return Container.Get_Bool (I.Container, I.Item_Offset + Item.Small_Value_Offset);

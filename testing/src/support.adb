@@ -50,4 +50,46 @@ package body Support is
 
    end Verify_Small_Bytes;
 
+
+   function Verify_Array_Of_Unsigned_8 (Found: in out Serializable.Instance; Expected: Array_Of_Unsigned_8_Ptr; Skip_Map: Array_Of_Boolean) return Test_Result is
+
+      Cursor: Unsigned_32;
+      S: Serializable.Instance;
+
+   begin
+      if Found.Remaining_Bytes /= Expected.all'Length then
+
+         New_Line (2);
+         Put_Line ("Compare failed due to size mismatch");
+         Put_Line ("Expected:" & Expected'Length'Image & " bytes, found:" & Found.Remaining_Bytes'Image & " bytes.");
+
+         return Failed;
+
+      elsif not Found.Compare (Expected.all, Skip_Map) then
+
+         Cursor := Found.Index_Of_Last_Byte;
+
+         New_Line (2);
+         Put_Line ("Block verification failed");
+
+         New_Line;
+         Put_Line ("Expected:");
+         S := Serializable.Create_With_Copy (Expected.all);
+         S.Dump_2_Lines (Around => Cursor);
+
+         New_Line (2);
+         Put_Line ("Found:");
+         Found.Dump_2_Lines (Around => Cursor, Show_Cursor => True);
+
+         return Failed;
+
+      else
+
+         return Passed;
+
+      end if;
+
+   end Verify_Array_Of_Unsigned_8;
+
+
 end Support;

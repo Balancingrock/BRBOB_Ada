@@ -229,9 +229,9 @@ package body BRBON.Item is
    begin
       if Value.Name_Field_Byte_Count > 0 then
          Container.Set_Unsigned_8 (C, Item_Offset + Name_Field_Byte_Count_Offset, Value.Name_Field_Byte_Count);
-         Container.Set_Unsigned_16 (C, Item_Offset + Name_Field_CRC_Offset, Value.CRC);
-         Container.Set_Unsigned_8 (C, Item_Offset + Name_Field_ASCII_Byte_Count_Offset, Unsigned_8 (Value.Ascii_Code'Length));
-         Container.Set_Unsigned_8_Array (C, Item_Offset + Name_Field_ASCII_Code_Offset, Value.Ascii_Code (1 .. Unsigned_32 (Value.Ascii_Byte_Count)));
+         Container.Set_Unsigned_16 (C, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset, Value.CRC);
+         Container.Set_Unsigned_8 (C, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Byte_Count_Offset, Unsigned_8 (Value.Ascii_Byte_Count));
+         Container.Set_Unsigned_8_Array (C, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Code_Offset, Value.Ascii_Code (1 .. Unsigned_32 (Value.Ascii_Byte_Count)));
       end if;
    end Set_Name;
    
