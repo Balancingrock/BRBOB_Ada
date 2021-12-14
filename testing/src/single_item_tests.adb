@@ -5,5 +5,8 @@ package body Single_Item_Tests is
    function Create_Blocks_With_Null (Count: in out Integer) return Test_Result is separate;
    function Create_Blocks_With_Bool (Count: in out Integer) return Test_Result is separate;
    function Create_Blocks_With_Int_8 (Count: in out Integer) return Test_Result is separate;
+   function Create_Blocks_With_Int_16 (Count: in out Integer) return Test_Result is separate;
+   function Create_Blocks_With_Int_32 (Count: in out Integer) return Test_Result is separate;
+   function Create_Blocks_With_Int_64 (Count: in out Integer) return Test_Result is separate;
 
 end Single_Item_Tests;

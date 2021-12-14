@@ -13,7 +13,7 @@ with Serializable;
 
 separate (Single_Item_Tests)
 
-function Create_Blocks_With_Bool (Count: in out Integer) return Test_Result is
+function Create_Blocks_With_Int_64 (Count: in out Integer) return Test_Result is
 
    Type_1_Block: Array_Of_Unsigned_8 :=
      (
@@ -329,10 +329,13 @@ begin
 
    Expected_Bytes := new Array_Of_Unsigned_8 (Type_1_Block'Range);
    Expected_Bytes.all := Type_1_Block;
-   Expected_Bytes.all (16#50# .. 16#67#) :=
-     (16#02#, 16#00#, 16#00#, 16#08#,  16#18#, 16#00#, 16#00#, 16#00#,
+   Expected_Bytes.all (16#50# .. 16#7F#) :=
+     (16#06#, 16#00#, 16#00#, 16#18#,  16#30#, 16#00#, 16#00#, 16#00#,
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
-      16#BD#, 16#96#, 16#03#, 16#41#,  16#6E#, 16#79#, 16#00#, 16#00#
+      16#6D#, 16#DD#, 16#0F#, 16#41#,  16#6E#, 16#79#, 16#49#, 16#6E#,
+      16#74#, 16#65#, 16#67#, 16#65#,  16#72#, 16#41#, 16#74#, 16#41#,
+      16#6C#, 16#6C#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#
      );
 
    T_Object := BRBON.Block.Static_Unprotected.Factory
@@ -351,9 +354,9 @@ begin
       Creation_Timestamp              => 16#1234_5678_8765_4321#,
       Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
 
-   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Bool_Type,
+   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Int_64_Type,
                            With_Byte_Count => 0,
-                           With_Name       => "Any");
+                           With_Name       => "AnyIntegerAtAll");
 
    T_Serializer := T_Object.Test_Serializer;
 
@@ -364,28 +367,31 @@ begin
 
    P := T_Object.Get_Root_Item;
 
-   if Static_Unprotected.Get_Bool (P) = True then
+   if Static_Unprotected.Get_Int_64 (P) /= 0 then
       New_Line (2);
-      Put_Line ("Expected initial value 'false', found 'true'");
+      Put_Line ("Expected initial value '0', found:" & Static_Unprotected.Get_Int_64 (P)'Image);
       return Failed;
    end if;
 
-   Static_Unprotected.Set_Bool (P, True);
+   Static_Unprotected.Set_Int_64 (P, 16#1234_5678_9ABC_DEF0#);
 
-   if Static_Unprotected.Get_Bool (P) = False then
+   if Static_Unprotected.Get_Int_64 (P) /= 1311768467463790320 then
       New_Line (2);
-      Put_Line ("Expected value 'true', found 'false'");
+      Put_Line ("Expected value '1311768467463790320', found:" & Static_Unprotected.Get_Int_64 (P)'Image);
       return Failed;
    end if;
 
-   Expected_Bytes.all (16#50# .. 16#67#) :=
-     (16#02#, 16#00#, 16#00#, 16#08#,  16#18#, 16#00#, 16#00#, 16#00#,
-      16#00#, 16#00#, 16#00#, 16#00#,  16#01#, 16#00#, 16#00#, 16#00#,
-      16#BD#, 16#96#, 16#03#, 16#41#,  16#6E#, 16#79#, 16#00#, 16#00#
+   Expected_Bytes.all (16#50# .. 16#7F#) :=
+     (16#05#, 16#00#, 16#00#, 16#18#,  16#30#, 16#00#, 16#00#, 16#00#,
+      16#00#, 16#00#, 16#00#, 16#00#,  16#9A#, 16#78#, 16#56#, 16#34#,
+      16#6D#, 16#DD#, 16#0F#, 16#41#,  16#6E#, 16#79#, 16#49#, 16#6E#,
+      16#74#, 16#65#, 16#67#, 16#65#,  16#72#, 16#41#, 16#74#, 16#41#,
+      16#6C#, 16#6C#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+      16#F0#, 16#DE#, 16#BC#, 16#9A#,  16#78#, 16#56#, 16#34#, 16#12#
      );
 
    T_Serializer := T_Object.Test_Serializer;
 
    return Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map);
 
-end Create_Blocks_With_Bool;
+end Create_Blocks_With_Int_64;

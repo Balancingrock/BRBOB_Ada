@@ -388,10 +388,6 @@ begin
 
    T_Serializer := T_Object.Test_Serializer;
 
-   if Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map) /= Passed then
-      return Failed;
-   end if;
-
-   return Passed;
+   return Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map);
 
 end Create_Blocks_With_Int_8;
