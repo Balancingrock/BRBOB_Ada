@@ -361,6 +361,9 @@ begin
 
    -- Null Type
 
+   New_Line;
+   Put_Line ("      - Null type");
+
    declare
 
       T_Object: BRBON.Block.Static_Unprotected.Instance;
@@ -409,6 +412,8 @@ begin
 
    -- Bool Type
 
+   Put_Line ("      - Bool type");
+
    declare
 
       T_Object: BRBON.Block.Static_Unprotected.Instance;
@@ -450,7 +455,398 @@ begin
          return Failed;
       end if;
 
-   end; -- Bool check
+   end; -- Bool
+
+
+   -- Int8 Type
+
+   Put_Line ("      - Int-8 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#5F#) :=
+        (16#03#, 16#00#, 16#00#, 16#00#,  16#10#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Int_8_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- Int8
+
+
+   -- Int16 Type
+
+   Put_Line ("      - Int-16 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#5F#) :=
+        (16#04#, 16#00#, 16#00#, 16#00#,  16#10#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Int_16_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- Int16
+
+
+   -- Int 32 Type
+
+   Put_Line ("      - Int-32 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#5F#) :=
+        (16#05#, 16#00#, 16#00#, 16#00#,  16#10#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Int_32_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- Int32
+
+
+   -- Int 64 Type
+
+   Put_Line ("      - Int-64 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#67#) :=
+        (16#06#, 16#00#, 16#00#, 16#00#,  16#18#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Int_64_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- UInt64
+
+
+   -- UInt8 Type
+
+   Put_Line ("      - UInt-8 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#5F#) :=
+        (16#07#, 16#00#, 16#00#, 16#00#,  16#10#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.UInt_8_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- UInt8
+
+
+   -- Int16 Type
+
+   Put_Line ("      - UInt-16 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#5F#) :=
+        (16#08#, 16#00#, 16#00#, 16#00#,  16#10#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.UInt_16_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- UInt16
+
+
+   -- UInt 32 Type
+
+   Put_Line ("      - UInt-32 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#5F#) :=
+        (16#09#, 16#00#, 16#00#, 16#00#,  16#10#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.UInt_32_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- UInt32
+
+
+   -- UInt 64 Type
+
+   Put_Line ("      - UInt-64 type");
+
+   declare
+
+      T_Object: BRBON.Block.Static_Unprotected.Instance;
+      T_Serializer: Serializable.Instance;
+      Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+
+   begin
+
+      Expected_Bytes := new Array_Of_Unsigned_8 (0 .. Type_1_Block_No_Parameters'Length - 1);
+      Expected_Bytes.all := Type_1_Block_No_Parameters;
+      Expected_Bytes.all (16#50# .. 16#67#) :=
+        (16#0A#, 16#00#, 16#00#, 16#00#,  16#18#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#,
+         16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#);
+
+      T_Object := BRBON.Block.Static_Unprotected.Factory
+        (Type_Of_Block                   => BRBON.Types.Single_Item,
+         Minimum_Byte_Count              => 128,
+         Header_Field_Storage_Byte_Count => 0,
+         Options                         => BRBON.Types.No_Block_Options,
+         Using_Endianness                => BRBON.Configure.Machine_Endianness,
+         Origin                          => "",
+         Identifier                      => "",
+         Extension                       => "",
+         Path_Prefix                     => "",
+         Acquisition_URL                 => "",
+         Target_List                     => "",
+         Public_Key_URL                  => "",
+         Creation_Timestamp              => 16#1234_5678_8765_4321#,
+         Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
+
+      T_Object.Add_Root_Item (Of_Type         => BRBON.Types.UInt_64_Type,
+                              With_Byte_Count => 0,
+                              With_Name       => "");
+
+      T_Serializer := T_Object.Test_Serializer;
+
+
+      if Evaluate (T_Serializer, Expected_Bytes) /= Passed then
+         return Failed;
+      end if;
+
+   end; -- UInt64
+
+
+
+
+   Put ("      Completed type creation tests");
 
    return Passed;
 
