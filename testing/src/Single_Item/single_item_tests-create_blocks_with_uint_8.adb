@@ -397,7 +397,7 @@ begin
 
    if Static_Unprotected.Get_Byte_Count (P) /= 32 then
       New_Line (2);
-      Put_Line ("Expected Byte_Count of 32, found:" & Static_Unprotected.Get_Byte_Count (P)'Image);
+      Put_Line ("Expected Byte_Count of 32, found: " & Static_Unprotected.Get_Byte_Count (P)'Image);
       return Failed;
    end if;
 

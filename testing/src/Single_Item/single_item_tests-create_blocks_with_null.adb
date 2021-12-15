@@ -3,9 +3,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 with BRBON;
 with BRBON.Block.Static_Unprotected;
-with BRBON.Block;
+with BRBON.Block; use BRBON.Block;
 with BRBON.Configure;
 with BRBON.Types; use BRBON.Types;
+with BRBON.Portal;
 
 with Support;
 with Serializable;
@@ -322,6 +323,7 @@ function Create_Blocks_With_Null (Count: in out Integer) return Test_Result is
    T_Object: BRBON.Block.Static_Unprotected.Instance;
    T_Serializer: Serializable.Instance;
    Expected_Bytes: Array_Of_Unsigned_8_Ptr;
+   P : BRBON.Portal.Instance;
 
 begin
 
@@ -353,7 +355,54 @@ begin
 
    T_Serializer := T_Object.Test_Serializer;
 
+   if Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map) /= Passed then
+      return Failed;
+   end if;
 
-   return Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map);
+   P := T_Object.Get_Root_Item;
+
+   if Static_Unprotected.Get_Type (P) /= Null_Type then
+      New_Line (2);
+      Put_Line ("Expected the type 'Null_8_Type', found:" & Static_Unprotected.Get_Type (P)'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Options (P) /= No_Item_Options then
+      New_Line (2);
+      Put_Line ("Expected 'No_Options (0)', found:" & To_Unsigned_8 (Static_Unprotected.Get_Options (P))'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Flags (P) /= No_Item_Flags then
+      New_Line (2);
+      Put_Line ("Expected 'No_Flags (0)', found:" & To_Unsigned_8 (Static_Unprotected.Get_Flags (P))'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Name (P) /= "" then
+      New_Line (2);
+      Put_Line ("Expected '', found:" & Static_Unprotected.Get_Name (P));
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Parent_Offset (P) /= 0 then
+      New_Line (2);
+      Put_Line ("Expected Parent_Offset of 0, found: " & Static_Unprotected.Get_Parent_Offset (P)'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Byte_Count (P) /= 16 then
+      New_Line (2);
+      Put_Line ("Expected Byte_Count of 16, found:" & Static_Unprotected.Get_Byte_Count (P)'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Value_Area_Byte_Count (P) /= 0 then
+      New_Line (2);
+      Put_Line ("Expected Value_Area_Byte_Count of 0, found:" & Static_Unprotected.Get_Value_Area_Byte_Count (P)'Image);
+      return Failed;
+   end if;
+
+   return Passed;
 
 end Create_Blocks_With_Null;

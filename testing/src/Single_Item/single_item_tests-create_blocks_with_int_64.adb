@@ -367,6 +367,49 @@ begin
 
    P := T_Object.Get_Root_Item;
 
+
+   if Static_Unprotected.Get_Type (P) /= Int_64_Type then
+      New_Line (2);
+      Put_Line ("Expected the type 'Int_64_Type', found:" & Static_Unprotected.Get_Type (P)'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Options (P) /= No_Item_Options then
+      New_Line (2);
+      Put_Line ("Expected 'No_Options (0)', found:" & To_Unsigned_8 (Static_Unprotected.Get_Options (P))'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Flags (P) /= No_Item_Flags then
+      New_Line (2);
+      Put_Line ("Expected 'No_Flags (0)', found:" & To_Unsigned_8 (Static_Unprotected.Get_Flags (P))'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Name (P) /= "AnyIntegerAtAll" then
+      New_Line (2);
+      Put_Line ("Expected 'AnyIntegerAtAll', found: " & Static_Unprotected.Get_Name (P));
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Parent_Offset (P) /= 0 then
+      New_Line (2);
+      Put_Line ("Expected Parent_Offset of 0, found:" & Static_Unprotected.Get_Parent_Offset (P)'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Byte_Count (P) /= 48 then
+      New_Line (2);
+      Put_Line ("Expected Byte_Count of 48, found:" & Static_Unprotected.Get_Byte_Count (P)'Image);
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_Value_Area_Byte_Count (P) /= 8 then
+      New_Line (2);
+      Put_Line ("Expected Value_Area_Byte_Count of 8, found:" & Static_Unprotected.Get_Value_Area_Byte_Count (P)'Image);
+      return Failed;
+   end if;
+
    if Static_Unprotected.Get_Int_64 (P) /= 0 then
       New_Line (2);
       Put_Line ("Expected initial value '0', found:" & Static_Unprotected.Get_Int_64 (P)'Image);
