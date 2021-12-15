@@ -66,7 +66,7 @@ package BRBON.Block.Static_Unprotected is
 
    -- Item Access
    --
-   function Get_Bool (I: Portal.Instance) return Boolean;
+   function Get_Bool (P: Portal.Instance) return Boolean;
    pragma Inline (Get_Bool);
    --
    procedure Set_Bool (P: Portal.Instance; Value: Boolean);

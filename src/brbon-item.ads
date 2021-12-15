@@ -132,8 +132,8 @@ package BRBON.Item is
    -- Returns the offset of the item value. This is either the small-value or the payload.
    -- Note: The offset returned is the offset from the beginning of the array!
    --
-   function Get_Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
-   pragma Inline (Get_Value_Offset);
+   function Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Value_Offset);
 
 
    -- Fixed layout

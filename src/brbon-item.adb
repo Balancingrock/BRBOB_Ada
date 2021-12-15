@@ -97,7 +97,7 @@ package body BRBON.Item is
      -- Ill  Null  Bool  i8    i16   i32   i64    u8    u16   u32   u64    f32   f64    str    cstr   bin    cbin   arr    dict   seq    tab    uuid   rgb   font
      (False, True, True, True, True, True, False, True, True, True, False, True, False, False, False, False, False, False, False, False, False, False, True, False);
    --                                         
-   function Get_Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
+   function Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
       
       T: Types.Item_Type := Item.Get_Type (C, Item_Offset);
    
@@ -113,7 +113,7 @@ package body BRBON.Item is
          return Item_Offset + Types.Minimum_Item_Byte_Count + Unsigned_32 (Item.Get_Name_Field_Byte_Count (C, Item_Offset));
       end if;
    
-   end Get_Value_Offset;
+   end Value_Offset;
    
    
    function Get_Type (C: Container.Instance; Item_Offset: Unsigned_32) return Types.Item_Type is
