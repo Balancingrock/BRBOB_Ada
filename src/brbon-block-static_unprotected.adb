@@ -248,7 +248,7 @@ package body BRBON.Block.Static_Unprotected is
    --
    function Get_Value_Area_Byte_Count (P: Portal.Instance) return Unsigned_32 is
    begin
-      return Get_Byte_Count (P) - Unsigned_32 (Item.Get_Name_Field_Byte_Count (P.Container, P.Item_Offset));
+      return Get_Byte_Count (P) - Minimum_Item_Byte_Count - Unsigned_32 (Item.Get_Name_Field_Byte_Count (P.Container, P.Item_Offset));
    end Get_Value_Area_Byte_Count;
 
 

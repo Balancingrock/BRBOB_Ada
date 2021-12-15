@@ -160,26 +160,26 @@ package body BRBON.Item is
    
    function Get_Name_CRC (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_16 is
    begin
-      return Container.Get_Unsigned_16 (C, Item_Offset + Name_Field_CRC_Offset);
+      return Container.Get_Unsigned_16 (C, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset);
    end Get_Name_CRC;
    
    
    function Get_Name_Byte_Count (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_8 is
    begin
-      return Container.Get_Unsigned_8 (C, Item_Offset + Name_Field_ASCII_Byte_Count_Offset);
+      return Container.Get_Unsigned_8 (C, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Byte_Count_Offset);
    end Get_Name_Byte_Count;
    
-   
+ --
    function Get_Name_String (C: Container.Instance; Item_Offset: Unsigned_32) return String is
       Length: Unsigned_32 := Unsigned_32 (Get_Name_Byte_Count (C, Item_Offset));
    begin
-      return Container.Get_String (C, Item_Offset + Name_Field_ASCII_Code_Offset, Length);
+      return Container.Get_String (C, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Code_Offset, Length);
    end Get_Name_String;
    
    
    function Get_Name_Quick_Check_Value (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32 is
    begin
-      return Container.Get_Unsigned_32 (C, Item_Offset + Name_Field_CRC_Offset);
+      return Container.Get_Unsigned_32 (C, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset);
    end Get_Name_Quick_Check_Value;
    
    
