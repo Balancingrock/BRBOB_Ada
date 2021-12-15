@@ -214,6 +214,46 @@ package body BRBON.Block.Static_Unprotected is
    end Get_Root_Item;
 
 
+   -- Structure Access
+
+   function Get_Type (P: Portal.Instance) return Types.Item_Type is
+   begin
+      return Item.Get_Type (P.Container, P.Item_Offset);
+   end Get_Type;
+   --
+   function Get_Options (P: Portal.Instance) return Types.Item_Options is
+   begin
+      return Item.Get_Options (P.Container, P.Item_Offset);
+   end Get_Options;
+   --
+   function Get_Flags (P: Portal.Instance) return Types.Item_Flags is
+   begin
+      return Item.Get_Flags (P.Container, P.Item_Offset);
+   end Get_Flags;
+   --
+   function Get_Name (P: Portal.Instance) return String is
+   begin
+      return Item.Get_Name_String (P.Container, P.Item_Offset);
+   end Get_Name;
+   --
+   function Get_Byte_Count (P: Portal.Instance) return Unsigned_32 is
+   begin
+      return Item.Get_Byte_Count (P.Container, P.Item_Offset);
+   end Get_Byte_Count;
+   --
+   function Get_Parent_Offset (P: Portal.Instance) return Unsigned_32 is
+   begin
+      return Item.Get_Parent_Offset (P.Container, P.Item_Offset);
+   end Get_Parent_Offset;
+   --
+   function Get_Value_Area_Byte_Count (P: Portal.Instance) return Unsigned_32 is
+   begin
+      return Get_Byte_Count (P) - Unsigned_32 (Item.Get_Name_Field_Byte_Count (P.Container, P.Item_Offset));
+   end Get_Value_Area_Byte_Count;
+
+
+   -- Value access
+
    function Get_Bool (P: Portal.Instance) return Boolean is
    begin
       return Container.Get_Bool (P.Container, Portal.Small_Value_Offset (P));

@@ -12,6 +12,7 @@ package Single_Item_Tests is
    function Create_Blocks_With_Int_16 (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_Int_32 (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_Int_64 (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_UInt_8 (Count: in out Integer) return Test_Result;
 
    Tests: aliased Array_Of_Tests :=
      (
@@ -22,7 +23,8 @@ package Single_Item_Tests is
       (UStr ("Create Single_Item block with int_8 as root"), Create_Blocks_With_Int_8'Access),
       (UStr ("Create Single_Item block with int_16 as root"), Create_Blocks_With_Int_16'Access),
       (UStr ("Create Single_Item block with int_32 as root"), Create_Blocks_With_Int_32'Access),
-      (UStr ("Create Single_Item block with int_64 as root"), Create_Blocks_With_Int_64'Access)
+      (UStr ("Create Single_Item block with int_64 as root"), Create_Blocks_With_Int_64'Access),
+      (UStr ("Create Single_Item block with uint_8 as root"), Create_Blocks_With_UInt_8'Access)
      );
 
 end Single_Item_Tests;

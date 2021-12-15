@@ -64,7 +64,31 @@ package BRBON.Block.Static_Unprotected is
    function Get_Root_Item (I: in out Instance) return Portal.Instance;
 
 
-   -- Item Access
+   -- Item Structure Access
+   --
+   function Get_Type (P: Portal.Instance) return Types.Item_Type;
+   pragma Inline (Get_Type);
+   --
+   function Get_Options (P: Portal.Instance) return Types.Item_Options;
+   pragma Inline (Get_Options);
+   --
+   function Get_Flags (P: Portal.Instance) return Types.Item_Flags;
+   pragma Inline (Get_Flags);
+   --
+   function Get_Name (P: Portal.Instance) return String;
+   pragma Inline (Get_Name);
+   --
+   function Get_Byte_Count (P: Portal.Instance) return Unsigned_32;
+   pragma Inline (Get_Byte_Count);
+   --
+   function Get_Parent_Offset (P: Portal.Instance) return Unsigned_32;
+   pragma Inline (Get_Parent_Offset);
+   --
+   function Get_Value_Area_Byte_Count (P: Portal.Instance) return Unsigned_32;
+   pragma Inline (Get_Value_Area_Byte_Count);
+
+
+   -- Value Access
    --
    function Get_Bool (P: Portal.Instance) return Boolean;
    pragma Inline (Get_Bool);
