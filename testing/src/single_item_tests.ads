@@ -14,6 +14,11 @@ package Single_Item_Tests is
    function Create_Blocks_With_Int_64 (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_UInt_8 (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_UInt_16 (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_UInt_32 (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_UInt_64 (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_Float_32 (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_Float_64 (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_String (Count: in out Integer) return Test_Result;
 
    Tests: aliased Array_Of_Tests :=
      (
@@ -26,7 +31,12 @@ package Single_Item_Tests is
       (UStr ("Create Single_Item block with int_32 as root"), Create_Blocks_With_Int_32'Access),
       (UStr ("Create Single_Item block with int_64 as root"), Create_Blocks_With_Int_64'Access),
       (UStr ("Create Single_Item block with uint_8 as root"), Create_Blocks_With_UInt_8'Access),
-      (UStr ("Create Single_Item block with uint_16 as root"), Create_Blocks_With_UInt_16'Access)
+      (UStr ("Create Single_Item block with uint_16 as root"), Create_Blocks_With_UInt_16'Access),
+      (UStr ("Create Single_Item block with uint_32 as root"), Create_Blocks_With_UInt_32'Access),
+      (UStr ("Create Single_Item block with uint_64 as root"), Create_Blocks_With_UInt_64'Access),
+      (UStr ("Create Single_Item block with float_32 as root"), Create_Blocks_With_Float_32'Access),
+      (UStr ("Create Single_Item block with float_64 as root"), Create_Blocks_With_Float_64'Access),
+      (UStr ("Create Single_Item block with string as root"), Create_Blocks_With_String'Access)
      );
 
 end Single_Item_Tests;

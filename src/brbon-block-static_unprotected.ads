@@ -144,6 +144,18 @@ package BRBON.Block.Static_Unprotected is
    procedure Set_UInt_64 (P: Portal.Instance; Value: Unsigned_64);
    pragma Inline (Set_UInt_64);
    --
+   function Get_Float_32 (P: Portal.Instance) return IEEE_Float_32;
+   pragma Inline (Get_Float_32);
+   --
+   procedure Set_Float_32 (P: Portal.Instance; Value: IEEE_Float_32);
+   pragma Inline (Set_Float_32);
+   --
+   function Get_Float_64 (P: Portal.Instance) return IEEE_Float_64;
+   pragma Inline (Get_Float_64);
+   --
+   procedure Set_Float_64 (P: Portal.Instance; Value: IEEE_Float_64);
+   pragma Inline (Set_Float_64);
+   --
    function Get_String (P: Portal.Instance) return String;
    pragma Inline (Get_String);
    --

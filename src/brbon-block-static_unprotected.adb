@@ -353,6 +353,28 @@ package body BRBON.Block.Static_Unprotected is
    end Set_UInt_64;
 
 
+   function Get_Float_32 (P: Portal.Instance) return IEEE_Float_32 is
+   begin
+      return Container.Get_Float_32 (P.Container, Portal.Small_Value_Offset (P));
+   end Get_Float_32;
+   --
+   procedure Set_Float_32 (P: Portal.Instance; Value: IEEE_Float_32) is
+   begin
+      Container.Set_Float_32 (P.Container, Portal.Small_Value_Offset (P), Value);
+   end Set_Float_32;
+
+
+   function Get_Float_64 (P: Portal.Instance) return IEEE_Float_64 is
+   begin
+      return Container.Get_Float_64 (P.Container, Portal.Value_Offset (P));
+   end Get_Float_64;
+   --
+   procedure Set_Float_64 (P: Portal.Instance; Value: IEEE_Float_64) is
+   begin
+      Container.Set_Float_64 (P.Container, Portal.Value_Offset (P), Value);
+   end Set_Float_64;
+
+
    function Get_String (P: Portal.Instance) return String is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
       Byte_Count: Unsigned_32 := Container.Get_Unsigned_32 (P.Container, Value_Offset + Item.String_Byte_Count_Offset);
