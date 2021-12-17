@@ -19,6 +19,7 @@ package Single_Item_Tests is
    function Create_Blocks_With_Float_32 (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_Float_64 (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_String (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_CRC_String (Count: in out Integer) return Test_Result;
 
    Tests: aliased Array_Of_Tests :=
      (
@@ -36,7 +37,8 @@ package Single_Item_Tests is
       (UStr ("Create Single_Item block with uint_64 as root"), Create_Blocks_With_UInt_64'Access),
       (UStr ("Create Single_Item block with float_32 as root"), Create_Blocks_With_Float_32'Access),
       (UStr ("Create Single_Item block with float_64 as root"), Create_Blocks_With_Float_64'Access),
-      (UStr ("Create Single_Item block with string as root"), Create_Blocks_With_String'Access)
+      (UStr ("Create Single_Item block with string as root"), Create_Blocks_With_String'Access),
+      (UStr ("Create Single_Item block with crc_string as root"), Create_Blocks_With_CRC_String'Access)
      );
 
 end Single_Item_Tests;

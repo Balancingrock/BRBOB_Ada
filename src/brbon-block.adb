@@ -785,7 +785,6 @@ package body BRBON.Block is
          Last         => I.Memory_Ptr.all'Last);
    end Test_Serializer;
 
-
    procedure Ensure_Block_Consistency (I: in out Instance) is
    begin
          I.Update_Header_CRC;

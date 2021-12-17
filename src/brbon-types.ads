@@ -130,9 +130,9 @@ package BRBON.Types is
       Float_32_Type   => 16#0B#,
       Float_64_Type   => 16#0C#,
       String_Type     => 16#0D#,
-      Crc_String_Type => 16#0E#,
+      CRC_String_Type => 16#0E#,
       Binary_Type     => 16#0F#,
-      Crc_Binary_Type => 16#10#,
+      CRC_Binary_Type => 16#10#,
       Array_Type      => 16#11#,
       Dictionary_Type => 16#12#,
       Sequence_Type   => 16#13#,
@@ -160,17 +160,17 @@ package BRBON.Types is
       8,  -- UInt_64
       0,  -- Float_32
       8,  -- Float_64
-      8,  -- String (includes 4 bytes of the string itself)
-      8,  -- Crc_String
-      8,  -- Binary (includes 4 bytes of the binary itself)
-      8,  -- Crc_Binary
+      4,  -- String
+      8,  -- CRC_String
+      4,  -- Binary
+      8,  -- CRC_Binary
       32, -- Array
       8,  -- Dictionary
       8,  -- Sequence
       16, -- Table (no column descriptors included)
       16, -- UUID
       0,  -- RGBA
-      8   -- Font (includes 2 bytes from the font & family)
+      6   -- Font
      );
 
    type Item_Flags is

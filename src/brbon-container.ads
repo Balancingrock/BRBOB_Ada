@@ -281,6 +281,10 @@ package BRBON.Container is
    --
    procedure Test_Support_Get_Bytes (S: Instance; Start: Unsigned_32; Dest: out Array_Of_Unsigned_8);
 
+   -- Create a hex dump of the contents
+   --
+   procedure Test_Support_Hex_Dump (S: Instance);
+
 private
 
    type Instance is

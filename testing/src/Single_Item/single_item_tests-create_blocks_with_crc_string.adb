@@ -7,13 +7,14 @@ with BRBON.Block; use BRBON.Block;
 with BRBON.Configure;
 with BRBON.Types; use BRBON.Types;
 with BRBON.Portal;
+with BRBON.Container;
 
 with Support;
 with Serializable;
 
 separate (Single_Item_Tests)
 
-function Create_Blocks_With_String (Count: in out Integer) return Test_Result is
+function Create_Blocks_With_CRC_String (Count: in out Integer) return Test_Result is
 
    Type_1_Block: Array_Of_Unsigned_8 :=
      (
@@ -329,14 +330,15 @@ begin
 
    Expected_Bytes := new Array_Of_Unsigned_8 (Type_1_Block'Range);
    Expected_Bytes.all := Type_1_Block;
-   Expected_Bytes.all (16#50# .. 16#87#) :=
-     (16#0D#, 16#00#, 16#00#, 16#10#,  16#38#, 16#00#, 16#00#, 16#00#, -- 8
+   Expected_Bytes.all (16#50# .. 16#8F#) :=
+     (16#0E#, 16#00#, 16#00#, 16#10#,  16#40#, 16#00#, 16#00#, 16#00#, -- 8
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 10
       16#80#, 16#4E#, 16#0D#, 16#4A#,  16#75#, 16#73#, 16#74#, 16#5F#, -- 18
       16#41#, 16#5F#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 20
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 28
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 30
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 38
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 38
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 40
      );
 
    T_Object := BRBON.Block.Static_Unprotected.Factory
@@ -355,7 +357,7 @@ begin
       Creation_Timestamp              => 16#1234_5678_8765_4321#,
       Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
 
-   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.String_Type,
+   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.CRC_String_Type,
                            With_Byte_Count => 20,
                            With_Name       => "Just_A_String");
 
@@ -368,9 +370,9 @@ begin
 
    P := T_Object.Get_Root_Item;
 
-   if Static_Unprotected.Get_Type (P) /= String_Type then
+   if Static_Unprotected.Get_Type (P) /= CRC_String_Type then
       New_Line (2);
-      Put_Line ("Expected the type 'String_Type', found:" & Static_Unprotected.Get_Type (P)'Image);
+      Put_Line ("Expected the type 'CRC_String_Type', found:" & Static_Unprotected.Get_Type (P)'Image);
       return Failed;
    end if;
 
@@ -398,44 +400,48 @@ begin
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_Byte_Count (P) /= 56 then
+   if Static_Unprotected.Get_Byte_Count (P) /= 64 then
       New_Line (2);
       Put_Line ("Expected Byte_Count of 56, found: " & Static_Unprotected.Get_Byte_Count (P)'Image);
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_Value_Area_Byte_Count (P) /= 24 then
+   if Static_Unprotected.Get_Value_Area_Byte_Count (P) /= 32 then
       New_Line (2);
       Put_Line ("Expected Value_Area_Byte_Count of 24, found:" & Static_Unprotected.Get_Value_Area_Byte_Count (P)'Image);
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_String (P) /= "" then
+   if Static_Unprotected.Get_CRC_String (P) /= "" then
       New_Line (2);
       Put_Line ("Expected empty initial string found:" & Static_Unprotected.Get_String (P));
       return Failed;
    end if;
 
-   Static_Unprotected.Set_String (P, "A String Test");
+   Static_Unprotected.Set_CRC_String (P, "A-String-Test");
 
-   if Static_Unprotected.Get_String (P) /= "A String Test" then
+   BRBON.Container.Test_Support_Hex_Dump (P.Container);
+
+   if Static_Unprotected.Get_CRC_String (P) /= "A String Test" then
       New_Line (2);
       Put_Line ("Expected value 'A String Test', found:" & Static_Unprotected.Get_String (P));
       return Failed;
    end if;
 
-   Expected_Bytes.all (16#50# .. 16#87#) :=
-     (16#0D#, 16#00#, 16#00#, 16#10#,  16#38#, 16#00#, 16#00#, 16#00#, -- 8
+   Expected_Bytes.all (16#50# .. 16#8F#) :=
+     (
+      16#0E#, 16#00#, 16#00#, 16#10#,  16#40#, 16#00#, 16#00#, 16#00#, -- 8
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 10
       16#80#, 16#4E#, 16#0D#, 16#4A#,  16#75#, 16#73#, 16#74#, 16#5F#, -- 18
       16#41#, 16#5F#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 20
-      16#0D#, 16#00#, 16#00#, 16#00#,  16#41#, 16#20#, 16#53#, 16#74#, -- 28
-      16#72#, 16#69#, 16#6E#, 16#67#,  16#20#, 16#54#, 16#65#, 16#73#, -- 30
-      16#74#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 38
+      16#72#, 16#69#, 16#6E#, 16#67#,  16#0D#, 16#00#, 16#00#, 16#00#, -- 28
+      16#41#, 16#20#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 30
+      16#20#, 16#54#, 16#65#, 16#73#,  16#74#, 16#00#, 16#00#, 16#00#, -- 38
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#
      );
 
    T_Serializer := T_Object.Test_Serializer;
 
    return Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map);
 
-end Create_Blocks_With_String;
+end Create_Blocks_With_CRC_String;

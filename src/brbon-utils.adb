@@ -173,6 +173,67 @@ package body BRBON.Utils is
 
    end Put_Hex_8_Two_Lines;
 
+   
+   Procedure Put_Hex (Source: Array_Of_Unsigned_8) is
+
+      Start: Unsigned_32 := Source'First;
+
+      procedure Put_Hex_Line (Offset: in out Unsigned_32) is
+
+         Again: Unsigned_32 := Offset;
+         
+      begin
+
+         -- Line of hex
+         
+         for I in Unsigned_32 range 0 .. 15 loop
+
+            exit when Offset > Source'Last;
+
+            Put (" ");
+
+            Put_Hex_8 (Source (Offset));
+
+            if I = 7 then
+               Put (" ");
+            end if;
+
+            Offset := Offset + 1;
+            
+         end loop;
+
+         Put ("  ");
+         
+         for I in Unsigned_32 range 0 .. 15 loop
+            
+            exit when Again > Source'Last;
+            
+            if Source (Again) < 16#20# or else Source (Again) > 16#7F# then
+               Put (" .");
+            else
+               Put (" " & Character'Val (Integer (Source (Again))));
+            end if;
+            
+            if I = 7 then
+               Put (" ");
+            end if;
+            
+            Again := Again + 1;
+            
+         end loop;
+         
+      end Put_Hex_Line;
+
+   begin
+
+      while Start < Source'Last loop
+         New_Line;
+         Put_Hex_32 (Start); Put (" ");
+         Put_Hex_Line (Start);
+      end loop;
+
+   end Put_Hex;
+   
 begin
 
    Hex_64_IO.Default_Width := 12;

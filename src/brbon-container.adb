@@ -352,6 +352,8 @@ package body BRBON.Container is
       subtype Arr_T is Array_Of_Unsigned_8 (1 .. Unsigned_32 (Length));
       function To_Str_T is new Ada.Unchecked_Conversion (Arr_T, Str_T);
    begin
+      New_Line (2);
+      Put_Line ("Offset =" & Offset'Image & ", Length =" & Length'Image);
       return To_Str_T (Arr_T (S.Data (Offset .. Offset + Length - 1)));
    end Get_String;
 
@@ -391,5 +393,11 @@ package body BRBON.Container is
    begin
       return CRC_Package.Calculate_CRC_32 (Arr => S.Data (Start .. (Start + Count - 1)));
    end Get_CRC_32_Over_Range;
+
+   procedure Test_Support_Hex_Dump (S: Instance) is
+   begin
+      Utils.Put_Hex (S.Data.all);
+   end Test_Support_Hex_Dump;
+
 
 end BRBON.Container;
