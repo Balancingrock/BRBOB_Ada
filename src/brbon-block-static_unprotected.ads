@@ -183,6 +183,9 @@ package BRBON.Block.Static_Unprotected is
    procedure Set_CRC_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
    pragma Inline (Set_CRC_Binary);
    --
+   function Get_CRC_Binary_CRC (P: Portal.Instance) return Unsigned_32;
+   pragma Inline (Get_CRC_Binary_CRC);
+   --
    function Get_UUID (P:Portal.Instance) return UUID_Package.UUID;
    pragma Inline (Get_UUID);
    --
