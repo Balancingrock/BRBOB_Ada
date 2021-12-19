@@ -7,17 +7,13 @@ with BRBON.Block; use BRBON.Block;
 with BRBON.Configure;
 with BRBON.Types; use BRBON.Types;
 with BRBON.Portal;
-with BRBON.Container;
 
 with Support;
 with Serializable;
 
-with GNAT.CRC32; use GNAT.CRC32;
-
-
 separate (Single_Item_Tests)
 
-function Create_Blocks_With_CRC_String (Count: in out Integer) return Test_Result is
+function Create_Blocks_With_Binary (Count: in out Integer) return Test_Result is
 
    Type_1_Block: Array_Of_Unsigned_8 :=
      (
@@ -333,15 +329,14 @@ begin
 
    Expected_Bytes := new Array_Of_Unsigned_8 (Type_1_Block'Range);
    Expected_Bytes.all := Type_1_Block;
-   Expected_Bytes.all (16#50# .. 16#8F#) :=
-     (16#0E#, 16#00#, 16#00#, 16#10#,  16#40#, 16#00#, 16#00#, 16#00#, -- 8
+   Expected_Bytes.all (16#50# .. 16#87#) :=
+     (16#0F#, 16#00#, 16#00#, 16#10#,  16#38#, 16#00#, 16#00#, 16#00#, -- 8
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 10
-      16#80#, 16#4E#, 16#0D#, 16#4A#,  16#75#, 16#73#, 16#74#, 16#5F#, -- 18
-      16#41#, 16#5F#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 20
+      16#FB#, 16#5F#, 16#06#, 16#42#,  16#69#, 16#6E#, 16#61#, 16#72#, -- 18
+      16#79#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 20
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 28
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 30
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 38
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 40
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 38
      );
 
    T_Object := BRBON.Block.Static_Unprotected.Factory
@@ -360,9 +355,9 @@ begin
       Creation_Timestamp              => 16#1234_5678_8765_4321#,
       Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
 
-   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.CRC_String_Type,
+   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.Binary_Type,
                            With_Byte_Count => 20,
-                           With_Name       => "Just_A_String");
+                           With_Name       => "Binary");
 
    T_Serializer := T_Object.Test_Serializer;
 
@@ -373,9 +368,9 @@ begin
 
    P := T_Object.Get_Root_Item;
 
-   if Static_Unprotected.Get_Type (P) /= CRC_String_Type then
+   if Static_Unprotected.Get_Type (P) /= Binary_Type then
       New_Line (2);
-      Put_Line ("Expected the type 'CRC_String_Type', found:" & Static_Unprotected.Get_Type (P)'Image);
+      Put_Line ("Expected the type 'Binary_Type', found:" & Static_Unprotected.Get_Type (P)'Image);
       return Failed;
    end if;
 
@@ -391,9 +386,9 @@ begin
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_Name (P) /= "Just_A_String" then
+   if Static_Unprotected.Get_Name (P) /= "Binary" then
       New_Line (2);
-      Put_Line ("Expected 'Just_A_String', found:" & Static_Unprotected.Get_Name (P));
+      Put_Line ("Expected 'Binary', found:" & Static_Unprotected.Get_Name (P));
       return Failed;
    end if;
 
@@ -403,55 +398,48 @@ begin
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_Byte_Count (P) /= 64 then
+   if Static_Unprotected.Get_Byte_Count (P) /= 56 then
       New_Line (2);
       Put_Line ("Expected Byte_Count of 56, found: " & Static_Unprotected.Get_Byte_Count (P)'Image);
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_Value_Area_Byte_Count (P) /= 32 then
+   if Static_Unprotected.Get_Value_Area_Byte_Count (P) /= 24 then
       New_Line (2);
       Put_Line ("Expected Value_Area_Byte_Count of 24, found:" & Static_Unprotected.Get_Value_Area_Byte_Count (P)'Image);
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_CRC_String_CRC (P) /= 0 then
+   if Static_Unprotected.Get_Binary (P)'Length /= 0 then
       New_Line (2);
-      Put_Line ("Expected 0 for empty CRC string, found:" & Static_Unprotected.Get_CRC_String_CRC (P)'Image);
+      Put_Line ("Expected empty binary, found:" & Static_Unprotected.Get_String (P));
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_CRC_String (P) /= "" then
-      New_Line (2);
-      Put_Line ("Expected empty initial string found:" & Static_Unprotected.Get_CRC_String (P));
-      return Failed;
-   end if;
+   declare
+      Bytes: Array_Of_Unsigned_8 (1 .. 10) := (1, 2, 3, 11, 12, 13, 21, 22, 23, 40);
+   begin
+      Static_Unprotected.Set_Binary (P, Bytes);
 
-   Static_Unprotected.Set_CRC_String (P, "A String Test");
+      if Static_Unprotected.Get_Binary (P) /= Bytes then
+         New_Line (2);
+         Put ("Expected values '1, 2, 3, 11, 12, 13, 21, 22, 23, 40', found:");
+         for B of Static_Unprotected.Get_Binary (P) loop
+            Put (B'Image);
+         end loop;
+         New_Line;
+         return Failed;
+      end if;
+   end;
 
-   if Static_Unprotected.Get_CRC_String (P) /= "A String Test" then
-      New_Line (2);
-      Put_Line ("Expected value 'A String Test', found:" & Static_Unprotected.Get_CRC_String (P));
-      return Failed;
-   end if;
-
-   if Static_Unprotected.Get_CRC_String_CRC (P) /= 16#DE6A8B5D# then
-      -- Note: on-line CRC32 calculators often use initial value 0, BRBON uses -1
-      New_Line (2);
-      Put_Line ("Expected 3731524445 for empty CRC string, found:" & Static_Unprotected.Get_CRC_String_CRC (P)'Image);
-      return Failed;
-   end if;
-
-   Expected_Bytes.all (16#50# .. 16#8F#) :=
-     (
-      16#0E#, 16#00#, 16#00#, 16#10#,  16#40#, 16#00#, 16#00#, 16#00#, -- 8
+   Expected_Bytes.all (16#50# .. 16#87#) :=
+     (16#0F#, 16#00#, 16#00#, 16#10#,  16#38#, 16#00#, 16#00#, 16#00#, -- 8
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 10
-      16#80#, 16#4E#, 16#0D#, 16#4A#,  16#75#, 16#73#, 16#74#, 16#5F#, -- 18
-      16#41#, 16#5F#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 20
-      16#5D#, 16#8B#, 16#6A#, 16#DE#,  16#0D#, 16#00#, 16#00#, 16#00#, -- 28
-      16#41#, 16#20#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 30
-      16#20#, 16#54#, 16#65#, 16#73#,  16#74#, 16#00#, 16#00#, 16#00#, -- 38
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 40
+      16#FB#, 16#5F#, 16#06#, 16#42#,  16#69#, 16#6E#, 16#61#, 16#72#, -- 18
+      16#79#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 20
+      16#0A#, 16#00#, 16#00#, 16#00#,  16#01#, 16#02#, 16#03#, 16#0B#, -- 28
+      16#0C#, 16#0D#, 16#15#, 16#16#,  16#17#, 16#28#, 16#00#, 16#00#, -- 30
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 38
      );
 
    T_Serializer := T_Object.Test_Serializer;
@@ -460,35 +448,34 @@ begin
       return Failed;
    end if;
 
-   Static_Unprotected.Set_CRC_String (P, "");
+   declare
+      Bytes: Array_Of_Unsigned_8 (1 .. 0) := (others => 0);
+   begin
+      Static_Unprotected.Set_Binary (P, Bytes);
 
-   if Static_Unprotected.Get_CRC_String (P) /= "" then
-      New_Line (2);
-      Put_Line ("Expected empty string, found:" & Static_Unprotected.Get_CRC_String (P));
-      return Failed;
-   end if;
+      if Static_Unprotected.Get_Binary (P) /= Bytes then
+         New_Line (2);
+         Put ("Expected empty array, found:");
+         for B of Static_Unprotected.Get_Binary (P) loop
+            Put (B'Image);
+         end loop;
+         New_Line;
+         return Failed;
+      end if;
+   end;
 
-   if Static_Unprotected.Get_CRC_String_CRC (P) /= 0 then
-      New_Line (2);
-      Put_Line ("Expected 0 for empty CRC string, found:" & Static_Unprotected.Get_CRC_String_CRC (P)'Image);
-      return Failed;
-   end if;
-
-   Expected_Bytes.all (16#50# .. 16#8F#) :=
-     (
-      16#0E#, 16#00#, 16#00#, 16#10#,  16#40#, 16#00#, 16#00#, 16#00#, -- 8
+   Expected_Bytes.all (16#50# .. 16#87#) :=
+     (16#0F#, 16#00#, 16#00#, 16#10#,  16#38#, 16#00#, 16#00#, 16#00#, -- 8
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 10
-      16#80#, 16#4E#, 16#0D#, 16#4A#,  16#75#, 16#73#, 16#74#, 16#5F#, -- 18
-      16#41#, 16#5F#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 20
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 28
-      16#41#, 16#20#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 30
-      16#20#, 16#54#, 16#65#, 16#73#,  16#74#, 16#00#, 16#00#, 16#00#, -- 38
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 40
+      16#FB#, 16#5F#, 16#06#, 16#42#,  16#69#, 16#6E#, 16#61#, 16#72#, -- 18
+      16#79#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 20
+      16#00#, 16#00#, 16#00#, 16#00#,  16#01#, 16#02#, 16#03#, 16#0B#, -- 28
+      16#0C#, 16#0D#, 16#15#, 16#16#,  16#17#, 16#28#, 16#00#, 16#00#, -- 30
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 38
      );
 
    T_Serializer := T_Object.Test_Serializer;
 
    return Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map);
 
-
-end Create_Blocks_With_CRC_String;
+end Create_Blocks_With_Binary;

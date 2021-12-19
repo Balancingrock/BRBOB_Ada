@@ -403,8 +403,12 @@ package body BRBON.Block.Static_Unprotected is
    procedure Set_CRC_String (P: Portal.Instance; Value: String) is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
    begin
-      Container.Set_String (P.Container, Value_Offset + Item.CRC_String_Byte_Code_Offset, Value);
-      Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_CRC_Offset, CRC_Package.Calculate_CRC_32 (Value));
+      if Value'Length > 0 then
+         Container.Set_String (P.Container, Value_Offset + Item.CRC_String_Byte_Code_Offset, Value);
+         Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_CRC_Offset, CRC_Package.Calculate_CRC_32 (Value));
+      else
+         Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_CRC_Offset, 0);
+      end if;
       Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_Byte_Count_Offset, Value'Length);
    end Set_CRC_String;
 
@@ -420,7 +424,7 @@ package body BRBON.Block.Static_Unprotected is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
       Byte_Count: Unsigned_32 := Container.Get_Unsigned_32 (P.Container, Value_Offset + Item.Binary_Byte_Count_Offset);
    begin
-      return Container.Get_Unsigned_8_Array (P.Container, P.Item_Offset + Item.Binary_Byte_Code_Offset, Byte_Count);
+      return Container.Get_Unsigned_8_Array (P.Container, Value_Offset + Item.Binary_Byte_Code_Offset, Byte_Count);
    end Get_Binary;
    --
    procedure Set_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8) is
@@ -441,8 +445,12 @@ package body BRBON.Block.Static_Unprotected is
    procedure Set_CRC_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8) is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
    begin
-      Container.Set_Unsigned_8_Array (P.Container, Value_Offset + Item.CRC_Binary_Byte_Code_Offset, Value);
-      Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_Binary_CRC_Offset, CRC_Package.Calculate_CRC_32 (Value));
+      if Value'Length > 0 then
+         Container.Set_Unsigned_8_Array (P.Container, Value_Offset + Item.CRC_Binary_Byte_Code_Offset, Value);
+         Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_Binary_CRC_Offset, CRC_Package.Calculate_CRC_32 (Value));
+      else
+         Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_Binary_CRC_Offset, 0);
+      end if;
       Container.Set_Unsigned_32 (P.Container, Value_Offset + Item.CRC_Binary_Byte_Count_Offset, Value'Length);
    end Set_CRC_Binary;
 
