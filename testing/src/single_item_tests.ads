@@ -23,6 +23,7 @@ package Single_Item_Tests is
    function Create_Blocks_With_Binary (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_CRC_Binary (Count: in out Integer) return Test_Result;
    function Create_Blocks_With_UUID (Count: in out Integer) return Test_Result;
+   function Create_Blocks_With_Color (Count: in out Integer) return Test_Result;
 
    Tests: aliased Array_Of_Tests :=
      (
@@ -44,7 +45,8 @@ package Single_Item_Tests is
       (UStr ("Create Single_Item block with crc_string as root"), Create_Blocks_With_CRC_String'Access),
       (UStr ("Create Single_Item block with binary as root"), Create_Blocks_With_Binary'Access),
       (UStr ("Create Single_Item block with crc binary as root"), Create_Blocks_With_CRC_Binary'Access),
-      (UStr ("Create Single_Item block with UUID as root"), Create_Blocks_With_UUID'Access)
+      (UStr ("Create Single_Item block with UUID as root"), Create_Blocks_With_UUID'Access),
+      (UStr ("Create Single_Item block with color as root"), Create_Blocks_With_Color'Access)
      );
 
 end Single_Item_Tests;

@@ -13,14 +13,19 @@ package Color_Package is
    function Get_Blue_Component (C: Color) return Unsigned_8;
    function Get_Alpha_Component (C: Color) return Unsigned_8;
 
-   function Black return Color;   -- 000000
-   function Red return Color;     -- FF0000
-   function Green return Color;   -- 00FF00
-   function Blue return Color;    -- 0000FF
-   function Yellow return Color;  -- FFFF00
-   function Magenta return Color; -- FF00FF
-   function Cyan return Color;    -- 00FFFF
-   function White return Color;   -- FFFFFF
+   function Image (C: Color) return String;
+
+   function None return Color;    -- 00000000
+   function Black return Color;   -- 000000FF
+   function Red return Color;     -- FF0000FF
+   function Green return Color;   -- 00FF00FF
+   function Blue return Color;    -- 0000FFFF
+   function Yellow return Color;  -- FFFF00FF
+   function Magenta return Color; -- FF00FFFF
+   function Cyan return Color;    -- 00FFFFFF
+   function White return Color;   -- FFFFFFFF
+
+   function "=" (lhs, rhs: Color) return Boolean;
 
 private
 
@@ -45,6 +50,7 @@ private
    function To_Unsigned_32 is new Ada.Unchecked_Conversion (Color, Unsigned_32);
    function To_Color is new Ada.Unchecked_Conversion (Unsigned_32, Color);
 
+   Color_None:     constant Color := (16#00#, 16#00#, 16#00#, 16#00#);
    Color_Black:    constant Color := (16#00#, 16#00#, 16#00#, 16#FF#);
    Color_Red  :    constant Color := (16#FF#, 16#00#, 16#00#, 16#FF#);
    Color_Green:    constant Color := (16#00#, 16#FF#, 16#00#, 16#FF#);
