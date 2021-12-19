@@ -121,6 +121,11 @@ package body UUID_Package is
    end Get_String;
 
 
+   function "=" (lhs, rhs: UUID_Package.UUID) return Boolean is
+   begin
+      return lhs.Bytes = rhs.Bytes;
+   end "=";
+
 begin
 
    declare

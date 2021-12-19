@@ -30,6 +30,8 @@ package UUID_Package is
 
    function Get_String (I: UUID) return UUID_String;
 
+   function "=" (lhs, rhs: UUID_Package.UUID) return Boolean;
+
 private
 
    type UUID is
@@ -40,3 +42,4 @@ private
    Nil_Instance: constant UUID := (Bytes => (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 
 end UUID_Package;
+
