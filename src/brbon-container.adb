@@ -352,8 +352,6 @@ package body BRBON.Container is
       subtype Arr_T is Array_Of_Unsigned_8 (1 .. Unsigned_32 (Length));
       function To_Str_T is new Ada.Unchecked_Conversion (Arr_T, Str_T);
    begin
-      New_Line (2);
-      Put_Line ("Offset =" & Offset'Image & ", Length =" & Length'Image);
       return To_Str_T (Arr_T (S.Data (Offset .. Offset + Length - 1)));
    end Get_String;
 

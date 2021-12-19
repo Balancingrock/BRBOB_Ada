@@ -12,6 +12,9 @@ with BRBON.Container;
 with Support;
 with Serializable;
 
+with GNAT.CRC32; use GNAT.CRC32;
+
+
 separate (Single_Item_Tests)
 
 function Create_Blocks_With_CRC_String (Count: in out Integer) return Test_Result is
@@ -412,19 +415,30 @@ begin
       return Failed;
    end if;
 
-   if Static_Unprotected.Get_CRC_String (P) /= "" then
+   if Static_Unprotected.Get_CRC_String_CRC (P) /= 0 then
       New_Line (2);
-      Put_Line ("Expected empty initial string found:" & Static_Unprotected.Get_String (P));
+      Put_Line ("Expected 0 for empty CRC string, found:" & Static_Unprotected.Get_CRC_String_CRC (P)'Image);
       return Failed;
    end if;
 
-   Static_Unprotected.Set_CRC_String (P, "A-String-Test");
+   if Static_Unprotected.Get_CRC_String (P) /= "" then
+      New_Line (2);
+      Put_Line ("Expected empty initial string found:" & Static_Unprotected.Get_CRC_String (P));
+      return Failed;
+   end if;
 
-   BRBON.Container.Test_Support_Hex_Dump (P.Container);
+   Static_Unprotected.Set_CRC_String (P, "A String Test");
 
    if Static_Unprotected.Get_CRC_String (P) /= "A String Test" then
       New_Line (2);
-      Put_Line ("Expected value 'A String Test', found:" & Static_Unprotected.Get_String (P));
+      Put_Line ("Expected value 'A String Test', found:" & Static_Unprotected.Get_CRC_String (P));
+      return Failed;
+   end if;
+
+   if Static_Unprotected.Get_CRC_String_CRC (P) /= 16#DE6A8B5D# then
+      -- Note: on-line CRC32 calculators often use initial value 0, BRBON uses -1
+      New_Line (2);
+      Put_Line ("Expected 3731524445 for empty CRC string, found:" & Static_Unprotected.Get_CRC_String_CRC (P)'Image);
       return Failed;
    end if;
 
@@ -434,10 +448,10 @@ begin
       16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#, -- 10
       16#80#, 16#4E#, 16#0D#, 16#4A#,  16#75#, 16#73#, 16#74#, 16#5F#, -- 18
       16#41#, 16#5F#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 20
-      16#72#, 16#69#, 16#6E#, 16#67#,  16#0D#, 16#00#, 16#00#, 16#00#, -- 28
+      16#5D#, 16#8B#, 16#6A#, 16#DE#,  16#0D#, 16#00#, 16#00#, 16#00#, -- 28
       16#41#, 16#20#, 16#53#, 16#74#,  16#72#, 16#69#, 16#6E#, 16#67#, -- 30
       16#20#, 16#54#, 16#65#, 16#73#,  16#74#, 16#00#, 16#00#, 16#00#, -- 38
-      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#
+      16#00#, 16#00#, 16#00#, 16#00#,  16#00#, 16#00#, 16#00#, 16#00#  -- 40
      );
 
    T_Serializer := T_Object.Test_Serializer;

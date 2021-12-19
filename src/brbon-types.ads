@@ -1,4 +1,5 @@
 with Ada.Strings.Bounded;
+--with Ada.Streams;
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
@@ -16,6 +17,8 @@ package BRBON.Types is
    -- Most of the data manipulations are done byte wise
    --
    type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of Unsigned_8;
+   pragma Pack (Array_Of_Unsigned_8);
+   --for Array_Of_Unsigned_8'Alignment use 4; -- Causes GNAT compiler crash
    --
    type Array_Of_Unsigned_8_Ptr is access all Array_Of_Unsigned_8;
 

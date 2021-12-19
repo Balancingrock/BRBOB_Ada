@@ -397,11 +397,9 @@ package body BRBON.Block.Static_Unprotected is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
       Byte_Count: Unsigned_32 := Container.Get_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_Byte_Count_Offset);
    begin
-      New_Line (2);
-      Put_Line ("Value Offset =" & Value_Offset'Image & ", Byte_Count =" & Byte_Count'Image);
       return Container.Get_String (P.Container, Value_Offset + Item.CRC_String_Byte_Code_Offset, Byte_Count);
    end Get_CRC_String;
-
+   --
    procedure Set_CRC_String (P: Portal.Instance; Value: String) is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
    begin
@@ -411,13 +409,20 @@ package body BRBON.Block.Static_Unprotected is
    end Set_CRC_String;
 
 
+   function Get_CRC_String_CRC (P: Portal.Instance) return Unsigned_32 is
+      Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
+   begin
+      return Container.Get_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_CRC_Offset);
+   end Get_CRC_String_CRC;
+
+
    function Get_Binary (P: Portal.Instance) return Array_Of_Unsigned_8 is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
       Byte_Count: Unsigned_32 := Container.Get_Unsigned_32 (P.Container, Value_Offset + Item.Binary_Byte_Count_Offset);
    begin
       return Container.Get_Unsigned_8_Array (P.Container, P.Item_Offset + Item.Binary_Byte_Code_Offset, Byte_Count);
    end Get_Binary;
-
+   --
    procedure Set_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8) is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
    begin
