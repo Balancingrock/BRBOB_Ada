@@ -442,6 +442,12 @@ begin
       return Failed;
    end if;
 
+   if Static_Unprotected.Get_CRC_String_Quick_Compare (P) /= 16#0000000D_DE6A8B5D# then
+      New_Line (2);
+      Put_Line ("Wrong quick check value");
+      return Failed;
+   end if;
+
    Expected_Bytes.all (16#50# .. 16#8F#) :=
      (
       16#0E#, 16#00#, 16#00#, 16#10#,  16#40#, 16#00#, 16#00#, 16#00#, -- 8

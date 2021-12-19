@@ -419,6 +419,11 @@ package body BRBON.Block.Static_Unprotected is
       return Container.Get_Unsigned_32 (P.Container, Value_Offset + Item.CRC_String_CRC_Offset);
    end Get_CRC_String_CRC;
 
+   function Get_CRC_String_Quick_Compare (P: Portal.Instance) return Unsigned_64 is
+   begin
+      return Container.Get_Unsigned_64 (P.Container, Portal.Value_Offset (P));
+   end Get_CRC_String_Quick_Compare;
+
 
    function Get_Binary (P: Portal.Instance) return Array_Of_Unsigned_8 is
       Value_Offset: Unsigned_32 := Portal.Value_Offset (P);
@@ -458,6 +463,12 @@ package body BRBON.Block.Static_Unprotected is
    begin
       return Container.Get_Unsigned_32 (P.Container, Portal.Value_Offset (P) + Item.CRC_Binary_CRC_Offset);
    end Get_CRC_Binary_CRC;
+
+
+   function Get_CRC_Binary_Quick_Compare (P: Portal.Instance) return Unsigned_64 is
+   begin
+      return Container.Get_Unsigned_64 (P.Container, Portal.Value_Offset (P));
+   end;
 
 
    function Get_UUID (P:Portal.Instance) return UUID_Package.UUID is

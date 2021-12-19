@@ -167,10 +167,19 @@ package BRBON.Block.Static_Unprotected is
    --
    procedure Set_CRC_String (P: Portal.Instance; Value: String);
    pragma Inline (Set_CRC_String);
+
+   -- Returns the CRC value for the stored string.
+   -- Returns zero for empty strings.
    --
    function Get_CRC_String_CRC (P: Portal.Instance) return Unsigned_32;
    pragma Inline (Get_CRC_String);
+
+   -- Returns the 32 bit CRC and the byte count in a single value.
+   -- Note that this value is endianess dependent.
    --
+   function Get_CRC_String_Quick_Compare (P: Portal.Instance) return Unsigned_64;
+   pragma Inline (Get_CRC_String_Quick_Compare);
+
    function Get_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
    pragma Inline (Get_Binary);
    --
@@ -182,10 +191,19 @@ package BRBON.Block.Static_Unprotected is
    --
    procedure Set_CRC_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
    pragma Inline (Set_CRC_Binary);
+
+   -- Returns the CRC value for the stored binary.
+   -- Returns zero for empty binaries.
    --
    function Get_CRC_Binary_CRC (P: Portal.Instance) return Unsigned_32;
    pragma Inline (Get_CRC_Binary_CRC);
+
+   -- Returns the 32 bit CRC and the byte count in a single value.
+   -- Note that this value is endianess dependent.
    --
+   function Get_CRC_Binary_Quick_Compare (P: Portal.Instance) return Unsigned_64;
+   pragma Inline (Get_CRC_String_Quick_Compare);
+
    function Get_UUID (P:Portal.Instance) return UUID_Package.UUID;
    pragma Inline (Get_UUID);
    --
