@@ -148,6 +148,34 @@ package BRBON.Types is
    function To_Item_Type is new Ada.Unchecked_Conversion (Unsigned_8, Item_Type);
    function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Type, Unsigned_8);
 
+   Item_Is_Container: Array (Item_Type) of Boolean :=
+     (
+      False,   -- Illegal
+      False,   -- Null_Type
+      False,   -- Bool_Type
+      False,   -- Int_8_Type
+      False,   -- Int_16_Type
+      False,   -- Int_32_Type
+      False,   -- Int_64_Type
+      False,   -- UInt_8_Type
+      False,   -- UInt_16_Type
+      False,   -- UInt_32_Type
+      False,   -- UInt_64_Type
+      False,   -- Float_32_Type
+      False,   -- Float_64_Type
+      False,   -- String_Type
+      False,   -- CRC_String_Type
+      False,   -- Binary_Type
+      False,   -- CRC_Binary_Type
+      True,    -- Array_Type
+      True,    -- Dictionary_Type
+      True,    -- Sequence_Type
+      True,    -- Table_Type
+      False,   -- UUID_Type
+      False,   -- RGBA_Type
+      False    -- Font_Type
+     );
+
    Item_Overhead_Byte_Count: Array (Item_Type) of Unsigned_32 :=
      (
       0,  -- Illegal

@@ -57,10 +57,23 @@ package BRBON.Block.Static_Unprotected is
       ) return Instance;
 
 
+   -- Return the byte count of the unused area in this block.
+   --
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;
 
+
+   -- Add the requested root item if the root item is not a container.
+   --
    procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String);
 
+
+   -- Add an Array_Type container item at root level.
+   --
+   procedure Add_Root_Item_Array (I: in out Instance; Item_Byte_Count: Unsigned_32; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32);
+
+
+   -- Return a portal referencing the root item.
+   --
    function Get_Root_Item (I: in out Instance) return Portal.Instance;
 
 
@@ -89,13 +102,22 @@ package BRBON.Block.Static_Unprotected is
 
 
    -- Value Access
+
+   -- Return the bool value if the portal refers to a Bool_Type.
+   -- Note: It is assumed that the portal refers to the start of an item of the expected type.
+   -- If not, no error will be signalled, but the returned result will be unreliable.
    --
    function Get_Bool (P: Portal.Instance) return Boolean;
    pragma Inline (Get_Bool);
+
+   -- Sets the bool value if the portal refers to a Bool_Type.
+   -- Note: It is assumed that the portal refers to the start of an item of the expected type.
+   -- If not, no error will be signalled, but the block/item structure or content may be corrupted in unpredictable ways.
    --
    procedure Set_Bool (P: Portal.Instance; Value: Boolean);
    pragma Inline (Set_Bool);
-   --
+
+
    function Get_Int_8 (P: Portal.Instance) return Integer_8;
    pragma Inline (Get_Int_8);
    --
@@ -182,13 +204,13 @@ package BRBON.Block.Static_Unprotected is
 
    function Get_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
    pragma Inline (Get_Binary);
-   --
+
    procedure Set_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
    pragma Inline (Set_Binary);
-   --
+
    function Get_CRC_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
    pragma Inline (Get_CRC_Binary);
-   --
+
    procedure Set_CRC_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
    pragma Inline (Set_CRC_Binary);
 
@@ -204,17 +226,40 @@ package BRBON.Block.Static_Unprotected is
    function Get_CRC_Binary_Quick_Compare (P: Portal.Instance) return Unsigned_64;
    pragma Inline (Get_CRC_String_Quick_Compare);
 
+
    function Get_UUID (P:Portal.Instance) return UUID_Package.UUID;
    pragma Inline (Get_UUID);
-   --
+
    procedure Set_UUID (P: Portal.Instance; Value: UUID_Package.UUID);
    pragma Inline (Set_UUID);
-   --
+
+
    function Get_Color (P:Portal.Instance) return Color_Package.Color;
    pragma Inline (Get_Color);
-   --
+
    procedure Set_Color (P: Portal.Instance; Value: Color_Package.Color);
    pragma Inline (Set_Color);
+
+
+   -- Return the last used index in the table.
+   --
+   function Get_Last_Index (P: Portal.Instance) return Unsigned_32;
+
+
+   -- Return the byte count of each element in the table.
+   --
+   function Get_Element_Byte_Count (P: Portal.Instance) return Unsigned_32;
+
+
+   -- Retrieving table elements
+   --
+   function Get_Element (P: Portal.Instance; Index: Unsigned_32) return Portal.Instance;
+
+
+   -- Add an element to the table
+   --
+   function Add_Element (P: Portal.Instance) return Portal.Instance;
+
 
 
 end BRBON.Block.Static_Unprotected;

@@ -6,11 +6,15 @@ with BRBON.Types; use BRBON.Types;
 
 package BRBON.Portal is
 
+   type Instance_Type is (Normal, Element, Field);
 
    type Instance is
       record
          Container: BRBON.Container.Instance;
          Item_Offset: Unsigned_32;
+         Of_Type: Instance_Type := Normal;
+         Element_Index: Unsigned_32 := 0;
+         Column_Index: Unsigned_32 := 0;
       end record;
 
    function Factory (For_Container: Container.Instance; Using_Item_Offset: Unsigned_32) return Instance;
