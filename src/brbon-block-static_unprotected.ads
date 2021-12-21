@@ -64,17 +64,19 @@ package BRBON.Block.Static_Unprotected is
 
    -- Add the requested root item if the root item is not a container.
    --
-   procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String);
+   function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal.Instance;
 
 
    -- Add an Array_Type container item at root level.
    --
-   procedure Add_Root_Item_Array (I: in out Instance; Item_Byte_Count: Unsigned_32; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32);
+   function Add_Root_Item_Array_Type (I: in out Instance; With_Name: String; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal.Instance;
 
 
    -- Return a portal referencing the root item.
    --
    function Get_Root_Item (I: in out Instance) return Portal.Instance;
+
+
 
 
    -- Item Structure Access

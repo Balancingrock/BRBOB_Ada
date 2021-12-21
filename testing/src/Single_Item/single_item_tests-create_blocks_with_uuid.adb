@@ -354,9 +354,9 @@ begin
       Creation_Timestamp              => 16#1234_5678_8765_4321#,
       Expiry_Timestamp                => 16#FFEE_DDCC_BBAA_9988#);
 
-   T_Object.Add_Root_Item (Of_Type         => BRBON.Types.UUID_Type,
-                           With_Byte_Count => 0,
-                           With_Name       => "UUID");
+   P := T_Object.Add_Root_Item (Of_Type         => BRBON.Types.UUID_Type,
+                                With_Byte_Count => 0,
+                                With_Name       => "UUID");
 
    T_Serializer := T_Object.Test_Serializer;
 
@@ -364,9 +364,6 @@ begin
    if Support.Verify_Array_Of_Unsigned_8 (T_Serializer, Expected_Bytes, Skip_Map) /= Passed then
       return Failed;
    end if;
-
-   P := T_Object.Get_Root_Item;
-
 
    if Static_Unprotected.Get_Type (P) /= UUID_Type then
       New_Line (2);

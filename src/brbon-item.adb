@@ -91,6 +91,102 @@ package body BRBON.Item is
    end Create_Layout;
 
    
+   -- Create a new array layout at the given offset
+   --
+   function Create_Array_Layout
+     (
+      In_Container: in out Container.Instance;
+      At_Offset: Unsigned_32;
+      With_Name: Name_Field_Assistent.Instance;
+      For_Element_Type: Types.Item_Type;
+      Using_Element_Byte_Count: Unsigned_32;
+      Max_Element_Count: Unsigned_32
+     ) return Portal.Instance is
+  
+      C: Container.Instance renames In_Container;
+      Index: Unsigned_32 renames At_Offset;
+      Name: BRBON.Name_Field_Assistent.Instance renames With_Name;
+      Element_Type: Types.Item_Type renames For_Element_Type;
+      Element_Count: Unsigned_32 renames Max_Element_Count;
+      
+      Element_Byte_Count: Unsigned_32 := Using_Element_Byte_Count;
+
+   begin
+      
+      -- Check input parameters for validity
+      --
+      if Element_Byte_Count = 0 then
+         Ada.Exceptions.Raise_Exception (BRBON.Byte_Count_Error'Identity, "Cannot create array with 0 as element byte count");
+      end if;
+      --
+      if Element_Count = 0 then
+         Ada.Exceptions.Raise_Exception (BRBON.Array_Error'Identity, "Cannot create array with 0 elements");
+      end if;
+      
+      
+      -- Calculate the actual element byte count
+      -- (all elements must be properly aligned according to their inherent byte count)
+      --
+      case Element_Type is
+         when Types.Illegal => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot create an array of Illegal elements");
+         when Types.Null_Type => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot create an array of Null_Type elements");
+         when Types.Bool_Type | Types.UInt_8_Type | Types.Int_8_Type => null;
+         when Types.UInt_16_Type | Types.Int_16_Type =>
+            if Element_Byte_Count mod 2 = 1 then
+               Element_Byte_Count := Element_Byte_Count + 1;
+            end if;
+         when Types.UInt_32_Type | Types.Int_32_Type | Float_32_Type =>
+            if Element_Byte_Count mod 2 = 1 then
+               Element_Byte_Count := Element_Byte_Count + 1;
+            end if;
+            if Element_Byte_Count mod 4 = 2 then
+               Element_Byte_Count := Element_Byte_Count + 2;
+            end if;
+         when Types.UInt_64_Type | Types.Int_64_Type | Float_64_Type | Types.UUID_Type | Types.RGBA_Type =>
+            Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
+         when Types.Sequence_Type | Types.Dictionary_Type =>
+            if Element_Byte_Count < Types.Minimum_Item_Byte_Count then
+               Element_Byte_Count := Types.Minimum_Item_Byte_Count;
+            else
+               Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
+            end if;
+         when Types.Array_Type =>
+            if Element_Byte_Count < Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Array_Type) then
+               Element_Byte_Count := Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Array_Type);
+            else
+               Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
+            end if;
+         when Types.Table_Type =>
+            if Element_Byte_Count < Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Table_Type) then
+               Element_Byte_Count := Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Table_Type);
+            else
+               Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
+            end if;
+         when Types.String_Type | Types.Crc_String_Type | Types.Binary_Type | Types.Crc_Binary_Type | Types.Font_Type =>
+            Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
+      end case;
+
+         
+      -- Create basic item layout
+      --
+      Create_Layout (In_Container     => C,
+                     At_Offset        => Index,
+                     Of_Type          => Types.Array_Type,
+                     With_Name        => Name,
+                     Using_Byte_Count => Types.Item_Overhead_Byte_Count (Types.Array_Type) + Element_Byte_Count * Element_Count,
+                     Parent_Offset    => 0);
+      
+      -- Initialize the array specific parameters
+      --
+      Container.Set_Unsigned_8 (C, Item.Value_Offset (C, Index) + Array_Element_Type_Offset, Types.To_Unsigned_8 (Element_Type));
+      Container.Set_Unsigned_32 (C, Item.Value_Offset (C, Index) + Array_Element_Byte_Count_Offset, Element_Byte_Count);
+      
+      
+      return Portal.Factory (C, Index);
+      
+   end Create_Array_Layout;
+   
+   
    -- Get_Value_Offset
    --
    Use_Small_Value_LUT: constant Array (Types.Item_Type) of Boolean :=

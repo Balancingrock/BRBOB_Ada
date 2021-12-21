@@ -115,4 +115,13 @@ package BRBON is
    Implementation: exception;
 
 
+   -- Raised when an illegal byte count is specified
+   --
+   Byte_Count_Error: exception;
+
+
+   -- Raised when something (see associated message) goes wrong in an array
+   --
+   Array_Error: exception;
+
 end BRBON;

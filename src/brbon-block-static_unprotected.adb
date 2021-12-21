@@ -160,7 +160,7 @@ package body BRBON.Block.Static_Unprotected is
    end Free_Area_Byte_Count;
 
 
-   procedure Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) is
+   function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal.Instance is
 
       Name_Assistent: Name_Field_Assistent.Instance := Name_Field_Assistent.Create_Name_Field_Assistent (With_Name);
       Item_Byte_Count: Unsigned_32;
@@ -208,13 +208,34 @@ package body BRBON.Block.Static_Unprotected is
       --
       I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Byte_Count (I.Container, I.First_Free_Byte_In_Payload);
 
+
+      return Portal.Factory (I.Container, Unsigned_32 (I.Header_Get_Header_Byte_Count));
+
    end Add_Root_Item;
 
 
-   procedure Add_Root_Item_Array (I: in out Instance; Item_Byte_Count: Unsigned_32; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32) is
+   function Add_Root_Item_Array_Type (I: in out Instance; With_Name: String; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal.Instance is
+
+      Name_Assistent: Name_Field_Assistent.Instance := Name_Field_Assistent.Create_Name_Field_Assistent (With_Name);
+      P: Portal.Instance;
+
    begin
-      raise Implementation;
-   end Add_Root_Item_Array;
+
+      P := Item.Create_Array_Layout (In_Container             => I.Container,
+                                     At_Offset                => 0,
+                                     With_Name                => Name_Assistent,
+                                     For_Element_Type         => Element_Type,
+                                     Using_Element_Byte_Count => Element_Byte_Count,
+                                     Max_Element_Count        => Max_Element_Count);
+
+      -- Set the free byte pointer
+      --
+      I.First_Free_Byte_In_Payload := I.First_Free_Byte_In_Payload + Item.Get_Byte_Count (I.Container, Unsigned_32 (I.Header_Get_Header_Byte_Count));
+
+
+      return P;
+
+   end Add_Root_Item_Array_Type;
 
 
    function Get_Root_Item (I: in out Instance) return Portal.Instance is

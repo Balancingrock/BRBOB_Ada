@@ -6,6 +6,7 @@ with Interfaces; use Interfaces;
 with BRBON.Types;
 with BRBON.Container;
 with BRBON.Name_Field_Assistent;
+with BRBON.Portal;
 
 
 package BRBON.Item is
@@ -134,6 +135,19 @@ package BRBON.Item is
    --
    function Value_Offset (C: Container.Instance; Item_Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Value_Offset);
+
+
+   -- Create a new array layout at the given offset
+   --
+   function Create_Array_Layout
+     (
+      In_Container: in out Container.Instance;
+      At_Offset: Unsigned_32;
+      With_Name: Name_Field_Assistent.Instance;
+      For_Element_Type: Types.Item_Type;
+      Using_Element_Byte_Count: Unsigned_32;
+      Max_Element_Count: Unsigned_32
+     ) return Portal.Instance;
 
 
    -- Fixed layout
