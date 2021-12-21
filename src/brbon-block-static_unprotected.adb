@@ -558,11 +558,11 @@ package body BRBON.Block.Static_Unprotected is
    end Set_Color;
 
 
-   function Get_Last_Index (P: Portal.Instance) return Unsigned_32 is
+   function Get_Element_Count (P: Portal.Instance) return Unsigned_32 is
    begin
       raise Implementation;
       return 0;
-   end Get_Last_Index;
+   end Get_Element_Count;
 
 
    function Get_Element_Byte_Count (P: Portal.Instance) return Unsigned_32 is
@@ -572,18 +572,24 @@ package body BRBON.Block.Static_Unprotected is
    end Get_Element_Byte_Count;
 
 
-   function Get_Element (P: Portal.Instance; Index: Unsigned_32) return Portal.Instance is
+   function Get_Element (P: Portal.Instance; From_Index: Unsigned_32) return Portal.Instance is
    begin
       raise Implementation;
-      return P;
+      return Portal.Factory (P.Container, 0);
    end Get_Element;
 
 
    function Add_Element (P: Portal.Instance) return Portal.Instance is
    begin
       raise Implementation;
-      return P;
+      return Portal.Factory (P.Container, 0);
    end Add_Element;
+
+
+   procedure Remove_Element (P: Portal.Instance; At_Index: Unsigned_32) is
+   begin
+      raise Implementation;
+   end Remove_Element;
 
 
 end BRBON.Block.Static_Unprotected;

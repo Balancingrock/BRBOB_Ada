@@ -62,12 +62,13 @@ package BRBON.Block.Static_Unprotected is
    function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;
 
 
-   -- Add the requested root item if the root item is not a container.
+   -- Add a new root item and returns a portal for it.
+   -- Use one of the specific container functions to create a fully functional container item.
    --
    function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal.Instance;
 
 
-   -- Add an Array_Type container item at root level.
+   -- Add an Array_Type container item at root level and return the portal for it.
    --
    function Add_Root_Item_Array_Type (I: in out Instance; With_Name: String; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal.Instance;
 
@@ -243,25 +244,33 @@ package BRBON.Block.Static_Unprotected is
    pragma Inline (Set_Color);
 
 
-   -- Return the last used index in the table.
+   -- ==========================================================================
+   -- Array_Type operations
+   -- ==========================================================================
+
+   -- Return the number of elements in the array.
    --
-   function Get_Last_Index (P: Portal.Instance) return Unsigned_32;
+   function Get_Element_Count (P: Portal.Instance) return Unsigned_32;
 
 
-   -- Return the byte count of each element in the table.
+   -- Return the byte count of each element in the array.
    --
    function Get_Element_Byte_Count (P: Portal.Instance) return Unsigned_32;
 
 
-   -- Retrieving table elements
+   -- Retrieve an array elements
    --
-   function Get_Element (P: Portal.Instance; Index: Unsigned_32) return Portal.Instance;
+   function Get_Element (P: Portal.Instance; From_Index: Unsigned_32) return Portal.Instance;
 
 
-   -- Add an element to the table
+   -- Add an element to the end of the array
    --
    function Add_Element (P: Portal.Instance) return Portal.Instance;
 
+
+   -- Remove an element from the array
+   --
+   procedure Remove_Element (P: Portal.Instance; At_Index: Unsigned_32);
 
 
 end BRBON.Block.Static_Unprotected;
