@@ -10,7 +10,7 @@ package BRBON.Portal is
 
    type Instance is
       record
-         Container: BRBON.Container.Instance;
+         CPtr: Container.Instance_Ptr;
          Item_Offset: Unsigned_32;
          Of_Type: Instance_Type := Normal;
          Element_Index: Unsigned_32 := 0;
@@ -19,7 +19,7 @@ package BRBON.Portal is
 
    function Factory
      (
-      For_Container: Container.Instance;
+      CPtr: Container.Instance_Ptr;
       Using_Item_Offset: Unsigned_32;
       Of_Type: Instance_Type := Normal;
       Element_Index: Unsigned_32 := 0;

@@ -7,14 +7,14 @@ package body BRBON.Portal is
 
    function Factory
      (
-      For_Container: Container.Instance;
+      CPtr: Container.Instance_Ptr;
       Using_Item_Offset: Unsigned_32;
       Of_Type: Instance_Type := Normal;
       Element_Index: Unsigned_32 := 0;
       Column_Index: Unsigned_32 := 0
       ) return Instance is
    begin
-      return (For_Container, Using_Item_Offset, Of_Type, Element_Index, Column_Index);
+      return (Cptr, Using_Item_Offset, Of_Type, Element_Index, Column_Index);
    end Factory;
 
 
@@ -32,7 +32,7 @@ package body BRBON.Portal is
 
    function Value_Offset (P: Instance) return Unsigned_32 is
    begin
-      return Item.Value_Offset (P.Container, P.Item_Offset);
+      return Item.Value_Offset (P.CPtr, P.Item_Offset);
    end Value_Offset;
 
 
@@ -44,12 +44,12 @@ package body BRBON.Portal is
 
 
    Ptr: Array_Of_Unsigned_8_Ptr;
-   Con: Container.Instance;
+   Con: aliased Container.Instance;
 
 begin
 
    Ptr := new Array_Of_Unsigned_8 (1 ..1);
    Con := BRBON.Container.Factory (Ptr, BRBON.Configure.Machine_Endianness);
-   Null_Portal_Instance := (Con, 0, Normal, 0, 0);
+   Null_Portal_Instance := (Con'Access, 0, Normal, 0, 0);
 
 end BRBON.Portal;
