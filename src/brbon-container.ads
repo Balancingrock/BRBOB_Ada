@@ -61,8 +61,12 @@ package BRBON.Container is
 
    --  The container to be used for storage/retrieval of byte based data.
    --
-   type Instance is private;
-
+--   type Instance is private;
+   type Instance is
+      record
+         Data: Array_Of_Unsigned_8_Ptr;
+         Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
+      end record;
    -- A pointer to a binary store
    --
    type Instance_Ptr is access all Instance;
@@ -285,12 +289,12 @@ package BRBON.Container is
    --
    procedure Test_Support_Hex_Dump (CPtr: Instance_Ptr);
 
-private
+--private
 
-   type Instance is
-      record
-         Data: Array_Of_Unsigned_8_Ptr;
-         Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
-      end record;
+--   type Instance is
+--      record
+--         Data: Array_Of_Unsigned_8_Ptr;
+--         Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
+--      end record;
 
 end BRBON.Container;

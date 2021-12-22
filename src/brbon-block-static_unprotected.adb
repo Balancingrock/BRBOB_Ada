@@ -248,7 +248,7 @@ package body BRBON.Block.Static_Unprotected is
 
    function Get_Type (P: Portal.Instance) return Types.Item_Type is
    begin
-      return Item.Get_Type (P.Container, P.Item_Offset);
+      return Item.Get_Type (P.Cptr.all.Data.all (P.Item_Offset)'Access);
    end Get_Type;
 
 

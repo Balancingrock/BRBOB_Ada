@@ -16,11 +16,13 @@ package BRBON.Types is
 
    -- Most of the data manipulations are done byte wise
    --
-   type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of Unsigned_8;
+   type Array_Of_Unsigned_8 is aliased array (Unsigned_32 range <>) of Unsigned_8;
    pragma Pack (Array_Of_Unsigned_8);
    --for Array_Of_Unsigned_8'Alignment use 4; -- Causes GNAT compiler crash
    --
    type Array_Of_Unsigned_8_Ptr is access all Array_Of_Unsigned_8;
+
+   type Unsigned_8_Ptr is access all Unsigned_8;
 
    type Array_Of_Boolean is array (Unsigned_32 range <>) of Boolean;
 
@@ -216,6 +218,8 @@ package BRBON.Types is
          Flag_7: Boolean;
       end record;
 
+   for Item_Flags'Size use 8;
+
    for Item_Flags use
       record
          Flag_0 at 0 range 0..0;
@@ -245,6 +249,8 @@ package BRBON.Types is
          Option_6: Boolean;
          Option_7: Boolean;
       end record;
+
+   for Item_Options'Size use 8;
 
    for Item_Options use
       record

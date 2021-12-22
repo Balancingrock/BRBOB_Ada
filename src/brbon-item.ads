@@ -17,14 +17,44 @@ package BRBON.Item is
    --
    -- Layout: TTOOFFNC BBBBBBBB PPPPPPPP SSSSSSSS
 
-   Type_Offset: constant Unsigned_32 := 0;                          -- 1 byte
-   Options_Offset: constant Unsigned_32 := 1;                       -- 1 byte
-   Flags_Offset: constant Unsigned_32 := 2;                         -- 1 byte
-   Name_Field_Byte_Count_Offset: constant Unsigned_32 := 3;         -- 1 byte
-   Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
-   Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
-   Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
-   Name_Field_Offset: constant Unsigned_32 := 16;
+   --Type_Offset: constant Unsigned_32 := 0;                          -- 1 byte
+   --Options_Offset: constant Unsigned_32 := 1;                       -- 1 byte
+   --Flags_Offset: constant Unsigned_32 := 2;                         -- 1 byte
+   --Name_Field_Byte_Count_Offset: constant Unsigned_32 := 3;         -- 1 byte
+   --Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
+   --Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
+   --Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
+   --Name_Field_Offset: constant Unsigned_32 := 16;
+
+   Item_Layout_Byte_Count: Unsigned_32 := 16;
+
+   type Item_Layout is
+      record
+         Type_Field: Types.Item_Type;
+         Options_Field: Types.Item_Options;
+         Flags_Field: Types.Item_Flags;
+         Name_Field_Byte_Count_Field: Unsigned_8;
+         Byte_Count_Field: Unsigned_32;
+         Parent_Offset_Field: Unsigned_32;
+         Small_Value_Field: Unsigned_32;
+      end record;
+
+   for Item_Layout'Size use Item_Layout_Byte_Count * 8;
+
+   for Item_Layout use
+      record
+         Type_Field at 0 range 0..7;
+         Options_Field at 1 range 0..7;
+         Flags_Field at 2 range 0..7;
+         Name_Field_Byte_Count_Field at 3 range 0..7;
+         Byte_Count_Field at 4 range 0..31;
+         Parent_Offset_Field at 8 range 0..31;
+         Small_Value_Field at 12 range 0..31;
+      end record;
+
+   type Item_Layout_Ptr is access all Item_Layout;
+
+   function To_Item_Layout_Ptr is new Ada.Unchecked_Conversion (Types.Unsigned_8_Ptr, Item_Layout_Ptr);
 
 
    -- --------------------------------------------------------------------------
@@ -33,9 +63,27 @@ package BRBON.Item is
    --
    -- Layout: CCCCBBAA AAAAAAAA
 
-   Name_Field_CRC_Offset: constant Unsigned_32 := 0;
-   Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 2;
-   Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 3;         -- Up to 248 bytes
+   --Name_Field_CRC_Offset: constant Unsigned_32 := 0;
+   --Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 2;
+   --Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 3;         -- Up to 248 bytes
+
+   type Name_Field_Layout is
+      record
+         CRC_Field: Unsigned_16;
+         Byte_Count_Field: Unsigned_8;
+         First_Character_Field: Unsigned_8;
+      end record;
+
+   for Name_Field_Layout'Size use 4 * 8;
+
+   for Name_Field_Layout use
+      record
+         CRC_Field at 0 range 0..15;
+         Byte_Count_Field at 2 range 0..7;
+         First_Character_Field at 3 range 0..7;
+      end record;
+
+   type Name_Field_Layout_Ptr is access all Name_Field_Layout;
 
 
    -- --------------------------------------------------------------------------
@@ -152,7 +200,7 @@ package BRBON.Item is
 
    -- Fixed layout
 
-   function Get_Type (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Type;
+   function Get_Type (Item_Ptr: Types.Unsigned_8_Ptr) return Types.Item_Type;
    pragma Inline (Get_Type);
 
    function Get_Options (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Options;

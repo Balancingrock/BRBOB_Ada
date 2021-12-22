@@ -20,6 +20,7 @@ package BRBON.Block is
    type Instance is abstract new Ada.Finalization.Controlled with private;
       
    
+   
    -- The total number of bytes that will be used by the block if it is saved or transferred now.
    --
    function Byte_Count (I: in out Instance) return Unsigned_32;

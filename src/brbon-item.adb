@@ -193,7 +193,7 @@ package body BRBON.Item is
    --                                         
    function Value_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32 is
       
-      T: Types.Item_Type := Item.Get_Type (CPtr, Item_Offset);
+      T: Types.Item_Type := Types.Illegal; -- := Item.Get_Type (CPtr, Item_Offset);
    
    begin
       
@@ -210,9 +210,10 @@ package body BRBON.Item is
    end Value_Offset;
    
    
-   function Get_Type (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Type is
+   --   function Get_Type (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Type is
+   function Get_Type (Item_Ptr: Types.Unsigned_8_Ptr) return Types.Item_Type is
    begin
-      return Types.To_Item_Type (Container.Get_Unsigned_8 (CPtr, Item_Offset + Type_Offset));
+      return To_Item_Layout_Ptr (Item_Ptr).Type_Field;
    end Get_Type;
    
    
