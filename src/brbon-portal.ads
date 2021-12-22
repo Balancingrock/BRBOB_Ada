@@ -17,7 +17,18 @@ package BRBON.Portal is
          Column_Index: Unsigned_32 := 0;
       end record;
 
-   function Factory (For_Container: Container.Instance; Using_Item_Offset: Unsigned_32) return Instance;
+   function Factory
+     (
+      For_Container: Container.Instance;
+      Using_Item_Offset: Unsigned_32;
+      Of_Type: Instance_Type := Normal;
+      Element_Index: Unsigned_32 := 0;
+      Column_Index: Unsigned_32 := 0
+     ) return Instance;
+
+   function Null_Portal return Instance;
+
+   function Is_Null_Portal (P: Instance) return Boolean;
 
 
    -- ==========================================================================

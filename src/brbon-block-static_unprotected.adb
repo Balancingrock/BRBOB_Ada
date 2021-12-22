@@ -560,36 +560,58 @@ package body BRBON.Block.Static_Unprotected is
 
    function Get_Element_Count (P: Portal.Instance) return Unsigned_32 is
    begin
-      raise Implementation;
-      return 0;
+      return Container.Get_Unsigned_32 (P.Container, Portal.Value_Offset (P) + Item.Array_Element_Count_Offset);
    end Get_Element_Count;
+
+
+   procedure Decrement_Element_Count (P: Portal.Instance) is
+      Element_Count: Unsigned_32 := Get_Element_Count (P);
+   begin
+      if Element_Count > 0 then
+         Element_Count := Element_Count - 1;
+      end if;
+      Container.Set_Unsigned_32 (P.Container, Portal.Value_Offset (P) + Item.Array_Element_Count_Offset, Element_Count);
+   end Decrement_Element_Count;
+
+
+   procedure Increment_Element_Count (P: Portal.Instance) is
+      Element_Count: Unsigned_32 := Get_Element_Count (P);
+   begin
+      Element_Count := Element_Count + 1;
+      Container.Set_Unsigned_32 (P.Container, Portal.Value_Offset (P) + Item.Array_Element_Count_Offset, Element_Count);
+   end Increment_Element_Count;
 
 
    function Get_Element_Byte_Count (P: Portal.Instance) return Unsigned_32 is
    begin
-      raise Implementation;
-      return 0;
+      return Container.Get_Unsigned_32 (P.Container, Portal.Value_Offset (P) + Item.Array_Element_Byte_Count_Offset);
    end Get_Element_Byte_Count;
 
 
    function Get_Element (P: Portal.Instance; From_Index: Unsigned_32) return Portal.Instance is
    begin
-      raise Implementation;
-      return Portal.Factory (P.Container, 0);
+      return Portal.Factory (P.Container, Portal.Value_Offset (P) + Item.Array_Element_Start_Offset + From_Index * Get_Element_Byte_Count (P), Portal.Element, From_Index, 0);
    end Get_Element;
 
 
    function Add_Element (P: Portal.Instance) return Portal.Instance is
+      New_Index: Unsigned_32 := Portal.Value_Offset (P) + Item.Array_Element_Start_Offset + (Get_Element_Count (P) + 1) * Get_Element_Byte_Count (P);
    begin
-      raise Implementation;
-      return Portal.Factory (P.Container, 0);
+      Increment_Element_Count (P);
+      return Portal.Factory (P.Container, New_Index, Portal.Element, Get_Element_Count (P));
    end Add_Element;
 
 
-   procedure Remove_Element (P: Portal.Instance; At_Index: Unsigned_32) is
+   procedure Remove_Last_Element (P: Portal.Instance) is
+      Element_Offset: Unsigned_32 := Get_Element_Byte_Count (P) * (Get_Element_Count (P) - 1);
    begin
-      raise Implementation;
-   end Remove_Element;
+      Decrement_Element_Count (P);
+      declare
+         Arr: Array_Of_Unsigned_8 (1 .. Get_Element_Byte_Count (P)) := (others => 0);
+      begin
+         Container.Set_Unsigned_8_Array (P.Container, Portal.Value_Offset (P) + Item.Array_Element_Start_Offset + Element_Offset, Arr);
+      end;
+   end Remove_Last_Element;
 
 
 end BRBON.Block.Static_Unprotected;

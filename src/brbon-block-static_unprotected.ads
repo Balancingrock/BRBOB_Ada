@@ -270,7 +270,7 @@ package BRBON.Block.Static_Unprotected is
 
    -- Remove an element from the array
    --
-   procedure Remove_Element (P: Portal.Instance; At_Index: Unsigned_32);
+   procedure Remove_Last_Element (P: Portal.Instance);
 
 
 end BRBON.Block.Static_Unprotected;
