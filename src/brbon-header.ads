@@ -7,26 +7,25 @@ with BRBON.Container;
 
 package BRBON.Header_Package is
 
+private
 
-   Type_Dependant_Header_Offset:       constant Unsigned_32 := 16#48#; -- N * 8 Bytes
+   -- Type_Dependant_Header_Offset:       constant Unsigned_32 := 16#48#; -- N * 8 Bytes
 
-   Header_Field_Storage_Type_1_Offset: constant Unsigned_32 := 16#48#; -- M * 8 Bytes
+   -- Header_Field_Storage_Type_1_Offset: constant Unsigned_32 := 16#48#; -- M * 8 Bytes
 
-   Reserved_1a_Distance_Before_Header_End:              constant Unsigned_32 := 8; -- Acts as minus value
-   Reserved_1b_Distance_Before_Header_End:              constant Unsigned_32 := 4; -- Acts as minus value
-   Header_CRC16_Distance_Before_Header_End:             constant Unsigned_32 := 2; -- Acts as minus value
+   -- Reserved_1a_Distance_Before_Header_End:   constant Unsigned_32 := 8; -- Acts as minus value
+   -- Reserved_1b_Distance_Before_Header_End:   constant Unsigned_32 := 4; -- Acts as minus value
+   -- Header_CRC16_Distance_Before_Header_End:  constant Unsigned_32 := 2; -- Acts as minus value
 
 
-   -- Expected synchronization values
+   -- The size of the fixed part of a block header
    --
-   Synchronization_Byte_1_Expected_Value:               constant Unsigned_8 := 16#96#;
-   Synchronization_Byte_2_Expected_Value:               constant Unsigned_8 := 16#7F#;
-   Synchronization_Byte_3_Expected_Value:               constant Unsigned_8 := 16#81#;
-   Synchronization_Byte_4_Little_Endian_Expected_Value: constant Unsigned_8 := 16#5A#;
-   Synchronization_Byte_4_Big_Endian_Expected_Value:    constant Unsigned_8 := 16#A5#;
+   Block_Header_Begin_Byte_Count: constant Unsigned_16 := 96;
 
 
-   type Block_Header is
+   -- The block header layout
+   --
+   type Block_Header_Leading is
       record
          Synchronization_Byte_1: Unsigned_8;
          Synchronization_Byte_2: Unsigned_8;
@@ -66,7 +65,9 @@ package BRBON.Header_Package is
          Expiry_Timestamp: Unsigned_64;
       end record;
 
-   for Block_Header use
+   for Block_Header_Layout'Size use Block_Header_Layout_Byte_Count * 8;
+
+   for Block_Header_Layout use
       record
          Synchronization_Byte_1     at 0 range 0..7;
          Synchronization_Byte_2     at 1 range 0..7;
@@ -107,15 +108,17 @@ package BRBON.Header_Package is
       end record;
 
 
-   -- The size of the fixed part of a block header
-   --
-   Block_Header_Byte_Count: constant Unsigned_16 := 96;
-
-
    -- The size of the fixed part of a block header after the type dependent header and the field storage
    --
    Past_Field_Storage_Byte_Count: constant Unsigned_16 := 8;
 
 
+   -- Expected synchronization values
+   --
+   Synchronization_Byte_1_Expected_Value:               constant Unsigned_8 := 16#96#;
+   Synchronization_Byte_2_Expected_Value:               constant Unsigned_8 := 16#7F#;
+   Synchronization_Byte_3_Expected_Value:               constant Unsigned_8 := 16#81#;
+   Synchronization_Byte_4_Little_Endian_Expected_Value: constant Unsigned_8 := 16#5A#;
+   Synchronization_Byte_4_Big_Endian_Expected_Value:    constant Unsigned_8 := 16#A5#;
 
 end BRBON.Header_Package;
