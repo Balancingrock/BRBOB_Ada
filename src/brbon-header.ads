@@ -5,44 +5,8 @@ with BRBON.Types; use BRBON.Types;
 with BRBON.Container;
 
 
-package BRBON.Header is
+package BRBON.Header_Package is
 
-   Synchronization_Byte_1_Offset:      constant Unsigned_32 := 16#00#; -- 1 byte
-   Synchronization_Byte_2_Offset:      constant Unsigned_32 := 16#01#; -- 1 byte
-   Synchronization_Byte_3_Offset:      constant Unsigned_32 := 16#02#; -- 1 byte
-   Synchronization_Byte_4_Offset:      constant Unsigned_32 := 16#03#; -- 1 byte
-   Type_Offset:                        constant Unsigned_32 := 16#04#; -- 2 bytes
-   Options_Offset:                     constant Unsigned_32 := 16#06#; -- 2 bytes
-
-   Byte_Count_Offset:                  constant Unsigned_32 := 16#08#; -- 4 bytes
-   Header_Byte_Count_Offset:           constant Unsigned_32 := 16#0C#; -- 2 Bytes
-   Encrypted_Header_Byte_Count_Offset: constant Unsigned_32 := 16#0E#; -- 2 Bytes
-
-   Origin_CRC16_Offset:                constant Unsigned_32 := 16#10#; -- 2 Bytes
-   Identifier_CRC16_Offset:            constant Unsigned_32 := 16#12#; -- 2 Bytes
-   Extension_CRC16_Offset:             constant Unsigned_32 := 16#14#; -- 2 Bytes
-   Path_Prefix_CRC16_Offset:           constant Unsigned_32 := 16#16#; -- 2 Bytes
-
-   Origin_Byte_Count_Offset:           constant Unsigned_32 := 16#18#; -- 1 Byte
-   Identifier_Byte_Count_Offset:       constant Unsigned_32 := 16#19#; -- 1 Byte
-   Extension_Byte_Count_Offset:        constant Unsigned_32 := 16#1A#; -- 1 Byte
-   Path_Prefix_Byte_Count_Offset:      constant Unsigned_32 := 16#1B#; -- 1 Byte
-   Origin_Offset_Offset:               constant Unsigned_32 := 16#1C#; -- 2 Bytes
-   Identifier_Offset_Offset:           constant Unsigned_32 := 16#1E#; -- 2 Bytes
-
-   Extension_Offset_Offset:            constant Unsigned_32 := 16#20#; -- 2 Bytes
-   Path_Prefix_Offset_Offset:          constant Unsigned_32 := 16#22#; -- 2 Bytes
-   Acquisition_URL_Byte_Count_Offset:  constant Unsigned_32 := 16#24#; -- 2 Bytes
-   Acquisition_URL_Offset_Offset:      constant Unsigned_32 := 16#26#; -- 2 Bytes
-
-   Target_List_Byte_Count_Offset:      constant Unsigned_32 := 16#28#; -- 2 Bytes
-   Target_List_Offset_Offset:          constant Unsigned_32 := 16#2A#; -- 2 Bytes
-   Public_Key_URL_Byte_Count_Offset:   constant Unsigned_32 := 16#2C#; -- 2 Bytes
-   Public_Key_URL_Offset_Offset:       constant Unsigned_32 := 16#2E#; -- 2 Bytes
-
-   Creation_Timestamp_Offset:          constant Unsigned_32 := 16#30#; -- 8 Bytes
-   Modification_Timestamp_Offset:      constant Unsigned_32 := 16#38#; -- 8 Bytes
-   Expiry_Timestamp_Offset:            constant Unsigned_32 := 16#40#; -- 8 Bytes
 
    Type_Dependant_Header_Offset:       constant Unsigned_32 := 16#48#; -- N * 8 Bytes
 
@@ -62,9 +26,91 @@ package BRBON.Header is
    Synchronization_Byte_4_Big_Endian_Expected_Value:    constant Unsigned_8 := 16#A5#;
 
 
+   type Block_Header is
+      record
+         Synchronization_Byte_1: Unsigned_8;
+         Synchronization_Byte_2: Unsigned_8;
+         Synchronization_Byte_3: Unsigned_8;
+         Synchronization_Byte_4: Unsigned_8;
+         Is_Type: Types.Block_Type;                -- 2 bytes
+         Options: Types.Block_Options;             -- 2 bytes
+
+         Block_Byte_Count: Unsigned_32;
+         Header_Byte_Count: Unsigned_16;
+         Encrypted_Header_Byte_Count: Unsigned_16;
+
+         Origin_CRC: Unsigned_16;
+         Identifier_CRC: Unsigned_16;
+         Extension_CRC: Unsigned_16;
+         Path_Prefix_CRC: Unsigned_16;
+
+         Origin_Byte_Count: Unsigned_8;
+         Identifier_Byte_Count: Unsigned_8;
+         Extension_Byte_Count: Unsigned_8;
+         Path_Prefix_Byte_Count: Unsigned_8;
+         Origin_Offset: Unsigned_16;
+         Identifier_Offset: Unsigned_16;
+
+         Extension_Offset: Unsigned_16;
+         Path_Prefix_Offset: Unsigned_16;
+         Acquisition_URL_Byte_Count: Unsigned_16;
+         Acquisition_URL_Offset: Unsigned_16;
+
+         Target_List_Byte_Count: Unsigned_16;
+         Target_List_Offset: Unsigned_16;
+         Public_Key_URL_Byte_Count: Unsigned_16;
+         Public_Key_Offset: Unsigned_16;
+
+         Creation_Timestamp: Unsigned_64;
+         Modification_Timestamp: Unsigned_64;
+         Expiry_Timestamp: Unsigned_64;
+      end record;
+
+   for Block_Header use
+      record
+         Synchronization_Byte_1     at 0 range 0..7;
+         Synchronization_Byte_2     at 1 range 0..7;
+         Synchronization_Byte_3     at 2 range 0..7;
+         Synchronization_Byte_4     at 3 range 0..7;
+         Is_Type                    at 4 range 0..15;
+         Options                    at 6 range 0..15;
+
+         Block_Byte_Count           at 8 range 0..31;
+         Header_Byte_Count          at 12 range 0..15;
+         Encrypted_Header           at 14 range 0..15;
+
+         Origin_CRC                 at 16 range 0..15;
+         Identifier_CRC             at 18 range 0..15;
+         Extension_CRC              at 20 range 0..15;
+         Path_Prefix_CRC            at 22 range 0..15;
+
+         Origin_Byte_Count          at 24 range 0..7;
+         Identifier_Byte_Count      at 25 range 0..7;
+         Extension_Byte_Count       at 26 range 0..7;
+         Path_Prefix_Byte_Count     at 27 range 0..7;
+         Origin_Offset              at 28 range 0..15;
+         Identifier_Offset          at 30 range 0..15;
+
+         Extension_Offset           at 32 range 0..15;
+         Path_Prefix_Offset         at 34 range 0..15;
+         Acquisition_URL_Byte_Count at 36 range 0..15;
+         Acquisition_URL_Offset     at 38 range 0..15;
+
+         Target_List_Byte_Count     at 40 range 0..15;
+         Target_List_Offset         at 42 range 0..15;
+         Public_Key_URL_Byte_Count  at 44 range 0..15;
+         Public_Key_Offset          at 46 range 0..15;
+
+         Creation_Timestamp         at 48 range 0..63;
+         Modification_Timestamp     at 64 range 0..63;
+         Expiry_Timestamp           at 80 range 0..63;
+      end record;
+
+
    -- The size of the fixed part of a block header
    --
-   Fixed_Part_Byte_Count: constant Unsigned_16 := 9 * 8;
+   Block_Header_Byte_Count: constant Unsigned_16 := 96;
+
 
    -- The size of the fixed part of a block header after the type dependent header and the field storage
    --
@@ -72,4 +118,4 @@ package BRBON.Header is
 
 
 
-end BRBON.Header;
+end BRBON.Header_Package;

@@ -64,7 +64,7 @@ package BRBON.Container is
 --   type Instance is private;
    type Instance is
       record
-         Data: Array_Of_Unsigned_8_Ptr;
+         Data: aliased Array_Of_Unsigned_8_Ptr;
          Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
       end record;
    -- A pointer to a binary store
@@ -106,6 +106,12 @@ package BRBON.Container is
    -- Returns the endianness of the data in the store
    --
    function Uses_Endianness (CPtr: Instance_Ptr) return Endianness;
+
+
+   -- Returns an Item pointer
+   --
+   function Get_Item_Pointer (CPtr: Instance_Ptr; Offset: Unsigned_32) return Unsigned_8_Ptr;
+
 
 
    -- ==========================================================================

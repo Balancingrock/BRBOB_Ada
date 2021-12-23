@@ -146,6 +146,12 @@ package body BRBON.Container is
    end Test_Support_Get_Bytes;
 
 
+   function Get_Item_Pointer (CPtr: Instance_Ptr; Offset: Unsigned_32) return Unsigned_8_Ptr is
+   begin
+      return (CPtr.Data (Offset));
+   end Get_Item_Pointer;
+
+
    -- Operational
 
    procedure Set_Data_Endianness (CPtr: Instance_Ptr; Value: Endianness) is

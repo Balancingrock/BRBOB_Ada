@@ -9,26 +9,18 @@ with BRBON.Name_Field_Assistent;
 with BRBON.Portal;
 
 
-package BRBON.Item is
+package BRBON.Item_Package is
+
+
+private
 
    -- ==========================================================================
-   -- Item offsets, relative to item start
+   -- The fixed part of an item
    -- ==========================================================================
-   --
-   -- Layout: TTOOFFNC BBBBBBBB PPPPPPPP SSSSSSSS
 
-   --Type_Offset: constant Unsigned_32 := 0;                          -- 1 byte
-   --Options_Offset: constant Unsigned_32 := 1;                       -- 1 byte
-   --Flags_Offset: constant Unsigned_32 := 2;                         -- 1 byte
-   --Name_Field_Byte_Count_Offset: constant Unsigned_32 := 3;         -- 1 byte
-   --Byte_Count_Offset: constant Unsigned_32 := 4;                    -- 4 bytes
-   --Parent_Offset_Offset: constant Unsigned_32 := 8;                 -- 4 bytes
-   --Small_Value_Offset: constant Unsigned_32 := 12;                  -- 4 bytes
-   --Name_Field_Offset: constant Unsigned_32 := 16;
+   Item_Header_Byte_Count: constant Unsigned_32 := 16;
 
-   Item_Layout_Byte_Count: Unsigned_32 := 16;
-
-   type Item_Layout is
+   type Item_Header is
       record
          Type_Field: Types.Item_Type;
          Options_Field: Types.Item_Options;
@@ -39,9 +31,9 @@ package BRBON.Item is
          Small_Value_Field: Unsigned_32;
       end record;
 
-   for Item_Layout'Size use Item_Layout_Byte_Count * 8;
+   for Item_Header'Size use Item_Header_Byte_Count * 8;
 
-   for Item_Layout use
+   for Item_Header use
       record
          Type_Field at 0 range 0..7;
          Options_Field at 1 range 0..7;
@@ -52,40 +44,35 @@ package BRBON.Item is
          Small_Value_Field at 12 range 0..31;
       end record;
 
-   type Item_Layout_Ptr is access all Item_Layout;
+   type Item_Header_Ptr is access Item_Header;
 
-   function To_Item_Layout_Ptr is new Ada.Unchecked_Conversion (Types.Unsigned_8_Ptr, Item_Layout_Ptr);
+   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Types.Unsigned_8_Ptr, Item_Header_Ptr);
 
 
-   -- --------------------------------------------------------------------------
-   -- Name Field, relative to name field start
-   -- --------------------------------------------------------------------------
-   --
-   -- Layout: CCCCBBAA AAAAAAAA
+   -- ==========================================================================
+   -- Item Name Field (may or may not be present
+   -- ==========================================================================
 
-   --Name_Field_CRC_Offset: constant Unsigned_32 := 0;
-   --Name_Field_ASCII_Byte_Count_Offset: constant Unsigned_32 := 2;
-   --Name_Field_ASCII_Code_Offset: constant Unsigned_32 := 3;         -- Up to 248 bytes
-
-   type Name_Field_Layout is
+   type Item_Name is
       record
-         CRC_Field: Unsigned_16;
-         Byte_Count_Field: Unsigned_8;
-         First_Character_Field: Unsigned_8;
+         CRC_16: Unsigned_16;
+         ASCII_Count: Unsigned_8;
+         ASCII_Start: Unsigned_8; -- Followed by up to 244 characters
       end record;
 
-   for Name_Field_Layout'Size use 4 * 8;
+   for Item_Name'Size use 4 * 8;
 
-   for Name_Field_Layout use
+   for Item_Name use
       record
-         CRC_Field at 0 range 0..15;
-         Byte_Count_Field at 2 range 0..7;
-         First_Character_Field at 3 range 0..7;
+         CRC_16 at 0 range 0..15;
+         ASCII_Count at 2 range 0..7;
+         ASCII_Start at 3 range 0..7;
       end record;
 
-   type Name_Field_Layout_Ptr is access all Name_Field_Layout;
+   type Item_Name_Ptr is access Item_Name;
 
 
+   function Get_Item_Name_Pointer (IPtr
    -- --------------------------------------------------------------------------
    -- Value Offsets, relative to value start
    -- --------------------------------------------------------------------------
@@ -269,4 +256,4 @@ package BRBON.Item is
    pragma Inline (Set_Name_String);
 
 
-end BRBON.Item;
+end BRBON.Item_Package;
