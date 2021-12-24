@@ -1,8 +1,8 @@
 with Interfaces; use Interfaces;
 with Ada.Unchecked_Conversion;
 
-with BRBON.Types; use BRBON.Types;
-with BRBON.Container;
+with BRBON.Types;
+--with BRBON.Container;
 
 
 package BRBON.Header_Package is
@@ -18,9 +18,9 @@ private
    -- Header_CRC16_Distance_Before_Header_End:  constant Unsigned_32 := 2; -- Acts as minus value
 
 
-   -- The size of the fixed part of a block header
+   -- The size of the leading (fixed) part of a block header
    --
-   Block_Header_Begin_Byte_Count: constant Unsigned_16 := 96;
+   Block_Header_Leading_Byte_Count: constant Unsigned_16 := 96;
 
 
    -- The block header layout
@@ -65,18 +65,18 @@ private
          Expiry_Timestamp: Unsigned_64;
       end record;
 
-   for Block_Header_Layout'Size use Block_Header_Layout_Byte_Count * 8;
+   for Block_Header_Leading'Size use Block_Header_Leading_Byte_Count * 8;
 
-   for Block_Header_Layout use
+   for Block_Header_Leading use
       record
-         Synchronization_Byte_1     at 0 range 0..7;
-         Synchronization_Byte_2     at 1 range 0..7;
-         Synchronization_Byte_3     at 2 range 0..7;
-         Synchronization_Byte_4     at 3 range 0..7;
-         Is_Type                    at 4 range 0..15;
-         Options                    at 6 range 0..15;
+         Synchronization_Byte_1     at  0 range 0..7;
+         Synchronization_Byte_2     at  1 range 0..7;
+         Synchronization_Byte_3     at  2 range 0..7;
+         Synchronization_Byte_4     at  3 range 0..7;
+         Is_Type                    at  4 range 0..15;
+         Options                    at  6 range 0..15;
 
-         Block_Byte_Count           at 8 range 0..31;
+         Block_Byte_Count           at  8 range 0..31;
          Header_Byte_Count          at 12 range 0..15;
          Encrypted_Header           at 14 range 0..15;
 
@@ -107,10 +107,34 @@ private
          Expiry_Timestamp           at 80 range 0..63;
       end record;
 
+   type Block_Header_Leading_Ptr is access Block_Header_Leading;
 
-   -- The size of the fixed part of a block header after the type dependent header and the field storage
+   function To_Block_Header_Leading is new Ada.Unchecked_Conversion (Types.Unsigned_8_Ptr, Block_Header_Leading_Ptr);
+
+
+   -- The size of the trailing part of the block header
    --
-   Past_Field_Storage_Byte_Count: constant Unsigned_16 := 8;
+   Block_Header_Trailing_Byte_Count: constant Unsigned_16 := 8;
+
+   type Block_Header_Trailing is
+      record
+         Reserved_1: Unsigned_32;
+         Reserved_2: Unsigned_16;
+         CRC: Unsigned_16;
+      end record;
+
+   for Block_Header_Trailing'Size use Block_Header_Trailing_Byte_Count * 8;
+
+   for Block_Header_Trailing use
+      record
+         Reserved_1 at 0 range 0..31;
+         Reserved_2 at 4 range 0..15;
+         CRC at 6 range 0..15;
+      end record;
+
+   type Block_Header_Trailing_Ptr is access Block_Header_Trailing;
+
+   function To_Block_Header_Trailing is new Ada.Unchecked_Conversion (Types.Unsigned_8_Ptr, Block_Header_Trailing_Ptr);
 
 
    -- Expected synchronization values
@@ -120,5 +144,6 @@ private
    Synchronization_Byte_3_Expected_Value:               constant Unsigned_8 := 16#81#;
    Synchronization_Byte_4_Little_Endian_Expected_Value: constant Unsigned_8 := 16#5A#;
    Synchronization_Byte_4_Big_Endian_Expected_Value:    constant Unsigned_8 := 16#A5#;
+
 
 end BRBON.Header_Package;

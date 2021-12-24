@@ -3,12 +3,11 @@ with Interfaces; use Interfaces;
 with Ada.Finalization;
 
 with BRBON.Types; use BRBON.Types;
-with BRBON.Item;
 with BRBON.Utils;
 with BRBON.Configure;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Block;
-with BRBON.Portal;
+with BRBON.Portal_Package; use BRBON.Portal_Package;
 
 with Serializable;
 with UUID_Package;
@@ -65,42 +64,42 @@ package BRBON.Block.Static_Unprotected is
    -- Add a new root item and returns a portal for it.
    -- Use one of the specific container functions to create a fully functional container item.
    --
-   function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal.Instance;
+   function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal;
 
 
    -- Add an Array_Type container item at root level and return the portal for it.
    --
-   function Add_Root_Item_Array_Type (I: in out Instance; With_Name: String; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal.Instance;
+   function Add_Root_Item_Array_Type (I: in out Instance; With_Name: String; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal;
 
 
    -- Return a portal referencing the root item.
    --
-   function Get_Root_Item (I: in out Instance) return Portal.Instance;
+   function Get_Root_Item (I: in out Instance) return Portal;
 
 
 
 
    -- Item Structure Access
    --
-   function Get_Type (P: Portal.Instance) return Types.Item_Type;
+   function Get_Type (P: Portal) return Types.Item_Type;
    pragma Inline (Get_Type);
    --
-   function Get_Options (P: Portal.Instance) return Types.Item_Options;
+   function Get_Options (P: Portal) return Types.Item_Options;
    pragma Inline (Get_Options);
    --
-   function Get_Flags (P: Portal.Instance) return Types.Item_Flags;
+   function Get_Flags (P: Portal) return Types.Item_Flags;
    pragma Inline (Get_Flags);
    --
-   function Get_Name (P: Portal.Instance) return String;
+   function Get_Name (P: Portal) return String;
    pragma Inline (Get_Name);
    --
-   function Get_Byte_Count (P: Portal.Instance) return Unsigned_32;
+   function Get_Byte_Count (P: Portal) return Unsigned_32;
    pragma Inline (Get_Byte_Count);
    --
-   function Get_Parent_Offset (P: Portal.Instance) return Unsigned_32;
+   function Get_Parent_Offset (P: Portal) return Unsigned_32;
    pragma Inline (Get_Parent_Offset);
    --
-   function Get_Value_Area_Byte_Count (P: Portal.Instance) return Unsigned_32;
+   function Get_Value_Area_Byte_Count (P: Portal) return Unsigned_32;
    pragma Inline (Get_Value_Area_Byte_Count);
 
 
@@ -110,137 +109,137 @@ package BRBON.Block.Static_Unprotected is
    -- Note: It is assumed that the portal refers to the start of an item of the expected type.
    -- If not, no error will be signalled, but the returned result will be unreliable.
    --
-   function Get_Bool (P: Portal.Instance) return Boolean;
+   function Get_Bool (P: Portal) return Boolean;
    pragma Inline (Get_Bool);
 
    -- Sets the bool value if the portal refers to a Bool_Type.
    -- Note: It is assumed that the portal refers to the start of an item of the expected type.
    -- If not, no error will be signalled, but the block/item structure or content may be corrupted in unpredictable ways.
    --
-   procedure Set_Bool (P: Portal.Instance; Value: Boolean);
+   procedure Set_Bool (P: Portal; Value: Boolean);
    pragma Inline (Set_Bool);
 
 
-   function Get_Int_8 (P: Portal.Instance) return Integer_8;
+   function Get_Int_8 (P: Portal) return Integer_8;
    pragma Inline (Get_Int_8);
    --
-   procedure Set_Int_8 (P: Portal.Instance; Value: Integer_8);
+   procedure Set_Int_8 (P: Portal; Value: Integer_8);
    pragma Inline (Set_Int_8);
    --
-   function Get_Int_16 (P: Portal.Instance) return Integer_16;
+   function Get_Int_16 (P: Portal) return Integer_16;
    pragma Inline (Get_Int_16);
    --
-   procedure Set_Int_16 (P: Portal.Instance; Value: Integer_16);
+   procedure Set_Int_16 (P: Portal; Value: Integer_16);
    pragma Inline (Set_Int_16);
    --
-   function Get_Int_32 (P: Portal.Instance) return Integer_32;
+   function Get_Int_32 (P: Portal) return Integer_32;
    pragma Inline (Get_Int_32);
    --
-   procedure Set_Int_32 (P: Portal.Instance; Value: Integer_32);
+   procedure Set_Int_32 (P: Portal; Value: Integer_32);
    pragma Inline (Set_Int_32);
    --
-   function Get_Int_64 (P: Portal.Instance) return Integer_64;
+   function Get_Int_64 (P: Portal) return Integer_64;
    pragma Inline (Get_Int_64);
    --
-   procedure Set_Int_64 (P: Portal.Instance; Value: Integer_64);
+   procedure Set_Int_64 (P: Portal; Value: Integer_64);
    pragma Inline (Set_Int_64);
    --
-   function Get_UInt_8 (P: Portal.Instance) return Unsigned_8;
+   function Get_UInt_8 (P: Portal) return Unsigned_8;
    pragma Inline (Get_UInt_8);
    --
-   procedure Set_UInt_8 (P: Portal.Instance; Value: Unsigned_8);
+   procedure Set_UInt_8 (P: Portal; Value: Unsigned_8);
    pragma Inline (Set_UInt_8);
    --
-   function Get_UInt_16 (P: Portal.Instance) return Unsigned_16;
+   function Get_UInt_16 (P: Portal) return Unsigned_16;
    pragma Inline (Get_UInt_16);
    --
-   procedure Set_UInt_16 (P: Portal.Instance; Value: Unsigned_16);
+   procedure Set_UInt_16 (P: Portal; Value: Unsigned_16);
    pragma Inline (Set_UInt_16);
    --
-   function Get_UInt_32 (P: Portal.Instance) return Unsigned_32;
+   function Get_UInt_32 (P: Portal) return Unsigned_32;
    pragma Inline (Get_UInt_32);
    --
-   procedure Set_UInt_32 (P: Portal.Instance; Value: Unsigned_32);
+   procedure Set_UInt_32 (P: Portal; Value: Unsigned_32);
    pragma Inline (Set_UInt_32);
    --
-   function Get_UInt_64 (P: Portal.Instance) return Unsigned_64;
+   function Get_UInt_64 (P: Portal) return Unsigned_64;
    pragma Inline (Get_UInt_64);
    --
-   procedure Set_UInt_64 (P: Portal.Instance; Value: Unsigned_64);
+   procedure Set_UInt_64 (P: Portal; Value: Unsigned_64);
    pragma Inline (Set_UInt_64);
    --
-   function Get_Float_32 (P: Portal.Instance) return IEEE_Float_32;
+   function Get_Float_32 (P: Portal) return IEEE_Float_32;
    pragma Inline (Get_Float_32);
    --
-   procedure Set_Float_32 (P: Portal.Instance; Value: IEEE_Float_32);
+   procedure Set_Float_32 (P: Portal; Value: IEEE_Float_32);
    pragma Inline (Set_Float_32);
    --
-   function Get_Float_64 (P: Portal.Instance) return IEEE_Float_64;
+   function Get_Float_64 (P: Portal) return IEEE_Float_64;
    pragma Inline (Get_Float_64);
    --
-   procedure Set_Float_64 (P: Portal.Instance; Value: IEEE_Float_64);
+   procedure Set_Float_64 (P: Portal; Value: IEEE_Float_64);
    pragma Inline (Set_Float_64);
    --
-   function Get_String (P: Portal.Instance) return String;
+   function Get_String (P: Portal) return String;
    pragma Inline (Get_String);
    --
-   procedure Set_String (P: Portal.Instance; Value: String);
+   procedure Set_String (P: Portal; Value: String);
    pragma Inline (Set_String);
    --
-   function Get_CRC_String (P: Portal.Instance) return String;
+   function Get_CRC_String (P: Portal) return String;
    pragma Inline (Get_CRC_String);
    --
-   procedure Set_CRC_String (P: Portal.Instance; Value: String);
+   procedure Set_CRC_String (P: Portal; Value: String);
    pragma Inline (Set_CRC_String);
 
    -- Returns the CRC value for the stored string.
    -- Returns zero for empty strings.
    --
-   function Get_CRC_String_CRC (P: Portal.Instance) return Unsigned_32;
+   function Get_CRC_String_CRC (P: Portal) return Unsigned_32;
    pragma Inline (Get_CRC_String);
 
    -- Returns the 32 bit CRC and the byte count in a single value.
    -- Note that this value is endianess dependent.
    --
-   function Get_CRC_String_Quick_Compare (P: Portal.Instance) return Unsigned_64;
+   function Get_CRC_String_Quick_Compare (P: Portal) return Unsigned_64;
    pragma Inline (Get_CRC_String_Quick_Compare);
 
-   function Get_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
+   function Get_Binary (P: Portal) return Array_Of_Unsigned_8;
    pragma Inline (Get_Binary);
 
-   procedure Set_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
+   procedure Set_Binary (P: Portal; Value: Array_Of_Unsigned_8);
    pragma Inline (Set_Binary);
 
-   function Get_CRC_Binary (P: Portal.Instance) return Array_Of_Unsigned_8;
+   function Get_CRC_Binary (P: Portal) return Array_Of_Unsigned_8;
    pragma Inline (Get_CRC_Binary);
 
-   procedure Set_CRC_Binary (P: Portal.Instance; Value: Array_Of_Unsigned_8);
+   procedure Set_CRC_Binary (P: Portal; Value: Array_Of_Unsigned_8);
    pragma Inline (Set_CRC_Binary);
 
    -- Returns the CRC value for the stored binary.
    -- Returns zero for empty binaries.
    --
-   function Get_CRC_Binary_CRC (P: Portal.Instance) return Unsigned_32;
+   function Get_CRC_Binary_CRC (P: Portal) return Unsigned_32;
    pragma Inline (Get_CRC_Binary_CRC);
 
    -- Returns the 32 bit CRC and the byte count in a single value.
    -- Note that this value is endianess dependent.
    --
-   function Get_CRC_Binary_Quick_Compare (P: Portal.Instance) return Unsigned_64;
+   function Get_CRC_Binary_Quick_Compare (P: Portal) return Unsigned_64;
    pragma Inline (Get_CRC_String_Quick_Compare);
 
 
-   function Get_UUID (P:Portal.Instance) return UUID_Package.UUID;
+   function Get_UUID (P:Portal) return UUID_Package.UUID;
    pragma Inline (Get_UUID);
 
-   procedure Set_UUID (P: Portal.Instance; Value: UUID_Package.UUID);
+   procedure Set_UUID (P: Portal; Value: UUID_Package.UUID);
    pragma Inline (Set_UUID);
 
 
-   function Get_Color (P:Portal.Instance) return Color_Package.Color;
+   function Get_Color (P:Portal) return Color_Package.Color;
    pragma Inline (Get_Color);
 
-   procedure Set_Color (P: Portal.Instance; Value: Color_Package.Color);
+   procedure Set_Color (P: Portal; Value: Color_Package.Color);
    pragma Inline (Set_Color);
 
 
@@ -250,27 +249,27 @@ package BRBON.Block.Static_Unprotected is
 
    -- Return the number of elements in the array.
    --
-   function Get_Element_Count (P: Portal.Instance) return Unsigned_32;
+   function Get_Element_Count (P: Portal) return Unsigned_32;
 
 
    -- Return the byte count of each element in the array.
    --
-   function Get_Element_Byte_Count (P: Portal.Instance) return Unsigned_32;
+   function Get_Element_Byte_Count (P: Portal) return Unsigned_32;
 
 
    -- Retrieve an array elements
    --
-   function Get_Element (P: Portal.Instance; From_Index: Unsigned_32) return Portal.Instance;
+   function Get_Element (P: Portal; From_Index: Unsigned_32) return Portal;
 
 
    -- Add an element to the end of the array
    --
-   function Add_Element (P: Portal.Instance) return Portal.Instance;
+   function Add_Element (P: Portal) return Portal;
 
 
    -- Remove an element from the array
    --
-   procedure Remove_Last_Element (P: Portal.Instance);
+   procedure Remove_Last_Element (P: Portal);
 
 
 end BRBON.Block.Static_Unprotected;

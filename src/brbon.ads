@@ -50,14 +50,14 @@
 --  Top level package.
 --
 --  @description
---  Contains exceptions that can be raised to the API user.
+--  Contains configuration, exceptions and top level type definitions.
 --
 --  ===============================================================================================
 --  Note: BRBON_Ada is developped on an as-needed base, the following API levels are the foreseen
 --  implementation path. Missing levels are simply not implemented yet.
 --  ===============================================================================================
 --
---  To use BRBON, make necessary changes to BRON.Configure and then use any of the following API's:
+--  To use BRBON, make necessary changes below and then use any of the following API's:
 --
 --  - BRBON.Container For low level byte based access to a memory area. A container is endianness
 --    (byte-order) aware, thus all multi-byte accesses will return the data in the proper endianess.
@@ -87,7 +87,44 @@
 --
 -- Note: If a package is absent, it has not been implemented yet ;-)
 --
+
+with Interfaces; use Interfaces;
+with Ada.Finalization;
+
+
 package BRBON is
+
+
+   -- The BRBON specification includes the endianness of a block of data.
+   --
+   type Byte_Storage_Order is (High_Byte_First, Low_Byte_First);
+
+
+   -- ==========================================================================
+   -- Configurable part starts                                                 =
+   --                                                                          =
+
+
+   -- Change this to the storage order of the platform the code will be used on.
+   --
+   Machine_Byte_Storage_Order: constant Byte_Storage_Order := Low_Byte_First;
+
+
+   -- To initialize all empty space to zero set the following flag to true.
+   -- Note: This is usefull during testing, but is not needed during deployment.
+   --
+   Zero_Storage: constant Boolean := True;
+
+
+   --                                                                          =
+   -- Configurable part ends                                                   =
+   -- ==========================================================================
+
+
+   -- This type may be used to quickly access an item in storage without having
+   -- to perform a lookup or search.
+   --
+   type Portal is private;
 
 
    -- Raised when a name has an unexpected or illegal value.
@@ -123,5 +160,64 @@ package BRBON is
    -- Raised when something (see associated message) goes wrong in an array
    --
    Array_Error: exception;
+
+
+private
+
+   type Item_Header is
+      record
+         Type_Field: Types.Item_Type;
+         Options_Field: Types.Item_Options;
+         Flags_Field: Types.Item_Flags;
+         Name_Field_Byte_Count_Field: Unsigned_8;
+         Byte_Count_Field: Unsigned_32;
+         Parent_Offset_Field: Unsigned_32;
+         Small_Value_Field: Unsigned_32;
+      end record;
+
+   for Item_Header'Size use Item_Header_Byte_Count * 8;
+
+   for Item_Header use
+      record
+         Type_Field at 0 range 0..7;
+         Options_Field at 1 range 0..7;
+         Flags_Field at 2 range 0..7;
+         Name_Field_Byte_Count_Field at 3 range 0..7;
+         Byte_Count_Field at 4 range 0..31;
+         Parent_Offset_Field at 8 range 0..31;
+         Small_Value_Field at 12 range 0..31;
+      end record;
+
+   type Item_Header_Ptr is access Item_Header;
+
+   type Portal_Type is (Null_Portal, Normal, Element, Field);
+
+   type Portal is
+      record
+         Is_Type: Portal_Type;
+         Is_Valid: Boolean := True;
+         --
+         Item_Ptr: Item_Package.Item_Header_Ptr;
+         Element_Index: Unsigned_32 := 0;
+         Column_Index: Unsigned_32 := 0;
+      end record;
+
+   function Portal_Factory
+     (
+      Item_Ptr: Item_Header_Ptr;
+      Element_Index: Unsigned_32 := Unsigned_32'Max;
+      Column_Index: Unsigned_32 := Unsigned_32'Max
+     ) return Portal;
+
+
+   type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8;
+
+   type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
+
+   type Block is abstract new Ada.Finalization.Controlled with
+      record
+         Data: Unsigned_8_Array_Ptr;
+         Swap: Boolean;
+      end record;
 
 end BRBON;

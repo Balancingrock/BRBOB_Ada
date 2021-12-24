@@ -7,7 +7,7 @@ with BRBON.Utils;
 with BRBON.Types; use BRBON.Types;
 
 
-package body BRBON.Item is
+package body BRBON.Item_Package is
 
    -- ==========================================================================
    -- API
@@ -16,7 +16,7 @@ package body BRBON.Item is
    
    procedure Create_Layout
     (
-     CPtr: Container.Instance_Ptr;
+     CPtr: Types.Unsigned_8_Ptr;
      At_Offset: Unsigned_32;
      Of_Type: Types.Item_Type;
      With_Name: Name_Field_Assistent.Instance;
@@ -348,4 +348,4 @@ package body BRBON.Item is
       Container.Set_String (CPtr, Item_Offset + Name_Field_ASCII_Code_Offset, Value);
    end Set_Name_String;
       
-end BRBON.Item;
+end BRBON.Item_Package;

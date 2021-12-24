@@ -59,7 +59,7 @@ package body BRBON.Container is
    function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
 
 
-   function Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance is
+   function Factory (Buffer_Ptr: aliased Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance is
       Byte_Count: Unsigned_32 := BRBON.Utils.Round_Down_To_Nearest_Multiple_of_32 (Unsigned_32 (Buffer_Ptr.all'Length));
       S: Instance;
    begin
@@ -146,9 +146,9 @@ package body BRBON.Container is
    end Test_Support_Get_Bytes;
 
 
-   function Get_Item_Pointer (CPtr: Instance_Ptr; Offset: Unsigned_32) return Unsigned_8_Ptr is
+   function Get_Item_Pointer (CPtr: aliased Instance_Ptr; Offset: Unsigned_32) return Unsigned_8_Ptr is
    begin
-      return (CPtr.Data (Offset));
+      return (CPtr.Data (Offset)'Access);
    end Get_Item_Pointer;
 
 

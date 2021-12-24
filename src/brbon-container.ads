@@ -55,37 +55,34 @@ with BRBON.Configure;
 package BRBON.Container is
 
 
-   -- ==========================================================================
-   -- Definitions
-   -- ==========================================================================
+private
 
    --  The container to be used for storage/retrieval of byte based data.
    --
---   type Instance is private;
    type Instance is
       record
          Data: aliased Array_Of_Unsigned_8_Ptr;
          Swap: Boolean; -- Set to True or False on creation depending on the necessity for swapping the byte order
       end record;
+
+
    -- A pointer to a binary store
    --
    type Instance_Ptr is access all Instance;
+
 
    -- Ensures that received data is correctly read (or updated).
    -- Note: End users are discouraged from using this operation. Instead block factory methods should be used.
    --
    procedure Set_Data_Endianness (CPtr: Instance_Ptr; Value: Endianness);
 
-   -- ==========================================================================
-   -- Management
-   -- ==========================================================================
 
    -- Create a new byte store in the provided buffer. The buffer will be nilled if the BRBON.Configure Zero_Storage is set to True.
    -- @param Buffer_Ptr The memory area to be used for storage.
    -- @param Using_Endianness The endianness (Big or Little) to be used in the storage area.
    -- @return The new byte store.
    --
-   function Factory (Buffer_Ptr: Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance;
+   function Factory (Buffer_Ptr: aliased Array_Of_Unsigned_8_Ptr; Using_Endianness: Endianness) return Instance;
 
    -- Read the contents of the file into the given buffer, then use this as the new Byte_Store.
    -- @param Path The path to a file on the local filesystem that will be read.
@@ -110,7 +107,7 @@ package BRBON.Container is
 
    -- Returns an Item pointer
    --
-   function Get_Item_Pointer (CPtr: Instance_Ptr; Offset: Unsigned_32) return Unsigned_8_Ptr;
+   function Get_Item_Pointer (CPtr: aliased Instance_Ptr; Offset: Unsigned_32) return Unsigned_8_Ptr;
 
 
 

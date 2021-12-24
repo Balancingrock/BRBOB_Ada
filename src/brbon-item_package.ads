@@ -6,7 +6,6 @@ with Interfaces; use Interfaces;
 with BRBON.Types;
 with BRBON.Container;
 with BRBON.Name_Field_Assistent;
-with BRBON.Portal;
 
 
 package BRBON.Item_Package is
@@ -72,7 +71,7 @@ private
    type Item_Name_Ptr is access Item_Name;
 
 
-   function Get_Item_Name_Pointer (IPtr
+
    -- --------------------------------------------------------------------------
    -- Value Offsets, relative to value start
    -- --------------------------------------------------------------------------

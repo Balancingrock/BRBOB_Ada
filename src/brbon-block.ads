@@ -6,7 +6,7 @@ with Ada.Strings.Unbounded;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Container;
-with BRBON.Header;
+with BRBON.Header_Package;
 with BRBON.Footer;
 with BRBON.Utils;
 
@@ -15,12 +15,11 @@ with Serializable;
 
 
 package BRBON.Block is
- 
+
 
    type Instance is abstract new Ada.Finalization.Controlled with private;
-      
-   
-   
+
+
    -- The total number of bytes that will be used by the block if it is saved or transferred now.
    --
    function Byte_Count (I: in out Instance) return Unsigned_32;

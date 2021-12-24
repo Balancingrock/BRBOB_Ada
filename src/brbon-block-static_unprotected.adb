@@ -9,6 +9,7 @@ with BRBON.Block; use BRBON.Block;
 with BRBON.Footer;
 with BRBON.Header;
 with BRBON.Name_Field_Assistent;
+private with BRBON.Portal_Package; use BRBON.Portal_Package;
 
 with UUID_Package;
 with CRC_Package;
@@ -246,31 +247,31 @@ package body BRBON.Block.Static_Unprotected is
 
    -- Structure Access
 
-   function Get_Type (P: Portal.Instance) return Types.Item_Type is
+   function Get_Type (P: Portal) return Types.Item_Type is
    begin
-      return Item.Get_Type (P.Cptr.all.Data.all (P.Item_Offset)'Access);
+      return P.Item_Pointer.Item_Type;
    end Get_Type;
 
 
-   function Get_Options (P: Portal.Instance) return Types.Item_Options is
+   function Get_Options (P: Portal) return Types.Item_Options is
    begin
       return Item.Get_Options (P.Container, P.Item_Offset);
    end Get_Options;
 
 
-   function Get_Flags (P: Portal.Instance) return Types.Item_Flags is
+   function Get_Flags (P: Portal) return Types.Item_Flags is
    begin
       return Item.Get_Flags (P.Container, P.Item_Offset);
    end Get_Flags;
 
 
-   function Get_Name (P: Portal.Instance) return String is
+   function Get_Name (P: Portal) return String is
    begin
       return Item.Get_Name_String (P.Container, P.Item_Offset);
    end Get_Name;
 
 
-   function Get_Byte_Count (P: Portal.Instance) return Unsigned_32 is
+   function Get_Byte_Count (P: Portal) return Unsigned_32 is
    begin
       return Item.Get_Byte_Count (P.Container, P.Item_Offset);
    end Get_Byte_Count;
