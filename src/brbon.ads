@@ -97,7 +97,7 @@ package BRBON is
 
    -- The BRBON specification includes the endianness of a block of data.
    --
-   type Byte_Storage_Order is (High_Byte_First, Low_Byte_First);
+   type Byte_Storage_Order is (MSB_First, LSB_First);
 
 
    -- ==========================================================================
@@ -107,7 +107,7 @@ package BRBON is
 
    -- Change this to the storage order of the platform the code will be used on.
    --
-   Machine_Byte_Storage_Order: constant Byte_Storage_Order := Low_Byte_First;
+   Machine_Byte_Storage_Order: constant Byte_Storage_Order := LSB_First;
 
 
    -- To initialize all empty space to zero set the following flag to true.
@@ -127,6 +127,11 @@ package BRBON is
    type Portal is private;
 
 
+   -- This is root class of all blocks
+   --
+   type Block is new Ada.Finalization.Controlled with private;
+   
+   
    -- Raised when a name has an unexpected or illegal value.
    --
    Name_Error: exception;
@@ -214,7 +219,7 @@ private
 
    type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
 
-   type Block is abstract new Ada.Finalization.Controlled with
+   type Block is new Ada.Finalization.Controlled with
       record
          Data: Unsigned_8_Array_Ptr;
          Swap: Boolean;
