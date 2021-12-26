@@ -79,8 +79,8 @@ package BRBON.Types is
       Single_Item => 1
      );
 
-   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Type, Unsigned_16);
-   function To_Block_Type is new Ada.Unchecked_Conversion (Unsigned_16, Block_Type);
+   -- function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Type, Unsigned_16);
+   -- function To_Block_Type is new Ada.Unchecked_Conversion (Unsigned_16, Block_Type);
 
 
    type Block_Options is (No_Block_Options, Reacquisition_Possible);

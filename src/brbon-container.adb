@@ -190,16 +190,6 @@ package body BRBON.Container is
 
 -- -----------------------------------------------------------------------------
 
-   procedure Set_Data_Byte_Order (B: BRBON.Block; Value: BRBON.Byte_Storage_Order) is
-   
-   begin
-   
-      B.Swap := Value /= BRBON.Machine_Byte_Storage_Order;
-   
-   end Set_Data_Byte_Order;
-
--- -----------------------------------------------------------------------------
-
    procedure Set_Bool (B: BRBON.Block; Offset: Unsigned_32; Value: Boolean) is
    
    begin

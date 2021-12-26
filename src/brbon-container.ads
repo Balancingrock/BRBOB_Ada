@@ -57,7 +57,7 @@ package BRBON.Container is
    -- Ensures that received data is correctly read (or updated).
    -- Note: End users are discouraged from using this operation. Instead block factory methods should be used.
    --
-   procedure Set_Data_Byte_Order (B: BRBON.Block; Value: BRBON.Byte_Storage_Order);
+   -- procedure Set_Data_Byte_Order (B: BRBON.Block; Value: BRBON.Byte_Storage_Order);
 
 
    -- Create a Block using the provided buffer. The buffer will be zeroed if the BRBON.Zero_Storage is set to True.
@@ -71,7 +71,7 @@ package BRBON.Container is
    -- Read the contents of the file into the given buffer, then use this as the new Block.
    -- @param Path The path to a file on the local filesystem that will be read.
    --
-   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; Path: String; For_Byte_Order: BRBON.Byte_Storage_Order) return Instance;
+   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: BRBON.Byte_Storage_Order) return Instance;
 
 
    -- Save the content of the block to file.
@@ -257,7 +257,6 @@ package BRBON.Container is
    --
    function Get_CRC_32_Over_Range (B: BRBON.Block; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_CRC_32_Over_Range);
-
 
 
    -- ==========================================================================

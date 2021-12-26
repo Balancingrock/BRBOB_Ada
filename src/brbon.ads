@@ -52,6 +52,13 @@
 --  @description
 --  Contains configuration, exceptions and top level type definitions.
 --
+--  A note about the naming. Names in this library are chosen to create a readable code. If a package
+--  name does not end with "_Package" then the most readable name will result when "use"-ing that
+--  package. For all other package names, only a use of "BRBON" will create the best readable name.
+--
+--  Example: The package BRBON.Block.Header contains the function Get_Type. A readable expression
+--  is thus Block.Header.Get_Type (A_Block).
+--
 --  ===============================================================================================
 --  Note: BRBON_Ada is developped on an as-needed base, the following API levels are the foreseen
 --  implementation path. Missing levels are simply not implemented yet.
@@ -169,6 +176,8 @@ package BRBON is
 
 private
 
+   -- Item Header
+   
    type Item_Header is
       record
          Type_Field: Types.Item_Type;
@@ -195,6 +204,9 @@ private
 
    type Item_Header_Ptr is access Item_Header;
 
+
+   -- Portal
+   
    type Portal_Type is (Null_Portal, Normal, Element, Field);
 
    type Portal is
@@ -215,14 +227,21 @@ private
      ) return Portal;
 
 
+   -- Storage definition
+   
    type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8;
 
    type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
 
+
+   -- Block
+   
    type Block is new Ada.Finalization.Controlled with
       record
          Data: Unsigned_8_Array_Ptr;
          Swap: Boolean;
       end record;
+
+   procedure Set_Data_Byte_Order (B: Block; Value: Byte_Storage_Order);
 
 end BRBON;
