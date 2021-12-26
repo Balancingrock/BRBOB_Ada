@@ -1,6 +1,8 @@
 package body BRBON is
 
 
+   -----------------------------------------------------------------------------
+   
    function Factory
      (
       Item_Ptr: Item_Header_Ptr;
@@ -41,8 +43,8 @@ package body BRBON is
    end Factory;
 
 
--- -----------------------------------------------------------------------------
-
+   -----------------------------------------------------------------------------
+   
    procedure Set_Data_Byte_Order (B: Block; Value: Byte_Storage_Order) is
    
    begin

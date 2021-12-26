@@ -97,6 +97,8 @@
 
 with Interfaces; use Interfaces;
 with Ada.Finalization;
+with Ada.Unchecked_Deallocation;
+with Ada.Unchecked_Conversion;
 
 
 package BRBON is
@@ -128,6 +130,162 @@ package BRBON is
    -- ==========================================================================
 
 
+   -- Implemented item types
+   
+   type Item_Type is
+     (
+      Illegal,
+      Null_Type,
+      Bool_Type,
+      Int_8_Type, Int_16_Type, Int_32_Type, Int_64_Type,
+      UInt_8_Type, UInt_16_Type, UInt_32_Type, UInt_64_Type,
+      Float_32_Type, Float_64_Type,
+      String_Type, Crc_String_Type,
+      Binary_Type, Crc_Binary_Type,
+      Array_Type, Dictionary_Type, Sequence_Type, Table_Type,
+      UUID_Type,
+      RGBA_Type,
+      Font_Type
+     );
+
+   for Item_Type'Size use 8;
+
+   for Item_Type use
+     (
+      Illegal         => 0,
+      Null_Type       => 16#01#,
+      Bool_Type       => 16#02#,
+      Int_8_Type      => 16#03#,
+      Int_16_Type     => 16#04#,
+      Int_32_Type     => 16#05#,
+      Int_64_Type     => 16#06#,
+      UInt_8_Type     => 16#07#,
+      UInt_16_Type    => 16#08#,
+      UInt_32_Type    => 16#09#,
+      UInt_64_Type    => 16#0A#,
+      Float_32_Type   => 16#0B#,
+      Float_64_Type   => 16#0C#,
+      String_Type     => 16#0D#,
+      CRC_String_Type => 16#0E#,
+      Binary_Type     => 16#0F#,
+      CRC_Binary_Type => 16#10#,
+      Array_Type      => 16#11#,
+      Dictionary_Type => 16#12#,
+      Sequence_Type   => 16#13#,
+      Table_Type      => 16#14#,
+      UUID_Type       => 16#15#,
+      RGBA_Type       => 16#16#,
+      Font_Type       => 16#17#
+     );
+   
+   
+   -- Possible options for types.
+   
+   type Item_Options is
+      record
+         Option_0: Boolean;
+         Option_1: Boolean;
+         Option_2: Boolean;
+         Option_3: Boolean;
+         Option_4: Boolean;
+         Option_5: Boolean;
+         Option_6: Boolean;
+         Option_7: Boolean;
+      end record;
+
+   for Item_Options'Size use 8;
+
+   for Item_Options use
+      record
+         Option_0 at 0 range 0..0;
+         Option_1 at 0 range 1..1;
+         Option_2 at 0 range 2..2;
+         Option_3 at 0 range 3..3;
+         Option_4 at 0 range 4..4;
+         Option_5 at 0 range 5..5;
+         Option_6 at 0 range 6..6;
+         Option_7 at 0 range 7..7;
+      end record;
+   
+   No_Item_Options: constant Item_Options := (false, false, false, false, false, false, false, false);
+   
+   -- Possible item flags
+   
+   type Item_Flags is
+      record
+         Flag_0: Boolean;
+         Flag_1: Boolean;
+         Flag_2: Boolean;
+         Flag_3: Boolean;
+         Flag_4: Boolean;
+         Flag_5: Boolean;
+         Flag_6: Boolean;
+         Flag_7: Boolean;
+      end record;
+
+   for Item_Flags'Size use 8;
+
+   for Item_Flags use
+      record
+         Flag_0 at 0 range 0..0;
+         Flag_1 at 0 range 1..1;
+         Flag_2 at 0 range 2..2;
+         Flag_3 at 0 range 3..3;
+         Flag_4 at 0 range 4..4;
+         Flag_5 at 0 range 5..5;
+         Flag_6 at 0 range 6..6;
+         Flag_7 at 0 range 7..7;
+      end record;
+
+   No_Item_Flags: constant Item_Flags := (false, false, false, false, false, false, false, false);
+
+
+   -- For blocks
+
+   type Block_Type is
+     (
+      Illegal,
+      Single_Item_Block
+     );
+   
+   for Block_Type'Size use 16;
+   
+   for Block_Type use
+     (
+      Illegal           => 0,
+      Single_Item_Block => 1
+     );
+
+
+   type Block_Options is
+      record
+         Reacquisition_Possible: Boolean;
+         Option_1: Boolean;
+         Option_2: Boolean;
+         Option_3: Boolean;
+         Option_4: Boolean;
+         Option_5: Boolean;
+         Option_6: Boolean;
+         Option_7: Boolean;
+         Options_8_15: Unsigned_8;
+      end record;
+      
+   for Block_Options'Size use 16;
+   
+   for Block_Options use
+      record 
+         Reacquisition_Possible at 0 range 0..0;
+         Option_1               at 0 range 1..1;
+         Option_2               at 0 range 2..2;
+         Option_3               at 0 range 3..3;
+         Option_4               at 0 range 4..4;
+         Option_5               at 0 range 5..5;
+         Option_6               at 0 range 6..6;
+         Option_7               at 0 range 7..7;
+         Options_8_15           at 1 range 0..7;
+      end record;
+   
+   
    -- This type may be used to quickly access an item in storage without having
    -- to perform a lookup or search.
    --
@@ -176,13 +334,27 @@ package BRBON is
 
 private
 
+   Item_Header_Byte_Count: constant := 16;
+   
+   
+   -- Storage definition
+   
+   type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8;
+
+   type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
+
+   procedure Deallocate_Unsigned_8_Array is new Ada.Unchecked_Deallocation (Unsigned_8_Array, Unsigned_8_Array_Ptr);
+   
+   type Unsigned_8_Ptr is access Unsigned_8;
+   
+   
    -- Item Header
    
    type Item_Header is
       record
-         Type_Field: Types.Item_Type;
-         Options_Field: Types.Item_Options;
-         Flags_Field: Types.Item_Flags;
+         Type_Field: Item_Type;
+         Options_Field: Item_Options;
+         Flags_Field: Item_Flags;
          Name_Field_Byte_Count_Field: Unsigned_8;
          Byte_Count_Field: Unsigned_32;
          Parent_Offset_Field: Unsigned_32;
@@ -203,8 +375,10 @@ private
       end record;
 
    type Item_Header_Ptr is access Item_Header;
+   
+   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
 
-
+   
    -- Portal
    
    type Portal_Type is (Null_Portal, Normal, Element, Field);
@@ -214,7 +388,7 @@ private
          Is_Type: Portal_Type;
          Is_Valid: Boolean := True;
          --
-         Item_Ptr: Item_Package.Item_Header_Ptr;
+         Item_Ptr: Item_Header_Ptr;
          Element_Index: Unsigned_32 := 0;
          Column_Index: Unsigned_32 := 0;
       end record;
@@ -222,18 +396,11 @@ private
    function Portal_Factory
      (
       Item_Ptr: Item_Header_Ptr;
-      Element_Index: Unsigned_32 := Unsigned_32'Max;
-      Column_Index: Unsigned_32 := Unsigned_32'Max
+      Element_Index: Unsigned_32 := 16#FFFF_FFFF#;
+      Column_Index: Unsigned_32 := 16#FFFF_FFFF#
      ) return Portal;
 
-
-   -- Storage definition
    
-   type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8;
-
-   type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
-
-
    -- Block
    
    type Block is new Ada.Finalization.Controlled with
@@ -242,6 +409,9 @@ private
          Swap: Boolean;
       end record;
 
+   
+   -- Block operations
+   
    procedure Set_Data_Byte_Order (B: Block; Value: Byte_Storage_Order);
 
 end BRBON;

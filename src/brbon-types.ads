@@ -1,40 +1,22 @@
-with Ada.Strings.Bounded;
---with Ada.Streams;
-with Ada.Unchecked_Conversion;
-with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
-with System;
+with Ada.Unchecked_Conversion;
+
+with BRBON; use BRBON;
 
 
-package BRBON.Types is
+private package BRBON.Types is
 
-
-   -- The endianness to be used to store data.
-   --
-   type Endianness is (Big, Little);
-
-
-   -- Most of the data manipulations are done byte wise
-   --
-   type Array_Of_Unsigned_8 is array (Unsigned_32 range <>) of aliased Unsigned_8;
-
-   -- type Array_Of_Unsigned_64 is array (Unsigned_32 range <>) of Unsigned_64;
-
-   type Array_Of_Unsigned_8_Ptr is access all Array_Of_Unsigned_8;
-
-   type Unsigned_8_Ptr is access all Unsigned_8;
 
    type Array_Of_Boolean is array (Unsigned_32 range <>) of Boolean;
 
-   procedure Deallocate_Array_Of_Unsigned_8 is new Ada.Unchecked_Deallocation (Array_Of_Unsigned_8, Array_Of_Unsigned_8_Ptr);
 
-   Empty_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..0) := (others => 0);
-   Short_Array_Of_Unsigned_8: constant Array_Of_Unsigned_8 (1..1) := (others => 0);
+   Empty_Unsigned_8_Array: constant Unsigned_8_Array (1..0) := (others => 0);
+   Short_Unsigned_8_Array: constant Unsigned_8_Array (1..1) := (others => 0);
 
 
-   subtype Two_Bytes is Array_Of_Unsigned_8 (1 .. 2);
-   subtype Four_Bytes is Array_Of_Unsigned_8 (1 .. 4);
-   subtype Eight_Bytes is Array_Of_Unsigned_8 (1 .. 8);
+   subtype Two_Bytes is Unsigned_8_Array (1 .. 2);
+   subtype Four_Bytes is Unsigned_8_Array (1 .. 4);
+   subtype Eight_Bytes is Unsigned_8_Array (1 .. 8);
 
    function To_Unsigned_16 is new Ada.Unchecked_Conversion (Two_Bytes, Unsigned_16);
    function To_Integer_16 is new Ada.Unchecked_Conversion (Two_Bytes, Integer_16);
@@ -65,90 +47,7 @@ package BRBON.Types is
 
 
    -- ==========================================================================
-   -- For blocks
-
-   type Block_Type is
-     (
-      Illegal,
-      Single_Item
-     );
-   for Block_Type'Size use 16;
-   for Block_Type use
-     (
-      Illegal => 0,
-      Single_Item => 1
-     );
-
-   -- function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Type, Unsigned_16);
-   -- function To_Block_Type is new Ada.Unchecked_Conversion (Unsigned_16, Block_Type);
-
-
-   type Block_Options is (No_Block_Options, Reacquisition_Possible);
-   for Block_Options'Size use 16;
-   for Block_Options use
-      (
-         No_Block_Options       => 0,
-         Reacquisition_Possible => 16#01#
-      );
-
-   function To_Unsigned_16 is new Ada.Unchecked_Conversion (Block_Options, Unsigned_16);
-   function To_Block_Options is new Ada.Unchecked_Conversion (Unsigned_16, Block_Options);
-
-
-   -- ==========================================================================
    -- For items
-
-   Minimum_Item_Byte_Count: constant Unsigned_32 := 16;
-
-
-   type Item_Type is
-     (
-      Illegal,
-      Null_Type,
-      Bool_Type,
-      Int_8_Type, Int_16_Type, Int_32_Type, Int_64_Type,
-      UInt_8_Type, UInt_16_Type, UInt_32_Type, UInt_64_Type,
-      Float_32_Type, Float_64_Type,
-      String_Type, Crc_String_Type,
-      Binary_Type, Crc_Binary_Type,
-      Array_Type, Dictionary_Type, Sequence_Type, Table_Type,
-      UUID_Type,
-      RGBA_Type,
-      Font_Type
-     );
-
-   for Item_Type'Size use 8;
-
-   for Item_Type use
-     (
-      Illegal         => 0,
-      Null_Type       => 16#01#,
-      Bool_Type       => 16#02#,
-      Int_8_Type      => 16#03#,
-      Int_16_Type     => 16#04#,
-      Int_32_Type     => 16#05#,
-      Int_64_Type     => 16#06#,
-      UInt_8_Type     => 16#07#,
-      UInt_16_Type    => 16#08#,
-      UInt_32_Type    => 16#09#,
-      UInt_64_Type    => 16#0A#,
-      Float_32_Type   => 16#0B#,
-      Float_64_Type   => 16#0C#,
-      String_Type     => 16#0D#,
-      CRC_String_Type => 16#0E#,
-      Binary_Type     => 16#0F#,
-      CRC_Binary_Type => 16#10#,
-      Array_Type      => 16#11#,
-      Dictionary_Type => 16#12#,
-      Sequence_Type   => 16#13#,
-      Table_Type      => 16#14#,
-      UUID_Type       => 16#15#,
-      RGBA_Type       => 16#16#,
-      Font_Type       => 16#17#
-     );
-
-   function To_Item_Type is new Ada.Unchecked_Conversion (Unsigned_8, Item_Type);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Type, Unsigned_8);
 
    Item_Is_Container: Array (Item_Type) of Boolean :=
      (
@@ -205,69 +104,6 @@ package BRBON.Types is
       0,  -- RGBA
       6   -- Font
      );
-
-   type Item_Flags is
-      record
-         Flag_0: Boolean;
-         Flag_1: Boolean;
-         Flag_2: Boolean;
-         Flag_3: Boolean;
-         Flag_4: Boolean;
-         Flag_5: Boolean;
-         Flag_6: Boolean;
-         Flag_7: Boolean;
-      end record;
-
-   for Item_Flags'Size use 8;
-
-   for Item_Flags use
-      record
-         Flag_0 at 0 range 0..0;
-         Flag_1 at 0 range 1..1;
-         Flag_2 at 0 range 2..2;
-         Flag_3 at 0 range 3..3;
-         Flag_4 at 0 range 4..4;
-         Flag_5 at 0 range 5..5;
-         Flag_6 at 0 range 6..6;
-         Flag_7 at 0 range 7..7;
-      end record;
-
-   function To_Item_Flags is new Ada.Unchecked_Conversion (Unsigned_8, Item_Flags);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Flags, Unsigned_8);
-
-   No_Item_Flags: constant Item_Flags := (false, false, false, false, false, false, false, false);
-
-
-   type Item_Options is
-      record
-         Option_0: Boolean;
-         Option_1: Boolean;
-         Option_2: Boolean;
-         Option_3: Boolean;
-         Option_4: Boolean;
-         Option_5: Boolean;
-         Option_6: Boolean;
-         Option_7: Boolean;
-      end record;
-
-   for Item_Options'Size use 8;
-
-   for Item_Options use
-      record
-         Option_0 at 0 range 0..0;
-         Option_1 at 0 range 1..1;
-         Option_2 at 0 range 2..2;
-         Option_3 at 0 range 3..3;
-         Option_4 at 0 range 4..4;
-         Option_5 at 0 range 5..5;
-         Option_6 at 0 range 6..6;
-         Option_7 at 0 range 7..7;
-      end record;
-
-   function To_Item_Options is new Ada.Unchecked_Conversion (Unsigned_8, Item_Options);
-   function To_Unsigned_8 is new Ada.Unchecked_Conversion (Item_Options, Unsigned_8);
-
-   No_Item_Options: constant Item_Options := (false, false, false, false, false, false, false, false);
 
 
    -- ====================================================

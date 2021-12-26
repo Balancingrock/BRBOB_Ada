@@ -15,6 +15,7 @@ package body BRBON.Block.Header is
       end if;
    end Get_Byte_Storage_Order;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Type (B: BRBON.Block) return BRBON.Block.Block_Type is
@@ -22,6 +23,7 @@ package body BRBON.Block.Header is
       return To_Header_Leading_Ptr (B.Data (0)'Access).Is_Type;
    end Get_Type;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Options (B: BRBON.Block; Value: BRBON.Block.Block_Options) is
@@ -29,6 +31,7 @@ package body BRBON.Block.Header is
       To_Header_Leading_Ptr (B.Data (0)'Access).Options := Value;
    end Set_Options;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Options (B: BRBON.Block) return BRBON.Block.Block_Options is
@@ -36,6 +39,7 @@ package body BRBON.Block.Header is
       return To_Header_Leading_Ptr (B.Data (0)'Access).Options;
    end Get_Options;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Byte_Count (B: BRBON.Block) return Unsigned_32 is
@@ -43,6 +47,7 @@ package body BRBON.Block.Header is
       return To_Header_Leading_Ptr (B.Data (0)'Access).Block_Byte_Count;
    end Get_Byte_Count;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Header_Byte_Count (B: BRBON.Block) return Unsigned_16 is
@@ -50,12 +55,14 @@ package body BRBON.Block.Header is
       return To_Header_Leading_Ptr (B.Data (0)'Access).Header_Byte_Count;
    end Get_Header_Byte_Count;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Encrypted_Header_Byte_Count (B: BRBON.Block) return Unsigned_16 is
    begin
       return To_Header_Leading_Ptr (B.Data (0)'Access).Encrypted_Header_Byte_Count;
    end Get_Encrypted_Header_Byte_Count;
+   
    
 -- -----------------------------------------------------------------------------
 
@@ -72,129 +79,161 @@ package body BRBON.Block.Header is
       Write_Field_Storage_Strings (FSS);
    end Set_Origin;
    
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Origin (B: BRBON.Block) return String;
+   
    
 -- -----------------------------------------------------------------------------
 
    function Get_Origin_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Origin_Byte_Count (B: BRBON.Block) return Unsigned_8;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Identifier (B: BRBON.Block; Value: String);
+   
    
 -- -----------------------------------------------------------------------------
 
    function Get_Identifier (B: BRBON.Block) return String;
    
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Identifier_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Identifier_Byte_Count (B: BRBON.Block) return Unsigned_8;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Extension (B: BRBON.Block; Value: String);
+   
    
 -- -----------------------------------------------------------------------------
 
    function Get_Extension (B: BRBON.Block) return String;
    
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Extension_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Extension_Byte_Count (B: BRBON.Block) return Unsigned_8;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Path_Prefix (B: BRBON.Block; Value: String);
+   
    
 -- -----------------------------------------------------------------------------
 
    function Get_Path_Prefix (B: BRBON.Block) return String;
    
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Path_Prefix_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Path_Prefix_Byte_Count (B: BRBON.Block) return Unsigned_8;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Acquisition_URL (B: BRBON.Block; Value: String);
+   
    
 -- -----------------------------------------------------------------------------
 
    function Get_Acquisition_URL (B: BRBON.Block) return String;
    
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Acquisition_URL_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Acquisition_URL_Byte_Count (B: BRBON.Block) return Unsigned_8;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Public_Key_URL (B: BRBON.Block; Value: String);
+   
    
 -- -----------------------------------------------------------------------------
 
    function Get_Public_Key_URL (B: BRBON.Block) return String;
    
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Public_Key_URL_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Public_Key_URL_Byte_Count (B: BRBON.Block) return Unsigned_8;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Creation_Timestamp (B: BRBON.Block; Value: Unsigned_64);
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Creation_Timestamp (B: BRBON.Block) return Unsigned_64;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Modification_Timestamp (B: BRBON.Block; Value: Unsigned_64);
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Modification_Timestamp (B: BRBON.Block) return Unsigned_64;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Set_Expiry_Timestamp (B: BRBON.Block; Value: Unsigned_64);
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Expiry_Timestamp (B: BRBON.Block) return Unsigned_64;
 
+   
 -- -----------------------------------------------------------------------------
 
    function Get_Header_CRC (B: BRBON.Block) return Unsigned_16;
 
+   
 -- -----------------------------------------------------------------------------
 
    procedure Update_Header_CRC (B: BRBON.Block);
+   
    
 -- -----------------------------------------------------------------------------
    
