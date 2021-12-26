@@ -292,9 +292,23 @@ package BRBON is
    type Portal is private;
 
 
-   -- This is root class of all blocks
+   -- This is root class of all blocks.
    --
-   type Block is new Ada.Finalization.Controlled with private;
+   type Store is new Ada.Finalization.Controlled with private;
+   
+   
+   -- The type of array all items are stored in.
+   --
+   type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8;
+   
+   
+   -- All data storage should be allocated dynamically.
+   --
+   type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
+   
+   -- To release allocated storage.
+   --
+   procedure Deallocate_Unsigned_8_Array is new Ada.Unchecked_Deallocation (Unsigned_8_Array, Unsigned_8_Array_Ptr);
    
    
    -- Raised when a name has an unexpected or illegal value.
@@ -337,13 +351,7 @@ private
    Item_Header_Byte_Count: constant := 16;
    
    
-   -- Storage definition
-   
-   type Unsigned_8_Array is array (Unsigned_32 range <>) of aliased Unsigned_8;
-
-   type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
-
-   procedure Deallocate_Unsigned_8_Array is new Ada.Unchecked_Deallocation (Unsigned_8_Array, Unsigned_8_Array_Ptr);
+   -- Storage support
    
    type Unsigned_8_Ptr is access Unsigned_8;
    
@@ -403,15 +411,16 @@ private
    
    -- Block
    
-   type Block is new Ada.Finalization.Controlled with
+   type Store is new Ada.Finalization.Controlled with
       record
          Data: Unsigned_8_Array_Ptr;
          Swap: Boolean;
       end record;
+   
 
    
    -- Block operations
    
-   procedure Set_Data_Byte_Order (B: Block; Value: Byte_Storage_Order);
+   procedure Set_Data_Byte_Order (B: Store; Value: Byte_Storage_Order);
 
 end BRBON;

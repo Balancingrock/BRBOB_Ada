@@ -45,7 +45,7 @@ package body BRBON is
 
    -----------------------------------------------------------------------------
    
-   procedure Set_Data_Byte_Order (B: Block; Value: Byte_Storage_Order) is
+   procedure Set_Data_Byte_Order (B: Store; Value: Byte_Storage_Order) is
    
    begin
    

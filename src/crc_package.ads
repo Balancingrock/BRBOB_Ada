@@ -1,7 +1,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Interfaces; use Interfaces;
 
-with BRBON.Types; use BRBON.Types;
+with BRBON;
 with Serializable;
 
 package CRC_Package is
@@ -27,13 +27,13 @@ package CRC_Package is
    -- Returns the CRC-16 starting at the pointer for the given length.
    -- Initial Value = 0, Polynomal = 16#A001#
    --
-   function Calculate_CRC_16 (Arr: Array_Of_Unsigned_8) return CRC_16;
+   function Calculate_CRC_16 (Arr: BRBON.Unsigned_8_Array) return CRC_16;
 
 
    -- Returns the CRC-32 starting at the pointer for the given length.
    -- Initial value 16#FFFF_FFFF#
    --
-   function Calculate_CRC_32 (Arr: Array_Of_Unsigned_8) return CRC_32;
+   function Calculate_CRC_32 (Arr: BRBON.Unsigned_8_Array) return CRC_32;
 
 
 private

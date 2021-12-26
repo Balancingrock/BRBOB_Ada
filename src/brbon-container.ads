@@ -57,7 +57,7 @@ package BRBON.Container is
    -- Ensures that received data is correctly read (or updated).
    -- Note: End users are discouraged from using this operation. Instead block factory methods should be used.
    --
-   -- procedure Set_Data_Byte_Order (B: BRBON.Block; Value: BRBON.Byte_Storage_Order);
+   -- procedure Set_Data_Byte_Order (S: BRBON.Store; Value: BRBON.Byte_Storage_Order);
 
 
    -- Create a Block using the provided buffer. The buffer will be zeroed if the BRBON.Zero_Storage is set to True.
@@ -65,29 +65,29 @@ package BRBON.Container is
    -- @param For_Byte_Order The byte order to be used for the data in the block.
    -- @return The new Block.
    --
-   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; For_Byte_Order: BRBON.Byte_Storage_Order) return Block;
+   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; For_Byte_Order: BRBON.Byte_Storage_Order) return BRBON.Store;
 
 
    -- Read the contents of the file into the given buffer, then use this as the new Block.
    -- @param Path The path to a file on the local filesystem that will be read.
    --
-   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: BRBON.Byte_Storage_Order) return Instance;
+   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: BRBON.Byte_Storage_Order) return BRBON.Store;
 
 
    -- Save the content of the block to file.
    -- @param Path The location in the filesystem to store the data.
    --
-   procedure Write_To_File (B: BRBON.Block; Path: String);
+   procedure Write_To_File (S: BRBON.Store; Path: String);
 
 
    -- Returns the number of bytes that can be stored
    --
-   function Storage_Byte_Count (B: BRBON.Block) return Unsigned_32;
+   function Storage_Byte_Count (S: BRBON.Store) return Unsigned_32;
 
 
    -- Returns the byte order of the data in the store
    --
-   function Storage_Byte_Order (B: BRBON.Block) return BRBON.Byte_Storage_Order;
+   function Storage_Byte_Order (S: BRBON.Store) return BRBON.Byte_Storage_Order;
 
 
    -- ==========================================================================
@@ -97,149 +97,149 @@ package BRBON.Container is
    -- Write a boolean value to the byte at the given offset.
    -- 0x00 for False, 0x01 for True.
    --
-   procedure Set_Bool (B: BRBON.Block; Offset: Unsigned_32; Value: Boolean);
+   procedure Set_Bool (S: BRBON.Store; Offset: Unsigned_32; Value: Boolean);
    pragma Inline (Set_Bool);
 
    -- Returns a boolean as read from the byte at the given offset.
    -- 0x00 = False, anything else = True
    --
-   function Get_Bool (B: BRBON.Block; Offset: Unsigned_32) return Boolean;
+   function Get_Bool (S: BRBON.Store; Offset: Unsigned_32) return Boolean;
    pragma Inline (Get_Bool);
 
    -- Write an Unsigned_8 to the byte at the given offset.
    --
-   procedure Set_Unsigned_8 (B: BRBON.Block; Offset: Unsigned_32; Value: Unsigned_8);
+   procedure Set_Unsigned_8 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_8);
    pragma Inline (Set_Unsigned_8);
 
    -- Returns the byte at the given offset as a Unsigned_8.
    --
-   function Get_Unsigned_8 (B: BRBON.Block; Offset: Unsigned_32) return Unsigned_8;
+   function Get_Unsigned_8 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_8;
    pragma Inline (Get_Unsigned_8);
 
    -- Write Unsigned_16 to the byte at the given offset and the next byte at the higher address.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Unsigned_16 (B: BRBON.Block; Offset: Unsigned_32; Value: Unsigned_16);
+   procedure Set_Unsigned_16 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_16);
    pragma Inline (Set_Unsigned_16);
 
    -- Read the byte at the offset and the next byte at the higher address as an Unsigned_16.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Unsigned_16 (B: BRBON.Block; Offset: Unsigned_32) return Unsigned_16;
+   function Get_Unsigned_16 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_16;
    pragma Inline (Get_Unsigned_16);
 
    -- Write Unsigned_32 to the byte at the given offset and the next 3 bytes at the higher addresses.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Unsigned_32 (B: BRBON.Block; Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Set_Unsigned_32 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_32);
    pragma Inline (Set_Unsigned_32);
 
    -- Read the byte at the offset and the next 3 bytes at the higher addresses as an Unsigned_32.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Unsigned_32 (B: BRBON.Block; Offset: Unsigned_32) return Unsigned_32;
+   function Get_Unsigned_32 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_Unsigned_32);
 
    -- Write Unsigned_64 to the byte at the given offset and the next 7 bytes at the higher addresses.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Unsigned_64 (B: BRBON.Block; Offset: Unsigned_32; Value: Unsigned_64);
+   procedure Set_Unsigned_64 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_64);
    pragma Inline (Set_Unsigned_64);
 
    -- Read the byte at the offset and the next 7 bytes at the higher addresses as an Unsigned_64.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Unsigned_64 (B: BRBON.Block; Offset: Unsigned_32) return Unsigned_64;
+   function Get_Unsigned_64 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_64;
    pragma Inline (Get_Unsigned_64);
 
    -- Write an Integer_8 to the byte at the given offset.
    --
-   procedure Set_Integer_8 (B: BRBON.Block; Offset: Unsigned_32; Value: Integer_8);
+   procedure Set_Integer_8 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_8);
    pragma Inline (Set_Integer_8);
 
    -- Returns the byte at the given offset as an Integer_8.
    --
-   function Get_Integer_8 (B: BRBON.Block; Offset: Unsigned_32) return Integer_8;
+   function Get_Integer_8 (S: BRBON.Store; Offset: Unsigned_32) return Integer_8;
    pragma Inline (Get_Integer_8);
 
    -- Write Integer_16 to the byte at the given offset and the next byte at the higher address.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Integer_16 (B: BRBON.Block; Offset: Unsigned_32; Value: Integer_16);
+   procedure Set_Integer_16 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_16);
    pragma Inline (Set_Integer_16);
 
    -- Read the byte at the offset and the next byte at the higher address as an Unsigned_16.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Integer_16 (B: BRBON.Block; Offset: Unsigned_32) return Integer_16;
+   function Get_Integer_16 (S: BRBON.Store; Offset: Unsigned_32) return Integer_16;
    pragma Inline (Get_Integer_16);
 
    -- Write Integer_32 to the byte at the given offset and the next 3 bytes at the higher addresses.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Integer_32 (B: BRBON.Block; Offset: Unsigned_32; Value: Integer_32);
+   procedure Set_Integer_32 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_32);
    pragma Inline (Set_Integer_32);
 
    -- Read the byte at the offset and the next 3 bytes at the higher addresses as an Integer_32.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Integer_32 (B: BRBON.Block; Offset: Unsigned_32) return Integer_32;
+   function Get_Integer_32 (S: BRBON.Store; Offset: Unsigned_32) return Integer_32;
    pragma Inline (Get_Integer_32);
 
    -- Write Integer_64 to the byte at the given offset and the next 7 bytes at the higher addresses.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Integer_64 (B: BRBON.Block; Offset: Unsigned_32; Value: Integer_64);
+   procedure Set_Integer_64 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_64);
    pragma Inline (Set_Integer_64);
 
    -- Read the byte at the offset and the next 7 bytes at the higher addresses as an Integer_64.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Integer_64 (B: BRBON.Block; Offset: Unsigned_32) return Integer_64;
+   function Get_Integer_64 (S: BRBON.Store; Offset: Unsigned_32) return Integer_64;
    pragma Inline (Get_Integer_64);
 
    -- Write Float_32 to the byte at the given offset and the next 3 bytes at the higher addresses.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Float_32 (B: BRBON.Block; Offset: Unsigned_32; Value: IEEE_Float_32);
+   procedure Set_Float_32 (S: BRBON.Store; Offset: Unsigned_32; Value: IEEE_Float_32);
    pragma Inline (Set_Float_32);
 
    -- Read the byte at the offset and the next 3 bytes at the higher addresses as a Float_32.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Float_32 (B: BRBON.Block; Offset: Unsigned_32) return IEEE_Float_32;
+   function Get_Float_32 (S: BRBON.Store; Offset: Unsigned_32) return IEEE_Float_32;
    pragma Inline (Get_Float_32);
 
    -- Write Float_64 to the byte at the given offset and the next 7 bytes at the higher addresses.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   procedure Set_Float_64 (B: BRBON.Block; Offset: Unsigned_32; Value: IEEE_Float_64);
+   procedure Set_Float_64 (S: BRBON.Store; Offset: Unsigned_32; Value: IEEE_Float_64);
    pragma Inline (Set_Float_64);
 
    -- Read the byte at the offset and the next 7 bytes at the higher addresses as a Float_64.
    -- The endianess will be according to the endianess set for the storage area.
    --
-   function Get_Float_64 (B: BRBON.Block; Offset: Unsigned_32) return IEEE_Float_64;
+   function Get_Float_64 (S: BRBON.Store; Offset: Unsigned_32) return IEEE_Float_64;
    pragma Inline (Get_Float_64);
 
    -- Write all the bytes that make up the string to successive bytes starting at the given offset.
    --
-   procedure Set_String (B: BRBON.Block; Offset: Unsigned_32; Value: String);
+   procedure Set_String (S: BRBON.Store; Offset: Unsigned_32; Value: String);
    pragma Inline (Set_String);
 
    -- Return successive bytes starting at the given offset for the given length as a string.
    --
-   function Get_String (B: BRBON.Block; Offset: Unsigned_32; Length: Unsigned_32) return String;
+   function Get_String (S: BRBON.Store; Offset: Unsigned_32; Length: Unsigned_32) return String;
    pragma Inline (Get_String);
 
    -- Write all the bytes in the array to successive bytes starting at the given offset.
    --
-   procedure Set_Unsigned_8_Array (B: BRBON.Block; Offset: Unsigned_32; Value: Unsigned_8_Array);
+   procedure Set_Unsigned_8_Array (S: BRBON.Store; Offset: Unsigned_32; Value: BRBON.Unsigned_8_Array);
    pragma Inline (Set_Unsigned_8_Array);
 
    -- Return successive bytes starting at the given offset for the given length as a unsigned_8 array.
    --
-   function Get_Unsigned_8_Array (B: BRBON.Block; Offset: Unsigned_32; Length: Unsigned_32) return Unsigned_8_Array;
+   function Get_Unsigned_8_Array (S: BRBON.Store; Offset: Unsigned_32; Length: Unsigned_32) return Unsigned_8_Array;
    pragma Inline (Get_Unsigned_8_Array);
 
    -- Return the CRC-16 over the specified range.
@@ -247,7 +247,7 @@ package BRBON.Container is
    -- @param Count The number of bytes to include in the CRC-16.
    -- @return The CRC-16 of the specified bytes.
    --
-   function Get_CRC_16_Over_Range (B: BRBON.Block; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16;
+   function Get_CRC_16_Over_Range (S: BRBON.Store; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16;
    pragma Inline (Get_CRC_16_Over_Range);
 
    -- Return the CRC-32 over the specified range.
@@ -255,7 +255,7 @@ package BRBON.Container is
    -- @param Count The number of bytes to include in the CRC-32.
    -- @return The CRC-32 of the specified bytes.
    --
-   function Get_CRC_32_Over_Range (B: BRBON.Block; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32;
+   function Get_CRC_32_Over_Range (S: BRBON.Store; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_CRC_32_Over_Range);
 
 
@@ -265,11 +265,11 @@ package BRBON.Container is
 
    -- Return a part of the store
    --
-   procedure Test_Support_Get_Bytes (B: BRBON.Block; Start: Unsigned_32; Dest: out BRBON.Unsigned_8_Array);
+   procedure Test_Support_Get_Bytes (S: BRBON.Store; Start: Unsigned_32; Dest: out BRBON.Unsigned_8_Array);
 
    -- Create a hex dump of the contents
    --
-   procedure Test_Support_Hex_Dump (B: BRBON.Block);
+   procedure Test_Support_Hex_Dump (S: BRBON.Store);
 
 
 end BRBON.Container;

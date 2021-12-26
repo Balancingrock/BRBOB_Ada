@@ -5,7 +5,7 @@ with Ada.Calendar;
 with BRBON.Types; use BRBON.Types;
 
 
-package BRBON.Utils is
+private package BRBON.Utils is
 
    function Max (A: Unsigned_16; B: Unsigned_16) return Unsigned_16 is (if A > B then A else B);
    pragma Inline (Max);
@@ -43,7 +43,7 @@ package BRBON.Utils is
    --
    procedure Put_Hex_32 (Value: Unsigned_32);
    procedure Put_Hex_8 (Value: Unsigned_8; Display_Cursor: Boolean := False);
-   Procedure Put_Hex_8_Two_Lines (Source: Array_Of_Unsigned_8; Cursor: Unsigned_32; Show_Cursor: Boolean := False);
-   procedure Put_Hex (Source: Array_Of_Unsigned_8);
+   Procedure Put_Hex_8_Two_Lines (Source: Unsigned_8_Array; Cursor: Unsigned_32; Show_Cursor: Boolean := False);
+   procedure Put_Hex (Source: Unsigned_8_Array);
 
 end BRBON.Utils;

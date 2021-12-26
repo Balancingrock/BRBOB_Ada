@@ -1,14 +1,13 @@
 with Interfaces; use Interfaces;
 
-with Ada.Unchecked_Conversion;
-with Ada.Finalization;
-with Ada.Strings.Unbounded;
+--with Ada.Unchecked_Conversion;
+--with Ada.Finalization;
+--with Ada.Strings.Unbounded;
 
-with BRBON.Types; use BRBON.Types;
-with BRBON.Container;
-with BRBON.Header_Package;
-with BRBON.Footer;
-with BRBON.Utils;
+--with BRBON.Types; use BRBON.Types;
+--with BRBON.Container;
+--with BRBON.Footer;
+--with BRBON.Utils;
 
 
 with Serializable;
@@ -17,47 +16,287 @@ with Serializable;
 package BRBON.Block is
 
 
-   -- The available block types.
-   --
-   type Block_Type is
-     (
-      Illegal,
-      Single_Item_Block
-     );
-   for Block_Type'Size use 16;
-   for Block_Type use
-     (
-      Illegal => 0,
-      Single_Item_Block => 1
-     );
-
-
-   -- The available block options
-   -- Use the "or" operator to merge options.
-   --
-   type Block_Options is
-    (
-     No_Block_Options,
-     Reacquisition_Possible
-    );
-   for Block_Options'Size use 16;
-   for Block_Options use
-    (
-     No_Block_Options       => 0,
-     Reacquisition_Possible => 16#01#
-    );
-
-
-   -- The total number of bytes that will be used by the block if it is saved or transferred now.
-   -- Note that for the static implementations this is a constant.
-   --
-   function Byte_Count (B: BRBON.Block) return Unsigned_32;
-
-
    -- Save the content of the block to file.
    -- @param Path The location in the filesystem to store the data.
    --
-   procedure Write_To_File (B: BRBON.Block; Path: String) renames BRBON.Container.Write_To_File;
+   procedure Write_To_File (B: Store; Path: String) renames BRBON.Container.Write_To_File;
+
+   
+   -- Returns the byte order (endianness) of the block.
+   --
+   function Get_Byte_Storage_Order (B: BRBON.Block) return BRBON.Byte_Storage_Order;
+   pragma inline (Get_Byte_Storage_Order);
+
+
+   -- Returns the block type.
+   --
+   function Get_Block_Type (B: BRBON.Block) return BRBON.Block_Type;
+   pragma inline (Get_Block_Type);
+
+
+   -- Set the block options value.
+   --
+   procedure Set_Block_Options (B: BRBON.Block; Value: BRBON.Block_Options);
+   pragma inline (Set_Block_Options);
+
+
+   -- Returns the block options value.
+   --
+   function Get_Block_Options (B: BRBON.Block) return BRBON.Block_Options;
+   pragma inline (Get_Block_Options);
+
+
+   -- Returns the value of the block byte count.
+   --
+   function Get_Block_Byte_Count (B: BRBON.Block) return Unsigned_32;
+   pragma inline (Get_Block_Byte_Count);
+
+
+   -- Returns the block header byte count.
+   --
+   function Get_Header_Byte_Count (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Header_Byte_Count);
+
+
+   -- Returns the block encrypted header byte count.
+   --
+   function Get_Encrypted_Header_Byte_Count (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Encrypted_Header_Byte_Count);
+
+
+   -- Origin
+
+   -- Sets the value of the origin field.
+   -- Raises the String_To_Long error if there are more than 255 characters.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Origin (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the origin field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Origin (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the origin-field in the block header.
+   --
+   function Get_Origin_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Origin_CRC);
+
+
+   -- Returns the byte count of the origin-field in the block header.
+   --
+   function Get_Origin_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Origin_Byte_Count);
+
+
+   -- Identifier
+
+   -- Sets the value of the identifier field.
+   -- Raises the String_To_Long error if there are more than 255 characters.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Identifier (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the identifier field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Identifier (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the identifier-field in the block header.
+   --
+   function Get_Identifier_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Identifier_CRC);
+
+
+   -- Returns the byte count of the identifier-field in the block header.
+   --
+   function Get_Identifier_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Identifier_Byte_Count);
+
+
+   -- Extension
+
+   -- Sets the value of the extension field.
+   -- Raises the String_To_Long error if there are more than 255 characters.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Extension (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the extension field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Extension (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the extension-field in the block header.
+   --
+   function Get_Extension_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Extension_CRC);
+
+
+   -- Returns the byte count of the extension-field in the block header.
+   --
+   function Get_Extension_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Extension_Byte_Count);
+
+
+   -- Path prefix
+
+   -- Sets the value of the path prefix field.
+   -- Raises the String_To_Long error if there are more than 255 characters.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Path_Prefix (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the path prefix field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Path_Prefix (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the path-prefix-field in the block header.
+   --
+   function Get_Path_Prefix_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Path_Prefix_CRC);
+
+
+   -- Returns the byte count of the path-prefix-field in the block header.
+   --
+   function Get_Path_Prefix_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Path_Prefix_Byte_Count);
+
+
+
+   -- Acquisition URL
+
+   -- Sets the value of the acquisition URL field.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Acquisition_URL (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the acquisition URL field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Acquisition_URL (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the acquisition_URL-field in the block header.
+   --
+   function Get_Acquisition_URL_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Acquisition_URL_CRC);
+
+
+   -- Returns the byte count of the acquisition_URL-field in the block header.
+   --
+   function Get_Acquisition_URL_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Acquisition_URL_Byte_Count);
+
+
+   -- Target List
+
+   -- Sets the value of the target list field.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Extension (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the extension field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Extension (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the extension-field in the block header.
+   --
+   function Get_Extension_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Extension_CRC);
+
+
+   -- Returns the byte count of the extension-field in the block header.
+   --
+   function Get_Extension_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Extension_Byte_Count);
+
+
+   -- Public Key URL
+
+   -- Sets the value of the public key URL field.
+   -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
+   --
+   procedure Set_Public_Key_URL (B: BRBON.Block; Value: String);
+
+
+   -- Returns the value of the public key URL field
+   -- Returns an empty string if the value is not set.
+   --
+   function Get_Public_Key_URL (B: BRBON.Block) return String;
+
+
+   -- Returns the CRC (ARC) value of the Public_Key_URL-field in the block header.
+   --
+   function Get_Public_Key_URL_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Public_Key_URL_CRC);
+
+
+   -- Returns the byte count of the Public_Key_URL-field in the block header.
+   --
+   function Get_Public_Key_URL_Byte_Count (B: BRBON.Block) return Unsigned_8;
+   pragma inline (Get_Public_Key_URL_Byte_Count);
+
+
+   -- Set the block creation timestamp
+   --
+   procedure Set_Creation_Timestamp (B: BRBON.Block; Value: Unsigned_64);
+   pragma inline (Set_Creation_Timestamp);
+
+
+   -- Return the block creation timestamp
+   --
+   function Get_Creation_Timestamp (B: BRBON.Block) return Unsigned_64;
+   pragma inline (Get_Creation_Timestamp);
+
+
+   -- Set the block modification timestamp
+   --
+   procedure Set_Modification_Timestamp (B: BRBON.Block; Value: Unsigned_64);
+   pragma inline (Set_Modification_Timestamp);
+
+
+   -- Return the block modification timestamp
+   --
+   function Get_Modification_Timestamp (B: BRBON.Block) return Unsigned_64;
+   pragma inline (Get_Modification_Timestamp);
+
+
+   -- Set the block expiry timestamp
+   --
+   procedure Set_Expiry_Timestamp (B: BRBON.Block; Value: Unsigned_64);
+   pragma inline (Set_Expiry_Timestamp);
+
+
+   -- Return the block expiry timestamp
+   --
+   function Get_Expiry_Timestamp (B: BRBON.Block) return Unsigned_64;
+   pragma inline (Get_Expiry_Timestamp);
+
+
+   -- Return the stored CRC (ARC) value for the complete block header.
+   --
+   function Get_Header_CRC (B: BRBON.Block) return Unsigned_16;
+   pragma inline (Get_Header_CRC);
+
+
+   -- Update the header CRC value.
+   -- Note: Updates to the header after calling this operation will invalidate the CRC.
+   --
+   procedure Update_Header_CRC (B: BRBON.Block);
 
 
 private
