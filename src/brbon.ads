@@ -346,6 +346,11 @@ package BRBON is
    Array_Error: exception;
 
 
+   -- Raised when the fourth synchronisation byte is wrong
+   --
+   Byte_Storage_Order_Error: exception;
+   
+   
 private
 
    Item_Header_Byte_Count: constant := 16;
@@ -353,7 +358,7 @@ private
    
    -- Storage support
    
-   type Unsigned_8_Ptr is access Unsigned_8;
+   type Unsigned_8_Ptr is access all Unsigned_8;
    
    
    -- Item Header
