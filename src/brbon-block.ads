@@ -394,7 +394,22 @@ private
 
    function To_Block_Header_Leading_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Header_Leading_Ptr);
 
+   function Get_Block_Header_Leading_Ptr (S: BRBON.Store) return Block_Header_Leading_Ptr is ( To_Block_Header_Leading_Ptr (S.Data (0)'Access));
+   pragma inline (Get_Header_Ptr);
+   
 
+   -- Private header access function
+   
+   procedure Set_Block_Type (S: BRBON.Store; Value: BRBON.Item_Type;
+                            
+   function Get_Source_Offset (S: BRBON.Store) return Unsigned_16;
+   function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16;
+   function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16;
+   function Get_Path_Prefix_Offset (S: BRBON.Store) return Unsigned_16;
+   function Get_Acquisition_URL_Offset (S: BRBON.Store) return Unsigned_16;
+   function Get_Target_List_Offset (S: BRBON.Store) return Unsigned_16;
+   function Get_Public_Key_Offset (S: BRBON.Store) return Unsigned_16;
+   
    -- Initialises a type 1 block (single item).
    -- Note that the type 1 block is very much the default header structure without any additional data.
    --

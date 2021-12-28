@@ -14,6 +14,7 @@ with BRBON.Container;
 
 package body BRBON.Block is
 
+
    -- ----------------------
    -- Internal definitions -
    -- ----------------------
@@ -167,6 +168,23 @@ package body BRBON.Block is
    end Get_Byte_Storage_Order;
 
 
+
+   -- ===================
+   -- Header field access
+   -- ===================
+
+   -----------------------------------------------------------------------------
+
+   procedure Set_Header_Synchronization_Bytes (S: Store) is
+      HPtr: Header_Leading_Ptr := Get_Block_Header_Leading_Ptr (S);
+   begin
+      HPtr.Synchronization_Byte_1 := Synch_Byte_1_Expected_Value;
+      HPtr.Synchronization_Byte_2 := Synch_Byte_2_Expected_Value;
+      HPtr.Synchronization_Byte_3 := Synch_Byte_3_Expected_Value;
+      HPtr.Synchronization_Byte_4 := Synch_Byte_4_LUT (BRBON.Machine_Byte_Storage_Order, S.Swap);
+   end Set_Header_Synchronization_Bytes;
+
+
    -----------------------------------------------------------------------------
 
    function Get_Block_Type (S: BRBON.Store) return BRBON.Block_Type is
@@ -174,20 +192,22 @@ package body BRBON.Block is
       return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Is_Type;
    end Get_Block_Type;
 
+   procedure Set_Block_Type (S: BRBON.Store; Value: BRBON.Block_Type) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Is_Type := Value;
+   end Set_Block_Type;
+
 
    -----------------------------------------------------------------------------
 
    procedure Set_Block_Options (S: BRBON.Store; Value: BRBON.Block_Options) is
    begin
-      To_Block_Header_Leading_Ptr (S.Data (0)'Access).Options := Value;
+      Get_Block_Header_Leading_Ptr (S).Options := Value;
    end Set_Block_Options;
-
-
-   -----------------------------------------------------------------------------
 
    function Get_Block_Options (S: BRBON.Store) return BRBON.Block_Options is
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Options;
+      return Get_Block_Header_Leading_Ptr (S).Options;
    end Get_Block_Options;
 
 
@@ -195,27 +215,210 @@ package body BRBON.Block is
 
    function Get_Block_Byte_Count (S: BRBON.Store) return Unsigned_32 is
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Block_Byte_Count;
+      return Get_Block_Header_Leading_Ptr (S).Block_Byte_Count;
    end Get_Block_Byte_Count;
+
+   procedure Set_Block_Byte_Count (S: BRBON.Store; Value: Unsigned_32) is
+   begin
+      Get_Block_Header_Leading_Ptr (s).Block_Byte_Count := Value;
+   end Set_Block_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
+
    function Get_Header_Byte_Count (S: BRBON.Store) return Unsigned_16 is
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Header_Byte_Count;
+      return Get_Block_Header_Leading_Ptr (S).Header_Byte_Count;
    end Get_Header_Byte_Count;
 
+   procedure Set_Header_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Header_Byte_Count := Value;
+   end Set_Header_Byte_Count;
 
    -----------------------------------------------------------------------------
 
    function Get_Encrypted_Header_Byte_Count (S: BRBON.Store) return Unsigned_16 is
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Encrypted_Header_Byte_Count;
+      return Get_Block_Header_Leading_Ptr (S).Encrypted_Header_Byte_Count;
    end Get_Encrypted_Header_Byte_Count;
+
+   procedure Set_Encrypted_Header_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Encrypted_Header_Byte_Count := Value;
+   end Set_Encrypted_Header_Byte_Count;
 
 
    -----------------------------------------------------------------------------
+
+   function Get_Origin_CRC (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Origin_CRC;
+   end Get_Origin_CRC;
+
+   procedure Set_Origin_CRC (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Origin_CRC := Value;
+   end Set_Origin_CRC;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Identifier_CRC (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Identifier_CRC;
+   end Get_Identifier_CRC;
+
+   procedure Set_Identifier_CRC (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Identifier_CRC := Value;
+   end Set_Identifier_CRC;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Extension_CRC (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Extension_CRC;
+   end Get_Extension_CRC;
+
+   procedure Set_Extension_CRC (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Extension_CRC := Value;
+   end Set_Extension_CRC;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Path_Prefix_CRC (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Path_Prefix_CRC;
+   end Get_Path_Prefix_CRC;
+
+   procedure Set_Path_Prefix_CRC (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Path_Prefix_CRC := Value;
+   end Set_Path_Prefix_CRC;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Origin_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Origin_Byte_Count;
+   end Get_Origin_Byte_Count;
+
+   procedure Set_Origin_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Origin_Byte_Count := Value;
+   end Set_Origin_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Identifier_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Identifier_Byte_Count;
+   end Get_Identifier_Byte_Count;
+
+   procedure Set_Identifier_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Identifier_Byte_Count := Value;
+   end Set_Identifier_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Extension_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Extension_Byte_Count;
+   end Get_Extension_Byte_Count;
+
+   procedure Set_Extension_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Extension_Byte_Count := Value;
+   end Set_Extension_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Path_Prefix_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Path_Prefix_Byte_Count;
+   end Get_Path_Prefix_Byte_Count;
+
+   procedure Set_Path_Prefix_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Path_Prefix_Byte_Count := Value;
+   end Set_Path_Prefix_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Origin_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Origin_Offset;
+   end Get_Origin_Offset;
+
+   procedure Set_Origin_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Origin_Offset := Value;
+   end Set_Origin_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Identifier_Offset;
+   end Get_Identifier_Offset;
+
+   procedure Set_Identifier_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Identifier_Offset := Value;
+   end Set_Identifier_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Extension_Offset;
+   end Get_Extension_Offset;
+
+   procedure Set_Extension_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Extension_Offset := Value;
+   end Set_Extension_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Path_Prefix_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Path_Prefix_Offset;
+   end Get_Path_Prefix_Offset;
+
+   procedure Set_Path_Prefix_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Path_Prefix_Offset := Value;
+   end Set_Path_Prefix_Offset;
+
+   -----------------------------------------------------------------------------
+
+
+         Acquisition_URL_Byte_Count   at 36 range 0..15;
+         Acquisition_URL_Offset       at 38 range 0..15;
+
+         Target_List_Byte_Count       at 40 range 0..15;
+         Target_List_Offset           at 42 range 0..15;
+         Public_Key_URL_Byte_Count    at 44 range 0..15;
+         Public_Key_Offset            at 46 range 0..15;
+
+         Creation_Timestamp           at 48 range 0..63;
+         Modification_Timestamp       at 64 range 0..63;
+   Expiry_Timestamp             at 80 range 0..63;
 
    procedure Set_Origin (S: BRBON.Store; Value: String) is
       FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
@@ -265,54 +468,126 @@ package body BRBON.Block is
    -----------------------------------------------------------------------------
 
    procedure Set_Identifier (S: BRBON.Store; Value: String) is
+      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
    begin
-      null;
+      if Value'Length > 255 then
+         Ada.Exceptions.Raise_Exception (BRBON.String_Too_Long'Identity, "The specified identifier string is too long, expected < 255, found: " & Value'Length'Image);
+      end if;
+      FSS.Identifier := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      if FSS.Byte_Count > FSS_Upper_Limit then
+         Ada.Exceptions.Raise_Exception (BRBON.Memory_Error'Identity, "The new identifier string cannot be fitted into the available space");
+      end if;
+      Write_Field_Storage_Strings (FSS);
    end Set_Identifier;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier (S: BRBON.Store) return String;
+   function Get_Identifier (S: BRBON.Store) return String is
+      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
+      Offset: Unsigned_32 := Unsigned_32 (HPtr.Identifier_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Identifier_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return Container.Get_String (S, Offset, Byte_Count);
+      end if;
+   end Get_Identifier;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_CRC (S: BRBON.Store) return Unsigned_16;
+   function Get_Identifier_CRC (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Identifier_CRC;
+   end Get_Identifier_CRC;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_Byte_Count (S: BRBON.Store) return Unsigned_8;
+   function Get_Identifier_Byte_Count (S: BRBON.Store) return Unsigned_8 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Identifier_Byte_Count;
+   end Get_Origin_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Extension (S: BRBON.Store; Value: String);
+   procedure Set_Extension (S: BRBON.Store; Value: String) is
+      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   begin
+      if Value'Length > 255 then
+         Ada.Exceptions.Raise_Exception (BRBON.String_Too_Long'Identity, "The specified extension string is too long, expected < 255, found: " & Value'Length'Image);
+      end if;
+      FSS.Extension := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      if FSS.Byte_Count > FSS_Upper_Limit then
+         Ada.Exceptions.Raise_Exception (BRBON.Memory_Error'Identity, "The new extension string cannot be fitted into the available space");
+      end if;
+      Write_Field_Storage_Strings (FSS);
+   end Set_Extension;
 
 
 -- -----------------------------------------------------------------------------
 
-   function Get_Extension (S: BRBON.Store) return String;
+   function Get_Extension (S: BRBON.Store) return String is
+      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
+      Offset: Unsigned_32 := Unsigned_32 (HPtr.Extension_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Extension_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return Container.Get_String (S, Offset, Byte_Count);
+      end if;
+   end Get_Extension;
 
 
 -- -----------------------------------------------------------------------------
 
-   function Get_Extension_CRC (S: BRBON.Store) return Unsigned_16;
+   function Get_Extension_CRC (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Extension_CRC;
+   end Get_Extension_CRC;
 
 
 -- -----------------------------------------------------------------------------
 
-   function Get_Extension_Byte_Count (S: BRBON.Store) return Unsigned_8;
+   function Get_Extension_Byte_Count (S: BRBON.Store) return Unsigned_8 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Extension_Byte_Count;
+   end Get_Extension_Byte_Count
 
 
 -- -----------------------------------------------------------------------------
 
-   procedure Set_Path_Prefix (S: BRBON.Store; Value: String);
+   procedure Set_Path_Prefix (S: BRBON.Store; Value: String) is
+      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   begin
+      if Value'Length > 255 then
+         Ada.Exceptions.Raise_Exception (BRBON.String_Too_Long'Identity, "The specified path prefix string is too long, expected < 255, found: " & Value'Length'Image);
+      end if;
+      FSS.Path_Prefix := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      if FSS.Byte_Count > FSS_Upper_Limit then
+         Ada.Exceptions.Raise_Exception (BRBON.Memory_Error'Identity, "The new extension path prefix cannot be fitted into the available space");
+      end if;
+      Write_Field_Storage_Strings (FSS);
+   end Set_Path_Prefix;
 
 
 -- -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix (S: BRBON.Store) return String;
+   function Get_Path_Prefix (S: BRBON.Store) return String is
+      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
+      Offset: Unsigned_32 := Unsigned_32 (HPtr.Path_Prefix_Offset);
+      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Path_Prefix_Byte_Count);
+   begin
+      if Byte_Count = 0 then
+         return "";
+      else
+         return Container.Get_String (S, Offset, Byte_Count);
+      end if;
+   end Get_;
 
 
 -- -----------------------------------------------------------------------------
@@ -407,17 +682,61 @@ package body BRBON.Block is
 
    -- ==========================================================================
 
+   function Get_Source_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
+   end Get_Source_Offset;
 
+
+   -----------------------------------------------------------------------------
+
+   function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Identifier_Offset;
+   end Get_Identifier_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Extension_Offset;
+   end Get_Extension_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Path_Prefix_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Path_Prefix_Offset;
+   end Get_;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Acquisition_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
+   end Get_;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Target_List_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
+   end Get_;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Public_Key_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
+   end Get_;
    -- --------------------------------------------------------------------------
 
-   procedure Set_Header_Synchronization_Bytes (S: Store) is
-      HPtr: BRBON.Block.Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
-   begin
-      HPtr.Synchronization_Byte_1 := Synch_Byte_1_Expected_Value;
-      HPtr.Synchronization_Byte_2 := Synch_Byte_2_Expected_Value;
-      HPtr.Synchronization_Byte_3 := Synch_Byte_3_Expected_Value;
-      HPtr.Synchronization_Byte_4 := Synch_Byte_4_LUT (BRBON.Machine_Byte_Storage_Order, S.Swap);
-   end Set_Header_Synchronization_Bytes;
+
 
 
    -- --------------------------------------------------------------------------
