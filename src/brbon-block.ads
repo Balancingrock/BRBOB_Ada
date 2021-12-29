@@ -175,7 +175,6 @@ package BRBON.Block is
    pragma inline (Get_Path_Prefix_Byte_Count);
 
 
-
    -- Acquisition URL
 
    -- Sets the value of the acquisition URL field.
@@ -190,15 +189,9 @@ package BRBON.Block is
    function Get_Acquisition_URL (S: BRBON.Store) return String;
 
 
-   -- Returns the CRC (ARC) value of the acquisition_URL-field in the block header.
-   --
-   function Get_Acquisition_URL_CRC (S: BRBON.Store) return Unsigned_16;
-   pragma inline (Get_Acquisition_URL_CRC);
-
-
    -- Returns the byte count of the acquisition_URL-field in the block header.
    --
-   function Get_Acquisition_URL_Byte_Count (S: BRBON.Store) return Unsigned_8;
+   function Get_Acquisition_URL_Byte_Count (S: BRBON.Store) return Unsigned_16;
    pragma inline (Get_Acquisition_URL_Byte_Count);
 
 
@@ -216,15 +209,9 @@ package BRBON.Block is
    function Get_Target_List (S: BRBON.Store) return String;
 
 
-   -- Returns the CRC (ARC) value of the extension-field in the block header.
-   --
-   function Get_Target_List_CRC (S: BRBON.Store) return Unsigned_16;
-   pragma inline (Get_Target_List_CRC);
-
-
    -- Returns the byte count of the extension-field in the block header.
    --
-   function Get_Target_List_Byte_Count (S: BRBON.Store) return Unsigned_8;
+   function Get_Target_List_Byte_Count (S: BRBON.Store) return Unsigned_16;
    pragma inline (Get_Target_List_Byte_Count);
 
 
@@ -242,15 +229,9 @@ package BRBON.Block is
    function Get_Public_Key_URL (S: BRBON.Store) return String;
 
 
-   -- Returns the CRC (ARC) value of the Public_Key_URL-field in the block header.
-   --
-   function Get_Public_Key_URL_CRC (S: BRBON.Store) return Unsigned_16;
-   pragma inline (Get_Public_Key_URL_CRC);
-
-
    -- Returns the byte count of the Public_Key_URL-field in the block header.
    --
-   function Get_Public_Key_URL_Byte_Count (S: BRBON.Store) return Unsigned_8;
+   function Get_Public_Key_URL_Byte_Count (S: BRBON.Store) return Unsigned_16;
    pragma inline (Get_Public_Key_URL_Byte_Count);
 
 
@@ -306,7 +287,7 @@ private
    
    -- The size of the leading (fixed) part of a block header
    --
-   Block_Header_Leading_Byte_Count: constant Unsigned_16 := 96;
+   Block_Header_Leading_Byte_Count: constant := 96;
 
 
    -- The block header layout
@@ -398,14 +379,14 @@ private
    function To_Block_Header_Leading_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Header_Leading_Ptr);
 
    function Get_Block_Header_Leading_Ptr (S: BRBON.Store) return Block_Header_Leading_Ptr is ( To_Block_Header_Leading_Ptr (S.Data (0)'Access));
-   pragma inline (Get_Header_Ptr);
+   pragma inline (Get_Block_Header_Leading_Ptr);
    
 
    -- Private header access function
    
    procedure Set_Block_Type (S: BRBON.Store; Value: BRBON.Item_Type);
-   function Get_Source_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Source_Offset (S: BRBON.Store; Value: String);
+   function Get_Origin_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Origin_Offset (S: BRBON.Store; Value: String);
    function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16;
    procedure Set_Extension_Offset (S: BRBON.Store; Value: String);
    function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16;

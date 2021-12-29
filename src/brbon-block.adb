@@ -69,8 +69,9 @@ package body BRBON.Block is
 
    procedure Write_Field_Storage_Strings (S: in out BRBON.Store; Strings: Field_Storage_Strings) is
 
-      Offset: Unsigned_32 := BRBON.Header.Header_Field_Storage_Type_1_Offset;
-      Free_Bytes: Unsigned_16 := I.Header_Get_Header_Byte_Count;
+      HPtr: Block_Header_Leading_Ptr := Get_Block_Header_Leading_Ptr (S);
+      Offset: Unsigned_16 := Block_Header_Leading_Byte_Count;
+      Free_Bytes: Unsigned_16 := Get_Header_Byte_Count (S) - Offset - Block_Header_Trailing_Byte_Count;
 
       procedure Add
         (
@@ -82,20 +83,20 @@ package body BRBON.Block is
       is
          Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
-         Set_Offset (I, Unsigned_16 (Offset));
-         Set_Byte_Count (I, Unsigned_8 (Str'Length));
+         Set_Offset (S, Unsigned_16 (Offset));
+         Set_Byte_Count (S, Unsigned_8 (Str'Length));
          if Str'Length > 0 then
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Warning'Identity, "String length exceeds available area");
             else
-               Container.Set_String (I.Container, Offset, Str);
-               Offset := Offset + Unsigned_32 (Str'Length);
+               Container.Set_String (S.Data, Offset, Str);
+               Offset := Offset + Unsigned_16 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
-            Set_CRC_16 (I, CRC_Package.Calculate_CRC_16 (Str));
+            Set_CRC_16 (S, CRC_Package.Calculate_CRC_16 (Str));
          else
-            Set_CRC_16 (I, 0);
-            Set_Offset (I, 0);
+            Set_CRC_16 (S, 0);
+            Set_Offset (S, 0);
          end if;
       end Add;
 
@@ -108,18 +109,18 @@ package body BRBON.Block is
       is
          Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
-         Set_Offset (I, Unsigned_16 (Offset));
-         Set_Byte_Count (I, Unsigned_16 (Str'Length));
+         Set_Offset (S, Unsigned_16 (Offset));
+         Set_Byte_Count (S, Unsigned_16 (Str'Length));
          if Str'Length > 0 then
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Warning'Identity, "String length exceeds available area");
             else
-               Container.Set_String (I.Container, Offset, Str);
+               Container.Set_String (S.Container, Offset, Str);
                Offset := Offset + Unsigned_32 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
          else
-            Set_Offset (I, 0);
+            Set_Offset (S, 0);
          end if;
       end Add;
 
@@ -304,12 +305,12 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Origin_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   function Get_Origin_Byte_Count (S: BRBON.Store) return Unsigned_8 is
    begin
       return Get_Block_Header_Leading_Ptr (S).Origin_Byte_Count;
    end Get_Origin_Byte_Count;
 
-   procedure Set_Origin_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   procedure Set_Origin_Byte_Count (S: BRBON.Store; Value: Unsigned_8) is
    begin
       Get_Block_Header_Leading_Ptr (S).Origin_Byte_Count := Value;
    end Set_Origin_Byte_Count;
@@ -317,12 +318,12 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   function Get_Identifier_Byte_Count (S: BRBON.Store) return Unsigned_8 is
    begin
       return Get_Block_Header_Leading_Ptr (S).Identifier_Byte_Count;
    end Get_Identifier_Byte_Count;
 
-   procedure Set_Identifier_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   procedure Set_Identifier_Byte_Count (S: BRBON.Store; Value: Unsigned_8) is
    begin
       Get_Block_Header_Leading_Ptr (S).Identifier_Byte_Count := Value;
    end Set_Identifier_Byte_Count;
@@ -330,12 +331,12 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Extension_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   function Get_Extension_Byte_Count (S: BRBON.Store) return Unsigned_8 is
    begin
       return Get_Block_Header_Leading_Ptr (S).Extension_Byte_Count;
    end Get_Extension_Byte_Count;
 
-   procedure Set_Extension_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   procedure Set_Extension_Byte_Count (S: BRBON.Store; Value: Unsigned_8) is
    begin
       Get_Block_Header_Leading_Ptr (S).Extension_Byte_Count := Value;
    end Set_Extension_Byte_Count;
@@ -343,12 +344,12 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   function Get_Path_Prefix_Byte_Count (S: BRBON.Store) return Unsigned_8 is
    begin
       return Get_Block_Header_Leading_Ptr (S).Path_Prefix_Byte_Count;
    end Get_Path_Prefix_Byte_Count;
 
-   procedure Set_Path_Prefix_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   procedure Set_Path_Prefix_Byte_Count (S: BRBON.Store; Value: Unsigned_8) is
    begin
       Get_Block_Header_Leading_Ptr (S).Path_Prefix_Byte_Count := Value;
    end Set_Path_Prefix_Byte_Count;
@@ -408,15 +409,15 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Acquisition_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   function Get_Acquisition_URL_Byte_Count (S: BRBON.Store) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Acquisition_Byte_Count;
-   end Get_Acquisition_Byte_Count;
+      return Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Byte_Count;
+   end Get_Acquisition_URL_Byte_Count;
 
-   procedure Set_Acquisition_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   procedure Set_Acquisition_URL_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Acquisition_Byte_Count := Value;
-   end Set_Acquisition_Byte_Count;
+      Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Byte_Count := Value;
+   end Set_Acquisition_URL_Byte_Count;
 
 
    -----------------------------------------------------------------------------
@@ -447,15 +448,15 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Target_List_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   function Get_Target_List_Offset (S: BRBON.Store) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Target_List_URL_Offset;
-   end Get_Target_List_URL_Offset;
+      return Get_Block_Header_Leading_Ptr (S).Target_List_Offset;
+   end Get_Target_List_Offset;
 
-   procedure Set_Target_List_URL_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   procedure Set_Target_List_Offset (S: BRBON.Store; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Target_List_URL_Offset := Value;
-   end Set_Target_List_URL_Offset;
+      Get_Block_Header_Leading_Ptr (S).Target_List_Offset := Value;
+   end Set_Target_List_Offset;
 
 
    -----------------------------------------------------------------------------
@@ -469,6 +470,19 @@ package body BRBON.Block is
    begin
       Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count := Value;
    end Set_Target_List_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Public_Key_URL_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Byte_Count;
+   end Get_Public_Key_URL_Byte_Count;
+
+   procedure Set_Public_Key_URL_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Byte_Count := Value;
+   end Set_Public_Key_URL_Byte_Count;
 
 
    -----------------------------------------------------------------------------
@@ -783,6 +797,8 @@ package body BRBON.Block is
 
 
 
+
+
    procedure Header_Set_Reserved_1a (I: in out Instance; Value: Unsigned_32) is
       Offset: Unsigned_32 := Unsigned_32 (I.Header_Get_Header_Byte_Count) - Header.Reserved_1a_Distance_Before_Header_End;
    begin
@@ -1058,13 +1074,13 @@ package body BRBON.Block is
    end Write_To_File;
 
 
-   function Test_Serializer (I: in out Instance) return Serializable.Instance is
+   function Test_Support_Serializer (I: in out Instance) return Serializable.Instance is
    begin
       return Serializable.Create_Without_Copy
         (Use_In_Place => I.Memory_Ptr,
          First        => I.Memory_Ptr.all'First,
          Last         => I.Memory_Ptr.all'Last);
-   end Test_Serializer;
+   end Test_Support_Serializer;
 
    procedure Ensure_Block_Consistency (I: in out Instance) is
    begin
