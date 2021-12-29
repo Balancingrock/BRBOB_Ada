@@ -15,9 +15,9 @@ with BRBON.Container;
 package body BRBON.Block is
 
 
-   -- ----------------------
-   -- Internal definitions -
-   -- ----------------------
+   -- ==========================================================================
+   -- Internal definitions
+   -- ==========================================================================
 
    -- Expected synchronization values
    --
@@ -169,9 +169,9 @@ package body BRBON.Block is
 
 
 
-   -- ===================
+   -- ==========================================================================
    -- Header field access
-   -- ===================
+   -- ==========================================================================
 
    -----------------------------------------------------------------------------
 
@@ -405,20 +405,128 @@ package body BRBON.Block is
       Get_Block_Header_Leading_Ptr (S).Path_Prefix_Offset := Value;
    end Set_Path_Prefix_Offset;
 
+
    -----------------------------------------------------------------------------
 
+   function Get_Acquisition_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Acquisition_Byte_Count;
+   end Get_Acquisition_Byte_Count;
 
-         Acquisition_URL_Byte_Count   at 36 range 0..15;
-         Acquisition_URL_Offset       at 38 range 0..15;
+   procedure Set_Acquisition_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Acquisition_Byte_Count := Value;
+   end Set_Acquisition_Byte_Count;
 
-         Target_List_Byte_Count       at 40 range 0..15;
-         Target_List_Offset           at 42 range 0..15;
-         Public_Key_URL_Byte_Count    at 44 range 0..15;
-         Public_Key_Offset            at 46 range 0..15;
 
-         Creation_Timestamp           at 48 range 0..63;
-         Modification_Timestamp       at 64 range 0..63;
-   Expiry_Timestamp             at 80 range 0..63;
+   -----------------------------------------------------------------------------
+
+   function Get_Acquisition_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Offset;
+   end Get_Acquisition_URL_Offset;
+
+   procedure Set_Acquisition_URL_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Offset := Value;
+   end Set_Acquisition_URL_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Target_List_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count;
+   end Get_Target_List_Byte_Count;
+
+   procedure Set_Target_List_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count := Value;
+   end Set_Target_List_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Target_List_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Target_List_URL_Offset;
+   end Get_Target_List_URL_Offset;
+
+   procedure Set_Target_List_URL_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Target_List_URL_Offset := Value;
+   end Set_Target_List_URL_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Target_List_Byte_Count (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count;
+   end Get_Target_List_Byte_Count;
+
+   procedure Set_Target_List_Byte_Count (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count := Value;
+   end Set_Target_List_Byte_Count;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Public_Key_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Offset;
+   end Get_Public_Key_URL_Offset;
+
+   procedure Set_Public_Key_URL_Offset (S: BRBON.Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Offset := Value;
+   end Set_Public_Key_URL_Offset;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Creation_Timestamp (S: BRBON.Store) return Timestamp is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Creation_Timestamp;
+   end Get_Creation_Timestamp;
+
+   procedure Set_Creation_Timestamp (S: BRBON.Store; Value: Timestamp) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Creation_Timestamp := Value;
+   end Set_Creation_Timestamp;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Modification_Timestamp (S: BRBON.Store) return Timestamp is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Modification_Timestamp;
+   end Get_Modification_Timestamp;
+
+   procedure Set_Modification_Timestamp (S: BRBON.Store; Value: Timestamp) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Modification_Timestamp := Value;
+   end Set_Modification_Timestamp;
+
+
+   -----------------------------------------------------------------------------
+
+   function Get_Expiry_Timestamp (S: BRBON.Store) return Timestamp is
+   begin
+      return Get_Block_Header_Leading_Ptr (S).Expiry_Timestamp;
+   end Get_Expiry_Timestamp;
+
+   procedure Set_Expiry_Timestamp (S: BRBON.Store; Value: Timestamp) is
+   begin
+      Get_Block_Header_Leading_Ptr (S).Expiry_Timestamp := Value;
+   end Set_Expiry_Timestamp;
+
+
+   -- ==========================================================================
+   -- Higher level block APIs
+   -- ==========================================================================
+
 
    procedure Set_Origin (S: BRBON.Store; Value: String) is
       FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
@@ -437,32 +545,14 @@ package body BRBON.Block is
    -----------------------------------------------------------------------------
 
    function Get_Origin (S: BRBON.Store) return String is
-      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
-      Offset: Unsigned_32 := Unsigned_32 (HPtr.Origin_Offset);
-      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Origin_Byte_Count);
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Origin_Byte_Count (S));
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Offset, Byte_Count);
+         return Container.Get_String (S, Get_Origin_Offset (S), Byte_Count);
       end if;
    end Get_Origin;
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Origin_CRC (S: BRBON.Store) return Unsigned_16 is
-   begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Origin_CRC;
-   end Get_Origin_CRC;
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Origin_Byte_Count (S: BRBON.Store) return Unsigned_8 is
-   begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Origin_Byte_Count;
-   end Get_Origin_Byte_Count;
 
 
    -----------------------------------------------------------------------------
@@ -484,32 +574,14 @@ package body BRBON.Block is
    -----------------------------------------------------------------------------
 
    function Get_Identifier (S: BRBON.Store) return String is
-      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
-      Offset: Unsigned_32 := Unsigned_32 (HPtr.Identifier_Offset);
-      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Identifier_Byte_Count);
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Identifier_Byte_Count (S));
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Offset, Byte_Count);
+         return Container.Get_String (S, Get_Identifier_Offset (S), Byte_Count);
       end if;
    end Get_Identifier;
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Identifier_CRC (S: BRBON.Store) return Unsigned_16 is
-   begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Identifier_CRC;
-   end Get_Identifier_CRC;
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Identifier_Byte_Count (S: BRBON.Store) return Unsigned_8 is
-   begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Identifier_Byte_Count;
-   end Get_Origin_Byte_Count;
 
 
    -----------------------------------------------------------------------------
@@ -531,35 +603,17 @@ package body BRBON.Block is
 -- -----------------------------------------------------------------------------
 
    function Get_Extension (S: BRBON.Store) return String is
-      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
-      Offset: Unsigned_32 := Unsigned_32 (HPtr.Extension_Offset);
-      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Extension_Byte_Count);
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Extension_Byte_Count (S));
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Offset, Byte_Count);
+         return Container.Get_String (S, Get_Extension_Offset (S), Byte_Count);
       end if;
    end Get_Extension;
 
 
--- -----------------------------------------------------------------------------
-
-   function Get_Extension_CRC (S: BRBON.Store) return Unsigned_16 is
-   begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Extension_CRC;
-   end Get_Extension_CRC;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Extension_Byte_Count (S: BRBON.Store) return Unsigned_8 is
-   begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Extension_Byte_Count;
-   end Get_Extension_Byte_Count
-
-
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
    procedure Set_Path_Prefix (S: BRBON.Store; Value: String) is
       FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
@@ -575,168 +629,122 @@ package body BRBON.Block is
    end Set_Path_Prefix;
 
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
    function Get_Path_Prefix (S: BRBON.Store) return String is
-      HPtr: Block_Header_Leading_Ptr := To_Block_Header_Leading_Ptr (S.Data (0)'Access);
-      Offset: Unsigned_32 := Unsigned_32 (HPtr.Path_Prefix_Offset);
-      Byte_Count: Unsigned_32 := Unsigned_32 (HPtr.Path_Prefix_Byte_Count);
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Path_Prefix_Byte_Count (S));
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Offset, Byte_Count);
+         return Container.Get_String (S, Get_Path_Prefix_Offset (S), Byte_Count);
       end if;
-   end Get_;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Path_Prefix_CRC (S: BRBON.Store) return Unsigned_16;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Path_Prefix_Byte_Count (S: BRBON.Store) return Unsigned_8;
-
-
--- -----------------------------------------------------------------------------
-
-   procedure Set_Acquisition_URL (S: BRBON.Store; Value: String);
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Acquisition_URL (S: BRBON.Store) return String;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Acquisition_URL_CRC (S: BRBON.Store) return Unsigned_16;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Acquisition_URL_Byte_Count (S: BRBON.Store) return Unsigned_8;
-
-
--- -----------------------------------------------------------------------------
-
-   procedure Set_Public_Key_URL (S: BRBON.Store; Value: String);
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Public_Key_URL (S: BRBON.Store) return String;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Public_Key_URL_CRC (S: BRBON.Store) return Unsigned_16;
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Public_Key_URL_Byte_Count (S: BRBON.Store) return Unsigned_8;
-
-
--- -----------------------------------------------------------------------------
-
-   procedure Set_Creation_Timestamp (S: BRBON.Store; Value: Unsigned_64);
-
-
--- -----------------------------------------------------------------------------
-
-   function Get_Creation_Timestamp (S: BRBON.Store) return Unsigned_64;
-
-
--- -----------------------------------------------------------------------------
-
-   procedure Set_Modification_Timestamp (S: BRBON.Store; Value: Unsigned_64);
+   end Get_Path_Prefix;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Modification_Timestamp (S: BRBON.Store) return Unsigned_64;
-
-
-   -----------------------------------------------------------------------------
-
-   procedure Set_Expiry_Timestamp (S: BRBON.Store; Value: Unsigned_64);
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Expiry_Timestamp (S: BRBON.Store) return Unsigned_64;
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Header_CRC (S: BRBON.Store) return Unsigned_16;
-
-
-   -----------------------------------------------------------------------------
-
-   procedure Update_Header_CRC (S: BRBON.Store);
-
-
-   -- ==========================================================================
-
-   function Get_Source_Offset (S: BRBON.Store) return Unsigned_16 is
+   procedure Set_Acquisition_URL (S: BRBON.Store; Value: String) is
+      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
-   end Get_Source_Offset;
+      if Value'Length > 2550 then
+         Ada.Exceptions.Raise_Exception (BRBON.String_Too_Long'Identity, "The specified acquisition url is too long, expected < 2550, found: " & Value'Length'Image);
+      end if;
+      FSS.Acquisition_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      if FSS.Byte_Count > FSS_Upper_Limit then
+         Ada.Exceptions.Raise_Exception (BRBON.Memory_Error'Identity, "The new extension acquisition url cannot be fitted into the available space");
+      end if;
+      Write_Field_Storage_Strings (FSS);
+   end Set_Acquisition_URL;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16 is
+   function Get_Acquisition_URL (S: BRBON.Store) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Acquisition_URL_Byte_Count (S));
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Identifier_Offset;
-   end Get_Identifier_Offset;
+      if Byte_Count = 0 then
+         return "";
+      else
+         return Container.Get_String (S, Get_Acquisition_URL_Offset (S), Byte_Count);
+      end if;
+   end Get_Acquisition_URL;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16 is
+   procedure Set_Target_List (S: BRBON.Store; Value: String) is
+      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Extension_Offset;
-   end Get_Extension_Offset;
+      if Value'Length > 2550 then
+         Ada.Exceptions.Raise_Exception (BRBON.String_Too_Long'Identity, "The specified public key url is too long, expected < 2550, found: " & Value'Length'Image);
+      end if;
+      FSS.Target_List := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      if FSS.Byte_Count > FSS_Upper_Limit then
+         Ada.Exceptions.Raise_Exception (BRBON.Memory_Error'Identity, "The new extension public key url cannot be fitted into the available space");
+      end if;
+      Write_Field_Storage_Strings (FSS);
+   end Set_Target_List;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix_Offset (S: BRBON.Store) return Unsigned_16 is
+   function Get_Target_List (S: BRBON.Store) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Target_List_Byte_Count (S));
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Path_Prefix_Offset;
-   end Get_;
+      if Byte_Count = 0 then
+         return "";
+      else
+         return Container.Get_String (S, Get_Target_List_Offset (S), Byte_Count);
+      end if;
+   end Get_Target_List;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Acquisition_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   procedure Set_Public_Key_URL (S: BRBON.Store; Value: String) is
+      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
-   end Get_;
+      if Value'Length > 2550 then
+         Ada.Exceptions.Raise_Exception (BRBON.String_Too_Long'Identity, "The specified public key url is too long, expected < 2550, found: " & Value'Length'Image);
+      end if;
+      FSS.Public_Key_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+      if FSS.Byte_Count > FSS_Upper_Limit then
+         Ada.Exceptions.Raise_Exception (BRBON.Memory_Error'Identity, "The new extension public key url cannot be fitted into the available space");
+      end if;
+      Write_Field_Storage_Strings (FSS);
+   end Set_Public_Key_URL;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Target_List_Offset (S: BRBON.Store) return Unsigned_16 is
+   function Get_Public_Key_URL (S: BRBON.Store) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Public_Key_URL_Byte_Count (S));
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
-   end Get_;
+      if Byte_Count = 0 then
+         return "";
+      else
+         return Container.Get_String (S, Get_Public_Key_URL_Offset (S), Byte_Count);
+      end if;
+   end Get_Public_Key_URL;
+
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Public_Key_URL_Offset (S: BRBON.Store) return Unsigned_16 is
+   function Get_Header_CRC (S: BRBON.Store) return Unsigned_16 is
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Source_Offset;
-   end Get_;
-   -- --------------------------------------------------------------------------
+      raise Implementation;
+      return 0;
+   end Get_Header_CRC;
 
 
+   -----------------------------------------------------------------------------
+
+   procedure Update_Header_CRC (S: BRBON.Store) is
+   begin
+      raise Implementation;
+   end Update_Header_CRC;
 
 
    -- --------------------------------------------------------------------------
@@ -773,317 +781,6 @@ package body BRBON.Block is
       end if;
    end Get_Endianness;
 
-
-   procedure Header_Set_Type (I: in out Instance; Value: Block_Type) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Type_Offset, To_Unsigned_16 (Value));
-   end Header_Set_Type;
-
-
-   function Header_Get_Type (I: in out Instance) return Block_Type is
-   begin
-      return To_Block_Type (Container.Get_Unsigned_16 (I.Container, Header.Type_Offset));
-   end Header_Get_Type;
-
-
-   procedure Header_Set_Options (I: in out Instance; Value: Block_Options) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Options_Offset, To_Unsigned_16 (Value));
-   end Header_Set_Options;
-
-
-   function Header_Get_Options (I: in out Instance) return Block_Options is
-   begin
-      return To_Block_Options (Container.Get_Unsigned_16 (I.Container, Header.Options_Offset));
-   end Header_Get_Options;
-
-
-   procedure Header_Set_Byte_Count (I: in out Instance; Value: Unsigned_32) is
-   begin
-      Container.Set_Unsigned_32 (I.Container, Header.Byte_Count_Offset, Value);
-   end Header_Set_Byte_Count;
-
-
-   function Header_Get_Byte_Count (I: in out Instance) return Unsigned_32 is
-   begin
-      return Container.Get_Unsigned_32 (I.Container, Header.Byte_Count_Offset);
-   end Header_Get_Byte_Count;
-
-
-   procedure Header_Set_Header_Byte_Count (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Header_Byte_Count_Offset, Value);
-   end Header_Set_Header_Byte_Count;
-
-
-   function Header_Get_Header_Byte_Count (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Header_Byte_Count_Offset);
-   end Header_Get_Header_Byte_Count;
-
-
-   procedure Header_Set_Encrypted_Header_Byte_Count (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Encrypted_Header_Byte_Count_Offset, Value);
-   end Header_Set_Encrypted_Header_Byte_Count;
-
-
-   function Header_Get_Encrypted_Header_Byte_Count (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Encrypted_Header_Byte_Count_Offset);
-   end Header_Get_Encrypted_Header_Byte_Count;
-
-
-   procedure Header_Set_Origin_Crc16 (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Origin_CRC16_Offset, Value);
-   end Header_Set_Origin_Crc16;
-
-
-   function Header_Get_Origin_Crc16 (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Origin_CRC16_Offset);
-   end Header_Get_Origin_Crc16;
-
-
-   procedure Header_Set_Identifier_Crc16 (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Identifier_CRC16_Offset, Value);
-   end Header_Set_Identifier_Crc16;
-
-
-   function Header_Get_Identifier_Crc16 (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Identifier_CRC16_Offset);
-   end Header_Get_Identifier_Crc16;
-
-
-   procedure Header_Set_Extension_Crc16 (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Extension_CRC16_Offset, Value);
-   end Header_Set_Extension_Crc16;
-
-
-   function Header_Get_Extension_Crc16 (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Extension_CRC16_Offset);
-   end Header_Get_Extension_Crc16;
-
-
-   procedure Header_Set_Path_Prefix_Crc16 (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Path_Prefix_CRC16_Offset, Value);
-   end Header_Set_Path_Prefix_Crc16;
-
-
-   function Header_Get_Path_Prefix_Crc16 (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Path_Prefix_CRC16_Offset);
-   end Header_Get_Path_Prefix_Crc16;
-
-
-   procedure Header_Set_Origin_Byte_Count (I: in out Instance; Value: Unsigned_8) is
-   begin
-      Container.Set_Unsigned_8 (I.Container, Header.Origin_Byte_Count_Offset, Value);
-   end Header_Set_Origin_Byte_Count;
-
-
-   function Header_Get_Origin_Byte_Count (I: in out Instance) return Unsigned_8 is
-   begin
-      return Container.Get_Unsigned_8 (I.Container, Header.Origin_Byte_Count_Offset);
-   end Header_Get_Origin_Byte_Count;
-
-
-   procedure Header_Set_Identifier_Byte_Count (I: in out Instance; Value: Unsigned_8) is
-   begin
-      Container.Set_Unsigned_8 (I.Container, Header.Identifier_Byte_Count_Offset, Value);
-   end Header_Set_Identifier_Byte_Count;
-
-
-   function Header_Get_Identifier_Byte_Count (I: in out Instance) return Unsigned_8 is
-   begin
-      return Container.Get_Unsigned_8 (I.Container, Header.Identifier_Byte_Count_Offset);
-   end Header_Get_Identifier_Byte_Count;
-
-
-   procedure Header_Set_Extension_Byte_Count (I: in out Instance; Value: Unsigned_8) is
-   begin
-      Container.Set_Unsigned_8 (I.Container, Header.Extension_Byte_Count_Offset, Value);
-   end Header_Set_Extension_Byte_Count;
-
-
-   function Header_Get_Extension_Byte_Count (I: in out Instance) return Unsigned_8 is
-   begin
-      return Container.Get_Unsigned_8 (I.Container, Header.Extension_Byte_Count_Offset);
-   end Header_Get_Extension_Byte_Count;
-
-
-   procedure Header_Set_Path_Prefix_Byte_Count (I: in out Instance; Value: Unsigned_8) is
-   begin
-      Container.Set_Unsigned_8 (I.Container, Header.Path_Prefix_Byte_Count_Offset, Value);
-   end Header_Set_Path_Prefix_Byte_Count;
-
-
-   function Header_Get_Path_Prefix_Byte_Count (I: in out Instance) return Unsigned_8 is
-   begin
-      return Container.Get_Unsigned_8 (I.Container, Header.Path_Prefix_Byte_Count_Offset);
-   end Header_Get_Path_Prefix_Byte_Count;
-
-
-   procedure Header_Set_Origin_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Origin_Offset_Offset, Value);
-   end Header_Set_Origin_Offset;
-
-
-   function Header_Get_Origin_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Origin_Offset_Offset);
-   end Header_Get_Origin_Offset;
-
-
-   procedure Header_Set_Identifier_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Identifier_Offset_Offset, Value);
-   end Header_Set_Identifier_Offset;
-
-
-   function Header_Get_Identifier_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Identifier_Offset_Offset);
-   end Header_Get_Identifier_Offset;
-
-
-   procedure Header_Set_Extension_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Extension_Offset_Offset, Value);
-   end Header_Set_Extension_Offset;
-
-
-   function Header_Get_Extension_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Extension_Offset_Offset);
-   end Header_Get_Extension_Offset;
-
-
-   procedure Header_Set_Path_Prefix_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Path_Prefix_Offset_Offset, Value);
-   end Header_Set_Path_Prefix_Offset;
-
-
-   function Header_Get_Path_Prefix_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Path_Prefix_Offset_Offset);
-   end Header_Get_Path_Prefix_Offset;
-
-
-   procedure Header_Set_Acquisition_URL_Byte_Count (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Acquisition_URL_Byte_Count_Offset, Value);
-   end Header_Set_Acquisition_URL_Byte_Count;
-
-
-   function Header_Get_Acquisition_URL_Byte_Count (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Acquisition_URL_Byte_Count_Offset);
-   end Header_Get_Acquisition_URL_Byte_Count;
-
-
-   procedure Header_Set_Acquisition_URL_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Acquisition_URL_Offset_Offset, Value);
-   end Header_Set_Acquisition_URL_Offset;
-
-
-   function Header_Get_Acquisition_URL_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Acquisition_URL_Offset_Offset);
-   end Header_Get_Acquisition_URL_Offset;
-
-
-   procedure Header_Set_Target_List_Byte_Count (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Target_List_Byte_Count_Offset, Value);
-   end Header_Set_Target_List_Byte_Count;
-
-
-   function Header_Get_Target_List_Byte_Count (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Target_List_Byte_Count_Offset);
-   end Header_Get_Target_List_Byte_Count;
-
-
-   procedure Header_Set_Target_List_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Target_List_Offset_Offset, Value);
-   end Header_Set_Target_List_Offset;
-
-
-   function Header_Get_Target_List_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Target_List_Offset_Offset);
-   end Header_Get_Target_List_Offset;
-
-
-   procedure Header_Set_Public_Key_URL_Byte_Count (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Public_Key_URL_Byte_Count_Offset, Value);
-   end Header_Set_Public_Key_URL_Byte_Count;
-
-
-   function Header_Get_Public_Key_URL_Byte_Count (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Public_Key_URL_Byte_Count_Offset);
-   end Header_Get_Public_Key_URL_Byte_Count;
-
-
-   procedure Header_Set_Public_Key_URL_Offset (I: in out Instance; Value: Unsigned_16) is
-   begin
-      Container.Set_Unsigned_16 (I.Container, Header.Public_Key_URL_Offset_Offset, Value);
-   end Header_Set_Public_Key_URL_Offset;
-
-
-   function Header_Get_Public_Key_URL_Offset (I: in out Instance) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (I.Container, Header.Public_Key_URL_Offset_Offset);
-   end Header_Get_Public_Key_URL_Offset;
-
-
-   procedure Header_Set_Creation_Timestamp (I: in out Instance; Value: Unsigned_64) is
-   begin
-      Container.Set_Unsigned_64 (I.Container, Header.Creation_Timestamp_Offset, Value);
-   end Header_Set_Creation_Timestamp;
-
-
-   function Header_Get_Creation_Timestamp (I: in out Instance) return Unsigned_64 is
-   begin
-      return Container.Get_Unsigned_64 (I.Container, Header.Creation_Timestamp_Offset);
-   end Header_Get_Creation_Timestamp;
-
-
-   procedure Header_Set_Modification_Timestamp (I: in out Instance; Value: Unsigned_64) is
-   begin
-      Container.Set_Unsigned_64 (I.Container, Header.Modification_Timestamp_Offset, Value);
-   end Header_Set_Modification_Timestamp;
-
-
-   function Header_Get_Modification_Timestamp (I: in out Instance) return Unsigned_64 is
-   begin
-      return Container.Get_Unsigned_64 (I.Container, Header.Modification_Timestamp_Offset);
-   end Header_Get_Modification_Timestamp;
-
-
-   procedure Header_Set_Expiry_Timestamp (I: in out Instance; Value: Unsigned_64) is
-   begin
-      Container.Set_Unsigned_64 (I.Container, Header.Expiry_Timestamp_Offset, Value);
-   end Header_Set_Expiry_Timestamp;
-
-
-   function Header_Get_Expiry_Timestamp (I: in out Instance) return Unsigned_64 is
-   begin
-      return Container.Get_Unsigned_64 (I.Container, Header.Expiry_Timestamp_Offset);
-   end Header_Get_Expiry_Timestamp;
 
 
    procedure Header_Set_Reserved_1a (I: in out Instance; Value: Unsigned_32) is

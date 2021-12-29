@@ -16,6 +16,9 @@ with Serializable;
 package BRBON.Block is
 
 
+   type Timestamp is new Unsigned_64;
+   
+   
    -- Save the content of the block to file.
    -- @param Path The location in the filesystem to store the data.
    --
@@ -343,9 +346,9 @@ private
          Public_Key_URL_Byte_Count: Unsigned_16;
          Public_Key_Offset: Unsigned_16;
 
-         Creation_Timestamp: Unsigned_64;
-         Modification_Timestamp: Unsigned_64;
-         Expiry_Timestamp: Unsigned_64;
+         Creation_Timestamp: Timestamp;
+         Modification_Timestamp: Timestamp;
+         Expiry_Timestamp: Timestamp;
       end record;
 
    for Block_Header_Leading'Size use Block_Header_Leading_Byte_Count * 8;
@@ -400,15 +403,22 @@ private
 
    -- Private header access function
    
-   procedure Set_Block_Type (S: BRBON.Store; Value: BRBON.Item_Type;
-                            
+   procedure Set_Block_Type (S: BRBON.Store; Value: BRBON.Item_Type);
    function Get_Source_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Source_Offset (S: BRBON.Store; Value: String);
    function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Extension_Offset (S: BRBON.Store; Value: String);
    function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Identifier_Offset (S: BRBON.Store; Value: String);
    function Get_Path_Prefix_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Path_Prefix_Offset (S: BRBON.Store; Value: String);
    function Get_Acquisition_URL_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Acquisition_URL_Offset (S: BRBON.Store; Value: String);
    function Get_Target_List_Offset (S: BRBON.Store) return Unsigned_16;
-   function Get_Public_Key_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Target_List_Offset (S: BRBON.Store; Value: String);
+   function Get_Public_Key_URL_Offset (S: BRBON.Store) return Unsigned_16;
+   procedure Set_Public_Key_URL_Offset (S: BRBON.Store; Value: String);
+   
    
    -- Initialises a type 1 block (single item).
    -- Note that the type 1 block is very much the default header structure without any additional data.
