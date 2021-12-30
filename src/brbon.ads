@@ -285,6 +285,8 @@ package BRBON is
          Options_8_15           at 1 range 0..7;
       end record;
    
+   No_Block_Options: constant Block_Options := (False, False, False, False, False, False, False, False, 0);
+   
    
    -- This type may be used to quickly access an item in storage without having
    -- to perform a lookup or search.
@@ -350,6 +352,10 @@ package BRBON is
    --
    Byte_Storage_Order_Error: exception;
    
+   
+   -- Raised when a string is too long
+   --
+   String_Too_Long: exception;
    
 private
 

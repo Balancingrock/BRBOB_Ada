@@ -1,16 +1,8 @@
 with Interfaces; use Interfaces;
 
---with Ada.Unchecked_Conversion;
---with Ada.Finalization;
---with Ada.Strings.Unbounded;
-
---with BRBON.Types; use BRBON.Types;
-with BRBON.Container;
---with BRBON.Footer;
---with BRBON.Utils;
-
-
 with Serializable;
+
+with BRBON.Container;
 
 
 package BRBON.Block is
@@ -237,37 +229,37 @@ package BRBON.Block is
 
    -- Set the block creation timestamp
    --
-   procedure Set_Creation_Timestamp (S: BRBON.Store; Value: Unsigned_64);
+   procedure Set_Creation_Timestamp (S: BRBON.Store; Value: Timestamp);
    pragma inline (Set_Creation_Timestamp);
 
 
    -- Return the block creation timestamp
    --
-   function Get_Creation_Timestamp (S: BRBON.Store) return Unsigned_64;
+   function Get_Creation_Timestamp (S: BRBON.Store) return Timestamp;
    pragma inline (Get_Creation_Timestamp);
 
 
    -- Set the block modification timestamp
    --
-   procedure Set_Modification_Timestamp (S: BRBON.Store; Value: Unsigned_64);
+   procedure Set_Modification_Timestamp (S: BRBON.Store; Value: Timestamp);
    pragma inline (Set_Modification_Timestamp);
 
 
    -- Return the block modification timestamp
    --
-   function Get_Modification_Timestamp (S: BRBON.Store) return Unsigned_64;
+   function Get_Modification_Timestamp (S: BRBON.Store) return Timestamp;
    pragma inline (Get_Modification_Timestamp);
 
 
    -- Set the block expiry timestamp
    --
-   procedure Set_Expiry_Timestamp (S: BRBON.Store; Value: Unsigned_64);
+   procedure Set_Expiry_Timestamp (S: BRBON.Store; Value: Timestamp);
    pragma inline (Set_Expiry_Timestamp);
 
 
    -- Return the block expiry timestamp
    --
-   function Get_Expiry_Timestamp (S: BRBON.Store) return Unsigned_64;
+   function Get_Expiry_Timestamp (S: BRBON.Store) return Timestamp;
    pragma inline (Get_Expiry_Timestamp);
 
 
@@ -325,7 +317,7 @@ private
          Target_List_Byte_Count: Unsigned_16;
          Target_List_Offset: Unsigned_16;
          Public_Key_URL_Byte_Count: Unsigned_16;
-         Public_Key_Offset: Unsigned_16;
+         Public_Key_URL_Offset: Unsigned_16;
 
          Creation_Timestamp: Timestamp;
          Modification_Timestamp: Timestamp;
@@ -367,7 +359,7 @@ private
          Target_List_Byte_Count       at 40 range 0..15;
          Target_List_Offset           at 42 range 0..15;
          Public_Key_URL_Byte_Count    at 44 range 0..15;
-         Public_Key_Offset            at 46 range 0..15;
+         Public_Key_URL_Offset            at 46 range 0..15;
 
          Creation_Timestamp           at 48 range 0..63;
          Modification_Timestamp       at 64 range 0..63;
@@ -378,35 +370,77 @@ private
 
    function To_Block_Header_Leading_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Header_Leading_Ptr);
 
-   function Get_Block_Header_Leading_Ptr (S: BRBON.Store) return Block_Header_Leading_Ptr is ( To_Block_Header_Leading_Ptr (S.Data (0)'Access));
+   function Get_Block_Header_Leading_Ptr (S: Store) return Block_Header_Leading_Ptr is ( To_Block_Header_Leading_Ptr (S.Data (0)'Access));
    pragma inline (Get_Block_Header_Leading_Ptr);
    
 
    -- Private header access function
    
-   procedure Set_Block_Type (S: BRBON.Store; Value: BRBON.Item_Type);
-   function Get_Origin_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Origin_Offset (S: BRBON.Store; Value: String);
-   function Get_Extension_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Extension_Offset (S: BRBON.Store; Value: String);
-   function Get_Identifier_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Identifier_Offset (S: BRBON.Store; Value: String);
-   function Get_Path_Prefix_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Path_Prefix_Offset (S: BRBON.Store; Value: String);
-   function Get_Acquisition_URL_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Acquisition_URL_Offset (S: BRBON.Store; Value: String);
-   function Get_Target_List_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Target_List_Offset (S: BRBON.Store; Value: String);
-   function Get_Public_Key_URL_Offset (S: BRBON.Store) return Unsigned_16;
-   procedure Set_Public_Key_URL_Offset (S: BRBON.Store; Value: String);
+   procedure Set_Block_Type (S: Store; Value: BRBON.Block_Type);
+   
+   function Get_Origin_Offset (S: Store) return Unsigned_16;
+   procedure Set_Origin_Offset (S: Store; Value: Unsigned_16);
+
+   procedure Set_Origin_Byte_Count (S: Store; Value: Unsigned_8);
+   procedure Set_Origin_CRC (S: Store; Value: Unsigned_16);
+   
+   function Get_Extension_Offset (S: Store) return Unsigned_16;
+   procedure Set_Extension_Offset (S: Store; Value: Unsigned_16);
+
+   procedure Set_Extension_Byte_Count (S: Store; Value: Unsigned_8);
+   procedure Set_Extension_CRC (S: Store; Value: Unsigned_16);
+   
+   function Get_Identifier_Offset (S: Store) return Unsigned_16;
+   procedure Set_Identifier_Offset (S: Store; Value: Unsigned_16);
+   
+   procedure Set_Identifier_Byte_Count (S: Store; Value: Unsigned_8);
+   procedure Set_Identifier_CRC (S: Store; Value: Unsigned_16);
+   
+   function Get_Path_Prefix_Offset (S: Store) return Unsigned_16;
+   procedure Set_Path_Prefix_Offset (S: Store; Value: Unsigned_16);
+   
+   procedure Set_Path_Prefix_Byte_Count (S: Store; Value: Unsigned_8);
+   procedure Set_Path_Prefix_CRC (S: Store; Value: Unsigned_16);
+   
+   function Get_Acquisition_URL_Offset (S: Store) return Unsigned_16;
+   procedure Set_Acquisition_URL_Offset (S: Store; Value: Unsigned_16);
+   
+   procedure Set_Acquisition_URL_Byte_Count (S: Store; Value: Unsigned_16);
+   
+   function Get_Target_List_Offset (S: Store) return Unsigned_16;
+   procedure Set_Target_List_Offset (S: Store; Value: Unsigned_16);
+   
+   procedure Set_Target_List_Byte_Count (S: Store; Value: Unsigned_16);
+   
+   function Get_Public_Key_URL_Offset (S: Store) return Unsigned_16;
+   procedure Set_Public_Key_URL_Offset (S: Store; Value: Unsigned_16);
+   
+   procedure Set_Public_Key_URL_Byte_Count (S: Store; Value: Unsigned_16);
    
    
    -- Initialises a type 1 block (single item).
    -- Note that the type 1 block is very much the default header structure without any additional data.
    --
-   procedure Setup (S: BRBON.Store; For_Byte_Storage_Order: BRBON.Byte_Storage_Order; With_Field_Storage_Byte_Count: Unsigned_16);
+   procedure Setup (S: Store; For_Byte_Storage_Order: Byte_Storage_Order; With_Field_Storage_Byte_Count: Unsigned_16);
    
+   procedure Create_Single_Item_Block_Header
+     (
+      In_Store: Store;
+      Field_Storage_Byte_Count: Unsigned_16;
+      Header_Byte_Count: Unsigned_16;
+      Options: Block_Options;
+      Origin: String;
+      Identifier: String;
+      Extension: String;
+      Path_Prefix: String;
+      Acquisition_URL: String;
+      Target_List: String;
+      Public_Key_URL: String;
+      Creation_Timestamp: Timestamp;
+      Expiry_Timestamp: Timestamp
+     );
       
+   
    -- The size of the trailing part of the block header
    --
    Block_Header_Trailing_Byte_Count: constant Unsigned_16 := 8;
@@ -441,18 +475,18 @@ private
 --      Last_Free_Byte_In_Payload: Unsigned_32; -- will never decrease, may increase for some child classes
 --   end record;
    
+
+   type U32_Getter is access function (S: Store) return Unsigned_32;
    
-   type U32_Getter is access function (S: BRBON.Store) return Unsigned_32;
+   type U16_Getter is access function (S: Store) return Unsigned_16;
    
-   type U16_Getter is access function (S: BRBON.Store) return Unsigned_16;
+   type U8_Getter is access function (S: Store) return Unsigned_8;
    
-   type U8_Getter is access function (S: BRBON.Store) return Unsigned_8;
+   type U32_Setter is access procedure (S: Store; Value: Unsigned_32);
    
-   type U32_Setter is access procedure (S: BRBON.Store; Value: Unsigned_32);
+   type U16_Setter is access procedure (S: Store; Value: Unsigned_16);
    
-   type U16_Setter is access procedure (S: BRBON.Store; Value: Unsigned_16);
-   
-   type U8_Setter is access procedure (S: BRBON.Store; Value: Unsigned_8);
+   type U8_Setter is access procedure (S: Store; Value: Unsigned_8);
 
       
    -- Internal access and construction operations of/for the header
@@ -467,7 +501,7 @@ private
    
    -- Undocumented, for testing only, do not use!
    --
-   function Test_Support_Serializer (I: in out BRBON.Store) return Serializable.Instance;
+   function Test_Support_Serializer (S: Store) return Serializable.Instance;
 
 
 end BRBON.Block;
