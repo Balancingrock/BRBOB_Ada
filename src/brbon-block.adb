@@ -837,15 +837,47 @@ package body BRBON.Block is
       Set_Modification_Timestamp (S, Creation_Timestamp);
       Set_Expiry_Timestamp (S, Expiry_Timestamp);
 
-
-
-      S.Header_Set_Reserved_1a (0);
-      S.Header_Set_Reserved_1b (0);
-      S.Update_Header_CRC;
-
+      Set_Block_Header_Trailing_Reserved_1 (S, 0);
+      Set_Block_Header_Trailing_Reserved_1 (S, 0);
+      Update_Header_CRC (S);
 
    end Create_Single_Item_Block_Header;
 
+
+   function Get_Block_Header_Trailing_Reserved_1 (S: Store) return Unsigned_32 is
+   begin
+      return Get_Block_Header_Trailing_Ptr (S).Reserved_1;
+   end Get_Block_Header_Trailing_Reserved_1;
+
+
+   function Get_Block_Header_Trailing_Reserved_2 (S: Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Trailing_Ptr (S).Reserved_2;
+   end Get_Block_Header_Trailing_Reserved_2;
+
+
+   function Get_Block_Header_CRC (S: Store) return Unsigned_16 is
+   begin
+      return Get_Block_Header_Trailing_Ptr (S).CRC;
+   end Get_Block_Header_CRC;
+
+
+   procedure Set_Block_Header_Trailing_Reserved_1 (S: Store; Value: Unsigned_32) is
+   begin
+      Get_Block_Header_Trailing_Ptr (S).Reserved_1 := Value;
+   end Set_Block_Header_Trailing_Reserved_1;
+
+
+   procedure Set_Block_Header_Trailing_Reserved_2 (S: Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Trailing_Ptr (S).Reserved_2 := Value;
+   end Set_Block_Header_Trailing_Reserved_2;
+
+
+   procedure Set_Block_Header_CRC (S: Store; Value: Unsigned_16) is
+   begin
+      Get_Block_Header_Trailing_Ptr (S).CRC := Value;
+   end Set_Block_Header_CRC;
 
 
    -- =====================================================

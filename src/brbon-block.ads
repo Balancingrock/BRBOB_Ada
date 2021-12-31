@@ -465,6 +465,15 @@ private
 
    function To_Block_Header_Trailing_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Header_Trailing_Ptr);
 
+   function Get_Block_Header_Trailing_Ptr (S: Store) return Block_Header_Trailing_Ptr is (To_Block_Header_Trailing_Ptr (S.Data (Unsigned_32 (Get_Header_Byte_Count (S) - Block_Header_Trailing_Byte_Count))'Access));
+
+   function Get_Block_Header_Trailing_Reserved_1 (S: Store) return Unsigned_32;
+   function Get_Block_Header_Trailing_Reserved_2 (S: Store) return Unsigned_16;
+   function Get_Block_Header_CRC (S: Store) return Unsigned_16;
+   procedure Set_Block_Header_Trailing_Reserved_1 (S: Store; Value: Unsigned_32);
+   procedure Set_Block_Header_Trailing_Reserved_2 (S: Store; Value: Unsigned_16);
+   procedure Set_Block_Header_CRC (S: Store; Value: Unsigned_16);
+   
    
 --   type Instance is abstract new Ada.Finalization.Controlled with record
 --      Container: BRBON.Container.Instance;
