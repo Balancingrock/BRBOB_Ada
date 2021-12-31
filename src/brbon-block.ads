@@ -484,6 +484,42 @@ private
 --      Last_Free_Byte_In_Payload: Unsigned_32; -- will never decrease, may increase for some child classes
 --   end record;
    
+      
+   -- Footer
+   
+   type Block_Footer is
+      record
+         Reserved: Unsigned_32;
+         CRC: Unsigned_32;
+      end record;
+   
+   for Block_Footer'Size use (4 + 4) * 8;
+   
+   for Block_Footer use
+      record
+         Reserved at 0 range 0..31;
+         CRC at 4 range 0..31;
+      end record;
+   
+   type Block_Footer_Ptr is access Block_Footer;
+   
+   function To_Block_Footer_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Footer_Ptr);
+   
+   Block_Footer_Byte_Count: Array (Block_Type) of Unsigned_32 :=
+     (
+      Illegal => 0,
+      Single_Item_Block => 8
+     );
+   
+   function Get_Block_Footer_Ptr (S: Store) return Block_Footer_Ptr is (To_Block_Footer_Ptr (S.Data (Unsigned_32 (Get_Block_Byte_Count (S) - Block_Footer_Byte_Count (Get_Block_Type (S))))'Access));
+   
+   function Get_Block_Footer_Reserved (S: Store) return Unsigned_32;
+   function Get_Block_Footer_CRC (S: Store) return Unsigned_32;
+   procedure Set_Block_Footer_Reserved (S: Store; Value: Unsigned_32);
+   procedure Set_Block_Footer_CRC (S: Store; Value: Unsigned_32);
+   
+   
+   -- Signatures
 
    type U32_Getter is access function (S: Store) return Unsigned_32;
    

@@ -880,6 +880,32 @@ package body BRBON.Block is
    end Set_Block_Header_CRC;
 
 
+   -- footer
+
+   function Get_Block_Footer_Reserved (S: Store) return Unsigned_32 is
+   begin
+      return Get_Block_Footer_Ptr (S).Reserved;
+   end Get_Block_Footer_Reserved;
+
+
+   function Get_Block_Footer_CRC (S: Store) return Unsigned_32 is
+   begin
+      return Get_Block_Footer_Ptr (S).CRC;
+   end Get_Block_Footer_CRC;
+
+
+   procedure Set_Block_Footer_Reserved (S: Store; Value: Unsigned_32) is
+   begin
+      Get_Block_Footer_Ptr (S).Reserved := Value;
+   end Set_Block_Footer_Reserved;
+
+
+   procedure Set_Block_Footer_CRC (S: Store; Value: Unsigned_32) is
+   begin
+      Get_Block_Footer_Ptr (S).CRC := Value;
+   end Set_Block_Footer_CRC;
+
+
    -- =====================================================
    -- Block API
    -- ======================================================

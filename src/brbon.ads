@@ -418,7 +418,7 @@ private
       Element_Index: Unsigned_32 := 16#FFFF_FFFF#;
       Column_Index: Unsigned_32 := 16#FFFF_FFFF#
      ) return Portal;
-
+   
    
    -- Block
    
