@@ -4,11 +4,12 @@ with Ada.Unchecked_Conversion;
 with CRC_Package;
 
 with BRBON.Utils;
-with BRBON.Types; use BRBON.Types;
+--with BRBON.Types; use BRBON.Types;
 
 
 package body BRBON.Item_Package is
 
+   
    -- ==========================================================================
    -- API
    -- ==========================================================================
@@ -16,9 +17,9 @@ package body BRBON.Item_Package is
    
    procedure Create_Layout
     (
-     CPtr: Types.Unsigned_8_Ptr;
+     CPtr: Unsigned_8_Ptr;
      At_Offset: Unsigned_32;
-     Of_Type: Types.Item_Type;
+     Of_Type: Item_Type;
      With_Name: Name_Field_Assistent.Instance;
      Using_Byte_Count: Unsigned_32 := 0;
      Parent_Offset: Unsigned_32 := 0

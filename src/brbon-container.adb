@@ -69,9 +69,9 @@ package body BRBON.Container is
    begin
       
       S.Data := In_Buffer_Ptr;
-      S.Swap := For_Byte_Order /= BRBON.Machine_Byte_Storage_Order;
+      S.Swap := For_Byte_Order /= Machine_Byte_Storage_Order;
       
-      if BRBON.Zero_Storage then
+      if Zero_Storage then
          S.Data.all := (others => 0);
       end if;
       
@@ -82,7 +82,7 @@ package body BRBON.Container is
    
 -- -----------------------------------------------------------------------------
 
-   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: BRBON.Byte_Storage_Order) return BRBON.Store is
+   function Factory (In_Buffer_Ptr: Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: Byte_Storage_Order) return BRBON.Store is
 
       File: Ada.Streams.Stream_IO.File_Type;
       File_Size: Unsigned_64;
@@ -103,10 +103,10 @@ package body BRBON.Container is
          raise BRBON.Storage_Warning with "File too large for buffer";
       end if;
    
-      Array_Of_Unsigned_8'Read (In_Stream, Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
+      Unsigned_8_Array'Read (In_Stream, In_Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
    
       S.Data := In_Buffer_Ptr;
-      S.Swap := For_Byte_Order /= BRBON.Machine_Byte_Storage_Order;
+      S.Swap := For_Byte_Order /= Machine_Byte_Storage_Order;
      
       return S;
       
@@ -115,10 +115,10 @@ package body BRBON.Container is
 
 -- -----------------------------------------------------------------------------
 
-   procedure Write_to_File (S: BRBON.Store; Path: String) is
+   procedure Write_to_File (S: Store; Path: String) is
    
       File: Ada.Streams.Stream_IO.File_Type;
-      subtype T is BRBON.Unsigned_8_Array (S.Data'First .. S.Data'Last);
+      subtype T is Unsigned_8_Array (S.Data'First .. S.Data'Last);
       Out_Stream: Stream_Access;
       
    begin
@@ -138,7 +138,7 @@ package body BRBON.Container is
 
 -- -----------------------------------------------------------------------------
 
-   function Storage_Byte_Count (S: BRBON.Store) return Unsigned_32 is
+   function Storage_Byte_Count (S: Store) return Unsigned_32 is
    
    begin
    
@@ -149,21 +149,21 @@ package body BRBON.Container is
 
 -- -----------------------------------------------------------------------------
 
-   function Storage_Byte_Order (S: BRBON.Store) return BRBON.Byte_Storage_Order is
+   function Storage_Byte_Order (S: Store) return BRBON.Byte_Storage_Order is
    
    begin
    
-      if BRBON.Machine_Byte_Storage_Order = BRBON.MSB_First then
+      if Machine_Byte_Storage_Order = MSB_First then
          if S.Swap then
-            return BRBON.LSB_First;
+            return LSB_First;
          else
-            return BRBON.MSB_First;
+            return MSB_First;
          end if;
       else
          if S.Swap then
-            return BRBON.MSB_First;
+            return MSB_First;
          else
-            return BRBON.LSB_First;
+            return LSB_First;
          end if;
       end if;
    end Storage_Byte_Order;

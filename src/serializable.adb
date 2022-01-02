@@ -1,9 +1,9 @@
 with Interfaces.C;
+
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Exceptions;
 
-with BRBON.Configure;
 with BRBON.Utils;
 
 
@@ -17,7 +17,7 @@ package body Serializable is
          Source.Cursor := Source.Cursor + 1;
          if Source.Cursor > Source.Last then
             if Source.Must_Deallocate then
-               Deallocate_Array_Of_Unsigned_8 (Source.Base_Ptr);
+               Deallocate_Unsigned_8_Array (Source.Base_Ptr);
             end if;
          end if;
          return True;
@@ -31,10 +31,10 @@ package body Serializable is
    --
    function Create_With_Copy (Copy_Bytes_From: String) return Instance is
       Source: String renames Copy_Bytes_From;
-      A_Ptr: Array_Of_Unsigned_8_Ptr;
+      A_Ptr: Unsigned_8_Array_Ptr;
       I: Unsigned_32 := 0;
    begin
-      A_Ptr := new Array_Of_Unsigned_8 (0 .. Source'Length - 1);
+      A_Ptr := new Unsigned_8_Array (0 .. Source'Length - 1);
       for C of Source loop
          A_Ptr.all(I) := Character'Pos (C);
          I := I + 1;
@@ -45,11 +45,11 @@ package body Serializable is
 
    -- Binary
    --
-   function Create_With_Copy (Copy_Bytes_From: Array_Of_Unsigned_8) return Instance is
-      Source: Array_Of_Unsigned_8 renames Copy_Bytes_From;
-      A_Ptr: Array_Of_Unsigned_8_Ptr;
+   function Create_With_Copy (Copy_Bytes_From: Unsigned_8_Array) return Instance is
+      Source: Unsigned_8_Array renames Copy_Bytes_From;
+      A_Ptr: Unsigned_8_Array_Ptr;
    begin
-      A_Ptr := new Array_Of_Unsigned_8 (0 .. Source'Length - 1);
+      A_Ptr := new Unsigned_8_Array (0 .. Source'Length - 1);
       A_Ptr.all := Source;
       return (A_Ptr, 0, 0, A_Ptr.all'Last, True);
    end Create_With_Copy;
@@ -57,7 +57,7 @@ package body Serializable is
 
    -- No copy
    --
-   function Create_Without_Copy (Use_In_Place: Array_Of_Unsigned_8_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance is
+   function Create_Without_Copy (Use_In_Place: Unsigned_8_Array_Ptr; First: Unsigned_32; Last: Unsigned_32) return Instance is
    begin
       return (Use_In_Place, First, First, Last, False);
    end Create_Without_Copy;
@@ -88,7 +88,7 @@ package body Serializable is
       end if;
    end Index_Of_Last_Byte;
 
-   function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8) return Boolean is
+   function Compare (Source: in out Instance; Expected_Values: Unsigned_8_Array) return Boolean is
       Failed: Exception;
       Byte: Unsigned_8;
       I: Unsigned_32 := Expected_Values'First;
@@ -114,7 +114,7 @@ package body Serializable is
    end Compare;
 
 
-   function Compare (Source: in out Instance; Expected_Values: Array_Of_Unsigned_8; Dont_Care: Array_Of_Boolean) return Boolean is
+   function Compare (Source: in out Instance; Expected_Values: Unsigned_8_Array; Dont_Care: Boolean_Array) return Boolean is
       Failed: Exception;
       Byte: Unsigned_8;
       DI: Unsigned_32 := Dont_Care'First;

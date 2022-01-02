@@ -2,10 +2,10 @@ with Interfaces; use Interfaces;
 
 with Ada.Calendar;
 
-with BRBON.Types; use BRBON.Types;
+--with BRBON.Types; use BRBON.Types;
 
 
-private package BRBON.Utils is
+package BRBON.Utils is
 
    function Max (A: Unsigned_16; B: Unsigned_16) return Unsigned_16 is (if A > B then A else B);
    pragma Inline (Max);

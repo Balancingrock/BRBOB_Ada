@@ -3,7 +3,6 @@ with Interfaces; use Interfaces;
 with System;
 
 with BRBON;
-with BRBON.Types;
 
 
 package BRBON.Name_Field_Assistent is
@@ -14,7 +13,7 @@ package BRBON.Name_Field_Assistent is
       record
          CRC: Unsigned_16;
          Name_Field_Byte_Count: Unsigned_8;
-         Ascii_Code: Types.Array_Of_Unsigned_8 (1 .. 245);
+         Ascii_Code: BRBON.Unsigned_8_Array (1 .. 245);
          Ascii_Byte_Count: Unsigned_8;
       end record;
 

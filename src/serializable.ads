@@ -1,5 +1,6 @@
 with Interfaces; use Interfaces;
-with BRBON;
+
+with BRBON; use BRBON;
 
 
 -- Contains methods to convert types into a stream of bytes.

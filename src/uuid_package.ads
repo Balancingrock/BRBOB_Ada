@@ -1,4 +1,4 @@
-with BRBON.Types; use BRBON.Types;
+with BRBON; use BRBON;
 
 
 package UUID_Package is
@@ -14,7 +14,7 @@ package UUID_Package is
 
    type UUID is private;
 
-   subtype UUID_Bytes is Array_Of_Unsigned_8 (1 .. 16);
+   subtype UUID_Bytes is Unsigned_8_Array (1 .. 16);
 
    subtype UUID_String is String (1 .. 36);
 
@@ -36,7 +36,7 @@ private
 
    type UUID is
       record
-         Bytes: Array_Of_Unsigned_8 (1 .. 16);
+         Bytes: Unsigned_8_Array (1 .. 16);
       end record;
 
    Nil_Instance: constant UUID := (Bytes => (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));

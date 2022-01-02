@@ -4,7 +4,6 @@ with Ada.Numerics.Discrete_Random;
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Unchecked_Conversion;
 
-with BRBON;
 
 package body UUID_Package is
 
@@ -44,7 +43,7 @@ package body UUID_Package is
    Ascii_LUT: Array (Character range '0'..'f') of Unsigned_8 := (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13, 14, 15);
    --
    function Factory (Str: UUID_String) return UUID is
-      Bytes: Array_Of_Unsigned_8 (1..16);
+      Bytes: Unsigned_8_Array (1..16);
       A_Byte: Unsigned_8;
       I: Integer := 0;
       B: Unsigned_32 := 1;
@@ -123,7 +122,11 @@ package body UUID_Package is
 
    function "=" (lhs, rhs: UUID_Package.UUID) return Boolean is
    begin
-      return lhs.Bytes = rhs.Bytes;
+      if lhs.Bytes'Length /= rhs.Bytes'Length then return false; end if;
+      for I in lhs.Bytes'First .. lhs.Bytes'Last loop
+         if lhs.Bytes (I) /= rhs.Bytes (I) then return false; end if;
+      end loop;
+      return true;
    end "=";
 
 begin

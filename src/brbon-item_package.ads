@@ -3,7 +3,7 @@ with Ada.Unchecked_Conversion;
 with System;
 with Interfaces; use Interfaces;
 
-with BRBON.Types;
+private with BRBON.Types;
 with BRBON.Container;
 with BRBON.Name_Field_Assistent;
 
@@ -21,31 +21,33 @@ private
 
    type Item_Header is
       record
-         Type_Field: Types.Item_Type;
-         Options_Field: Types.Item_Options;
-         Flags_Field: Types.Item_Flags;
+         Type_Field: Item_Type;
+         Options_Field: Item_Options;
+         Flags_Field: Item_Flags;
          Name_Field_Byte_Count_Field: Unsigned_8;
          Byte_Count_Field: Unsigned_32;
          Parent_Offset_Field: Unsigned_32;
          Small_Value_Field: Unsigned_32;
+         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Header'Size use Item_Header_Byte_Count * 8;
+   for Item_Header'Size use Item_Header_Byte_Count * 8 + 8;
 
    for Item_Header use
       record
-         Type_Field at 0 range 0..7;
-         Options_Field at 1 range 0..7;
-         Flags_Field at 2 range 0..7;
-         Name_Field_Byte_Count_Field at 3 range 0..7;
-         Byte_Count_Field at 4 range 0..31;
-         Parent_Offset_Field at 8 range 0..31;
-         Small_Value_Field at 12 range 0..31;
+         Type_Field                  at 0  range 0..7;
+         Options_Field               at 1  range 0..7;
+         Flags_Field                 at 2  range 0..7;
+         Name_Field_Byte_Count_Field at 3  range 0..7;
+         Byte_Count_Field            at 4  range 0..31;
+         Parent_Offset_Field         at 8  range 0..31;
+         Small_Value_Field           at 12 range 0..31;
+         Next_Byte                   at 16 range 0..8;
       end record;
 
    type Item_Header_Ptr is access Item_Header;
 
-   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Types.Unsigned_8_Ptr, Item_Header_Ptr);
+   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
 
 
    -- ==========================================================================
@@ -54,22 +56,23 @@ private
 
    type Item_Name is
       record
-         CRC_16: Unsigned_16;
-         ASCII_Count: Unsigned_8;
-         ASCII_Start: Unsigned_8; -- Followed by up to 244 characters
+         CRC: Unsigned_16;
+         Byte_Count: Unsigned_8;
+         Next_Byte: aliased Unsigned_8; -- Followed by up to 244 characters
       end record;
 
    for Item_Name'Size use 4 * 8;
 
    for Item_Name use
       record
-         CRC_16 at 0 range 0..15;
-         ASCII_Count at 2 range 0..7;
-         ASCII_Start at 3 range 0..7;
+         CRC        at 0 range 0..15;
+         Byte_Count at 2 range 0..7;
+         Next_Byte  at 3 range 0..7;
       end record;
 
    type Item_Name_Ptr is access Item_Name;
 
+   function To_Item_Name_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Ptr);
 
 
    -- --------------------------------------------------------------------------
@@ -78,47 +81,170 @@ private
 
    -- String Type, relative to value start
    --
-   String_Byte_Count_Offset: Unsigned_32 := 0;
-   String_Byte_Code_Offset: Unsigned_32 := 4;
+   type Item_Value_Header_String is
+      record
+         Count: Unsigned_32;
+         Next_Byte: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Header_String'Size use 32 + 8;
+
+   for Item_Value_Header_String use
+      record
+         Count     at 0 range 0..31;
+         Next_Byte at 4 range 0..7;
+      end record;
+
+   Item_Value_Header_String_Byte_Count: constant Unsigned_32 := 4;
+
+   type Item_Value_Header_String_Ptr is access Item_Value_String;
+
+   function To_Item_Value_Header_String_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_String_Ptr);
+
 
    -- CRC String Type, relative to value start
    --
-   CRC_String_CRC_Offset: Unsigned_32 := 0;
-   CRC_String_Byte_Count_Offset: Unsigned_32 := 4;
-   CRC_String_Byte_Code_Offset: Unsigned_32 := 8;
+   type Item_Value_Header_CRC_String is
+      record
+         CRC: Unsigned_32;
+         Count: Unsigned_32;
+         Next_Byte: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Header_CRC_String'Size use 32 + 32 + 8;
+
+   for Item_Value_Header_CRC_String use
+      record
+         CRC at 0 range 0..31;
+         Count at 4 range 0..31;
+         Next_Byte at 8 range 0..7;
+      end record;
+
+   type Item_Value_Header_CRC_String_Ptr is access Item_Value_Header_CRC_String;
+
+   function To_Item_Value_Header_CRC_String_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_CRC_String);
+
 
    -- Binary, relative to value start
    --
-   Binary_Byte_Count_Offset: Unsigned_32 := 0;
-   Binary_Byte_Code_Offset: Unsigned_32 := 4;
+   type Item_Value_Binary is
+      record
+         Count: Unsigned_32;
+         Next_Byte: Unsigned_8;
+      end record;
+
+   for Item_Value_Binary'Size use 32 + 8;
+
+   for Item_Value_Binary use
+      record
+         Count at 0 range 0..31;
+         Next_Byte at 4 range 0..7;
+      end record;
+
+   type Item_Value_Binary_Ptr is access Item_Value_Binary;
+
+   function To_Item_Value_Header_Binary_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_Binary_Ptr);
+
 
    -- CRC Binary Type, relative to value start
    --
-   CRC_Binary_CRC_Offset: Unsigned_32 := 0;
-   CRC_Binary_Byte_Count_Offset: Unsigned_32 := 4;
-   CRC_Binary_Byte_Code_Offset: Unsigned_32 := 8;
+   type Item_Value_CRC_Binary is
+      record
+         CRC: Unsigned_32;
+         Count: Unsigned_32;
+         Next_Byte: Unsigned_8;
+      end record;
+
+   for Item_Value_CRC_Binary'Size use 32 + 32 + 8;
+
+   for Item_Value_CRC_Binary use
+      record
+         CRC at 0 range 0..31;
+         Count at 4 range 0..31;
+         Next_Byte at 8 range 0..7;
+      end record;
+
+   type Item_Value_CRC_Binary_Ptr is access Item_Value_CRC_Binary;
+
+   function To_Item_Value_Header_CRC_Binary_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_CRC_Binary_Ptr);
+
 
    -- Array, relative to value start
    --
-   Array_Reserved_1_Offset: Unsigned_32 := 0;
-   Array_Element_Type_Offset: Unsigned_32 := 4;
-   Array_Reserved_2_Offset: Unsigned_32 := 5;
-   Array_Reserved_3_Offset: Unsigned_32 := 6;
-   Array_Element_Count_Offset: Unsigned_32 := 8;
-   Array_Element_Byte_Count_Offset: Unsigned_32 := 12;
-   Array_Element_Start_Offset: Unsigned_32 := 16;
+   type Item_Value_Array is
+      record
+         Reserved_1: Unsigned_32;
+         Element_Type: Item_Type;
+         Reserved_2: Unsigned_8;
+         Reserved_3: Unsigned_16;
+         Element_Count: Unsigned_32;
+         Element_Byte_Count: Unsigned_32;
+         Next_Byte: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Array'Size use 32 + 8 + 8 + 16 + 32 + 32 + 8;
+
+   for Item_Value_Array use
+      record
+         Reserved_1         at 0  range 0..31;
+         Element_Type       at 4  range 0..7;
+         Reserved_2         at 5  range 0..7;
+         Reserved_3         at 6  range 0..15;
+         Element_Count      at 8  range 0..31;
+         Element_Byte_Count at 12 range 0..31;
+         Next_Byte          at 16 range 0..7;
+      end record;
+
+   type Item_Value_Array_Ptr is access Item_Value_Array;
+
+   function To_Item_Value_Array_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Array_Ptr);
+
 
    -- Sequence, relative to value start
    --
-   Sequence_Reserved_Offset: Unsigned_32 := 0;
-   Sequence_Item_Count_Offset: Unsigned_32 := 4;
-   Sequence_Items_Start_Offset: Unsigned_32 := 8;
+   type Item_Value_Sequence is
+      record
+         Reserved: Unsigned_32;
+         Item_Count: Unsigned_32;
+         Next_Byte: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Sequence'Size use 32 + 32 + 8;
+
+   for Item_Value_Sequence use
+      record
+         Reserved at 0 range 0..31;
+         Item_Count at 4 range 0..31;
+         Next_Byte at 8 range 0..7;
+      end record;
+
+   type Item_Value_Sequence_Ptr is access Item_Value_Sequence;
+
+   function To_Item_Value_Sequence_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Sequence_Ptr);
+
 
    -- Dictionary, relative to value start
    --
-   Dictionary_Reserved_Offset: Unsigned_32 := 0;
-   Dictionary_Item_Count_Offset: Unsigned_32 := 4;
-   Dictionary_Items_Start_Offset: Unsigned_32 := 8;
+   type Item_Value_Dictionary is
+      record
+         Reserved: Unsigned_32;
+         Item_Count: Unsigned_32;
+         Next_Byte: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Dictionary'Size use 32 + 32 + 8;
+
+   for Item_Value_Dictionary use
+      record
+         Reserved at 0 range 0..31;
+         Item_Count at 4 range 0..31;
+         Next_Byte at 8 range 0..7;
+      end record;
+
+   type Item_Value_Dictionary_Ptr is access Item_Value_Dictionary;
+
+   function To_Item_Value_Dictionary_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Dictionary_Ptr);
+
 
    -- Table, relative to value start
    --
@@ -127,22 +253,72 @@ private
    Table_Fields_Start_Offset: Unsigned_32 := 8;
    Table_Row_Byte_Count_Offset: Unsigned_32 := 12;
    Table_Column_Descriptors_Start_Offset: Unsigned_32 := 16;
+   type Item_Value_Table is
+      record
+         Row_Count: Unsigned_32;
+         Column_Count: Unsigned_32;
+         Fields_Start: Unsigned_32;
+         Row_Byte_Count: Unsigned_32;
+         Column_Descriptors_Start: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Table'Size use 32 + 32 + 32 + 32 + 8;
+
+   for Item_Value_Table use
+      record
+         Row_Count at 0 range 0..31;
+         Column_Count at 4 range 0..31;
+         Fields_Start at 8 range 0..31;
+         Row_Byte_Count at 12 range 0..31;
+         Column_Descriptors_Start at 16 range 0..7;
+      end record;
+
 
    -- Table - Column Descriptor, relative to start of descriptor
    --
-   Table_Column_Descriptor_Name_CRC_Offset: Unsigned_32 := 0;
-   Table_Column_Descriptor_Name_Field_Byte_Count_Offset: Unsigned_32 := 2;
-   Table_Column_Descriptor_Field_Type_Offset: Unsigned_32 := 3;
-   Table_Column_Descriptor_Name_Field_Offset_Offset: Unsigned_32 := 4;
-   Table_Column_Descriptor_Field_Offset_Offset: Unsigned_32 := 8;
-   Table_Column_Descriptor_Field_Byte_Count_Offset: Unsigned_32 := 12;
+   type Table_Column_Descriptor is
+      record
+         Name_CRC: Unsigned_16;
+         Name_Byte_Count: Unsigned_8;
+         Field_Type: Item_Type;
+         Name_Offset: Unsigned_32;
+         Field_Offset: Unsigned_32;
+         Field_Byte_Count: Unsigned_32;
+      end record;
+
+   for Table_Column_Descriptor'Size use 16 + 8 + 8 + 32 + 32 + 32;
+
+   for Table_Column_Descriptor use
+      record
+         Name_CRC         at 0  range 0..15;
+         Name_Byte_Count  at 2  range 0..7;
+         Field_Type       at 3  range 0..7;
+         Name_Offset      at 4  range 0..31;
+         Field_Offset     at 8  range 0..31;
+         Field_Byte_Count at 12 range 0..31;
+      end record;
+
 
    -- Color, relative to start of small-value
    --
-   Color_Red_Offset: Unsigned_32 := 0;
-   Color_Green_Offset: Unsigned_32 := 1;
-   Color_Blue_Offset: Unsigned_32 := 2;
-   Color_Alpha_Offset: Unsigned_32 := 3;
+   type Item_Value_RGBA is
+      record
+         Red: Unsigned_8;
+         Green: Unsigned_8;
+         Blue: Unsigned_8;
+         Alpha: Unsigned_8;
+      end record;
+
+   for Item_Value_RGBA'Size use 32;
+
+   for Item_Value_RGBA use
+      record
+         Red   at 0 range 0..7;
+         Green at 1 range 0..7;
+         Blue  at 2 range 0..7;
+         Alpha at 3 range 0..7;
+      end record;
+
 
    -- Font, relative to start of value
    --
@@ -150,15 +326,36 @@ private
    Font_Family_Byte_Count_Offset: Unsigned_32 := 4;
    Font_Name_Byte_Count_Offset: Unsigned_32 := 5;
    Font_Family_Byte_Code_Start_Offset: Unsigned_32 := 6;
+   type Item_Value_Font is
+      record
+         Size: Float_32;
+         Family_Name_Byte_Count: Unsigned_8;
+         Font_Name_Byte_Count: Unsigned_8;
+         Next_Byte: aliased Unsigned_8;
+      end record;
+
+   for Item_Value_Font'Size use 32 + 8 + 8 + 8;
+
+   for Item_Value_Font use
+      record
+         Size at 0 range 0..31;
+         Family_Name_Byte_Count at 4 range 0..7;
+         Font_Name_Byte_count at 5 range 0..7;
+         Next_Byte at 6 range 0..7;
+      end record;
+
+   type Item_Value_Font_Ptr is access Item_Value_Font;
+
+   function To_Item_Value_Font_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Font_Ptr);
 
 
    -- Creates the layout for the requested type in the container at the requested offset.
    --
    procedure Create_Layout
     (
-     CPtr: Container.Instance_Ptr;
+     S: Store;
      At_Offset: Unsigned_32;
-     Of_Type: Types.Item_Type;
+     Of_Type: Item_Type;
      With_Name: Name_Field_Assistent.Instance;
      Using_Byte_Count: Unsigned_32 := 0;
      Parent_Offset: Unsigned_32 := 0
@@ -167,7 +364,7 @@ private
    -- Returns the offset of the item value. This is either the small-value or the payload.
    -- Note: The offset returned is the offset from the beginning of the array!
    --
-   function Value_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Value_Offset);
 
 
@@ -175,7 +372,7 @@ private
    --
    function Create_Array_Layout
      (
-      CPtr: Container.Instance_Ptr;
+      S: Storer;
       At_Offset: Unsigned_32;
       With_Name: Name_Field_Assistent.Instance;
       For_Element_Type: Types.Item_Type;
@@ -189,19 +386,19 @@ private
    function Get_Type (Item_Ptr: Types.Unsigned_8_Ptr) return Types.Item_Type;
    pragma Inline (Get_Type);
 
-   function Get_Options (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Options;
+   function Get_Options (S: Store; Item_Offset: Unsigned_32) return Types.Item_Options;
    pragma Inline (Get_Options);
 
-   function Get_Flags (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Flags;
+   function Get_Flags (S: Store; Item_Offset: Unsigned_32) return Types.Item_Flags;
    pragma Inline (Get_Flags);
 
-   function Get_Name_Field_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_8;
+   function Get_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
    pragma Inline (Get_Name_Field_Byte_Count);
 
-   function Get_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_Byte_Count);
 
-   function Get_Small_Value (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Get_Small_Value (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
    pragma Inline (Get_Small_Value);
 
    function Get_Parent_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32;
