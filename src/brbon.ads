@@ -412,14 +412,7 @@ private
          Column_Index: Unsigned_32 := 0;
       end record;
 
-   function Portal_Factory
-     (
-      Item_Ptr: Item_Header_Ptr;
-      Element_Index: Unsigned_32 := 16#FFFF_FFFF#;
-      Column_Index: Unsigned_32 := 16#FFFF_FFFF#
-     ) return Portal;
-   
-   
+
    -- Block
    
    type Store is new Ada.Finalization.Controlled with

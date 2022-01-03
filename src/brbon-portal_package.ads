@@ -48,7 +48,7 @@
 
 with Interfaces; use Interfaces;
 
-private with BRBON; use BRBON;
+private with BRBON;
 
 
 package BRBON.Portal_Package is
@@ -71,6 +71,16 @@ package BRBON.Portal_Package is
    -- However any portal (including invalid portals) can be tested for beiing a null portal.
    --
    function Is_Null_Portal (P: Portal) return Boolean;
+
+
+private
+
+   function Portal_Factory
+     (
+      Item_Ptr: BRBON.Item_Header_Ptr;
+      Element_Index: Unsigned_32 := 16#FFFF_FFFF#;
+      Column_Index: Unsigned_32 := 16#FFFF_FFFF#
+     ) return Portal;
 
 
 end BRBON.Portal_Package;

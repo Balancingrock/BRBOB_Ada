@@ -1,177 +1,354 @@
 with Ada.Unchecked_Conversion;
 
-with System;
 with Interfaces; use Interfaces;
 
-private with BRBON.Types;
-with BRBON.Container;
-with BRBON.Name_Field_Assistent;
+with Color_Package; use Color_Package;
+with CRC_Package; use CRC_Package;
+
+with BRBON.Name_Field_Assistent_Package; use BRBON.Name_Field_Assistent_Package;
 
 
-package BRBON.Item_Package is
+private package BRBON.Item_Package is
 
 
-private
+   -----------------------------------------------------------------------------
+   -- Properties look up tables
 
-   -- ==========================================================================
+   Item_Is_Container: Array (Item_Type) of Boolean :=
+     (
+      False,   -- Illegal
+      False,   -- Null_Type
+      False,   -- Bool_Type
+      False,   -- Int_8_Type
+      False,   -- Int_16_Type
+      False,   -- Int_32_Type
+      False,   -- Int_64_Type
+      False,   -- UInt_8_Type
+      False,   -- UInt_16_Type
+      False,   -- UInt_32_Type
+      False,   -- UInt_64_Type
+      False,   -- Float_32_Type
+      False,   -- Float_64_Type
+      False,   -- String_Type
+      False,   -- CRC_String_Type
+      False,   -- Binary_Type
+      False,   -- CRC_Binary_Type
+      True,    -- Array_Type
+      True,    -- Dictionary_Type
+      True,    -- Sequence_Type
+      True,    -- Table_Type
+      False,   -- UUID_Type
+      False,   -- RGBA_Type
+      False    -- Font_Type
+     );
+
+   Item_Overhead_Byte_Count: Array (Item_Type) of Unsigned_32 :=
+     (
+      0,  -- Illegal
+      0,  -- Null
+      0,  -- Bool
+      0,  -- Int_8
+      0,  -- Int_16
+      0,  -- Int_32
+      8,  -- Int_64
+      0,  -- UInt_8
+      0,  -- UInt_16
+      0,  -- UInt_32
+      8,  -- UInt_64
+      0,  -- Float_32
+      8,  -- Float_64
+      4,  -- String
+      8,  -- CRC_String
+      4,  -- Binary
+      8,  -- CRC_Binary
+      32, -- Array
+      8,  -- Dictionary
+      8,  -- Sequence
+      16, -- Table (no column descriptors included)
+      16, -- UUID
+      0,  -- RGBA
+      6   -- Font
+     );
+
+
+   -----------------------------------------------------------------------------
    -- The fixed part of an item
-   -- ==========================================================================
 
    Item_Header_Byte_Count: constant Unsigned_32 := 16;
 
-   type Item_Header is
-      record
-         Type_Field: Item_Type;
-         Options_Field: Item_Options;
-         Flags_Field: Item_Flags;
-         Name_Field_Byte_Count_Field: Unsigned_8;
-         Byte_Count_Field: Unsigned_32;
-         Parent_Offset_Field: Unsigned_32;
-         Small_Value_Field: Unsigned_32;
-         Next_Byte: aliased Unsigned_8;
-      end record;
+   function To_Item_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Header_Ptr is (To_Item_Header_Ptr (S.Data (Item_Offset)'Access));
+   pragma Inline (To_Item_Header_Ptr);
 
-   for Item_Header'Size use Item_Header_Byte_Count * 8 + 8;
+   function Item_Header_Get_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
+   procedure Item_Header_Set_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type);
 
-   for Item_Header use
-      record
-         Type_Field                  at 0  range 0..7;
-         Options_Field               at 1  range 0..7;
-         Flags_Field                 at 2  range 0..7;
-         Name_Field_Byte_Count_Field at 3  range 0..7;
-         Byte_Count_Field            at 4  range 0..31;
-         Parent_Offset_Field         at 8  range 0..31;
-         Small_Value_Field           at 12 range 0..31;
-         Next_Byte                   at 16 range 0..8;
-      end record;
+   function Item_Header_Get_Options (S: Store; Item_Offset: Unsigned_32) return Item_Options;
+   procedure Item_Header_Set_Options (S: Store; Item_Offset: Unsigned_32; Value: Item_Options);
 
-   type Item_Header_Ptr is access Item_Header;
+   function Item_Header_Get_Flags (S: Store; Item_Offset: Unsigned_32) return Item_Flags;
+   procedure Item_Header_Set_Flags (S: Store; Item_Offset: Unsigned_32; Value: Item_Flags);
 
-   function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
+   function Item_Header_Get_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
+   procedure Item_Header_Set_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
+
+   function Item_Header_Get_Byte_Counts (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   procedure Item_Header_Set_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Header_Get_Parent_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   procedure Item_Header_Set_Parent_Offset (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
 
-   -- ==========================================================================
-   -- Item Name Field (may or may not be present
-   -- ==========================================================================
+   -----------------------------------------------------------------------------
+   -- For small value access
 
-   type Item_Name is
+   Small_Value_Offset: constant Unsigned_32 := 12;
+
+   function Small_Value_Get_Bool (S: Store; Item_Offset: Unsigned_32) return Boolean;
+   pragma Inline (Small_Value_Get_Bool);
+
+   procedure Small_Value_Set_Bool (S: Store; Item_Offset: Unsigned_32; Value: Boolean);
+   pragma Inline (Small_Value_Set_Bool);
+
+   function Small_Value_Get_Int8 (S: Store; Item_Offset: Unsigned_32) return Integer_8;
+   pragma Inline (Small_Value_Get_Int8);
+
+   procedure Small_Value_Set_Int8 (S: Store; Item_Offset: Unsigned_32; Value: Integer_8);
+   pragma Inline (Small_Value_Set_Int8);
+
+   function Small_Value_Get_UInt8 (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
+   pragma Inline (Small_Value_Get_UInt8);
+
+   procedure Small_Value_Set_UInt8 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   pragma Inline (Small_Value_Set_UInt8);
+
+   function Small_Value_Get_Int16 (S: Store; Item_Offset: Unsigned_32) return Integer_16;
+   pragma Inline (Small_Value_Get_Int16);
+
+   procedure Small_Value_Set_Int16 (S: Store; Item_Offset: Unsigned_32; Value: Integer_16);
+   pragma Inline (Small_Value_Set_Int16);
+
+   function Small_Value_Get_UInt16 (S: Store; Item_Offset: Unsigned_32) return Unsigned_16;
+   pragma Inline (Small_Value_Get_UInt16);
+
+   procedure Small_Value_Set_UInt16 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_16);
+   pragma Inline (Small_Value_Set_UInt16);
+
+   function Small_Value_Get_Int32 (S: Store; Item_Offset: Unsigned_32) return Integer_32;
+   pragma Inline (Small_Value_Get_Int32);
+
+   procedure Small_Value_Set_Int32 (S: Store; Item_Offset: Unsigned_32; Value: Integer_32);
+   pragma Inline (Small_Value_Set_Int32);
+
+   function Small_Value_Get_UInt32 (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   pragma Inline (Small_Value_Get_UInt32);
+
+   procedure Small_Value_Set_UInt32 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   pragma Inline (Small_Value_Set_UInt32);
+
+   function Small_Value_Get_Float32 (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32;
+   pragma Inline (Small_Value_Get_Float32);
+
+   procedure Small_Value_Set_Float32 (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32);
+   pragma Inline (Small_Value_Set_Float32);
+
+   function Small_Value_Get_Color (S: Store; Item_Offset: Unsigned_32) return Color;
+   pragma Inline (Small_Value_Get_Color);
+
+   procedure Small_Value_Set_Color (S: Store; Item_Offset: Unsigned_32; Value: Color);
+   pragma Inline (Small_Value_Set_Color);
+
+
+   -----------------------------------------------------------------------------
+   -- Item Name Field (optional)
+
+   Item_Name_Offset: constant Unsigned_32 := Item_Header_Byte_count;
+
+   type Item_Name_Field is
       record
          CRC: Unsigned_16;
          Byte_Count: Unsigned_8;
-         Next_Byte: aliased Unsigned_8; -- Followed by up to 244 characters
+         ASCII_Code: aliased Unsigned_8; -- Followed by up to 244 characters
       end record;
 
-   for Item_Name'Size use 4 * 8;
+   for Item_Name_Field'Size use 4 * 8;
 
-   for Item_Name use
+   for Item_Name_Field use
       record
          CRC        at 0 range 0..15;
          Byte_Count at 2 range 0..7;
-         Next_Byte  at 3 range 0..7;
+         ASCII_Code at 3 range 0..7;
       end record;
 
-   type Item_Name_Ptr is access Item_Name;
+   type Item_Name_Field_Ptr is access Item_Name_Field;
 
-   function To_Item_Name_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Ptr);
+   function To_Item_Name_Field_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Field_Ptr);
+
+   function Get_Item_Name_Field_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is ( Item_Offset + Item_Name_Offset );
+   pragma Inline (Get_Item_Name_Field_Offset);
+
+   function Get_Item_Name_Field_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Name_Field_Ptr is (To_Item_Name_Field_Ptr (S.Data (Get_Item_Name_Field_Offset)'Access));
+   pragma Inline (Get_Item_Name_Field_Ptr);
+
+   function Item_Name_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_16;
+
+   procedure Item_Name_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_16);
+
+   function Item_Name_Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8 is (Get_Item_Name_Field_Ptr (S, Item_Offset).Byte_Count);
+   pragma Inline (Item_Name_Get_Byte_Count);
+
+   procedure Item_Name_Set_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
+
+   function Item_Name_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
+
+   procedure Item_Name_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
 
 
-   -- --------------------------------------------------------------------------
-   -- Value Offsets, relative to value start
-   -- --------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
+   -- Value access
 
-   -- String Type, relative to value start
-   --
-   type Item_Value_Header_String is
+   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr;
+
+
+   -----------------------------------------------------------------------------
+   -- Item Value: String
+
+   type Item_Value_String_Header is
       record
          Count: Unsigned_32;
-         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Header_String'Size use 32 + 8;
+   for Item_Value_String_Header'Size use 32;
 
-   for Item_Value_Header_String use
+   for Item_Value_String_Header use
       record
          Count     at 0 range 0..31;
-         Next_Byte at 4 range 0..7;
       end record;
 
-   Item_Value_Header_String_Byte_Count: constant Unsigned_32 := 4;
+   Item_Value_String_Header_Byte_Count: constant Unsigned_32 := 4;
 
-   type Item_Value_Header_String_Ptr is access Item_Value_String;
+   type Item_Value_String_Header_Ptr is access Item_Value_String_Header;
 
-   function To_Item_Value_Header_String_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_String_Ptr);
+   function To_Item_Value_String_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_String_Header_Ptr);
+
+   function Get_Item_Value_String_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_String_Header_Ptr is (To_Item_Value_String_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
+
+   procedure Item_Value_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
 
 
-   -- CRC String Type, relative to value start
-   --
-   type Item_Value_Header_CRC_String is
+   -----------------------------------------------------------------------------
+   -- Item Value: CRC String
+
+   type Item_Value_CRC_String_Header is
       record
-         CRC: Unsigned_32;
+         CRC: CRC_32;
          Count: Unsigned_32;
-         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Header_CRC_String'Size use 32 + 32 + 8;
+   for Item_Value_CRC_String_Header'Size use 32 + 32;
 
-   for Item_Value_Header_CRC_String use
+   for Item_Value_CRC_String_Header use
       record
          CRC at 0 range 0..31;
          Count at 4 range 0..31;
-         Next_Byte at 8 range 0..7;
       end record;
 
-   type Item_Value_Header_CRC_String_Ptr is access Item_Value_Header_CRC_String;
+   type Item_Value_CRC_String_Header_Ptr is access Item_Value_CRC_String_Header;
 
-   function To_Item_Value_Header_CRC_String_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_CRC_String);
+   function To_Item_Value_CRC_String_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_CRC_String_Header_Ptr);
+
+   function Get_Item_Value_CRC_String_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_String_Header_Ptr is (To_Item_Value_CRC_String_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_CRC_String_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_32;
+
+   procedure Item_Value_CRC_String_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_32);
+
+   function Item_Value_CRC_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_CRC_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_CRC_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
+
+   procedure Item_Value_CRC_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
 
 
-   -- Binary, relative to value start
-   --
-   type Item_Value_Binary is
+   -----------------------------------------------------------------------------
+   -- Item Value: Binary
+
+   type Item_Value_Binary_Header is
       record
          Count: Unsigned_32;
-         Next_Byte: Unsigned_8;
       end record;
 
-   for Item_Value_Binary'Size use 32 + 8;
+   for Item_Value_Binary_Header'Size use 32;
 
-   for Item_Value_Binary use
+   for Item_Value_Binary_Header use
       record
          Count at 0 range 0..31;
-         Next_Byte at 4 range 0..7;
       end record;
 
-   type Item_Value_Binary_Ptr is access Item_Value_Binary;
+   type Item_Value_Binary_Header_Ptr is access Item_Value_Binary_Header;
 
-   function To_Item_Value_Header_Binary_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_Binary_Ptr);
+   function To_Item_Value_Binary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Binary_Header_Ptr);
+
+   function Get_Item_Value_Binary_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Binary_Header_Ptr is (To_Item_Value_Binary_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
+
+   procedure Item_Value_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
 
 
-   -- CRC Binary Type, relative to value start
-   --
-   type Item_Value_CRC_Binary is
+   -----------------------------------------------------------------------------
+   -- Item Value: CRC Binary
+
+   type Item_Value_CRC_Binary_Header is
       record
-         CRC: Unsigned_32;
+         CRC: CRC_32;
          Count: Unsigned_32;
-         Next_Byte: Unsigned_8;
       end record;
 
-   for Item_Value_CRC_Binary'Size use 32 + 32 + 8;
+   for Item_Value_CRC_Binary_Header'Size use 32 + 32;
 
-   for Item_Value_CRC_Binary use
+   for Item_Value_CRC_Binary_Header use
       record
          CRC at 0 range 0..31;
          Count at 4 range 0..31;
-         Next_Byte at 8 range 0..7;
       end record;
 
-   type Item_Value_CRC_Binary_Ptr is access Item_Value_CRC_Binary;
+   type Item_Value_CRC_Binary_Header_Ptr is access Item_Value_CRC_Binary_Header;
 
-   function To_Item_Value_Header_CRC_Binary_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_CRC_Binary_Ptr);
+   function To_Item_Value_CRC_Binary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_CRC_Binary_Header_Ptr);
+
+   function Get_Item_Value_CRC_Binary_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_Binary_Header_Ptr is (To_Item_Value_CRC_Binary_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_CRC_Binary_Get_CRC (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_CRC_Binary_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_CRC_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_CRC_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_CRC_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
+
+   procedure Item_Value_CRC_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
 
 
-   -- Array, relative to value start
-   --
-   type Item_Value_Array is
+   -----------------------------------------------------------------------------
+   -- Item Value: Array
+
+   type Item_Value_Array_Header is
       record
          Reserved_1: Unsigned_32;
          Element_Type: Item_Type;
@@ -179,12 +356,11 @@ private
          Reserved_3: Unsigned_16;
          Element_Count: Unsigned_32;
          Element_Byte_Count: Unsigned_32;
-         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Array'Size use 32 + 8 + 8 + 16 + 32 + 32 + 8;
+   for Item_Value_Array_Header'Size use 32 + 8 + 8 + 16 + 32 + 32 + 8;
 
-   for Item_Value_Array use
+   for Item_Value_Array_Header use
       record
          Reserved_1         at 0  range 0..31;
          Element_Type       at 4  range 0..7;
@@ -192,91 +368,137 @@ private
          Reserved_3         at 6  range 0..15;
          Element_Count      at 8  range 0..31;
          Element_Byte_Count at 12 range 0..31;
-         Next_Byte          at 16 range 0..7;
       end record;
 
-   type Item_Value_Array_Ptr is access Item_Value_Array;
+   type Item_Value_Array_Header_Ptr is access Item_Value_Array_Header;
 
-   function To_Item_Value_Array_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Array_Ptr);
+   function To_Item_Value_Array_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Array_Header_Ptr);
+
+   function Get_Item_Value_Array_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_Binary_Header_Ptr is (To_Item_Value_Array_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_Array_Get_Element_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
+
+   procedure Item_Value_Array_Set_Element_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type);
+
+   function Item_Value_Array_Get_Element_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Array_Set_Element_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Array_Get_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Array_Set_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Array_Get_First_Element_Offset (S:Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
-   -- Sequence, relative to value start
-   --
-   type Item_Value_Sequence is
+   -----------------------------------------------------------------------------
+   -- Item Value: Sequence
+
+   type Item_Value_Sequence_Header is
       record
          Reserved: Unsigned_32;
          Item_Count: Unsigned_32;
-         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Sequence'Size use 32 + 32 + 8;
+   for Item_Value_Sequence_Header'Size use 32 + 32;
 
-   for Item_Value_Sequence use
+   for Item_Value_Sequence_Header use
       record
          Reserved at 0 range 0..31;
          Item_Count at 4 range 0..31;
-         Next_Byte at 8 range 0..7;
       end record;
 
-   type Item_Value_Sequence_Ptr is access Item_Value_Sequence;
+   type Item_Value_Header_Sequence_Ptr is access Item_Value_Sequence_Header;
 
-   function To_Item_Value_Sequence_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Sequence_Ptr);
+   function To_Item_Value_Sequence_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Sequence_Header_Ptr);
+
+   function Get_Item_Value_Sequence_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Sequence_Header_Ptr is (To_Item_Value_Sequence_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_Sequence_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Sequence_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Sequence_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
-   -- Dictionary, relative to value start
-   --
-   type Item_Value_Dictionary is
+   -----------------------------------------------------------------------------
+   -- Item Value: Dictionary
+
+   type Item_Value_Dictionary_Header is
       record
          Reserved: Unsigned_32;
          Item_Count: Unsigned_32;
-         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Dictionary'Size use 32 + 32 + 8;
+   for Item_Value_Dictionary_Header'Size use 32 + 32;
 
-   for Item_Value_Dictionary use
+   for Item_Value_Dictionary_Header use
       record
          Reserved at 0 range 0..31;
          Item_Count at 4 range 0..31;
-         Next_Byte at 8 range 0..7;
       end record;
 
-   type Item_Value_Dictionary_Ptr is access Item_Value_Dictionary;
+   type Item_Value_Dictionary_Header_Ptr is access Item_Value_Dictionary_Header;
 
-   function To_Item_Value_Dictionary_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Dictionary_Ptr);
+   function To_Item_Value_Dictionary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Dictionary_Header_Ptr);
+
+   function Get_Item_Value_Dictionary_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Dictionary_Header_Ptr is (To_Item_Value_Dictionary_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_Dictionary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Dictionary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Dictionary_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
-   -- Table, relative to value start
-   --
-   Table_Row_Count_Offset: Unsigned_32 := 0;
-   Table_Column_Count_Offset: Unsigned_32 := 4;
-   Table_Fields_Start_Offset: Unsigned_32 := 8;
-   Table_Row_Byte_Count_Offset: Unsigned_32 := 12;
-   Table_Column_Descriptors_Start_Offset: Unsigned_32 := 16;
-   type Item_Value_Table is
+   -----------------------------------------------------------------------------
+   -- Item Value: Table
+
+   type Item_Value_Table_Header is
       record
          Row_Count: Unsigned_32;
          Column_Count: Unsigned_32;
          Fields_Start: Unsigned_32;
          Row_Byte_Count: Unsigned_32;
-         Column_Descriptors_Start: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Table'Size use 32 + 32 + 32 + 32 + 8;
+   for Item_Value_Table_Header'Size use 32 + 32 + 32 + 32;
 
-   for Item_Value_Table use
+   for Item_Value_Table_Header use
       record
          Row_Count at 0 range 0..31;
          Column_Count at 4 range 0..31;
          Fields_Start at 8 range 0..31;
          Row_Byte_Count at 12 range 0..31;
-         Column_Descriptors_Start at 16 range 0..7;
       end record;
 
+   type Item_Value_Table_Header_Ptr is access Item_Value_Table_Header;
 
-   -- Table - Column Descriptor, relative to start of descriptor
-   --
-   type Table_Column_Descriptor is
+   function To_Item_Value_Table_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Table_Header_Ptr);
+
+   function Get_Item_Value_Table_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Dictionary_Header_Ptr is (To_Item_Value_Table_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+
+   function Item_Value_Table_Get_Row_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Table_Set_Row_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Table_Get_Column_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Table_Set_Column_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Table_Get_Fields_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   function Item_Value_Table_Get_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Table_Set_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Table_Get_Column_Descriptor_Start_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+
+   -----------------------------------------------------------------------------
+   -- Table - Column Descriptor
+
+   type Column_Descriptor is
       record
          Name_CRC: Unsigned_16;
          Name_Byte_Count: Unsigned_8;
@@ -286,9 +508,9 @@ private
          Field_Byte_Count: Unsigned_32;
       end record;
 
-   for Table_Column_Descriptor'Size use 16 + 8 + 8 + 32 + 32 + 32;
+   for Column_Descriptor'Size use 16 + 8 + 8 + 32 + 32 + 32;
 
-   for Table_Column_Descriptor use
+   for Column_Descriptor use
       record
          Name_CRC         at 0  range 0..15;
          Name_Byte_Count  at 2  range 0..7;
@@ -298,10 +520,39 @@ private
          Field_Byte_Count at 12 range 0..31;
       end record;
 
+   type Column_Descriptor_Ptr is access Column_Descriptor;
 
-   -- Color, relative to start of small-value
-   --
-   type Item_Value_RGBA is
+   function To_Column_Descriptor_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Column_Descriptor_Ptr);
+
+   function Column_Descriptor_Get_Name_CRC (S: Store; Descriptor_Offset: Unsigned_32) return CRC_16;
+
+   procedure Column_Descriptor_Set_Name_CRC (S: Store; Descriptor_Offset: Unsigned_32; Value: CRC_16);
+
+   function Column_Descriptor_Get_Name_Byte_Count (S: Store; Descriptor_Offset: Unsigned_32) return Unsigned_8;
+
+   procedure Column_Descriptor_Set_Name_Byte_Count (S: Store; Descriptor_Offset: Unsigned_32; Value: Unsigned_8);
+
+   function Column_Descriptor_Get_Field_Type (S: Store; Descriptor_Offset: Unsigned_32) return Item_Type;
+
+   procedure Column_Descriptor_Set_Field_Type (S: Store; Descriptor_Offset: Unsigned_32; Value: Item_Type);
+
+   function Column_Descriptor_Get_Name_Offset (S: Store; Descriptor_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Column_Descriptor_Set_Name_Offset (S: Store; Descriptor_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Column_Descriptor_Get_Field_Offset (S: Store; Descriptor_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Column_Descriptor_Set_Field_Offset (S: Store; Descriptor_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Column_Descriptor_Get_Field_Byte_Count (S: Store; Descriptor_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Column_Descriptor_Set_Field_Byte_Count (S: Store; Descriptor_Offset: Unsigned_32; Value: Unsigned_32);
+
+
+   -----------------------------------------------------------------------------
+   -- Item Value: RGBA (Color)
+
+   type Item_Value_Header_RGBA is
       record
          Red: Unsigned_8;
          Green: Unsigned_8;
@@ -309,9 +560,9 @@ private
          Alpha: Unsigned_8;
       end record;
 
-   for Item_Value_RGBA'Size use 32;
+   for Item_Value_Header_RGBA'Size use 32;
 
-   for Item_Value_RGBA use
+   for Item_Value_Header_RGBA use
       record
          Red   at 0 range 0..7;
          Green at 1 range 0..7;
@@ -319,136 +570,87 @@ private
          Alpha at 3 range 0..7;
       end record;
 
+   type Item_Value_Header_RGBA_Ptr is access Item_Value_Header_RGBA;
 
-   -- Font, relative to start of value
-   --
-   Font_Size_Offset: Unsigned_32 := 0;
-   Font_Family_Byte_Count_Offset: Unsigned_32 := 4;
-   Font_Name_Byte_Count_Offset: Unsigned_32 := 5;
-   Font_Family_Byte_Code_Start_Offset: Unsigned_32 := 6;
-   type Item_Value_Font is
+   function To_Item_Value_Header_RGBA_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_RGBA_Ptr);
+
+
+   -----------------------------------------------------------------------------
+   -- Item Value: Font
+
+   type Item_Value_Header_Font is
       record
-         Size: Float_32;
+         Size: IEEE_Float_32;
          Family_Name_Byte_Count: Unsigned_8;
          Font_Name_Byte_Count: Unsigned_8;
-         Next_Byte: aliased Unsigned_8;
       end record;
 
-   for Item_Value_Font'Size use 32 + 8 + 8 + 8;
+   for Item_Value_Header_Font'Size use 32 + 8 + 8;
 
-   for Item_Value_Font use
+   for Item_Value_Header_Font use
       record
          Size at 0 range 0..31;
          Family_Name_Byte_Count at 4 range 0..7;
          Font_Name_Byte_count at 5 range 0..7;
-         Next_Byte at 6 range 0..7;
       end record;
 
-   type Item_Value_Font_Ptr is access Item_Value_Font;
+   type Item_Value_Header_Font_Ptr is access Item_Value_Header_Font;
 
-   function To_Item_Value_Font_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Font_Ptr);
+   function To_Item_Value_Header_Font_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_Font_Ptr);
 
 
+   -----------------------------------------------------------------------------
    -- Creates the layout for the requested type in the container at the requested offset.
-   --
+
    procedure Create_Layout
     (
      S: Store;
      At_Offset: Unsigned_32;
      Of_Type: Item_Type;
-     With_Name: Name_Field_Assistent.Instance;
+     With_Name: Name_Field_Assistent;
      Using_Byte_Count: Unsigned_32 := 0;
      Parent_Offset: Unsigned_32 := 0
     );
 
-   -- Returns the offset of the item value. This is either the small-value or the payload.
-   -- Note: The offset returned is the offset from the beginning of the array!
-   --
-   function Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-   pragma Inline (Value_Offset);
 
-
+   -----------------------------------------------------------------------------
    -- Create a new array layout at the given offset
-   --
+
    function Create_Array_Layout
      (
-      S: Storer;
+      S: Store;
       At_Offset: Unsigned_32;
-      With_Name: Name_Field_Assistent.Instance;
-      For_Element_Type: Types.Item_Type;
+      With_Name: Name_Field_Assistent;
+      For_Element_Type: Item_Type;
       Using_Element_Byte_Count: Unsigned_32;
       Max_Element_Count: Unsigned_32
-     ) return Portal.Instance;
+     ) return Portal;
 
 
-   -- Fixed layout
-
-   function Get_Type (Item_Ptr: Types.Unsigned_8_Ptr) return Types.Item_Type;
-   pragma Inline (Get_Type);
-
-   function Get_Options (S: Store; Item_Offset: Unsigned_32) return Types.Item_Options;
-   pragma Inline (Get_Options);
-
-   function Get_Flags (S: Store; Item_Offset: Unsigned_32) return Types.Item_Flags;
-   pragma Inline (Get_Flags);
-
-   function Get_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
-   pragma Inline (Get_Name_Field_Byte_Count);
-
-   function Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-   pragma Inline (Get_Byte_Count);
-
-   function Get_Small_Value (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-   pragma Inline (Get_Small_Value);
-
-   function Get_Parent_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32;
-   pragma Inline (Get_Parent_Offset);
-
-   procedure Set_Type (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Types.Item_Type);
-   pragma Inline (Set_Type);
-
-   procedure Set_Options (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Types.Item_Options);
-   pragma Inline (Set_Options);
-
-   procedure Set_Flags (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Types.Item_Flags);
-   pragma Inline (Set_Flags);
-
-   procedure Set_Name_Field_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_8);
-   pragma Inline (Set_Name_Field_Byte_Count);
-
-   procedure Set_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_32);
-   pragma Inline (Set_Byte_Count);
-
-   procedure Set_Small_Value (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_32);
-   pragma Inline (Set_Small_Value);
-
-   procedure Set_Parent_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_32);
-   pragma Inline (Set_Parent_Offset);
-
-
+   -----------------------------------------------------------------------------
    -- Name Field access
 
-   procedure Set_Name (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Name_Field_Assistent.Instance);
+   procedure Set_Name (IPtr: Item_Header_Ptr; Value: Name_Field_Assistent);
 
-   function Get_Name_Quick_Check_Value (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Get_Name_Quick_Check_Value (IPtr: Item_Header_Ptr) return Unsigned_32;
    pragma Inline (Get_Name_Quick_Check_Value);
 
-   function Get_Name_CRC (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_16;
+   function Get_Name_CRC (IPtr: Item_Header_Ptr) return CRC_16;
    pragma Inline (Get_Name_CRC);
 
-   function Get_Name_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_8;
+   function Get_Name_Byte_Count (IPtr: Item_Header_Ptr) return Unsigned_8;
    pragma Inline (Get_Name_Byte_Count);
 
-   function Get_Name_String (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return String;
+   function Get_Name_String (IPtr: Item_Header_Ptr) return String;
    pragma Inline (Get_Name_String);
 
-   procedure Set_Name_CRC (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_16);
+   procedure Set_Name_CRC (IPtr: Item_Header_Ptr; Value: CRC_16);
    pragma Inline (Set_Name_CRC);
 
-   procedure Set_Name_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   procedure Set_Name_Byte_Count (IPtr: Item_Header_Ptr; Value: Unsigned_8);
    pragma Inline (Set_Name_Byte_Count);
 
-   procedure Set_Name_String (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: String);
+   procedure Set_Name_String (IPtr: Item_Header_Ptr; Value: String);
    pragma Inline (Set_Name_String);
 
 

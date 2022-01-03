@@ -1,91 +1,247 @@
 with Ada.Exceptions;
 with Ada.Unchecked_Conversion;
 
-with CRC_Package;
+with CRC_Package; use CRC_Package;
 
 with BRBON.Utils;
---with BRBON.Types; use BRBON.Types;
+with BRBON.Container;
+with BRBON.Portal_Package; use BRBON.Portal_Package;
 
 
 package body BRBON.Item_Package is
-
    
-   -- ==========================================================================
-   -- API
-   -- ==========================================================================
-
+   
+   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr is
+   begin
+      return S.Data (Get_Value_Offset (S, Item_Offset))'Access;
+   end Get_Value_Ptr;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_Bool (S: Store; Item_Offset: Unsigned_32) return Boolean is
+   begin
+      return Container.Get_Bool (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_Bool;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_Bool (S: Store; Item_Offset: Unsigned_32; Value: Boolean) is
+   begin
+      Container.Set_Bool (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_Bool;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_Int8 (S: Store; Item_Offset: Unsigned_32) return Integer_8 is
+   begin
+      return Container.Get_Integer_8 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_Int8;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_Int8 (S: Store; Item_Offset: Unsigned_32; Value: Integer_8) is
+   begin
+      Container.Set_Integer_8 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_Int8;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_UInt8 (S: Store; Item_Offset: Unsigned_32) return Unsigned_8 is
+   begin
+      return Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_UInt8;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_UInt8 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8) is
+   begin
+      Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_UInt8;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_Int16 (S: Store; Item_Offset: Unsigned_32) return Integer_16 is
+   begin
+      return Container.Get_Integer_16 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_Int16;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_Int16 (S: Store; Item_Offset: Unsigned_32; Value: Integer_16) is
+   begin
+      Container.Set_Integer_16 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_Int16;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_UInt16 (S: Store; Item_Offset: Unsigned_32) return Unsigned_16 is
+   begin
+      return Container.Get_Unsigned_16 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_UInt16;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_UInt16 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_16) is
+   begin
+      Container.Set_Unsigned_16 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_UInt16;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_Int32 (S: Store; Item_Offset: Unsigned_32) return Integer_32 is
+   begin
+      return Container.Get_Integer_32 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_Int32;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_Int32 (S: Store; Item_Offset: Unsigned_32; Value: Integer_32) is
+   begin
+      Container.Set_Integer_32 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_Int32;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_UInt32 (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      return Container.Get_Unsigned_32 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_UInt32;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_UInt32 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   begin
+      Container.Set_Unsigned_32 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_UInt32;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_Float32 (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32 is
+   begin
+      return Container.Get_Float_32 (S, Item_Offset + Small_Value_Offset);
+   end Small_Value_Get_Float32;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_Float32 (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32) is
+   begin
+      Container.Set_Float_32 (S, Item_Offset + Small_Value_Offset, Value);
+   end Small_Value_Set_Float32;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Small_Value_Get_Color (S: Store; Item_Offset: Unsigned_32) return Color is
+   begin
+      return Color_Factory (Red   => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset),
+                            Green => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 1),
+                            Blue  => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 2),
+                            Alpha => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 3));
+   end Small_Value_Get_Color;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Small_Value_Set_Color (S: Store; Item_Offset: Unsigned_32; Value: Color) is
+   begin
+      Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset, Get_Red_Component (Value));
+      Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 1, Get_Green_Component (Value));
+      Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 2, Get_Blue_Component (Value));
+      Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 3, Get_Alpha_Component (Value));
+   end Small_Value_Set_Color;
+   
+   
+   -----------------------------------------------------------------------------
    
    procedure Create_Layout
     (
-     CPtr: Unsigned_8_Ptr;
+     S: Store;
      At_Offset: Unsigned_32;
      Of_Type: Item_Type;
-     With_Name: Name_Field_Assistent.Instance;
+     With_Name: Name_Field_Assistent;
      Using_Byte_Count: Unsigned_32 := 0;
      Parent_Offset: Unsigned_32 := 0
     ) is
 
-      T: Types.Item_Type renames Of_Type;
+      T: Item_Type renames Of_Type;
       O: Unsigned_32 renames At_Offset;
-      N: Name_Field_Assistent.Instance renames With_Name;
+      N: Name_Field_Assistent renames With_Name;
       B: Unsigned_32 renames Using_Byte_Count;
       P: Unsigned_32 renames Parent_Offset;
-
-      Value_Offset: Unsigned_32 := At_Offset + Types.Minimum_Item_Byte_Count + Unsigned_32 (With_Name.Name_Field_Byte_Count);
+      
+      Item_Ptr: Item_Header_Ptr := To_Item_Header_Ptr (S.Data (At_Offset)'Access);
       
    begin
 
-      if T = Types.Illegal then
+      if T = Illegal then
          Ada.Exceptions.Raise_Exception (Illegal_Item_Type'Identity, "Cannot create illegal item type");
       end if;
       
-      Item.Set_Type (CPtr, O, T);
-      Item.Set_Options (CPtr, O, Types.No_Item_Options);
-      Item.Set_Flags (CPtr, O, Types.No_Item_Flags);
-      Item.Set_Byte_Count (CPtr, O, B);
-      Item.Set_Parent_Offset (CPtr, O, P);
-      Item.Set_Name (CPtr, O, N);
+      Item_Ptr.Type_Field := T;
+      Item_Ptr.Options_Field := No_Item_Options;
+      Item_Ptr.Flags_Field := No_Item_Flags;
+      Item_Ptr.Name_Field_Byte_Count_Field := N.Field_Byte_Count;
+      Item_Ptr.Parent_Offset_Field := P;
+      Item_Ptr.Byte_Count_Field := B;
+      
+      Set_Name (Item_Ptr, N);
       
       case T is
          when Illegal => null; -- Cannot happen
-         when Types.Null_Type | Types.Bool_Type | Types.Int_8_Type | Types.Int_16_Type | Types.Int_32_Type | Types.UInt_8_Type | Types.UInt_16_Type | Types.UInt_32_Type | Types.Float_32_Type | Types.RGBA_Type =>
-            Item.Set_Small_Value (CPtr, O, 0);
-         when Types.Int_64_Type =>
-            Container.Set_Integer_64 (CPtr, Value_Offset, 0);
-         when Types.UInt_64_Type =>
-            Container.Set_Unsigned_64 (CPtr, Value_Offset, 0);
-         when Types.Float_64_Type =>
-            Container.Set_Float_64 (CPtr, Value_Offset, 0.0);
-         when Types.String_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-         when Types.Crc_String_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 4, 0);
-         when Types.Binary_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-         when Types.Crc_Binary_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 4, 0);
-         when Types.Array_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 4, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 8, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 12, 0);
-         when Types.Dictionary_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 4, 0);
-         when Types.Sequence_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 4, 0);
-         when Types.Table_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 4, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 8, 0);
-            Container.Set_Unsigned_32 (CPtr, Value_Offset + 12, 0);
-         when Types.UUID_Type =>
-            Container.Set_Unsigned_64 (CPtr, Value_Offset, 0);
-         when Types.Font_Type =>
-            Container.Set_Unsigned_32 (CPtr, Value_Offset, 0);
+         when Null_Type | Bool_Type | Int_8_Type | Int_16_Type | Int_32_Type | UInt_8_Type | UInt_16_Type | UInt_32_Type | Float_32_Type | RGBA_Type =>
+            Small_Value_Set_UInt32 (S, O, 0);
+         when Int_64_Type =>
+            Container.Set_Integer_64 (S, Get_Value_Offset (S, At_Offset), 0);
+         when UInt_64_Type =>
+            Container.Set_Unsigned_64 (S, Get_Value_Offset (S, At_Offset), 0);
+         when Float_64_Type =>
+            Container.Set_Float_64 (S, Get_Value_Offset (S, At_Offset), 0.0);
+         when String_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+         when Crc_String_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 4, 0);
+         when Binary_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+         when Crc_Binary_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 4, 0);
+         when Array_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 4, 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 8, 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 12, 0);
+         when Dictionary_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 4, 0);
+         when Sequence_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 4, 0);
+         when Table_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 4, 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 8, 0);
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset) + 12, 0);
+         when UUID_Type =>
+            Container.Set_Unsigned_64 (S, Get_Value_Offset (S, At_Offset), 0);
+         when Font_Type =>
+            Container.Set_Unsigned_32 (S, Get_Value_Offset (S, At_Offset), 0);
       end case;
 
    end Create_Layout;
@@ -95,17 +251,17 @@ package body BRBON.Item_Package is
    --
    function Create_Array_Layout
      (
-      CPtr: Container.Instance_Ptr;
+      S: Store;
       At_Offset: Unsigned_32;
-      With_Name: Name_Field_Assistent.Instance;
-      For_Element_Type: Types.Item_Type;
+      With_Name: Name_Field_Assistent;
+      For_Element_Type: Item_Type;
       Using_Element_Byte_Count: Unsigned_32;
       Max_Element_Count: Unsigned_32
-     ) return Portal.Instance is
+     ) return Portal is
   
       Index: Unsigned_32 renames At_Offset;
-      Name: BRBON.Name_Field_Assistent.Instance renames With_Name;
-      Element_Type: Types.Item_Type renames For_Element_Type;
+      Name: Name_Field_Assistent renames With_Name;
+      Element_Type: Item_Type renames For_Element_Type;
       Element_Count: Unsigned_32 renames Max_Element_Count;
       
       Element_Byte_Count: Unsigned_32 := Using_Element_Byte_Count;
@@ -127,201 +283,124 @@ package body BRBON.Item_Package is
       -- (all elements must be properly aligned according to their inherent byte count)
       --
       case Element_Type is
-         when Types.Illegal => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot create an array of Illegal elements");
-         when Types.Null_Type => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot create an array of Null_Type elements");
-         when Types.Bool_Type | Types.UInt_8_Type | Types.Int_8_Type => null;
-         when Types.UInt_16_Type | Types.Int_16_Type =>
+         when Illegal => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot create an array of Illegal elements");
+         when Null_Type => Ada.Exceptions.Raise_Exception (BRBON.Illegal_Item_Type'Identity, "Cannot create an array of Null_Type elements");
+         when Bool_Type | UInt_8_Type | Int_8_Type => null;
+         when UInt_16_Type | Int_16_Type =>
             if Element_Byte_Count mod 2 = 1 then
                Element_Byte_Count := Element_Byte_Count + 1;
             end if;
-         when Types.UInt_32_Type | Types.Int_32_Type | Float_32_Type =>
+         when UInt_32_Type | Int_32_Type | Float_32_Type =>
             if Element_Byte_Count mod 2 = 1 then
                Element_Byte_Count := Element_Byte_Count + 1;
             end if;
             if Element_Byte_Count mod 4 = 2 then
                Element_Byte_Count := Element_Byte_Count + 2;
             end if;
-         when Types.UInt_64_Type | Types.Int_64_Type | Float_64_Type | Types.UUID_Type | Types.RGBA_Type =>
+         when UInt_64_Type | Int_64_Type | Float_64_Type | UUID_Type | RGBA_Type =>
             Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
-         when Types.Sequence_Type | Types.Dictionary_Type =>
-            if Element_Byte_Count < Types.Minimum_Item_Byte_Count then
-               Element_Byte_Count := Types.Minimum_Item_Byte_Count;
+         when Sequence_Type | Dictionary_Type =>
+            if Element_Byte_Count < Item_Header_Byte_Count then
+               Element_Byte_Count := Item_Header_Byte_Count;
             else
                Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
             end if;
-         when Types.Array_Type =>
-            if Element_Byte_Count < Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Array_Type) then
-               Element_Byte_Count := Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Array_Type);
+         when Array_Type =>
+            if Element_Byte_Count < Item_Header_Byte_Count + Item_Overhead_Byte_Count (Array_Type) then
+               Element_Byte_Count := Item_Header_Byte_Count + Item_Overhead_Byte_Count (Array_Type);
             else
                Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
             end if;
-         when Types.Table_Type =>
-            if Element_Byte_Count < Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Table_Type) then
-               Element_Byte_Count := Types.Minimum_Item_Byte_Count + Types.Item_Overhead_Byte_Count (Types.Table_Type);
+         when Table_Type =>
+            if Element_Byte_Count < Item_Header_Byte_Count + Item_Overhead_Byte_Count (Table_Type) then
+               Element_Byte_Count := Item_Header_Byte_Count + Item_Overhead_Byte_Count (Table_Type);
             else
                Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
             end if;
-         when Types.String_Type | Types.Crc_String_Type | Types.Binary_Type | Types.Crc_Binary_Type | Types.Font_Type =>
+         when String_Type | Crc_String_Type | Binary_Type | Crc_Binary_Type | Font_Type =>
             Element_Byte_Count := Utils.Round_Up_To_Nearest_Multiple_of_8 (Element_Byte_Count);
       end case;
 
          
       -- Create basic item layout
       --
-      Create_Layout (CPtr             => CPtr,
+      Create_Layout (S                => S,
                      At_Offset        => Index,
-                     Of_Type          => Types.Array_Type,
+                     Of_Type          => Array_Type,
                      With_Name        => Name,
-                     Using_Byte_Count => Types.Item_Overhead_Byte_Count (Types.Array_Type) + Element_Byte_Count * Element_Count,
+                     Using_Byte_Count => Item_Overhead_Byte_Count (Array_Type) + Element_Byte_Count * Element_Count,
                      Parent_Offset    => 0);
       
       -- Initialize the array specific parameters
       --
-      Container.Set_Unsigned_8 (CPtr, Item.Value_Offset (CPtr, Index) + Array_Element_Type_Offset, Types.To_Unsigned_8 (Element_Type));
-      Container.Set_Unsigned_32 (CPtr, Item.Value_Offset (CPtr, Index) + Array_Element_Byte_Count_Offset, Element_Byte_Count);
+      declare
+         Array_Header_Ptr: Item_Value_Header_Array_Ptr := To_Item_Value_Header_Array_Ptr (Get_Value_Ptr (S, At_Offset));
+      begin
+         Array_Header_Ptr.Element_Type := Element_Type;
+         Array_Header_Ptr.Element_Byte_Count := Element_Byte_Count;
+      end;
       
-      
-      return Portal.Factory (CPtr, Index);
+      return Portal_Factory (S, Index);
       
    end Create_Array_Layout;
    
    
    -- Get_Value_Offset
    --
-   Use_Small_Value_LUT: constant Array (Types.Item_Type) of Boolean :=
+   Use_Small_Value_LUT: constant Array (Item_Type) of Boolean :=
      -- Ill  Null  Bool  i8    i16   i32   i64    u8    u16   u32   u64    f32   f64    str    cstr   bin    cbin   arr    dict   seq    tab    uuid   rgb   font
      (False, True, True, True, True, True, False, True, True, True, False, True, False, False, False, False, False, False, False, False, False, False, True, False);
    --                                         
-   function Value_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32 is
+   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
       
-      T: Types.Item_Type := Types.Illegal; -- := Item.Get_Type (CPtr, Item_Offset);
+      Item_Ptr : Item_Header_Ptr := To_Item_Header_Ptr (S.Data (Item_Offset)'Access);
+      T: Item_Type := Item_Ptr.Type_Field;
    
    begin
       
-      if T = Types.Illegal then
-         Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Container contains illegal item type (16#00#)");
+      if T = Illegal then
+         Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Store contains illegal item type (16#00#)");
       end if;
 
       if Use_Small_Value_LUT (T) then
          return Item_Offset + Small_Value_Offset;
       else
-         return Item_Offset + Types.Minimum_Item_Byte_Count + Unsigned_32 (Item.Get_Name_Field_Byte_Count (CPtr, Item_Offset));
+         return Item_Offset + Item_Header_Byte_Count + Unsigned_32 (Item_Ptr.Name_Field_Byte_Count_Field);
       end if;
    
-   end Value_Offset;
+   end Get_Value_Offset;
    
    
-   --   function Get_Type (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Type is
-   function Get_Type (Item_Ptr: Types.Unsigned_8_Ptr) return Types.Item_Type is
+   
+   function Get_Name_CRC (IPtr: Item_Header_Ptr) return Unsigned_16 is
    begin
-      return To_Item_Layout_Ptr (Item_Ptr).Type_Field;
-   end Get_Type;
-   
-   
-   function Get_Options (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Options is
-   begin
-      return Types.To_Item_Options (Container.Get_Unsigned_8 (CPtr, Item_Offset + Options_Offset));
-   end Get_Options;
-   
-   
-   function Get_Flags (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Types.Item_Flags is
-   begin
-      return Types.To_Item_Flags (Container.Get_Unsigned_8 (CPtr, Item_Offset + Flags_Offset));
-   end Get_Flags;
-   
-   
-   function Get_Name_Field_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_8 is
-   begin
-      return Container.Get_Unsigned_8 (CPtr, Item_Offset + Name_Field_Byte_Count_Offset);
-   end Get_Name_Field_Byte_Count;
-   
-   
-   function Get_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32 is
-   begin
-      return Container.Get_Unsigned_32 (CPtr, Item_Offset + Byte_Count_Offset);
-   end Get_Byte_Count;
-   
-   
-   function Get_Small_Value (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32 is
-   begin
-      return Container.Get_Unsigned_32 (CPtr, Item_Offset + Small_Value_Offset);
-   end Get_Small_Value;
-   
-   
-   function Get_Parent_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32 is
-   begin
-      return Container.Get_Unsigned_32 (CPtr, Item_Offset + Parent_Offset_Offset);
-   end Get_Parent_Offset;
-   
-   
-   function Get_Name_CRC (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_16 is
-   begin
-      return Container.Get_Unsigned_16 (CPtr, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset);
+      return To_Item_Name_Field_Ptr (IPtr.Next_Byte'Access).CRC;
    end Get_Name_CRC;
    
    
-   function Get_Name_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_8 is
+   function Get_Name_Byte_Count (IPtr: Item_Header_Ptr) return Unsigned_8 is
    begin
-      return Container.Get_Unsigned_8 (CPtr, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Byte_Count_Offset);
+      return To_Item_Name_Field_Ptr (IPtr.Next_Byte'Access).Byte_Count;
    end Get_Name_Byte_Count;
    
- --
-   function Get_Name_String (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return String is
-      Length: Unsigned_32 := Unsigned_32 (Get_Name_Byte_Count (CPtr, Item_Offset));
+
+   function Get_Name_String (IPtr: Item_Header_Ptr) return String is
+      Length: Integer := Integer (Get_Name_Byte_Count (IPtr));
+      ASCII_Ptr: Unsigned_8_Ptr := To_Item_Name_Field_Ptr (IPtr.Next_Byte'Access).ASCII_Code'Access;
+      subtype StrT is String (1 .. Length);
+      type StrTPtr is access StrT;
+      function ToStrTPtr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, StrTPtr);
    begin
-      return Container.Get_String (CPtr, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Code_Offset, Length);
+      return ToStrTPtr (ASCII_Ptr).all;
    end Get_Name_String;
    
    
-   function Get_Name_Quick_Check_Value (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32) return Unsigned_32 is
+   function Get_Name_Quick_Check_Value (IPtr: Item_Header_Ptr) return Unsigned_32 is
    begin
-      return Container.Get_Unsigned_32 (CPtr, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset);
+      return Container.Get_Unsigned_32 (IPtr, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset);
    end Get_Name_Quick_Check_Value;
-   
-   
-   procedure Set_Type (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Types.Item_Type) is
-   begin
-      Container.Set_Unsigned_8 (CPtr, Item_Offset + Type_Offset, Types.To_Unsigned_8 (Value));
-   end Set_Type;
-
-   
-   procedure Set_Options (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Types.Item_Options) is
-   begin
-      Container.Set_Unsigned_8 (CPtr, Item_Offset + Options_Offset, Types.To_Unsigned_8 (Value));
-   end Set_Options;
-
-   
-   procedure Set_Flags (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Types.Item_Flags) is
-   begin
-      Container.Set_Unsigned_8 (CPtr, Item_Offset + Flags_Offset, Types.To_Unsigned_8 (Value));
-   end Set_Flags;
-
-   
-   procedure Set_Name_Field_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_8) is
-   begin
-      Container.Set_Unsigned_8 (CPtr, Item_Offset + Name_Field_Byte_Count_Offset, Value);
-   end Set_Name_Field_Byte_Count;
-
-   
-   procedure Set_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_32) is
-   begin
-      Container.Set_Unsigned_32 (CPtr, Item_Offset + Byte_Count_Offset, Value);
-   end Set_Byte_Count;
-
-   
-   procedure Set_Small_Value (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_32) is
-   begin
-      Container.Set_Unsigned_32 (CPtr, Item_Offset + Small_Value_Offset, Value);
-   end Set_Small_Value;
-
-   
-   procedure Set_Parent_Offset (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_32) is
-   begin
-      Container.Set_Unsigned_32 (CPtr, Item_Offset + Parent_Offset_Offset, Value);
-   end Set_Parent_Offset;
-
-   
-   procedure Set_Name (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Name_Field_Assistent.Instance) is
+     
+   procedure Set_Name (IPtr: Item_Header_Ptr; Value: Name_Field_Assistent.Instance) is
    begin
       if Value.Name_Field_Byte_Count > 0 then
          Container.Set_Unsigned_8 (CPtr, Item_Offset + Name_Field_Byte_Count_Offset, Value.Name_Field_Byte_Count);
@@ -332,19 +411,19 @@ package body BRBON.Item_Package is
    end Set_Name;
    
    
-   procedure Set_Name_CRC (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_16) is
+   procedure Set_Name_CRC (IPtr: Item_Header_Ptr; Value: Unsigned_16) is
    begin
       Container.Set_Unsigned_16 (CPtr, Item_Offset + Name_Field_CRC_Offset, Value);
    end Set_Name_CRC;
 
    
-   procedure Set_Name_Byte_Count (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: Unsigned_8) is
+   procedure Set_Name_Byte_Count (IPtr: Item_Header_Ptr; Value: Unsigned_8) is
    begin
       Container.Set_Unsigned_8 (CPtr, Item_Offset + Name_Field_ASCII_Byte_Count_Offset, Value);
    end Set_Name_Byte_Count;
 
    
-   procedure Set_Name_String (CPtr: Container.Instance_Ptr; Item_Offset: Unsigned_32; Value: String) is
+   procedure Set_Name_String (IPtr: Item_Header_Ptr; Value: String) is
    begin
       Container.Set_String (CPtr, Item_Offset + Name_Field_ASCII_Code_Offset, Value);
    end Set_Name_String;

@@ -6,18 +6,23 @@ with Crc_Package;
 with BRBON.Utils;
 
 
-package body BRBON.Name_Field_Assistent is
+package body BRBON.Name_Field_Assistent_Package is
 
 
-   function Get_Minimum_Item_Byte_Count (I: Instance) return Unsigned_32 is
+   function Get_Minimum_Item_Byte_Count (NFA: Name_Field_Assistent) return Unsigned_32 is
+
    begin
-      return Unsigned_32 (I.Name_Field_Byte_Count) + Types.Minimum_Item_Byte_Count;
+
+      return Unsigned_32 (NFA.Field_Byte_Count) + BRBON.Item_Package.Item_Header_Byte_Count;
+
    end Get_Minimum_Item_Byte_Count;
 
 
-   function Create_Name_Field_Assistent (S: String) return Instance is
+   -----------------------------------------------------------------------------
 
-      Assistent: Instance;
+   function Name_Field_Assistent_Factory (S: String) return Name_Field_Assistent is
+
+      Assistent: Name_Field_Assistent;
       Index: Unsigned_32 := 1;
 
    begin
@@ -59,17 +64,20 @@ package body BRBON.Name_Field_Assistent is
 
       return Assistent;
 
-   end Create_Name_Field_Assistent;
+   end Name_Field_Assistent_Factory;
 
 
-   function Get_Quick_Check_Value (I: in out Instance) return Unsigned_32 is
-      A: aliased Instance := I;
-      type Instance_Ptr is access all Instance;
-      type Unsigned_32_Ptr is access all Unsigned_32;
-      function To_Unsigned_32 is new Ada.Unchecked_Conversion (Instance_Ptr, Unsigned_32_Ptr);
-      Ptr: Instance_Ptr := A'Access;
+   -----------------------------------------------------------------------------
+
+   function Get_Quick_Check_Value (NFA: Name_Field_Assistent) return Unsigned_32 is
+
+      Ptr: Unsigned_16_Ptr := NFA.CRC'Access;
+
    begin
-      return To_Unsigned_32 (Ptr).all;
+
+      return To_Quick_Check_Ptr (Ptr).all;
+
    end Get_Quick_Check_Value;
 
-end BRBON.Name_Field_Assistent;
+
+end BRBON.Name_Field_Assistent_Package;

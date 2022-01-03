@@ -1,9 +1,9 @@
 package body Color_Package is
 
-   function Factory (Red: Unsigned_8; Green: Unsigned_8; Blue: Unsigned_8; Alpha: Unsigned_8) return Color is
+   function Color_Factory (Red: Unsigned_8; Green: Unsigned_8; Blue: Unsigned_8; Alpha: Unsigned_8) return Color is
    begin
       return (Red, Green, Blue, Alpha);
-   end Factory;
+   end Color_Factory;
 
    function Get_Red_Component (C: Color) return Unsigned_8 is begin return C.Red; end Get_Red_Component;
    function Get_Green_Component (C: Color) return Unsigned_8 is begin return C.Green; end Get_Green_Component;

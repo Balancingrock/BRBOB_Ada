@@ -6,7 +6,7 @@ package Color_Package is
 
    type Color is private;
 
-   function Factory (Red: Unsigned_8; Green: Unsigned_8; Blue: Unsigned_8; Alpha: Unsigned_8) return Color;
+   function Color_Factory (Red: Unsigned_8; Green: Unsigned_8; Blue: Unsigned_8; Alpha: Unsigned_8) return Color;
 
    function Get_Red_Component (C: Color) return Unsigned_8;
    function Get_Green_Component (C: Color) return Unsigned_8;
