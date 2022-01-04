@@ -76,7 +76,7 @@ private package BRBON.Item_Package is
 
    Item_Header_Byte_Count: constant Unsigned_32 := 16;
 
-   function To_Item_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Header_Ptr is (To_Item_Header_Ptr (S.Data (Item_Offset)'Access));
+   function Get_Item_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Header_Ptr is (To_Item_Header_Ptr (S.Data (Item_Offset)'Access));
    pragma Inline (To_Item_Header_Ptr);
 
    function Item_Header_Get_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
@@ -91,7 +91,7 @@ private package BRBON.Item_Package is
    function Item_Header_Get_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
    procedure Item_Header_Set_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
 
-   function Item_Header_Get_Byte_Counts (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Item_Header_Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
    procedure Item_Header_Set_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
    function Item_Header_Get_Parent_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
@@ -162,6 +162,7 @@ private package BRBON.Item_Package is
    -- Item Name Field (optional)
 
    Item_Name_Offset: constant Unsigned_32 := Item_Header_Byte_count;
+   Item_Name_Ascii_Code_Offset: constant Unsigned_32 := Item_Name_Offset + 3;
 
    type Item_Name_Field is
       record
@@ -170,7 +171,7 @@ private package BRBON.Item_Package is
          ASCII_Code: aliased Unsigned_8; -- Followed by up to 244 characters
       end record;
 
-   for Item_Name_Field'Size use 4 * 8;
+   for Item_Name_Field'Size use 16 + 8 + 8;
 
    for Item_Name_Field use
       record
@@ -183,7 +184,7 @@ private package BRBON.Item_Package is
 
    function To_Item_Name_Field_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Name_Field_Ptr);
 
-   function Get_Item_Name_Field_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is ( Item_Offset + Item_Name_Offset );
+   function Get_Item_Name_Field_Offset (Item_Offset: Unsigned_32) return Unsigned_32 is ( Item_Offset + Item_Name_Offset );
    pragma Inline (Get_Item_Name_Field_Offset);
 
    function Get_Item_Name_Field_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Name_Field_Ptr is (To_Item_Name_Field_Ptr (S.Data (Get_Item_Name_Field_Offset)'Access));
@@ -206,9 +207,17 @@ private package BRBON.Item_Package is
    -----------------------------------------------------------------------------
    -- Value access
 
-   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr;
+   -- Returns the offset to the value field for > 32 bit (not small) values from the start of the item.
+   --
+   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is (Item_Header_Byte_Count + Unsigned_32 (Item_Header_Get_Name_Field_Byte_Count));
+   pragma Inline (Get_Value_Offset);
+
+
+   -- Returns a pointer to the first byte of the value.
+   --
+   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr is (S.Data (Item_Offset + Get_Value_Offset (S, Item_Offset)));
+   pragma Inline (Get_Value_Ptr);
 
 
    -----------------------------------------------------------------------------
@@ -550,7 +559,7 @@ private package BRBON.Item_Package is
 
 
    -----------------------------------------------------------------------------
-   -- Item Value: RGBA (Color)
+   -- Small Item Value: RGBA (Color)
 
    type Item_Value_Header_RGBA is
       record
@@ -598,6 +607,26 @@ private package BRBON.Item_Package is
 
    function To_Item_Value_Header_Font_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Header_Font_Ptr);
 
+   function Item_Value_Font_Get_Size (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32;
+
+   procedure Item_Value_Font_Set_Size (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32);
+
+   function Item_Value_Font_Get_Family_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Font_Set_Family_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   function Item_Value_Font_Get_Font_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
+   procedure Item_Value_Font_Set_Font_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+
+   -- Returns the offset of the first family name character relative to the start of the item
+   --
+   function Item_Value_Font_Get_Family_Name_Offset return Unsigned_32;
+
+   -- Returns the offset of the first font name character relative to the start of the item
+   --
+   function Item_Value_Font_Get_Font_Name_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+
 
    -----------------------------------------------------------------------------
    -- Creates the layout for the requested type in the container at the requested offset.
@@ -625,33 +654,6 @@ private package BRBON.Item_Package is
       Using_Element_Byte_Count: Unsigned_32;
       Max_Element_Count: Unsigned_32
      ) return Portal;
-
-
-   -----------------------------------------------------------------------------
-   -- Name Field access
-
-   procedure Set_Name (IPtr: Item_Header_Ptr; Value: Name_Field_Assistent);
-
-   function Get_Name_Quick_Check_Value (IPtr: Item_Header_Ptr) return Unsigned_32;
-   pragma Inline (Get_Name_Quick_Check_Value);
-
-   function Get_Name_CRC (IPtr: Item_Header_Ptr) return CRC_16;
-   pragma Inline (Get_Name_CRC);
-
-   function Get_Name_Byte_Count (IPtr: Item_Header_Ptr) return Unsigned_8;
-   pragma Inline (Get_Name_Byte_Count);
-
-   function Get_Name_String (IPtr: Item_Header_Ptr) return String;
-   pragma Inline (Get_Name_String);
-
-   procedure Set_Name_CRC (IPtr: Item_Header_Ptr; Value: CRC_16);
-   pragma Inline (Set_Name_CRC);
-
-   procedure Set_Name_Byte_Count (IPtr: Item_Header_Ptr; Value: Unsigned_8);
-   pragma Inline (Set_Name_Byte_Count);
-
-   procedure Set_Name_String (IPtr: Item_Header_Ptr; Value: String);
-   pragma Inline (Set_Name_String);
 
 
 end BRBON.Item_Package;
