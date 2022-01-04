@@ -403,35 +403,68 @@ package body BRBON.Item_Package is
    -- Item Value: CRC String
 
    
-   type Item_Value_CRC_String_Header is
-      record
-         CRC: CRC_32;
-         Count: Unsigned_32;
-      end record;
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_CRC_String_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_32 is
+      VPtr: Item_Value_CRC_String_Header_Ptr := Get_Item_Value_CRC_String_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return CRC_32 (Swap_Unsigned_32 (Unsigned_32 (VPtr.CRC)));
+      else
+         return Vptr.CRC;
+      end if;
+   end Item_Value_CRC_String_Get_CRC;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_CRC_String_Header'Size use 32 + 32;
+   procedure Item_Value_CRC_String_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_32) is
+      VPtr: Item_Value_CRC_String_Header_Ptr := Get_Item_Value_CRC_String_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         VPtr.CRC := CRC_32 (Swap_Unsigned_32 (Unsigned_32 (Value)));
+      else
+         VPtr.CRC := Value;
+      end if;
+   end Item_Value_CRC_String_Set_CRC;
 
-   for Item_Value_CRC_String_Header use
-      record
-         CRC at 0 range 0..31;
-         Count at 4 range 0..31;
-      end record;
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_CRC_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      VPtr: Item_Value_CRC_String_Header_Ptr := Get_Item_Value_CRC_String_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (VPtr.Count);
+      else
+         return Vptr.Count;
+      end if;
+   end Item_Value_CRC_String_Get_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   type Item_Value_CRC_String_Header_Ptr is access Item_Value_CRC_String_Header;
+   procedure Item_Value_CRC_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      VPtr: Item_Value_CRC_String_Header_Ptr := Get_Item_Value_CRC_String_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         VPtr.CRC := Swap_Unsigned_32 (Value);
+      else
+         VPtr.CRC := Value;
+      end if;
+   end Item_Value_CRC_String_Set_Count;
 
-   function To_Item_Value_CRC_String_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_CRC_String_Header_Ptr);
-
-   function Get_Item_Value_CRC_String_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_String_Header_Ptr is (To_Item_Value_CRC_String_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
-
-   function Item_Value_CRC_String_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_32;
-
-   procedure Item_Value_CRC_String_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_32);
-
-   function Item_Value_CRC_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_CRC_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_CRC_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_CRC_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String is
+      Byte_Count: Unsigned_32 := Item_Value_CRC_String_Get_Count (S, Item_Offset);
+   begin
+      return Container.Get_String (S, Item_Offset + , Byte_Count);
+   end Item_Value_CRC_String_Get_ASCII_Code;
+   
+   
+   -----------------------------------------------------------------------------
 
    procedure Item_Value_CRC_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
 
