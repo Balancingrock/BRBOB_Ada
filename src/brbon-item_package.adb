@@ -353,6 +353,7 @@ package body BRBON.Item_Package is
 
    -----------------------------------------------------------------------------
    -- Item Value: String
+   -----------------------------------------------------------------------------
 
    
    -----------------------------------------------------------------------------
@@ -401,6 +402,7 @@ package body BRBON.Item_Package is
 
    -----------------------------------------------------------------------------
    -- Item Value: CRC String
+   -----------------------------------------------------------------------------
 
    
    -----------------------------------------------------------------------------
@@ -459,186 +461,309 @@ package body BRBON.Item_Package is
    
    function Item_Value_CRC_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String is
       Byte_Count: Unsigned_32 := Item_Value_CRC_String_Get_Count (S, Item_Offset);
+      Offset: Unsigned_32 := Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_CRC_String_Header_Byte_count;
    begin
-      return Container.Get_String (S, Item_Offset + , Byte_Count);
+      return Container.Get_String (S, Offset, Byte_Count);
    end Item_Value_CRC_String_Get_ASCII_Code;
    
    
    -----------------------------------------------------------------------------
 
-   procedure Item_Value_CRC_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
+   procedure Item_Value_CRC_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String) is
+      Offset: Unsigned_32 := Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_CRC_String_Header_Byte_count;
+   begin
+      Container.Set_String (S, Offset, Value);
+   end Item_Value_CRC_String_Set_ASCII_Code;
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Binary
+   -----------------------------------------------------------------------------
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      BPtr: Item_Value_Binary_Header_Ptr := Get_Item_Value_Binary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (BPtr.Count);
+      else
+         return BPtr.Count;
+      end if;
+   end Item_Value_Binary_Set_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   type Item_Value_Binary_Header is
-      record
-         Count: Unsigned_32;
-      end record;
+   procedure Item_Value_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      BPtr: Item_Value_Binary_Header_Ptr := Get_Item_Value_Binary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         BPtr.Count := Swap_Unsigned_32 (Value);
+      else
+         BPtr.Count := Value;
+      end if;
+   end Item_Value_Binary_Set_Count;
 
-   for Item_Value_Binary_Header'Size use 32;
-
-   for Item_Value_Binary_Header use
-      record
-         Count at 0 range 0..31;
-      end record;
-
-   type Item_Value_Binary_Header_Ptr is access Item_Value_Binary_Header;
-
-   function To_Item_Value_Binary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Binary_Header_Ptr);
-
-   function Get_Item_Value_Binary_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Binary_Header_Ptr is (To_Item_Value_Binary_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
-
-   function Item_Value_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
-
-   procedure Item_Value_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array is
+      Byte_Count: Unsigned_32 := Item_Value_Binary_Get_Count (S, Item_Offset);
+      Offset: Unsigned_32 := Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_Binary_Header_Byte_count;
+   begin
+      return Container.Get_Unsigned_8_Array (S, Offset, Byte_Count);
+   end Item_Value_Binary_Get_Bytes;
+   
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Item_Value_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array) is
+      Offset: Unsigned_32 := Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_Binary_Header_Byte_count;
+   begin
+      Container.Set_Unsigned_8_Array (S, Offset, Value);
+   end Item_Value_Binary_Set_Bytes;
 
 
    -----------------------------------------------------------------------------
    -- Item Value: CRC Binary
+   -----------------------------------------------------------------------------
+   
 
-   type Item_Value_CRC_Binary_Header is
-      record
-         CRC: CRC_32;
-         Count: Unsigned_32;
-      end record;
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_CRC_Binary_Get_CRC (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      BPtr: Item_Value_CRC_Binary_Header_Ptr := Get_Item_Value_CRC_Binary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (BPtr.CRC);
+      else
+         return BPtr.CRC;
+      end if;
+   end Item_Value_CRC_Binary_Get_CRC;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_CRC_Binary_Header'Size use 32 + 32;
+   procedure Item_Value_CRC_Binary_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      BPtr: Item_Value_CRC_Binary_Header_Ptr := Get_Item_Value_CRC_Binary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         BPtr.CRC := Swap_Unsigned_32 (Value);
+      else
+         BPtr.CRC := Value;
+      end if;
+   end Item_Value_CRC_Binary_Set_CRC;
 
-   for Item_Value_CRC_Binary_Header use
-      record
-         CRC at 0 range 0..31;
-         Count at 4 range 0..31;
-      end record;
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_CRC_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      BPtr: Item_Value_CRC_Binary_Header_Ptr := Get_Item_Value_CRC_Binary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (BPtr.Count);
+      else
+         return BPtr.Count;
+      end if;
+   end Item_Value_CRC_Binary_Set_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   type Item_Value_CRC_Binary_Header_Ptr is access Item_Value_CRC_Binary_Header;
+   procedure Item_Value_CRC_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      BPtr: Item_Value_CRC_Binary_Header_Ptr := Get_Item_Value_CRC_Binary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         BPtr.Count := Swap_Unsigned_32 (Value);
+      else
+         BPtr.Count := Value;
+      end if;
+   end Item_Value_CRC_Binary_Set_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function To_Item_Value_CRC_Binary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_CRC_Binary_Header_Ptr);
+   function Item_Value_CRC_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array is
+      Byte_Count: Unsigned_32 := Item_Value_CRC_Binary_Get_Count (S, Item_Offset);
+      Offset: Unsigned_32 := Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_CRC_Binary_Header_Byte_count;
+   begin
+      return Container.Get_Unsigned_8_Array (S, Offset, Byte_Count);
+   end Item_Value_CRC_Binary_Get_Bytes;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Item_Value_CRC_Binary_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_Binary_Header_Ptr is (To_Item_Value_CRC_Binary_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
-
-   function Item_Value_CRC_Binary_Get_CRC (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_CRC_Binary_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_CRC_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_CRC_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_CRC_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
-
-   procedure Item_Value_CRC_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
+   procedure Item_Value_CRC_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array) is
+      Offset: Unsigned_32 := Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_CRC_Binary_Header_Byte_count;
+   begin
+      Container.Set_Unsigned_8_Array (S, Offset, Value);
+   end Item_Value_CRC_Binary_Set_Bytes;
+   
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Array
+   -----------------------------------------------------------------------------
+   
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_Array_Get_Element_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type is
+      APtr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, Item_Offset);
+   begin
+      return APtr.Element_Type;
+   end Item_Value_Array_Set_Element_Type;
+   
+   
+   -----------------------------------------------------------------------------
 
-   type Item_Value_Array_Header is
-      record
-         Reserved_1: Unsigned_32;
-         Element_Type: Item_Type;
-         Reserved_2: Unsigned_8;
-         Reserved_3: Unsigned_16;
-         Element_Count: Unsigned_32;
-         Element_Byte_Count: Unsigned_32;
-      end record;
+   procedure Item_Value_Array_Set_Element_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type) is
+      APtr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, Item_Offset);
+   begin
+      APtr.Element_Type := Value;
+   end Item_Value_Array_Set_Element_Type;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_Array_Header'Size use 32 + 8 + 8 + 16 + 32 + 32 + 8;
+   function Item_Value_Array_Get_Element_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      APtr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (APtr.Element_Count);
+      else
+         return APtr.Element_Count;
+      end if;
+   end Item_Value_Array_Get_Element_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_Array_Header use
-      record
-         Reserved_1         at 0  range 0..31;
-         Element_Type       at 4  range 0..7;
-         Reserved_2         at 5  range 0..7;
-         Reserved_3         at 6  range 0..15;
-         Element_Count      at 8  range 0..31;
-         Element_Byte_Count at 12 range 0..31;
-      end record;
+   procedure Item_Value_Array_Set_Element_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      APtr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         APtr.Element_Count := Swap_Unsigned_32 (Value);
+      else
+         APtr.Element_Count := Value;
+      end if;
+   end Item_Value_Array_Set_Element_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   type Item_Value_Array_Header_Ptr is access Item_Value_Array_Header;
+   function Item_Value_Array_Get_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      APtr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (APtr.Element_Byte_Count);
+      else
+         return APtr.Element_Byte_Count;
+      end if;
+   end Item_Value_Array_Get_Element_Byte_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function To_Item_Value_Array_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Array_Header_Ptr);
+   procedure Item_Value_Array_Set_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      APtr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         APtr.Element_Byte_Count := Swap_Unsigned_32 (Value);
+      else
+         APtr.Element_Byte_Count := Value;
+      end if;
+   end Item_Value_Array_Set_Element_Byte_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Item_Value_Array_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_Binary_Header_Ptr is (To_Item_Value_Array_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
-
-   function Item_Value_Array_Get_Element_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
-
-   procedure Item_Value_Array_Set_Element_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type);
-
-   function Item_Value_Array_Get_Element_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_Array_Set_Element_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_Array_Get_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_Array_Set_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_Array_Get_First_Element_Offset (S:Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
+   function Item_Value_Array_Get_First_Element_Offset (S:Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      return Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_Array_Header_Byte_Count;
+   end Item_Value_Array_Get_First_Element_Offset;
+   
 
    -----------------------------------------------------------------------------
    -- Item Value: Sequence
+   -----------------------------------------------------------------------------
+   
 
-   type Item_Value_Sequence_Header is
-      record
-         Reserved: Unsigned_32;
-         Item_Count: Unsigned_32;
-      end record;
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_Sequence_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      SPtr: Item_Value_Header_Sequence_Ptr := Get_Item_Value_Sequence_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (SPtr.Item_Count);
+      else
+         return SPtr.Item_Count;
+      end if;
+   end Item_Value_Sequence_Get_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_Sequence_Header'Size use 32 + 32;
+   procedure Item_Value_Sequence_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      SPtr: Item_Value_Header_Sequence_Ptr := Get_Item_Value_Sequence_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         SPtr.Item_Count := Swap_Unsigned_32 (Value);
+      else
+         SPtr.Item_Count := Value;
+      end if;
+   end Item_Value_Sequence_Set_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_Sequence_Header use
-      record
-         Reserved at 0 range 0..31;
-         Item_Count at 4 range 0..31;
-      end record;
-
-   type Item_Value_Header_Sequence_Ptr is access Item_Value_Sequence_Header;
-
-   function To_Item_Value_Sequence_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Sequence_Header_Ptr);
-
-   function Get_Item_Value_Sequence_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Sequence_Header_Ptr is (To_Item_Value_Sequence_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
-
-   function Item_Value_Sequence_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_Sequence_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_Sequence_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Item_Value_Sequence_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      return Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_Sequence_Header_Byte_Count;
+   end Item_Value_Sequence_Get_First_Item_Offset;
+   
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Dictionary
+   -----------------------------------------------------------------------------
 
-   type Item_Value_Dictionary_Header is
-      record
-         Reserved: Unsigned_32;
-         Item_Count: Unsigned_32;
-      end record;
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_Dictionary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      SPtr: Item_Value_Header_Sequence_Ptr := Get_Item_Value_Dictionary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (SPtr.Item_Count);
+      else
+         return SPtr.Item_Count;
+      end if;
+   end Item_Value_Dictionary_Get_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_Dictionary_Header'Size use 32 + 32;
+   procedure Item_Value_Dictionary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+            SPtr: Item_Value_Header_Sequence_Ptr := Get_Item_Value_Dictionary_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         SPtr.Item_Count := Swap_Unsigned_32 (Value);
+      else
+         SPtr.Item_Count := Value;
+      end if;
+   end Item_Value_Dictionary_Set_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   for Item_Value_Dictionary_Header use
-      record
-         Reserved at 0 range 0..31;
-         Item_Count at 4 range 0..31;
-      end record;
-
-   type Item_Value_Dictionary_Header_Ptr is access Item_Value_Dictionary_Header;
-
-   function To_Item_Value_Dictionary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Dictionary_Header_Ptr);
-
-   function Get_Item_Value_Dictionary_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Dictionary_Header_Ptr is (To_Item_Value_Dictionary_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
-
-   function Item_Value_Dictionary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
-   procedure Item_Value_Dictionary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
-
-   function Item_Value_Dictionary_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Item_Value_Dictionary_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      return Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_Dictionary_Header_Byte_Count;
+   end Item_Value_Dictionary_Get_First_Item_Offset;
+     
 
 
    -----------------------------------------------------------------------------
@@ -668,22 +793,95 @@ package body BRBON.Item_Package is
 
    function Get_Item_Value_Table_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Dictionary_Header_Ptr is (To_Item_Value_Table_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
 
-   function Item_Value_Table_Get_Row_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   
+   -----------------------------------------------------------------------------
+   
+   function Item_Value_Table_Get_Row_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (TPtr.Row_Count);
+      else
+         return TPtr.Row_Count;
+      end if;
+   end Item_Value_Table_Get_Row_Count;
+   
 
-   procedure Item_Value_Table_Set_Row_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   -----------------------------------------------------------------------------
+   
+   procedure Item_Value_Table_Set_Row_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         TPtr.Row_Count := Swap_Unsigned_32 (Value);
+      else
+         TPtr.Row_Count := Value;
+      end if;
+   end Item_Value_Table_Set_Row_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Item_Value_Table_Get_Column_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Item_Value_Table_Get_Column_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (TPtr.Column_Count);
+      else
+         return TPtr.Column_Count;
+      end if;
+   end Item_Value_Table_Get_Column_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   procedure Item_Value_Table_Set_Column_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Item_Value_Table_Set_Column_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         TPtr.Column_Count := Swap_Unsigned_32 (Value);
+      else
+         TPtr.Column_Count := Value;
+      end if;
+   end Item_Value_Table_Set_Column_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Item_Value_Table_Get_Fields_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Item_Value_Table_Get_Fields_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+      if S.Swap then
+         return Swap_Unsigned_32 (Get_Value_Offset (S, Item_Offset) + TPtr.Fields_Start);
+      else
+         return Get_Value_Offset (S, Item_Offset) + TPtr.Fields_Start;
+      end if;
+   end Item_Value_Table_Get_Fields_Offset;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Item_Value_Table_Get_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Item_Value_Table_Get_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+   end Item_Value_Table_Get_Row_Byte_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   procedure Item_Value_Table_Set_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Item_Value_Table_Set_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+      TPtr: Item_Value_Table_Header_Ptr := Get_Item_Value_Table_Header_Ptr (S, Item_Offset);
+   begin
+   end Item_Value_Table_Set_Row_Byte_Count;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Item_Value_Table_Get_Column_Descriptor_Start_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
-
+   function Item_Value_Table_Get_Column_Descriptor_Start_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   begin
+      return Item_Offset + Get_Value_Offset (S, Item_Offset) + Item_Value_Table_Header_Byte_Count;
+   end Item_Value_Table_Get_Column_Descriptor_Start_Offset;
+   
 
    -----------------------------------------------------------------------------
    -- Table - Column Descriptor

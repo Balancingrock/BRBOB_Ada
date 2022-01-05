@@ -77,7 +77,7 @@ private package BRBON.Item_Package is
    Item_Header_Byte_Count: constant Unsigned_32 := 16;
 
    function Get_Item_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Header_Ptr is (To_Item_Header_Ptr (S.Data (Item_Offset)'Access));
-   pragma Inline (To_Item_Header_Ptr);
+   pragma Inline (Get_Item_Header_Ptr);
 
    function Item_Header_Get_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
    procedure Item_Header_Set_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type);
@@ -187,7 +187,7 @@ private package BRBON.Item_Package is
    function Get_Item_Name_Field_Offset (Item_Offset: Unsigned_32) return Unsigned_32 is ( Item_Offset + Item_Name_Offset );
    pragma Inline (Get_Item_Name_Field_Offset);
 
-   function Get_Item_Name_Field_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Name_Field_Ptr is (To_Item_Name_Field_Ptr (S.Data (Get_Item_Name_Field_Offset)'Access));
+   function Get_Item_Name_Field_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Name_Field_Ptr is (To_Item_Name_Field_Ptr (S.Data (Get_Item_Name_Field_Offset (Item_Offset))'Access));
    pragma Inline (Get_Item_Name_Field_Ptr);
 
    function Item_Name_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_16;
@@ -210,13 +210,13 @@ private package BRBON.Item_Package is
 
    -- Returns the offset to the value field for > 32 bit (not small) values from the start of the item.
    --
-   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is (Item_Header_Byte_Count + Unsigned_32 (Item_Header_Get_Name_Field_Byte_Count));
+   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is (Item_Header_Byte_Count + Unsigned_32 (Item_Header_Get_Name_Field_Byte_Count (S, Item_Offset)));
    pragma Inline (Get_Value_Offset);
 
 
    -- Returns a pointer to the first byte of the value.
    --
-   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr is (S.Data (Item_Offset + Get_Value_Offset (S, Item_Offset)));
+   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr is (S.Data (Item_Offset + Get_Value_Offset (S, Item_Offset))'Access);
    pragma Inline (Get_Value_Ptr);
 
 
@@ -269,6 +269,8 @@ private package BRBON.Item_Package is
          Count at 4 range 0..31;
       end record;
 
+   Item_Value_CRC_String_Header_Byte_count: constant Unsigned_32 := Unsigned_32 (Item_Value_CRC_String_Header'Size / 8);
+
    type Item_Value_CRC_String_Header_Ptr is access Item_Value_CRC_String_Header;
 
    function To_Item_Value_CRC_String_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_CRC_String_Header_Ptr);
@@ -303,6 +305,8 @@ private package BRBON.Item_Package is
          Count at 0 range 0..31;
       end record;
 
+   Item_Value_Binary_Header_Byte_count: constant Unsigned_32 := Unsigned_32 (Item_Value_Binary_Header'Size / 8);
+
    type Item_Value_Binary_Header_Ptr is access Item_Value_Binary_Header;
 
    function To_Item_Value_Binary_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Binary_Header_Ptr);
@@ -334,6 +338,8 @@ private package BRBON.Item_Package is
          CRC at 0 range 0..31;
          Count at 4 range 0..31;
       end record;
+
+   Item_Value_CRC_Binary_Header_Byte_count: constant Unsigned_32 := Unsigned_32 (Item_Value_CRC_Binary_Header'Size / 8);
 
    type Item_Value_CRC_Binary_Header_Ptr is access Item_Value_CRC_Binary_Header;
 
@@ -379,11 +385,13 @@ private package BRBON.Item_Package is
          Element_Byte_Count at 12 range 0..31;
       end record;
 
+   Item_Value_Array_Header_Byte_Count: constant Unsigned_32 := Item_Value_Array_Header'Size / 8;
+
    type Item_Value_Array_Header_Ptr is access Item_Value_Array_Header;
 
    function To_Item_Value_Array_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Array_Header_Ptr);
 
-   function Get_Item_Value_Array_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_CRC_Binary_Header_Ptr is (To_Item_Value_Array_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+   function Get_Item_Value_Array_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Array_Header_Ptr is (To_Item_Value_Array_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
 
    function Item_Value_Array_Get_Element_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
 
@@ -417,7 +425,9 @@ private package BRBON.Item_Package is
          Item_Count at 4 range 0..31;
       end record;
 
-   type Item_Value_Header_Sequence_Ptr is access Item_Value_Sequence_Header;
+   Item_Value_Sequence_Header_Byte_Count: constant Unsigned_32 := Item_Value_Sequence_Header'Size / 8;
+
+   type Item_Value_Sequence_Header_Ptr is access Item_Value_Sequence_Header;
 
    function To_Item_Value_Sequence_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Sequence_Header_Ptr);
 
@@ -446,6 +456,8 @@ private package BRBON.Item_Package is
          Reserved at 0 range 0..31;
          Item_Count at 4 range 0..31;
       end record;
+
+   Item_Value_Dictionary_Header_Byte_Count: constant Unsigned_32 := Item_Value_Dictionary_Header'Size / 8;
 
    type Item_Value_Dictionary_Header_Ptr is access Item_Value_Dictionary_Header;
 
@@ -481,11 +493,13 @@ private package BRBON.Item_Package is
          Row_Byte_Count at 12 range 0..31;
       end record;
 
+   Item_Value_Table_Header_Byte_Count: constant Unsigned_32 := Item_Value_Table_Header'Size / 8;
+
    type Item_Value_Table_Header_Ptr is access Item_Value_Table_Header;
 
    function To_Item_Value_Table_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Value_Table_Header_Ptr);
 
-   function Get_Item_Value_Table_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Dictionary_Header_Ptr is (To_Item_Value_Table_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
+   function Get_Item_Value_Table_Header_Ptr (S: Store; Item_Offset: Unsigned_32) return Item_Value_Table_Header_Ptr is (To_Item_Value_Table_Header_Ptr (Get_Value_Ptr (S, Item_Offset)));
 
    function Item_Value_Table_Get_Row_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
