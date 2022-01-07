@@ -6,7 +6,6 @@ with BRBON; use BRBON;
 
 private package BRBON.Types is
 
-
    type Array_Of_Boolean is array (Unsigned_32 range <>) of Boolean;
 
 
@@ -104,12 +103,6 @@ private package BRBON.Types is
       0,  -- RGBA
       6   -- Font
      );
-
-
-   -- ====================================================
-   -- For Item Names
-
-   Max_Name_Length: constant Integer := 248;
 
 
 end BRBON.Types;

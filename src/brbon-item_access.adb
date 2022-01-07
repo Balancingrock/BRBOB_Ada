@@ -9,7 +9,7 @@ with BRBON.Utils;
 with BRBON.Container;
 
 
-package body BRBON.Item_Package is
+package body BRBON.Item_Access is
    
    
    function Swap_Unsigned_16 is new GNAT.Byte_Swapping.Swapped2 (Unsigned_16);
@@ -60,79 +60,79 @@ package body BRBON.Item_Package is
 
    -----------------------------------------------------------------------------
    
-   function Item_Header_Get_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type is
+   function Get_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       return IPtr.Type_Field;
-   end Item_Header_Get_Type;
+   end Get_Type;
    
    
    -----------------------------------------------------------------------------
    
-   procedure Item_Header_Set_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type) is
+   procedure Set_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type) is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       IPtr.Type_Field := Value;
-   end Item_Header_Set_Type;
+   end Set_Type;
    
    
    -----------------------------------------------------------------------------
 
-   function Item_Header_Get_Options (S: Store; Item_Offset: Unsigned_32) return Item_Options is
+   function Get_Options (S: Store; Item_Offset: Unsigned_32) return Item_Options is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       return IPtr.Options_Field;
-   end Item_Header_Get_Options;
+   end Get_Options;
    
    
    -----------------------------------------------------------------------------
    
-   procedure Item_Header_Set_Options (S: Store; Item_Offset: Unsigned_32; Value: Item_Options) is
+   procedure Set_Options (S: Store; Item_Offset: Unsigned_32; Value: Item_Options) is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       IPtr.Options_Field := Value;
-   end Item_Header_Set_Options;
+   end Set_Options;
    
    
    -----------------------------------------------------------------------------
 
-   function Item_Header_Get_Flags (S: Store; Item_Offset: Unsigned_32) return Item_Flags is
+   function Get_Flags (S: Store; Item_Offset: Unsigned_32) return Item_Flags is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       return IPtr.Flags_Field;
-   end Item_Header_Get_Flags;
+   end Get_Flags;
    
    
    -----------------------------------------------------------------------------
    
-   procedure Item_Header_Set_Flags (S: Store; Item_Offset: Unsigned_32; Value: Item_Flags) is
+   procedure Set_Flags (S: Store; Item_Offset: Unsigned_32; Value: Item_Flags) is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       IPtr.Flags_Field := Value;
-   end Item_Header_Set_Flags;
+   end Set_Flags;
    
    
    -----------------------------------------------------------------------------
 
-   function Item_Header_Get_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8 is
+   function Get_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8 is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       return IPtr.Name_Field_Byte_Count_Field;
-   end Item_Header_Get_Name_Field_Byte_Count;
+   end Get_Name_Field_Byte_Count;
    
    
    -----------------------------------------------------------------------------
    
-   procedure Item_Header_Set_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8) is
+   procedure Set_Name_Field_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8) is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       IPtr.Name_Field_Byte_Count_Field := Value;
-   end Item_Header_Set_Name_Field_Byte_Count;
+   end Set_Name_Field_Byte_Count;
    
    
    -----------------------------------------------------------------------------
 
-   function Item_Header_Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   function Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       if S.Swap then
@@ -140,12 +140,12 @@ package body BRBON.Item_Package is
       else
          return IPtr.Byte_Count_Field;
       end if;
-   end Item_Header_Get_Byte_Count;
+   end Get_Byte_Count;
    
    
    -----------------------------------------------------------------------------
    
-   procedure Item_Header_Set_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   procedure Set_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       if S.Swap then
@@ -153,12 +153,12 @@ package body BRBON.Item_Package is
       else
          IPtr.Byte_Count_Field := Value;
       end if;
-   end Item_Header_Set_Byte_Count;
+   end Set_Byte_Count;
    
    
    -----------------------------------------------------------------------------
    
-   function Item_Header_Get_Parent_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   function Get_Parent_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       if S.Swap then
@@ -166,12 +166,12 @@ package body BRBON.Item_Package is
       else
          return IPtr.Parent_Offset_Field;
       end if;
-   end Item_Header_Get_Parent_Offset;
+   end Get_Parent_Offset;
    
    
    -----------------------------------------------------------------------------
    
-   procedure Item_Header_Set_Parent_Offset (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   procedure Set_Parent_Offset (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
       IPtr: Item_Header_Ptr := Get_Item_Header_Ptr (S, Item_Offset);
    begin
       if S.Swap then
@@ -179,135 +179,135 @@ package body BRBON.Item_Package is
       else
          IPtr.Parent_Offset_Field := Value;
       end if;
-   end Item_Header_Set_Parent_Offset;
+   end Set_Parent_Offset;
    
 
    -----------------------------------------------------------------------------
 
-   function Small_Value_Get_Bool (S: Store; Item_Offset: Unsigned_32) return Boolean is
+   function Get_Bool (S: Store; Item_Offset: Unsigned_32) return Boolean is
    begin
       return Container.Get_Bool (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_Bool;
+   end Get_Bool;
    
 
    -----------------------------------------------------------------------------
 
-   procedure Small_Value_Set_Bool (S: Store; Item_Offset: Unsigned_32; Value: Boolean) is
+   procedure Set_Bool (S: Store; Item_Offset: Unsigned_32; Value: Boolean) is
    begin
       Container.Set_Bool (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_Bool;
+   end Set_Bool;
 
    
    -----------------------------------------------------------------------------
    
-   function Small_Value_Get_Int8 (S: Store; Item_Offset: Unsigned_32) return Integer_8 is
+   function Get_Int8 (S: Store; Item_Offset: Unsigned_32) return Integer_8 is
    begin
       return Container.Get_Integer_8 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_Int8;
+   end Get_Int8;
 
    
    -----------------------------------------------------------------------------
    
-   procedure Small_Value_Set_Int8 (S: Store; Item_Offset: Unsigned_32; Value: Integer_8) is
+   procedure Set_Int8 (S: Store; Item_Offset: Unsigned_32; Value: Integer_8) is
    begin
       Container.Set_Integer_8 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_Int8;
+   end Set_Int8;
 
    
    -----------------------------------------------------------------------------
    
-   function Small_Value_Get_UInt8 (S: Store; Item_Offset: Unsigned_32) return Unsigned_8 is
+   function Get_UInt8 (S: Store; Item_Offset: Unsigned_32) return Unsigned_8 is
    begin
       return Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_UInt8;
+   end Get_UInt8;
    
    
    -----------------------------------------------------------------------------
 
-   procedure Small_Value_Set_UInt8 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8) is
+   procedure Set_UInt8 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8) is
    begin
       Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_UInt8;
+   end Set_UInt8;
    
    
    -----------------------------------------------------------------------------
 
-   function Small_Value_Get_Int16 (S: Store; Item_Offset: Unsigned_32) return Integer_16 is
+   function Get_Int16 (S: Store; Item_Offset: Unsigned_32) return Integer_16 is
    begin
       return Container.Get_Integer_16 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_Int16;
+   end Get_Int16;
 
    
    -----------------------------------------------------------------------------
    
-   procedure Small_Value_Set_Int16 (S: Store; Item_Offset: Unsigned_32; Value: Integer_16) is
+   procedure Set_Int16 (S: Store; Item_Offset: Unsigned_32; Value: Integer_16) is
    begin
       Container.Set_Integer_16 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_Int16;
+   end Set_Int16;
    
    
    -----------------------------------------------------------------------------
 
-   function Small_Value_Get_UInt16 (S: Store; Item_Offset: Unsigned_32) return Unsigned_16 is
+   function Get_UInt16 (S: Store; Item_Offset: Unsigned_32) return Unsigned_16 is
    begin
       return Container.Get_Unsigned_16 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_UInt16;
+   end Get_UInt16;
 
    
    -----------------------------------------------------------------------------
    
-   procedure Small_Value_Set_UInt16 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_16) is
+   procedure Set_UInt16 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_16) is
    begin
       Container.Set_Unsigned_16 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_UInt16;
+   end Set_UInt16;
 
    
    -----------------------------------------------------------------------------
    
-   function Small_Value_Get_Int32 (S: Store; Item_Offset: Unsigned_32) return Integer_32 is
+   function Get_Int32 (S: Store; Item_Offset: Unsigned_32) return Integer_32 is
    begin
       return Container.Get_Integer_32 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_Int32;
+   end Get_Int32;
    
    
    -----------------------------------------------------------------------------
 
-   procedure Small_Value_Set_Int32 (S: Store; Item_Offset: Unsigned_32; Value: Integer_32) is
+   procedure Set_Int32 (S: Store; Item_Offset: Unsigned_32; Value: Integer_32) is
    begin
       Container.Set_Integer_32 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_Int32;
+   end Set_Int32;
 
    
    -----------------------------------------------------------------------------
    
-   function Small_Value_Get_UInt32 (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
+   function Get_UInt32 (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is
    begin
       return Container.Get_Unsigned_32 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_UInt32;
+   end Get_UInt32;
    
    
    -----------------------------------------------------------------------------
 
-   procedure Small_Value_Set_UInt32 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
+   procedure Set_UInt32 (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32) is
    begin
       Container.Set_Unsigned_32 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_UInt32;
+   end Set_UInt32;
 
    
    -----------------------------------------------------------------------------
    
-   function Small_Value_Get_Float32 (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32 is
+   function Get_Float32 (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32 is
    begin
       return Container.Get_Float_32 (S, Item_Offset + Small_Value_Offset);
-   end Small_Value_Get_Float32;
+   end Get_Float32;
 
    
    -----------------------------------------------------------------------------
    
-   procedure Small_Value_Set_Float32 (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32) is
+   procedure Set_Float32 (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32) is
    begin
       Container.Set_Float_32 (S, Item_Offset + Small_Value_Offset, Value);
-   end Small_Value_Set_Float32;
+   end Set_Float32;
 
    
    -----------------------------------------------------------------------------
@@ -336,24 +336,24 @@ package body BRBON.Item_Package is
    
    -----------------------------------------------------------------------------
    
-   function Small_Value_Get_Color (S: Store; Item_Offset: Unsigned_32) return Color is
+   function Get_Color (S: Store; Item_Offset: Unsigned_32) return Color is
    begin
       return Color_Factory (Red   => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset),
                             Green => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 1),
                             Blue  => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 2),
                             Alpha => Container.Get_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 3));
-   end Small_Value_Get_Color;
+   end Get_Color;
 
    
    -----------------------------------------------------------------------------
    
-   procedure Small_Value_Set_Color (S: Store; Item_Offset: Unsigned_32; Value: Color) is
+   procedure Set_Color (S: Store; Item_Offset: Unsigned_32; Value: Color) is
    begin
       Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset, Get_Red_Component (Value));
       Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 1, Get_Green_Component (Value));
       Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 2, Get_Blue_Component (Value));
       Container.Set_Unsigned_8 (S, Item_Offset + Small_Value_Offset + 3, Get_Alpha_Component (Value));
-   end Small_Value_Set_Color;
+   end Set_Color;
 
    
    -----------------------------------------------------------------------------
@@ -398,7 +398,7 @@ package body BRBON.Item_Package is
    
    -----------------------------------------------------------------------------
    
-   function Item_Name_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_16 is
+   function Get_Name_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_16 is
       NPtr: Item_Name_Field_Ptr := Get_Item_Name_Field_Ptr (S, Item_Offset);
    begin
       if S.Swap then
@@ -406,12 +406,12 @@ package body BRBON.Item_Package is
       else
          return CRC_16 (NPtr.CRC);
       end if;
-   end Item_Name_Get_CRC;
+   end Get_Name_CRC;
    
 
    -----------------------------------------------------------------------------
    
-   procedure Item_Name_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_16) is
+   procedure Set_Name_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_16) is
       NPtr: Item_Name_Field_Ptr := Get_Item_Name_Field_Ptr (S, Item_Offset);
    begin
       if S.Swap then
@@ -419,7 +419,7 @@ package body BRBON.Item_Package is
       else
          NPtr.CRC := Value;
       end if;
-   end Item_Name_Set_CRC;
+   end Set_Name_CRC;
    
    
    -----------------------------------------------------------------------------
@@ -433,21 +433,21 @@ package body BRBON.Item_Package is
    
    -----------------------------------------------------------------------------
 
-   function Item_Name_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String is
+   function Item_Name_Get_Byte_Code (S: Store; Item_Offset: Unsigned_32) return String is
       Byte_Count: Unsigned_8 := Item_Name_Get_Byte_Count (S, Item_Offset);
       Offset: Unsigned_32 := Item_Offset + Item_Name_Ascii_Code_Offset;
    begin
       return Container.Get_String (S, Offset, Unsigned_32 (Byte_count));
-   end Item_Name_Get_ASCII_Code;
+   end Item_Name_Get_Byte_Code;
    
    
    -----------------------------------------------------------------------------
 
-   procedure Item_Name_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String) is
+   procedure Item_Name_Set_Byte_Code (S: Store; Item_Offset: Unsigned_32; Value: Item_Name) is
       Offset: Unsigned_32 := Item_Offset + Item_Name_Ascii_Code_Offset;
    begin
-      Container.Set_String (S, Offset, Value);
-   end Item_Name_Set_ASCII_Code;
+      Container.Set_String (S, Offset, Item_Name_Bounded_String_Package.To_String (Value));
+   end Item_Name_Set_Byte_Code;
 
    
    -----------------------------------------------------------------------------
@@ -461,30 +461,35 @@ package body BRBON.Item_Package is
    -----------------------------------------------------------------------------
    
    function Name_Equals (S: Store; Item_Offset: Unsigned_32; Name_Assistent: Name_Field_Assistent) return Boolean is
+   
       NPtr: Item_Name_Field_Ptr := Get_Item_Name_Field_Ptr (S, Item_Offset);
-      type Unsigned_32_Ptr is access Unsigned_32;
-      function To_Unsigned_32_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Unsigned_32_ptr);
+      function To_Quick_Check_Value_Ptr is new Ada.Unchecked_Conversion (Item_Name_Field_Ptr, Quick_Check_Value_Ptr);
+   
    begin
-      if S.Swap /= Get_Swap_Status (Name_Assistent) then
-         Ada.Exceptions.Raise_Exception (Incompatible'Identify, "The Name Field Assistent is not compatible with this store");
+      
+      if S.Swap /= Swap_Status (Name_Assistent) then
+         Ada.Exceptions.Raise_Exception (Incompatible'Identity, "The Name Field Assistent is not compatible with this store");
       end if;
       
-      if To_Unsigned_32_Ptr (Get_Item_Name_Field_Ptr (S, Item_Offset)).all /= Get_Quick_Check_Value (Name_Assistent) then
-         return False;
+      if not Compare_Quick_Check (Name_Assistent, To_Quick_Check_Value_Ptr (NPtr)) then
+         return false;
       end if;
       
-      for C in Name_Assistent.ASCII_Code loop
+      return Compare_String (Name_Assistent, NPtr.ASCII_Code'Access, NPtr.Byte_Count);
+
    end Name_Equals;
+   
    
    -----------------------------------------------------------------------------
    
-   procedure Set_Name (S: Store; Item_Offset: Unsigned_32; Value: Name_Field_Assistent.Instance) is
+   procedure Set_Name (S: Store; Item_Offset: Unsigned_32; Value: Name_Field_Assistent) is
+      NPtr: Item_Name_Field_Ptr := Get_Item_Name_Field_Ptr (S, Item_Offset);
    begin
-      if Value.Name_Field_Byte_Count > 0 then
-         Container.Set_Unsigned_8 (CPtr, Item_Offset + Name_Field_Byte_Count_Offset, Value.Name_Field_Byte_Count);
-         Container.Set_Unsigned_16 (CPtr, Item_Offset + Name_Field_Offset + Name_Field_CRC_Offset, Value.CRC);
-         Container.Set_Unsigned_8 (CPtr, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Byte_Count_Offset, Unsigned_8 (Value.Ascii_Byte_Count));
-         Container.Set_Unsigned_8_Array (CPtr, Item_Offset + Name_Field_Offset + Name_Field_ASCII_Code_Offset, Value.Ascii_Code (1 .. Unsigned_32 (Value.Ascii_Byte_Count)));
+      if Value.Field_Byte_Count > 0 then
+         Set_Name_CRC (S, Item_Offset, Value.CRC);
+         Item_Name_Set_Byte_Count (S, Item_Offset, Value.Name_Byte_Count);
+         Item_Name_Set_Byte_Code (S, Item_Offset, Value.Name);
+         Set_Name_Field_Byte_Count (S, Item_Offset, Value.Field_Byte_Count);
       end if;
    end Set_Name;
    
@@ -1531,12 +1536,12 @@ package body BRBON.Item_Package is
       Item_Ptr.Parent_Offset_Field := P;
       Item_Ptr.Byte_Count_Field := B;
       
-      Set_Name (Item_Ptr, N);
+      Set_Name (S, At_Offset, N);
       
       case T is
          when Illegal => null; -- Cannot happen
          when Null_Type | Bool_Type | Int_8_Type | Int_16_Type | Int_32_Type | UInt_8_Type | UInt_16_Type | UInt_32_Type | Float_32_Type | RGBA_Type =>
-            Small_Value_Set_UInt32 (S, O, 0);
+            Set_UInt32 (S, O, 0);
          when Int_64_Type =>
             Container.Set_Integer_64 (S, Get_Value_Offset (S, At_Offset), 0);
          when UInt_64_Type =>
@@ -1665,7 +1670,7 @@ package body BRBON.Item_Package is
       -- Initialize the array specific parameters
       --
       declare
-         Array_Header_Ptr: Item_Value_Header_Array_Ptr := To_Item_Value_Header_Array_Ptr (Get_Value_Ptr (S, At_Offset));
+         Array_Header_Ptr: Item_Value_Array_Header_Ptr := Get_Item_Value_Array_Header_Ptr (S, At_Offset);
       begin
          Array_Header_Ptr.Element_Type := Element_Type;
          Array_Header_Ptr.Element_Byte_Count := Element_Byte_Count;
@@ -1679,10 +1684,6 @@ package body BRBON.Item_Package is
    Use_Small_Value_LUT: constant Array (Item_Type) of Boolean :=
      -- Ill  Null  Bool  i8    i16   i32   i64    u8    u16   u32   u64    f32   f64    str    cstr   bin    cbin   arr    dict   seq    tab    uuid   rgb   font
      (False, True, True, True, True, True, False, True, True, True, False, True, False, False, False, False, False, False, False, False, False, False, True, False);
-   --                                         
-
-   
-
    
       
-end BRBON.Item_Package;
+end BRBON.Item_Access;

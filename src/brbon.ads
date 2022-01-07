@@ -99,6 +99,7 @@ with Interfaces; use Interfaces;
 with Ada.Finalization;
 with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;
+with Ada.Strings.Bounded;
 
 
 package BRBON is
@@ -108,7 +109,12 @@ package BRBON is
    --
    type Byte_Storage_Order is (MSB_First, LSB_First);
 
-
+   
+   -- Maximum length of names used to locate items or columns.
+   --
+   Max_Name_Length: constant := 245;
+   
+   
    -- ==========================================================================
    -- Configurable part starts                                                 =
    --                                                                          =
@@ -293,10 +299,30 @@ package BRBON is
    --
    type Portal is private;
 
-
+   
    -- This is root class of all blocks.
    --
    type Store is new Ada.Finalization.Controlled with private;
+   
+   
+   -- Use name field assistents if a name must be used mutliple times in a call to a BRBON API.
+   -- This will speed up access to the designated item.
+   --
+   type Name_Field_Assistent is private;
+   
+   Maximum_Item_Name_Length: constant := 245;
+   
+   package Item_Name_Bounded_String_Package is new Ada.Strings.Bounded.Generic_Bounded_Length (Maximum_Item_Name_Length);
+   
+   subtype Item_Name is Item_Name_Bounded_String_Package.Bounded_String;
+   
+   
+   -- Returns a name field assistent that can be used to speed up access to items.
+   --
+   -- Note that assistents are tied to a store and should not be used with different stores.
+   -- An exception will be raised if used between incompatible stores.
+   --
+   function Name_Field_Assistent_Factory (Name: String; S: Store) return Name_Field_Assistent;
    
    
    -- The type of array all items are stored in.
@@ -307,6 +333,7 @@ package BRBON is
    -- All data storage should be allocated dynamically.
    --
    type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
+   
    
    -- To release allocated storage.
    --
@@ -357,6 +384,12 @@ package BRBON is
    --
    String_Too_Long: exception;
    
+   
+   -- Raised when an incompatibility arises, check description for details.
+   --
+   Incompatible: exception;
+   
+   
 private
 
    Item_Header_Byte_Count: constant := 16;
@@ -365,6 +398,11 @@ private
    -- Storage support
    
    type Unsigned_8_Ptr is access all Unsigned_8;
+   type Unsigned_16_Ptr is access Unsigned_16;
+   type Unsigned_32_Ptr is access Unsigned_32;
+   
+   function To_Unsigned_16_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Unsigned_16_Ptr);
+   function To_Unsigned_32_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Unsigned_32_Ptr);
    
    
    -- Item Header
@@ -422,6 +460,33 @@ private
       end record;
    
 
+   type Quick_Check_Value is
+      record
+         CRC: Unsigned_16;
+         Count: Unsigned_8;
+         Char: Unsigned_8;
+      end record;
+
+   for Quick_Check_Value'Size use 32;
+
+   for Quick_Check_Value use
+      record
+         CRC at 0 range 0..15;
+         Count at 2 range 0..7;
+         Char at 3 range 0..7;
+      end record;
+
+
+   type Name_Field_Assistent is
+      record
+         Quick_Check: Quick_Check_Value;
+         Field_Byte_Count: Unsigned_8;
+         Swap: Boolean;
+         CRC: Unsigned_16;
+         Name_Byte_Count: Unsigned_8;
+         Name: Item_Name;
+      end record;
+   
    
    -- Block operations
    
