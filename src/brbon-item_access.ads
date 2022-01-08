@@ -151,11 +151,11 @@ private package BRBON.Item_Access is
    procedure Set_Float32 (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32);
    pragma Inline (Set_Float32);
 
-   function Get_Color (S: Store; Item_Offset: Unsigned_32) return Color;
-   pragma Inline (Get_Color);
+   function RGBA_Get_Color (S: Store; Item_Offset: Unsigned_32) return Color;
+   pragma Inline (RGBA_Get_Color);
 
-   procedure Set_Color (S: Store; Item_Offset: Unsigned_32; Value: Color);
-   pragma Inline (Set_Color);
+   procedure RGBA_Set_Color (S: Store; Item_Offset: Unsigned_32; Value: Color);
+   pragma Inline (RGBA_Set_Color);
 
 
    -----------------------------------------------------------------------------
@@ -165,152 +165,130 @@ private package BRBON.Item_Access is
 
    procedure Set_Name_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_16);
 
-   function Item_Name_Get_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
-   pragma Inline (Item_Name_Get_Byte_Count);
+   function Get_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
+   pragma Inline (Get_Byte_Count);
 
-   procedure Item_Name_Set_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   procedure Set_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
 
-   function Item_Name_Get_Byte_Code (S: Store; Item_Offset: Unsigned_32) return String;
+   function Get_Name_Byte_Code (S: Store; Item_Offset: Unsigned_32) return String;
 
-   procedure Item_Name_Set_Byte_Code (S: Store; Item_Offset: Unsigned_32; Value: Item_Name);
-
-   -- Returns the first four bytes of a name-field as a 32 bit value to be used to quickly discard
-   -- items when searching.
-   --
-   -- Note: When comparing be sure to use the same Byte_Storage_Order as the bytes in the store.
-   --
-   function Get_Name_Quick_Check_Value (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   procedure Set_Name_Byte_Code (S: Store; Item_Offset: Unsigned_32; Value: Item_Name);
 
    function Name_Equals (S: Store; Item_Offset: Unsigned_32; Name_Assistent: Name_Field_Assistent) return Boolean;
-
-   -----------------------------------------------------------------------------
-   -- Value access
-
-
-   -- Returns the offset to the value field for > 32 bit (not small) values from the start of the item.
-   --
-   function Get_Value_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32 is (Item_Header_Byte_Count + Unsigned_32 (Get_Name_Field_Byte_Count (S, Item_Offset)));
-   pragma Inline (Get_Value_Offset);
-
-
-   -- Returns a pointer to the first byte of the value.
-   --
-   function Get_Value_Ptr (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Ptr is (S.Data (Item_Offset + Get_Value_Offset (S, Item_Offset))'Access);
-   pragma Inline (Get_Value_Ptr);
 
 
    -----------------------------------------------------------------------------
    -- Item Value: String
 
-   function Item_Value_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
+   function String_Get_String (S: Store; Item_Offset: Unsigned_32) return String;
 
-   procedure Item_Value_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
+   procedure String_Set_String (S: Store; Item_Offset: Unsigned_32; Value: String);
 
 
    -----------------------------------------------------------------------------
    -- Item Value: CRC String
 
-   function Item_Value_CRC_String_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_32;
+   function CRC_String_Get_CRC (S: Store; Item_Offset: Unsigned_32) return CRC_32;
 
-   procedure Item_Value_CRC_String_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_32);
+   procedure CRC_String_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: CRC_32);
 
-   function Item_Value_CRC_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function CRC_String_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_CRC_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure CRC_String_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_CRC_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
+   function CRC_String_Get_ASCII_Code (S: Store; Item_Offset: Unsigned_32) return String;
 
-   procedure Item_Value_CRC_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
+   procedure CRC_String_Set_ASCII_Code (S: Store; Item_Offset: Unsigned_32; Value: String);
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Binary
 
-   function Item_Value_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
+   function Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
 
-   procedure Item_Value_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
+   procedure Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
 
 
    -----------------------------------------------------------------------------
    -- Item Value: CRC Binary
 
-   function Item_Value_CRC_Binary_Get_CRC (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function CRC_Binary_Get_CRC (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_CRC_Binary_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure CRC_Binary_Set_CRC (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_CRC_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function CRC_Binary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_CRC_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure CRC_Binary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_CRC_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
+   function CRC_Binary_Get_Bytes (S: Store; Item_Offset: Unsigned_32) return Unsigned_8_Array;
 
-   procedure Item_Value_CRC_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
+   procedure CRC_Binary_Set_Bytes (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8_Array);
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Array
 
-   function Item_Value_Array_Get_Element_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
+   function Array_Get_Element_Type (S: Store; Item_Offset: Unsigned_32) return Item_Type;
 
-   procedure Item_Value_Array_Set_Element_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type);
+   procedure Array_Set_Element_Type (S: Store; Item_Offset: Unsigned_32; Value: Item_Type);
 
-   function Item_Value_Array_Get_Element_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Array_Get_Element_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Array_Set_Element_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Array_Set_Element_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Array_Get_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Array_Get_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Array_Set_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Array_Set_Element_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Array_Get_First_Element_Offset (S:Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Array_Get_First_Element_Offset (S:Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Sequence
 
-   function Item_Value_Sequence_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Sequence_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Sequence_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Sequence_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Sequence_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Sequence_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Dictionary
 
-   function Item_Value_Dictionary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Dictionary_Get_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Dictionary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Dictionary_Set_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Dictionary_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Dictionary_Get_First_Item_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
    -----------------------------------------------------------------------------
    -- Item Value: Table
 
-   function Item_Value_Table_Get_Row_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Table_Get_Row_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Table_Set_Row_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Table_Set_Row_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Table_Get_Column_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Table_Get_Column_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Table_Set_Column_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Table_Set_Column_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Table_Get_Fields_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Table_Get_Fields_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   function Item_Value_Table_Get_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Table_Get_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
-   procedure Item_Value_Table_Set_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
+   procedure Table_Set_Row_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_32);
 
-   function Item_Value_Table_Get_Column_Descriptor_Start_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Table_Get_Column_Descriptor_Start_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
    -----------------------------------------------------------------------------
@@ -344,25 +322,25 @@ private package BRBON.Item_Access is
    -----------------------------------------------------------------------------
    -- Item Value: Font
 
-   function Item_Value_Font_Get_Size (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32;
+   function Font_Get_Size (S: Store; Item_Offset: Unsigned_32) return IEEE_Float_32;
 
-   procedure Item_Value_Font_Set_Size (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32);
+   procedure Font_Set_Size (S: Store; Item_Offset: Unsigned_32; Value: IEEE_Float_32);
 
-   function Item_Value_Font_Get_Family_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
+   function Font_Get_Family_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
 
-   procedure Item_Value_Font_Set_Family_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   procedure Font_Set_Family_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
 
-   function Item_Value_Font_Get_Font_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
+   function Font_Get_Font_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32) return Unsigned_8;
 
-   procedure Item_Value_Font_Set_Font_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
+   procedure Font_Set_Font_Name_Byte_Count (S: Store; Item_Offset: Unsigned_32; Value: Unsigned_8);
 
    -- Returns the offset of the first family name character relative to the start of the item
    --
-   function Item_Value_Font_Get_Family_Name_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Font_Get_Family_Name_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
    -- Returns the offset of the first font name character relative to the start of the item
    --
-   function Item_Value_Font_Get_Font_Name_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
+   function Font_Get_Font_Name_Offset (S: Store; Item_Offset: Unsigned_32) return Unsigned_32;
 
 
    -----------------------------------------------------------------------------
