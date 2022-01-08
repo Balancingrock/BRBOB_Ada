@@ -4,7 +4,6 @@ with Ada.Finalization;
 
 with BRBON.Types; use BRBON.Types;
 with BRBON.Utils;
-with BRBON.Configure;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Block;
 with BRBON.Portal_Package; use BRBON.Portal_Package;
@@ -20,7 +19,7 @@ package BRBON.Block.Static_Unprotected is
    -- The store that contains a static BRBON hierarchy on which unprotected access is possible.
    -- This is the fasted possible acces to items in a BRBON store.
    --
-   type Instance is new Block.Instance with null record;
+   type Instance is new Store with null record;
 
 
    -- Creates a new instance with a header of the requested type.
@@ -43,7 +42,7 @@ package BRBON.Block.Static_Unprotected is
        Minimum_Byte_Count: Unsigned_32;
        Header_Field_Storage_Byte_Count: Unsigned_16 := 1;
        Options: Block_Options := No_Block_Options;
-       Using_Endianness: Endianness := Configure.Machine_Endianness;
+       Using_Endianness: Endianness := Machine_Byte_Storage_Order;
        Origin: String := "";
        Identifier: String := "";
        Extension: String := "";
@@ -52,7 +51,7 @@ package BRBON.Block.Static_Unprotected is
        Target_List: String := "";
        Public_Key_URL: String := "";
        Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
-       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
+       Expiry_Timestamp: Unsigned_64 := Unsigned_64'Last
       ) return Instance;
 
 

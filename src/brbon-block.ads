@@ -293,38 +293,55 @@ private
          Is_Type: Block_Type;
          Options: Block_Options;
 
+         --
+         
          Block_Byte_Count: Unsigned_32;
+         
          Header_Byte_Count: Unsigned_16;
          Encrypted_Header_Byte_Count: Unsigned_16;
 
+         --
+         
          Origin_CRC: Unsigned_16;
          Identifier_CRC: Unsigned_16;
+         
          Extension_CRC: Unsigned_16;
          Path_Prefix_CRC: Unsigned_16;
 
+         --
+         
          Origin_Byte_Count: Unsigned_8;
          Identifier_Byte_Count: Unsigned_8;
          Extension_Byte_Count: Unsigned_8;
          Path_Prefix_Byte_Count: Unsigned_8;
+         
          Origin_Offset: Unsigned_16;
          Identifier_Offset: Unsigned_16;
 
+         --
+         
          Extension_Offset: Unsigned_16;
          Path_Prefix_Offset: Unsigned_16;
+         
          Acquisition_URL_Byte_Count: Unsigned_16;
          Acquisition_URL_Offset: Unsigned_16;
 
+         --
+         
          Target_List_Byte_Count: Unsigned_16;
          Target_List_Offset: Unsigned_16;
+         
          Public_Key_URL_Byte_Count: Unsigned_16;
          Public_Key_URL_Offset: Unsigned_16;
 
+         --
+         
          Creation_Timestamp: Timestamp;
          Modification_Timestamp: Timestamp;
          Expiry_Timestamp: Timestamp;
       end record;
 
-   for Block_Header_Leading'Size use Block_Header_Leading_Byte_Count * 8;
+--   for Block_Header_Leading'Size use Block_Header_Leading_Byte_Count * 8;
 
    for Block_Header_Leading use
       record
@@ -359,7 +376,7 @@ private
          Target_List_Byte_Count       at 40 range 0..15;
          Target_List_Offset           at 42 range 0..15;
          Public_Key_URL_Byte_Count    at 44 range 0..15;
-         Public_Key_URL_Offset            at 46 range 0..15;
+         Public_Key_URL_Offset        at 46 range 0..15;
 
          Creation_Timestamp           at 48 range 0..63;
          Modification_Timestamp       at 64 range 0..63;

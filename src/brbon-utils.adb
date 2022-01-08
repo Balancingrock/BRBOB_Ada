@@ -81,7 +81,7 @@ package body BRBON.Utils is
       Put (Str2);
    end Put_Hex_8;
 
-   Procedure Put_Hex_8_Two_Lines (Source: Array_Of_Unsigned_8; Cursor: Unsigned_32; Show_Cursor: Boolean := False) is
+   Procedure Put_Hex_8_Two_Lines (Source: Unsigned_8_Array; Cursor: Unsigned_32; Show_Cursor: Boolean := False) is
 
       Start: Unsigned_32 := Source'First + (Cursor and 16#FFFF_FFF0#);
 
@@ -174,7 +174,7 @@ package body BRBON.Utils is
    end Put_Hex_8_Two_Lines;
 
    
-   Procedure Put_Hex (Source: Array_Of_Unsigned_8) is
+   Procedure Put_Hex (Source: Unsigned_8_Array) is
 
       Start: Unsigned_32 := Source'First;
 

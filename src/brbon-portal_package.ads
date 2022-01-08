@@ -77,9 +77,10 @@ private
 
    function Portal_Factory
      (
+      Store_Ptr: BRBON.Store_Pointer;
       Item_Ptr: BRBON.Item_Header_Ptr;
-      Element_Index: Unsigned_32 := 16#FFFF_FFFF#;
-      Column_Index: Unsigned_32 := 16#FFFF_FFFF#
+      Element_Index: Unsigned_32 := Unsigned_32'Last;
+      Column_Index: Unsigned_32 := Unsigned_32'Last
      ) return Portal;
 
 

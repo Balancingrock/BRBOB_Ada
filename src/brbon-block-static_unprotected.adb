@@ -6,9 +6,6 @@ with Ada.Exceptions;
 
 with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
-with BRBON.Footer;
-with BRBON.Header;
-with BRBON.Name_Field_Assistent;
 private with BRBON.Portal_Package; use BRBON.Portal_Package;
 
 with UUID_Package;
@@ -39,7 +36,7 @@ package body BRBON.Block.Static_Unprotected is
        Target_List: String := "";
        Public_Key_URL: String := "";
        Creation_Timestamp: Unsigned_64 := Utils.Milli_Sec_Since_Jan_1_1970;
-       Expiry_Timestamp: Unsigned_64 := 16#7FFF_FFFF_FFFF_FFFF#
+       Expiry_Timestamp: Unsigned_64 := Unsigned_64'Last
       ) return Instance is
 
       Field_Storage_Byte_Count: Unsigned_16;

@@ -94,14 +94,14 @@ package body CRC_Package is
    end Calculate_CRC_32;
 
 
-   function Calculate_CRC_16 (Arr: Array_Of_Unsigned_8) return Unsigned_16 is
+   function Calculate_CRC_16 (Arr: BRBON.Unsigned_8_Array) return Unsigned_16 is
       Source: Serializable.Instance := Serializable.Create_With_Copy (Copy_Bytes_From => Arr);
    begin
       return Calculate_CRC_16 (Source);
    end Calculate_CRC_16;
 
 
-   function Calculate_CRC_32 (Arr: Array_Of_Unsigned_8) return Unsigned_32 is
+   function Calculate_CRC_32 (Arr: BRBON.Unsigned_8_Array) return Unsigned_32 is
       Source: Serializable.Instance := Serializable.Create_With_Copy (Copy_Bytes_From => Arr);
    begin
       return Calculate_CRC_32 (Source);

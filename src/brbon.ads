@@ -435,22 +435,7 @@ private
    
    function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
 
-   
-   -- Portal
-   
-   type Portal_Type is (Null_Portal, Normal, Element, Field);
-
-   type Portal is
-      record
-         Is_Type: Portal_Type;
-         Is_Valid: Boolean := True;
-         --
-         Item_Ptr: Item_Header_Ptr;
-         Element_Index: Unsigned_32 := 0;
-         Column_Index: Unsigned_32 := 0;
-      end record;
-
-
+      
    -- Block
    
    type Store is new Ada.Finalization.Controlled with
@@ -459,6 +444,25 @@ private
          Swap: Boolean;
       end record;
    
+   type Store_Pointer is access all Store;
+   
+   
+   -- Portal
+   
+   type Portal_Type is (Null_Portal, Normal, Element, Field);
+
+   type Portal is
+      record
+         SPtr: Store_Pointer;
+         --
+         Is_Type: Portal_Type;
+         Is_Valid: Boolean := True;
+         --
+         Item_Ptr: Item_Header_Ptr;
+         Element_Index: Unsigned_32 := 0;
+         Column_Index: Unsigned_32 := 0;
+      end record;
+
 
    type Quick_Check_Value is
       record
@@ -490,6 +494,6 @@ private
    
    -- Block operations
    
-   procedure Set_Data_Byte_Order (B: Store; Value: Byte_Storage_Order);
+   procedure Set_Data_Byte_Order (B: in out Store; Value: Byte_Storage_Order);
 
 end BRBON;
