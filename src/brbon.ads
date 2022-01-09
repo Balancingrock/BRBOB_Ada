@@ -297,7 +297,7 @@ package BRBON is
    -- This type may be used to quickly access an item in storage without having
    -- to perform a lookup or search.
    --
-   type Portal is private;
+   type Portal_Record is tagged private;
 
    
    -- This is root class of all blocks.
@@ -456,7 +456,7 @@ private
    
    type Portal_Type is (Null_Portal, Normal, Element, Field);
 
-   type Portal is
+   type Portal_Record is tagged
       record
          SPtr: Store_Pointer;
          --

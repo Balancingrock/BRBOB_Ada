@@ -6,7 +6,7 @@ with Ada.Exceptions;
 
 with BRBON.Utils;
 with BRBON.Block; use BRBON.Block;
-private with BRBON.Portal_Package; use BRBON.Portal_Package;
+private with BRBON.Portal;
 
 with UUID_Package;
 with CRC_Package;
@@ -37,7 +37,7 @@ package body BRBON.Block.Static_Unprotected is
        Public_Key_URL: String := "";
        Creation_Timestamp: Unsigned_64 := Utils.Milli_Sec_Since_Jan_1_1970;
        Expiry_Timestamp: Unsigned_64 := Unsigned_64'Last
-      ) return Instance is
+      ) return Static_Unprotected_Record is
 
       Field_Storage_Byte_Count: Unsigned_16;
       Header_Type_Dependent_Byte_count: Unsigned_16;
@@ -46,14 +46,14 @@ package body BRBON.Block.Static_Unprotected is
       Content_Byte_Count: Unsigned_32;
       Block_Byte_Count: Unsigned_32;
 
-      New_Block: Instance;
+      New_Block: Static_Unprotected_Record;
 
    begin
 
 
       -- Check if block type is supported
       --
-      if Type_Of_Block /= Single_Item then
+      if Type_Of_Block /= Single_Item_Block then
          Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Block type not (yet) supported (" & Type_Of_Block'Image & ")");
       end if;
 
@@ -96,17 +96,12 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Calculate the size of the block
       --
-      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + Block_Footer_Byte_Count (Single_Item));
+      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + Block_Footer_Byte_Count (Single_Item_Block));
 
 
       -- Allocate memory area for the container that will enclose the block
       --
-      New_Block.Memory_Ptr := new Types.Array_Of_Unsigned_8 (0 .. Block_Byte_Count - 1);
-
-
-      -- Create the container for the block
-      --
-      New_Block.Container := Container.Factory (Buffer_Ptr => New_Block.Memory_Ptr, Using_Endianness => Using_Endianness);
+      Setup (Store (New_Block), new Unsigned_8_Array (0 .. Block_Byte_Count - 1), Using_Endianness);
 
 
       -- Create the block header
@@ -137,7 +132,7 @@ package body BRBON.Block.Static_Unprotected is
    end Factory;
 
 
-   procedure Finalization (I: in out Instance) is
+   procedure Finalization (I: Static_Unprotected_Record) is
    begin
       Deallocate_Array_Of_Unsigned_8 (I.Memory_Ptr);
    end Finalization;
@@ -145,10 +140,10 @@ package body BRBON.Block.Static_Unprotected is
 
    -- Operational Interface
 
-   function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32 is
-      B: constant Unsigned_32 := I.Byte_Count;
-      F: constant Unsigned_32 := I.First_Free_Byte_In_Payload;
-      V: constant Unsigned_32 := F + Footer.Footer_Byte_Count (Types.Single_Item);
+   function Free_Area_Byte_Count (S: Static_Unprotected_Record) return Unsigned_32 is
+      B: constant Unsigned_32 := S.Byte_Count;
+      F: constant Unsigned_32 := S.First_Free_Byte_In_Payload;
+      V: constant Unsigned_32 := F + Footer.Footer_Byte_Count (Single_Item);
    begin
       if V > B then
          return 0; -- cannot return negative
@@ -158,7 +153,7 @@ package body BRBON.Block.Static_Unprotected is
    end Free_Area_Byte_Count;
 
 
-   function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal.Instance is
+   function Add_Root_Item (S: Static_Unprotected_Record; Of_Type: Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal is
 
       Name_Assistent: Name_Field_Assistent.Instance := Name_Field_Assistent.Create_Name_Field_Assistent (With_Name);
       Item_Byte_Count: Unsigned_32;

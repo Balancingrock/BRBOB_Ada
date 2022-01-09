@@ -51,37 +51,47 @@ with Interfaces; use Interfaces;
 private with BRBON;
 
 
-package BRBON.Portal_Package is
+package BRBON.Portal is
 
 
-   -- This excpetion is raised when an invalid portal is used.
+   -- This exception is raised when an invalid portal is used.
    --
    Invalid_Portal_Error: exception;
+
+
+   -- This exception is raised when a null portal is used for anything else but the null-portal test.
+   --
+   Null_Portal_Error: exception;
 
 
    -- Returns true if the portal is valid. Once invalid, a portal will never become valid again.
    -- Once a portal is invalid, any attempt to access values in the item will raise the excpetion Invalid_Portal_Error.
    -- Note: Only dynamic block functions can invalidate a portal.
    --
-   function Is_Valid_Portal (P: Portal) return Boolean;
+   function Is_Valid_Portal (P: Portal_Record) return Boolean;
 
 
    -- The null portal may be returned if a (look-up or search) operation does not produce a result.
-   -- A null-portal is always invalid and cannot be used to access an item (it will raise the Invalid_Portal_Error if tried).
+   -- A null-portal is always invalid and will raise the Null_Portal_Error when tried.
    -- However any portal (including invalid portals) can be tested for beiing a null portal.
    --
-   function Is_Null_Portal (P: Portal) return Boolean;
+   function Is_Null_Portal (P: Portal_Record) return Boolean;
+
+
+   -- Return the portal value as a bool
+   --
+   function Get_Bool (P: Portal_Record) return Boolean;
 
 
 private
 
-   function Portal_Factory
+   function Factory
      (
-      Store_Ptr: BRBON.Store_Pointer;
-      Item_Ptr: BRBON.Item_Header_Ptr;
+      Store_Ptr: Store_Pointer;
+      Item_Ptr: Item_Header_Ptr;
       Element_Index: Unsigned_32 := Unsigned_32'Last;
       Column_Index: Unsigned_32 := Unsigned_32'Last
-     ) return Portal;
+     ) return Portal_Record;
 
 
-end BRBON.Portal_Package;
+end BRBON.Portal;

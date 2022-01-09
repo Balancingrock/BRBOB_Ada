@@ -60,11 +60,14 @@ package body BRBON.Container is
    function Swap_Float_64 is new GNAT.Byte_Swapping.Swapped8 (IEEE_Float_64);
 
    
--- -----------------------------------------------------------------------------
-
-   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; For_Byte_Order: BRBON.Byte_Storage_Order) return BRBON.Store is
+   -----------------------------------------------------------------------------
    
-      S: BRBON.Store;
+   procedure Setup
+     (
+      S: in out BRBON.Store'Class;
+      In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr;
+      For_Byte_Order: BRBON.Byte_Storage_Order
+     ) is
    
    begin
       
@@ -74,20 +77,33 @@ package body BRBON.Container is
       if Zero_Storage then
          S.Data.all := (others => 0);
       end if;
+   
+   end Setup;
+   
+   
+   -----------------------------------------------------------------------------
+
+   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; For_Byte_Order: BRBON.Byte_Storage_Order) return Store is
+   
+      S: Store;
+   
+   begin
+      
+      Initialize (S);
       
       return S;
       
    end Factory;
 
    
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Factory (In_Buffer_Ptr: Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: Byte_Storage_Order) return BRBON.Store is
+   function Factory (In_Buffer_Ptr: Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: Byte_Storage_Order) return Store is
 
       File: Ada.Streams.Stream_IO.File_Type;
       File_Size: Unsigned_64;
       In_Stream: Stream_Access;
-      S: BRBON.Store;
+      S: Store;
 
    begin
    
@@ -105,17 +121,19 @@ package body BRBON.Container is
    
       Unsigned_8_Array'Read (In_Stream, In_Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
    
-      S.Data := In_Buffer_Ptr;
-      S.Swap := For_Byte_Order /= Machine_Byte_Storage_Order;
+      Initialize (S, In_Buffer_Ptr, For_Byte_Order);
+      
+      -- S.Data := In_Buffer_Ptr;
+      -- S.Swap := For_Byte_Order /= Machine_Byte_Storage_Order;
      
       return S;
       
    end Factory;
 
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   procedure Write_to_File (S: Store; Path: String) is
+   procedure Write_to_File (S: Store'Class; Path: String) is
    
       File: Ada.Streams.Stream_IO.File_Type;
       subtype T is Unsigned_8_Array (S.Data'First .. S.Data'Last);
@@ -136,9 +154,9 @@ package body BRBON.Container is
    end Write_to_File;
 
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Storage_Byte_Count (S: Store) return Unsigned_32 is
+   function Storage_Byte_Count (S: Store'Class) return Unsigned_32 is
    
    begin
    
@@ -147,9 +165,9 @@ package body BRBON.Container is
    end Storage_Byte_Count;
 
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Storage_Byte_Order (S: Store) return BRBON.Byte_Storage_Order is
+   function Storage_Byte_Order (S: Store'Class) return Byte_Storage_Order is
    
    begin
    
@@ -169,9 +187,9 @@ package body BRBON.Container is
    end Storage_Byte_Order;
 
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   procedure Test_Support_Get_Bytes (S: BRBON.Store; Start: Unsigned_32; Dest: out BRBON.Unsigned_8_Array) is
+   procedure Test_Support_Get_Bytes (S: Store'Class; Start: Unsigned_32; Dest: out Unsigned_8_Array) is
    
       Index: Unsigned_32 := Start;
    
@@ -195,9 +213,10 @@ package body BRBON.Container is
    
    end Test_Support_Get_Bytes;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Bool (S: BRBON.Store; Offset: Unsigned_32; Value: Boolean) is
+   procedure Set_Bool (S: Store'Class; Offset: Unsigned_32; Value: Boolean) is
    
    begin
    
@@ -205,9 +224,10 @@ package body BRBON.Container is
    
    end Set_Bool;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Bool (S: BRBON.Store; Offset: Unsigned_32) return Boolean is
+   function Get_Bool (S: Store'Class; Offset: Unsigned_32) return Boolean is
    
    begin
    
@@ -215,9 +235,10 @@ package body BRBON.Container is
    
    end Get_Bool;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_8 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_8) is
+   procedure Set_Unsigned_8 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_8) is
    
    begin
       
@@ -225,9 +246,10 @@ package body BRBON.Container is
    
    end Set_Unsigned_8;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Unsigned_8 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_8 is
+   function Get_Unsigned_8 (S: Store'Class; Offset: Unsigned_32) return Unsigned_8 is
    
    begin
    
@@ -235,9 +257,10 @@ package body BRBON.Container is
       
    end Get_Unsigned_8;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_16 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_16) is
+   procedure Set_Unsigned_16 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_16) is
    
    begin
    
@@ -253,9 +276,10 @@ package body BRBON.Container is
       
    end Set_Unsigned_16;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Unsigned_16 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_16 is
+   function Get_Unsigned_16 (S: Store'Class; Offset: Unsigned_32) return Unsigned_16 is
    
       Value: Unsigned_16 := Types.To_Unsigned_16 (S.Data (Offset .. Offset + 1));
    
@@ -273,9 +297,10 @@ package body BRBON.Container is
    
    end Get_Unsigned_16;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_32 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_32) is
+   procedure Set_Unsigned_32 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_32) is
    
    begin
    
@@ -291,9 +316,10 @@ package body BRBON.Container is
       
    end Set_Unsigned_32;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Unsigned_32 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_32 is
+   function Get_Unsigned_32 (S: Store'Class; Offset: Unsigned_32) return Unsigned_32 is
    
       Value: Unsigned_32 := Types.To_Unsigned_32 (S.Data (Offset .. Offset + 3));
    
@@ -311,9 +337,10 @@ package body BRBON.Container is
    
    end Get_Unsigned_32;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_64 (S: BRBON.Store; Offset: Unsigned_32; Value: Unsigned_64) is
+   procedure Set_Unsigned_64 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_64) is
    
    begin
       
@@ -329,9 +356,10 @@ package body BRBON.Container is
       
    end Set_Unsigned_64;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Unsigned_64 (S: BRBON.Store; Offset: Unsigned_32) return Unsigned_64 is
+   function Get_Unsigned_64 (S: Store'Class; Offset: Unsigned_32) return Unsigned_64 is
 
       Value: Unsigned_64 := Types.To_Unsigned_64 (S.Data (Offset .. Offset + 7));
 
@@ -349,9 +377,10 @@ package body BRBON.Container is
 
    end Get_Unsigned_64;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Integer_8 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_8) is
+   procedure Set_Integer_8 (S: Store'Class; Offset: Unsigned_32; Value: Integer_8) is
    
    begin
    
@@ -359,9 +388,10 @@ package body BRBON.Container is
    
    end Set_Integer_8;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Integer_8 (S: BRBON.Store; Offset: Unsigned_32) return Integer_8 is
+   function Get_Integer_8 (S: Store'Class; Offset: Unsigned_32) return Integer_8 is
    
    begin
    
@@ -369,9 +399,10 @@ package body BRBON.Container is
    
    end Get_Integer_8;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Integer_16 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_16) is
+   procedure Set_Integer_16 (S: Store'Class; Offset: Unsigned_32; Value: Integer_16) is
    
    begin
    
@@ -387,9 +418,10 @@ package body BRBON.Container is
    
    end Set_Integer_16;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Integer_16 (S: BRBON.Store; Offset: Unsigned_32) return Integer_16 is
+   function Get_Integer_16 (S: Store'Class; Offset: Unsigned_32) return Integer_16 is
    
       Value: Integer_16 := Types.To_Integer_16 (S.Data (Offset .. Offset + 1));
    
@@ -407,9 +439,10 @@ package body BRBON.Container is
    
    end Get_Integer_16;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Integer_32 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_32) is
+   procedure Set_Integer_32 (S: Store'Class; Offset: Unsigned_32; Value: Integer_32) is
 
    begin
 
@@ -425,9 +458,10 @@ package body BRBON.Container is
 
    end Set_Integer_32;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Integer_32 (S: BRBON.Store; Offset: Unsigned_32) return Integer_32 is
+   function Get_Integer_32 (S: Store'Class; Offset: Unsigned_32) return Integer_32 is
 
       Value: Integer_32 := Types.To_Integer_32 (S.Data (Offset .. Offset + 3));
 
@@ -445,9 +479,10 @@ package body BRBON.Container is
 
    end Get_Integer_32;
 
--- -----------------------------------------------------------------------------
 
-   procedure Set_Integer_64 (S: BRBON.Store; Offset: Unsigned_32; Value: Integer_64) is
+   -----------------------------------------------------------------------------
+
+   procedure Set_Integer_64 (S: Store'Class; Offset: Unsigned_32; Value: Integer_64) is
 
    begin
 
@@ -463,9 +498,10 @@ package body BRBON.Container is
 
    end Set_Integer_64;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Integer_64 (S: BRBON.Store; Offset: Unsigned_32) return Integer_64 is
+   function Get_Integer_64 (S: Store'Class; Offset: Unsigned_32) return Integer_64 is
 
       Value: Integer_64 := Types.To_Integer_64 (S.Data (Offset .. Offset + 7));
 
@@ -483,9 +519,10 @@ package body BRBON.Container is
 
    end Get_Integer_64;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   procedure Set_Float_32 (S: BRBON.Store; Offset: Unsigned_32; Value: IEEE_Float_32) is
+   procedure Set_Float_32 (S: Store'Class; Offset: Unsigned_32; Value: IEEE_Float_32) is
 
    begin
 
@@ -501,9 +538,10 @@ package body BRBON.Container is
 
    end Set_Float_32;
 
--- -----------------------------------------------------------------------------
+   
+   -----------------------------------------------------------------------------
 
-   function Get_Float_32 (S: BRBON.Store; Offset: Unsigned_32) return IEEE_Float_32 is
+   function Get_Float_32 (S: Store'Class; Offset: Unsigned_32) return IEEE_Float_32 is
 
       Value: IEEE_Float_32 := Types.To_Float_32 (S.Data (Offset .. Offset + 3));
 
@@ -521,9 +559,10 @@ package body BRBON.Container is
 
    end Get_Float_32;
 
--- -----------------------------------------------------------------------------
 
-   procedure Set_Float_64 (S: BRBON.Store; Offset: Unsigned_32; Value: IEEE_Float_64) is
+   -----------------------------------------------------------------------------
+
+   procedure Set_Float_64 (S: Store'Class; Offset: Unsigned_32; Value: IEEE_Float_64) is
 
    begin
 
@@ -539,9 +578,10 @@ package body BRBON.Container is
 
    end Set_Float_64;
 
--- -----------------------------------------------------------------------------
 
-   function Get_Float_64 (S: BRBON.Store; Offset: Unsigned_32) return IEEE_Float_64 is
+   -----------------------------------------------------------------------------
+
+   function Get_Float_64 (S: Store'Class; Offset: Unsigned_32) return IEEE_Float_64 is
 
       Value: IEEE_Float_64 := Types.To_Float_64 (S.Data (Offset .. Offset + 7));
 
@@ -560,9 +600,9 @@ package body BRBON.Container is
    end Get_Float_64;
 
    
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Get_String (S: BRBON.Store; Offset: Unsigned_32; Length: Unsigned_32) return String is
+   function Get_String (S: Store'Class; Offset: Unsigned_32; Length: Unsigned_32) return String is
 
       subtype Str_T is String (1 .. Integer (Length));
       subtype Arr_T is Unsigned_8_Array (1 .. Unsigned_32 (Length));
@@ -575,9 +615,9 @@ package body BRBON.Container is
    end Get_String;
 
    
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   procedure Set_String (S: BRBON.Store; Offset: Unsigned_32; Value: String) is
+   procedure Set_String (S: Store'Class; Offset: Unsigned_32; Value: String) is
    
       subtype Arr_T is Unsigned_8_Array (1 .. Value'Length);
       subtype Str_T is String (1 .. Value'Length);
@@ -594,9 +634,9 @@ package body BRBON.Container is
    end Set_String;
 
    
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Get_Unsigned_8_Array (S: BRBON.Store; Offset: Unsigned_32; Length: Unsigned_32) return BRBON.Unsigned_8_Array is
+   function Get_Unsigned_8_Array (S: Store'Class; Offset: Unsigned_32; Length: Unsigned_32) return Unsigned_8_Array is
 
    begin
 
@@ -605,9 +645,9 @@ package body BRBON.Container is
    end Get_Unsigned_8_Array;
 
    
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_8_Array (S: BRBON.Store; Offset: Unsigned_32; Value: BRBON.Unsigned_8_Array) is
+   procedure Set_Unsigned_8_Array (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_8_Array) is
    
    begin
    
@@ -619,9 +659,9 @@ package body BRBON.Container is
    
    end Set_Unsigned_8_Array;
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Get_CRC_16_Over_Range (S: BRBON.Store; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16 is
+   function Get_CRC_16_Over_Range (S: Store'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16 is
 
    begin
 
@@ -629,9 +669,9 @@ package body BRBON.Container is
 
    end Get_CRC_16_Over_Range;
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   function Get_CRC_32_Over_Range (S: BRBON.Store; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32 is
+   function Get_CRC_32_Over_Range (S: Store'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32 is
 
    begin
 
@@ -639,9 +679,9 @@ package body BRBON.Container is
 
    end Get_CRC_32_Over_Range;
 
--- -----------------------------------------------------------------------------
+   -----------------------------------------------------------------------------
 
-   procedure Test_Support_Hex_Dump (S: BRBON.Store) is
+   procedure Test_Support_Hex_Dump (S: Store'Class) is
 
    begin
 

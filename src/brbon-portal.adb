@@ -3,36 +3,40 @@ with Ada.Exceptions;
 with BRBON.Item_Access;
 
 
-package body BRBON.Portal_Package is
+package body BRBON.Portal is
 
 
-   The_Null_Portal: Portal := (null, Null_Portal, false, null, 0, 0);
+   Static_Null_Portal: Portal_Record := (null, Null_Portal, false, null, 0, 0);
 
 
-   function Is_Valid_Portal (P: Portal) return Boolean is
+   -----------------------------------------------------------------------------
+
+   function Is_Valid_Portal (P: Portal_Record) return Boolean is
    begin
       return P.Is_Valid;
    end Is_Valid_Portal;
 
 
-   function Is_Null_Portal (P: Portal) return Boolean is
+   -----------------------------------------------------------------------------
+
+   function Is_Null_Portal (P: Portal_Record) return Boolean is
    begin
-      return P.Is_Valid;
+      return P.SPtr = null;
    end Is_Null_Portal;
 
 
    -----------------------------------------------------------------------------
 
-   function Portal_Factory
+   function Factory
      (
       Store_Ptr: Store_Pointer;
       Item_Ptr: Item_Header_Ptr;
       Element_Index: Unsigned_32 := Unsigned_32'Last;
       Column_Index: Unsigned_32 := Unsigned_32'Last
      )
-      return Portal is
+      return Portal_Record is
 
-      New_Portal: Portal := (Store_Ptr, Normal, true, Item_Ptr, 0, 0);
+      New_Portal: Portal_Record := (Store_Ptr, Normal, true, Item_Ptr, 0, 0);
 
    begin
 
@@ -61,6 +65,16 @@ package body BRBON.Portal_Package is
 
       return New_Portal;
 
-   end Portal_Factory;
+   end Factory;
 
-end BRBON.Portal_Package;
+
+   -----------------------------------------------------------------------------
+
+   function Get_Bool (P: Portal_Record) return Boolean is
+   begin
+      raise Implementation;
+      return true;
+   end Get_Bool;
+
+
+end BRBON.Portal;

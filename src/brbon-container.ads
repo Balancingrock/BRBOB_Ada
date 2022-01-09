@@ -272,4 +272,8 @@ package BRBON.Container is
    procedure Test_Support_Hex_Dump (S: BRBON.Store'Class);
 
 
+private
+
+   procedure Setup (S: in out BRBON.Store'Class; In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; For_Byte_Order: BRBON.Byte_Storage_Order);
+
 end BRBON.Container;
