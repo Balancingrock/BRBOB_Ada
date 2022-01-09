@@ -27,7 +27,7 @@ package body BRBON.Block.Static_Unprotected is
        Minimum_Byte_Count: Unsigned_32;
        Header_Field_Storage_Byte_Count: Unsigned_16 := 1;
        Options: Block_Options := No_Block_Options;
-       Using_Endianness: Endianness := Configure.Machine_Endianness;
+       Using_Endianness: Byte_Storage_Order := Machine_Byte_Storage_Order;
        Origin: String := "";
        Identifier: String := "";
        Extension: String := "";
@@ -80,13 +80,13 @@ package body BRBON.Block.Static_Unprotected is
       --
       case Type_Of_Block is
          when Illegal => Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Impossible to create an illegal-type block");
-         when Single_Item => Header_Type_Dependent_Byte_Count := 0;
+         when Single_Item_Block => Header_Type_Dependent_Byte_Count := 0;
       end case;
 
 
       -- Calculate the header size
       --
-      Header_Byte_Count := Header.Fixed_Part_Byte_Count + Header_Type_Dependent_Byte_Count + Field_Storage_Byte_Count + Header.Past_Field_Storage_Byte_Count;
+      Header_Byte_Count := Block_Header_Leading_Byte_Count + Header_Type_Dependent_Byte_Count + Field_Storage_Byte_Count + Block_Header_Trailing_Byte_Count;
 
 
       -- Calculate the size of the block content field
@@ -96,7 +96,7 @@ package body BRBON.Block.Static_Unprotected is
 
       -- Calculate the size of the block
       --
-      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + Footer.Footer_Byte_Count (Single_Item));
+      Block_Byte_Count := Unsigned_32 (Unsigned_32 (Header_Byte_Count) + Content_Byte_Count + Block_Footer_Byte_Count (Single_Item));
 
 
       -- Allocate memory area for the container that will enclose the block

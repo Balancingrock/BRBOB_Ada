@@ -2,7 +2,7 @@ with Interfaces; use Interfaces;
 
 with Ada.Finalization;
 
-with BRBON.Types; use BRBON.Types;
+
 with BRBON.Utils;
 with BRBON.Container; use BRBON.Container;
 with BRBON.Block;
@@ -19,7 +19,7 @@ package BRBON.Block.Static_Unprotected is
    -- The store that contains a static BRBON hierarchy on which unprotected access is possible.
    -- This is the fasted possible acces to items in a BRBON store.
    --
-   type Instance is new Store with null record;
+   type Static_Unprotected_Record is new Block_Record with null record;
 
 
    -- Creates a new instance with a header of the requested type.
@@ -42,7 +42,7 @@ package BRBON.Block.Static_Unprotected is
        Minimum_Byte_Count: Unsigned_32;
        Header_Field_Storage_Byte_Count: Unsigned_16 := 1;
        Options: Block_Options := No_Block_Options;
-       Using_Endianness: Endianness := Machine_Byte_Storage_Order;
+       Using_Endianness: Byte_Storage_Order := Machine_Byte_Storage_Order;
        Origin: String := "";
        Identifier: String := "";
        Extension: String := "";
@@ -52,41 +52,41 @@ package BRBON.Block.Static_Unprotected is
        Public_Key_URL: String := "";
        Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
        Expiry_Timestamp: Unsigned_64 := Unsigned_64'Last
-      ) return Instance;
+      ) return Static_Unprotected_Record;
 
 
    -- Return the byte count of the unused area in this block.
    --
-   function Free_Area_Byte_Count (I: in out Instance) return Unsigned_32;
+   function Free_Area_Byte_Count (SU: Static_Unprotected_Record) return Unsigned_32;
 
 
    -- Add a new root item and returns a portal for it.
    -- Use one of the specific container functions to create a fully functional container item.
    --
-   function Add_Root_Item (I: in out Instance; Of_Type: Types.Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal;
+   function Add_Root_Item (SU: Static_Unprotected_Record; Of_Type: Item_Type; With_Byte_Count: Unsigned_32; With_Name: String) return Portal;
 
 
    -- Add an Array_Type container item at root level and return the portal for it.
    --
-   function Add_Root_Item_Array_Type (I: in out Instance; With_Name: String; Element_Type: Types.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal;
+   function Add_Root_Item_Array_Type (SU: Static_Unprotected_Record; With_Name: String; Element_Type: Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Portal;
 
 
    -- Return a portal referencing the root item.
    --
-   function Get_Root_Item (I: in out Instance) return Portal;
+   function Get_Root_Item (SU: Static_Unprotected_Record) return Portal;
 
 
 
 
    -- Item Structure Access
    --
-   function Get_Type (P: Portal) return Types.Item_Type;
+   function Get_Type (P: Portal) return Item_Type;
    pragma Inline (Get_Type);
    --
-   function Get_Options (P: Portal) return Types.Item_Options;
+   function Get_Options (P: Portal) return Item_Options;
    pragma Inline (Get_Options);
    --
-   function Get_Flags (P: Portal) return Types.Item_Flags;
+   function Get_Flags (P: Portal) return Item_Flags;
    pragma Inline (Get_Flags);
    --
    function Get_Name (P: Portal) return String;
@@ -203,16 +203,16 @@ package BRBON.Block.Static_Unprotected is
    function Get_CRC_String_Quick_Compare (P: Portal) return Unsigned_64;
    pragma Inline (Get_CRC_String_Quick_Compare);
 
-   function Get_Binary (P: Portal) return Array_Of_Unsigned_8;
+   function Get_Binary (P: Portal) return Unsigned_8_Array;
    pragma Inline (Get_Binary);
 
-   procedure Set_Binary (P: Portal; Value: Array_Of_Unsigned_8);
+   procedure Set_Binary (P: Portal; Value: Unsigned_8_Array);
    pragma Inline (Set_Binary);
 
-   function Get_CRC_Binary (P: Portal) return Array_Of_Unsigned_8;
+   function Get_CRC_Binary (P: Portal) return Unsigned_8_Array;
    pragma Inline (Get_CRC_Binary);
 
-   procedure Set_CRC_Binary (P: Portal; Value: Array_Of_Unsigned_8);
+   procedure Set_CRC_Binary (P: Portal; Value: Unsigned_8_Array);
    pragma Inline (Set_CRC_Binary);
 
    -- Returns the CRC value for the stored binary.

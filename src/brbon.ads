@@ -340,6 +340,11 @@ package BRBON is
    procedure Deallocate_Unsigned_8_Array is new Ada.Unchecked_Deallocation (Unsigned_8_Array, Unsigned_8_Array_Ptr);
    
    
+   -- The timestamp for blocks etc.
+   --
+   type Timestamp is new Unsigned_64;
+   
+   
    -- Raised when a name has an unexpected or illegal value.
    --
    Name_Error: exception;

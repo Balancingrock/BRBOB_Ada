@@ -10,8 +10,6 @@ with BRBON.Container;
 
 
 
-
-
 package body BRBON.Block is
 
 
@@ -50,11 +48,11 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function FSS_Upper_Limit (S: Store) return Unsigned_16 is
+   function FSS_Upper_Limit (B: Block_Record) return Unsigned_16 is
    begin
-      case Get_Block_Type (S) is
+      case B.Get_Block_Type is
          when Single_Item_Block =>
-            return Get_Header_Byte_Count (S) - Block_Header_Leading_Byte_Count - Block_Header_Trailing_Byte_Count;
+            return B.Get_Header_Byte_Count - Block_Header_Leading_Byte_Count - Block_Header_Trailing_Byte_Count;
          when others =>
             Ada.Exceptions.Raise_Exception (Illegal_Block_Type'Identity, "Cannot calculate FSS_Upper_Limit for not-supported block types");
       end case;
@@ -63,28 +61,28 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Read_Field_Storage_Strings (S: Store) return Field_Storage_Strings is
+   function Read_Field_Storage_Strings (B: Block_Record) return Field_Storage_Strings is
    begin
       return
         (
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Origin (S)),
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Identifier (S)),
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Extension (S)),
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Path_Prefix (S)),
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Acquisition_URL (S)),
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Target_List (S)),
-         Ada.Strings.Unbounded.To_Unbounded_String (Get_Public_Key_Url (S))
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Origin),
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Identifier),
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Extension),
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Path_Prefix),
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Acquisition_URL),
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Target_List),
+         Ada.Strings.Unbounded.To_Unbounded_String (B.Get_Public_Key_Url)
         );
    end Read_Field_Storage_Strings;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Write_Field_Storage_Strings (S: Store; Strings: Field_Storage_Strings) is
+   procedure Write_Field_Storage_Strings (B: Block_Record; Strings: Field_Storage_Strings) is
 
-      HPtr: Block_Header_Leading_Ptr := Get_Block_Header_Leading_Ptr (S);
+      HPtr: Block_Header_Leading_Ptr := B.Get_Block_Header_Leading_Ptr;
       Offset: Unsigned_16 := Block_Header_Leading_Byte_Count;
-      Free_Bytes: Unsigned_16 := Get_Header_Byte_Count (S) - Offset - Block_Header_Trailing_Byte_Count;
+      Free_Bytes: Unsigned_16 := B.Get_Header_Byte_Count - Offset - Block_Header_Trailing_Byte_Count;
 
       procedure Add
         (
@@ -96,20 +94,20 @@ package body BRBON.Block is
       is
          Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
-         Set_Offset (S, Offset);
-         Set_Byte_Count (S, Unsigned_8 (Str'Length));
+         Set_Offset (B, Offset);
+         Set_Byte_Count (B, Unsigned_8 (Str'Length));
          if Str'Length > 0 then
             if Str'Length > Free_Bytes then
-               Ada.Exceptions.Raise_Exception (BRBON.Storage_Warning'Identity, "String length exceeds available area");
+               Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "String length exceeds available area");
             else
-               Container.Set_String (S, Unsigned_32 (Offset), Str);
+               Container.Set_String (B, Unsigned_32 (Offset), Str);
                Offset := Offset + Unsigned_16 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
-            Set_CRC_16 (S, CRC_Package.Calculate_CRC_16 (Str));
+            Set_CRC_16 (B, CRC_Package.Calculate_CRC_16 (Str));
          else
-            Set_CRC_16 (S, 0);
-            Set_Offset (S, 0);
+            Set_CRC_16 (B, 0);
+            Set_Offset (B, 0);
          end if;
       end Add;
 
@@ -122,18 +120,18 @@ package body BRBON.Block is
       is
          Str: String := Ada.Strings.Unbounded.To_String (UStr);
       begin
-         Set_Offset (S, Offset);
-         Set_Byte_Count (S, Unsigned_16 (Str'Length));
+         Set_Offset (B, Offset);
+         Set_Byte_Count (B, Unsigned_16 (Str'Length));
          if Str'Length > 0 then
             if Str'Length > Free_Bytes then
                Ada.Exceptions.Raise_Exception (BRBON.Storage_Warning'Identity, "String length exceeds available area");
             else
-               Container.Set_String (S, Unsigned_32 (Offset), Str);
+               Container.Set_String (B, Unsigned_32 (Offset), Str);
                Offset := Offset + Unsigned_16 (Str'Length);
                Free_Bytes := Free_Bytes - Unsigned_16 (Str'Length);
             end if;
          else
-            Set_Offset (S, 0);
+            Set_Offset (B, 0);
          end if;
       end Add;
 
@@ -168,16 +166,16 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Byte_Storage_Order (S: Store) return Byte_Storage_Order is
+   function Get_Byte_Storage_Order (B: Block_Record) return Byte_Storage_Order is
    begin
-      if S.Swap then
-         if BRBON.Machine_Byte_Storage_Order = BRBON.MSB_First then
-            return BRBON.LSB_First;
+      if B.Swap then
+         if Machine_Byte_Storage_Order = MSB_First then
+            return LSB_First;
          else
-            return BRBON.MSB_First;
+            return MSB_First;
          end if;
       else
-         return BRBON.Machine_Byte_Storage_Order;
+         return Machine_Byte_Storage_Order;
       end if;
    end Get_Byte_Storage_Order;
 
@@ -189,351 +187,351 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Header_Synchronization_Bytes (S: Store) is
-      HPtr: Block_Header_Leading_Ptr := Get_Block_Header_Leading_Ptr (S);
+   procedure Set_Header_Synchronization_Bytes (B: Block_Record) is
+      HPtr: Block_Header_Leading_Ptr := B.Get_Block_Header_Leading_Ptr;
    begin
       HPtr.Synchronization_Byte_1 := Synch_Byte_1_Expected_Value;
       HPtr.Synchronization_Byte_2 := Synch_Byte_2_Expected_Value;
       HPtr.Synchronization_Byte_3 := Synch_Byte_3_Expected_Value;
-      HPtr.Synchronization_Byte_4 := Synch_Byte_4_LUT (BRBON.Machine_Byte_Storage_Order, S.Swap);
+      HPtr.Synchronization_Byte_4 := Synch_Byte_4_LUT (Machine_Byte_Storage_Order, B.Swap);
    end Set_Header_Synchronization_Bytes;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Block_Type (S: Store) return Block_Type is
+   function Get_Block_Type (B: Block_Record) return Block_Type is
    begin
-      return To_Block_Header_Leading_Ptr (S.Data (0)'Access).Is_Type;
+      return B.Get_Block_Header_Leading_Ptr.Is_Type;
    end Get_Block_Type;
 
-   procedure Set_Block_Type (S: Store; Value: Block_Type) is
+   procedure Set_Block_Type (B: Block_Record; Value: Block_Type) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Is_Type := Value;
+      B.Get_Block_Header_Leading_Ptr.Is_Type := Value;
    end Set_Block_Type;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Block_Options (S: Store; Value: BRBON.Block_Options) is
+   procedure Set_Block_Options (B: Block_Record; Value: BRBON.Block_Options) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Options := Value;
+      B.Get_Block_Header_Leading_Ptr.Options := Value;
    end Set_Block_Options;
 
-   function Get_Block_Options (S: Store) return BRBON.Block_Options is
+   function Get_Block_Options (B: Block_Record) return BRBON.Block_Options is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Options;
+      return B.Get_Block_Header_Leading_Ptr.Options;
    end Get_Block_Options;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Block_Byte_Count (S: Store) return Unsigned_32 is
+   function Get_Block_Byte_Count (B: Block_Record) return Unsigned_32 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Block_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Block_Byte_Count;
    end Get_Block_Byte_Count;
 
-   procedure Set_Block_Byte_Count (S: Store; Value: Unsigned_32) is
+   procedure Set_Block_Byte_Count (B: Block_Record; Value: Unsigned_32) is
    begin
-      Get_Block_Header_Leading_Ptr (s).Block_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Block_Byte_Count := Value;
    end Set_Block_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
 
-   function Get_Header_Byte_Count (S: Store) return Unsigned_16 is
+   function Get_Header_Byte_Count (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Header_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Header_Byte_Count;
    end Get_Header_Byte_Count;
 
-   procedure Set_Header_Byte_Count (S: Store; Value: Unsigned_16) is
+   procedure Set_Header_Byte_Count (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Header_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Header_Byte_Count := Value;
    end Set_Header_Byte_Count;
 
    -----------------------------------------------------------------------------
 
-   function Get_Encrypted_Header_Byte_Count (S: Store) return Unsigned_16 is
+   function Get_Encrypted_Header_Byte_Count (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Encrypted_Header_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Encrypted_Header_Byte_Count;
    end Get_Encrypted_Header_Byte_Count;
 
-   procedure Set_Encrypted_Header_Byte_Count (S: Store; Value: Unsigned_16) is
+   procedure Set_Encrypted_Header_Byte_Count (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Encrypted_Header_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Encrypted_Header_Byte_Count := Value;
    end Set_Encrypted_Header_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Origin_CRC (S: Store) return Unsigned_16 is
+   function Get_Origin_CRC (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Origin_CRC;
+      return B.Get_Block_Header_Leading_Ptr.Origin_CRC;
    end Get_Origin_CRC;
 
-   procedure Set_Origin_CRC (S: Store; Value: Unsigned_16) is
+   procedure Set_Origin_CRC (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Origin_CRC := Value;
+      B.Get_Block_Header_Leading_Ptr.Origin_CRC := Value;
    end Set_Origin_CRC;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_CRC (S: Store) return Unsigned_16 is
+   function Get_Identifier_CRC (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Identifier_CRC;
+      return B.Get_Block_Header_Leading_Ptr.Identifier_CRC;
    end Get_Identifier_CRC;
 
-   procedure Set_Identifier_CRC (S: Store; Value: Unsigned_16) is
+   procedure Set_Identifier_CRC (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Identifier_CRC := Value;
+      B.Get_Block_Header_Leading_Ptr.Identifier_CRC := Value;
    end Set_Identifier_CRC;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Extension_CRC (S: Store) return Unsigned_16 is
+   function Get_Extension_CRC (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Extension_CRC;
+      return B.Get_Block_Header_Leading_Ptr.Extension_CRC;
    end Get_Extension_CRC;
 
-   procedure Set_Extension_CRC (S: Store; Value: Unsigned_16) is
+   procedure Set_Extension_CRC (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Extension_CRC := Value;
+      B.Get_Block_Header_Leading_Ptr.Extension_CRC := Value;
    end Set_Extension_CRC;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix_CRC (S: Store) return Unsigned_16 is
+   function Get_Path_Prefix_CRC (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Path_Prefix_CRC;
+      return B.Get_Block_Header_Leading_Ptr.Path_Prefix_CRC;
    end Get_Path_Prefix_CRC;
 
-   procedure Set_Path_Prefix_CRC (S: Store; Value: Unsigned_16) is
+   procedure Set_Path_Prefix_CRC (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Path_Prefix_CRC := Value;
+      B.Get_Block_Header_Leading_Ptr.Path_Prefix_CRC := Value;
    end Set_Path_Prefix_CRC;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Origin_Byte_Count (S: Store) return Unsigned_8 is
+   function Get_Origin_Byte_Count (B: Block_Record) return Unsigned_8 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Origin_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Origin_Byte_Count;
    end Get_Origin_Byte_Count;
 
-   procedure Set_Origin_Byte_Count (S: Store; Value: Unsigned_8) is
+   procedure Set_Origin_Byte_Count (B: Block_Record; Value: Unsigned_8) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Origin_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Origin_Byte_Count := Value;
    end Set_Origin_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_Byte_Count (S: Store) return Unsigned_8 is
+   function Get_Identifier_Byte_Count (B: Block_Record) return Unsigned_8 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Identifier_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Identifier_Byte_Count;
    end Get_Identifier_Byte_Count;
 
-   procedure Set_Identifier_Byte_Count (S: Store; Value: Unsigned_8) is
+   procedure Set_Identifier_Byte_Count (B: Block_Record; Value: Unsigned_8) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Identifier_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Identifier_Byte_Count := Value;
    end Set_Identifier_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Extension_Byte_Count (S: Store) return Unsigned_8 is
+   function Get_Extension_Byte_Count (B: Block_Record) return Unsigned_8 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Extension_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Extension_Byte_Count;
    end Get_Extension_Byte_Count;
 
-   procedure Set_Extension_Byte_Count (S: Store; Value: Unsigned_8) is
+   procedure Set_Extension_Byte_Count (B: Block_Record; Value: Unsigned_8) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Extension_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Extension_Byte_Count := Value;
    end Set_Extension_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix_Byte_Count (S: Store) return Unsigned_8 is
+   function Get_Path_Prefix_Byte_Count (B: Block_Record) return Unsigned_8 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Path_Prefix_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Path_Prefix_Byte_Count;
    end Get_Path_Prefix_Byte_Count;
 
-   procedure Set_Path_Prefix_Byte_Count (S: Store; Value: Unsigned_8) is
+   procedure Set_Path_Prefix_Byte_Count (B: Block_Record; Value: Unsigned_8) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Path_Prefix_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Path_Prefix_Byte_Count := Value;
    end Set_Path_Prefix_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Origin_Offset (S: Store) return Unsigned_16 is
+   function Get_Origin_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Origin_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Origin_Offset;
    end Get_Origin_Offset;
 
-   procedure Set_Origin_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Origin_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Origin_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Origin_Offset := Value;
    end Set_Origin_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier_Offset (S: Store) return Unsigned_16 is
+   function Get_Identifier_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Identifier_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Identifier_Offset;
    end Get_Identifier_Offset;
 
-   procedure Set_Identifier_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Identifier_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Identifier_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Identifier_Offset := Value;
    end Set_Identifier_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Extension_Offset (S: Store) return Unsigned_16 is
+   function Get_Extension_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Extension_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Extension_Offset;
    end Get_Extension_Offset;
 
-   procedure Set_Extension_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Extension_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Extension_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Extension_Offset := Value;
    end Set_Extension_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix_Offset (S: Store) return Unsigned_16 is
+   function Get_Path_Prefix_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Path_Prefix_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Path_Prefix_Offset;
    end Get_Path_Prefix_Offset;
 
-   procedure Set_Path_Prefix_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Path_Prefix_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Path_Prefix_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Path_Prefix_Offset := Value;
    end Set_Path_Prefix_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Acquisition_URL_Byte_Count (S: Store) return Unsigned_16 is
+   function Get_Acquisition_URL_Byte_Count (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Acquisition_URL_Byte_Count;
    end Get_Acquisition_URL_Byte_Count;
 
-   procedure Set_Acquisition_URL_Byte_Count (S: Store; Value: Unsigned_16) is
+   procedure Set_Acquisition_URL_Byte_Count (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Acquisition_URL_Byte_Count := Value;
    end Set_Acquisition_URL_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Acquisition_URL_Offset (S: Store) return Unsigned_16 is
+   function Get_Acquisition_URL_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Acquisition_URL_Offset;
    end Get_Acquisition_URL_Offset;
 
-   procedure Set_Acquisition_URL_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Acquisition_URL_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Acquisition_URL_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Acquisition_URL_Offset := Value;
    end Set_Acquisition_URL_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Target_List_Offset (S: Store) return Unsigned_16 is
+   function Get_Target_List_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Target_List_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Target_List_Offset;
    end Get_Target_List_Offset;
 
-   procedure Set_Target_List_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Target_List_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Target_List_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Target_List_Offset := Value;
    end Set_Target_List_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Target_List_Byte_Count (S: Store) return Unsigned_16 is
+   function Get_Target_List_Byte_Count (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Target_List_Byte_Count;
    end Get_Target_List_Byte_Count;
 
-   procedure Set_Target_List_Byte_Count (S: Store; Value: Unsigned_16) is
+   procedure Set_Target_List_Byte_Count (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Target_List_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Target_List_Byte_Count := Value;
    end Set_Target_List_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Public_Key_URL_Byte_Count (S: Store) return Unsigned_16 is
+   function Get_Public_Key_URL_Byte_Count (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Byte_Count;
+      return B.Get_Block_Header_Leading_Ptr.Public_Key_URL_Byte_Count;
    end Get_Public_Key_URL_Byte_Count;
 
-   procedure Set_Public_Key_URL_Byte_Count (S: Store; Value: Unsigned_16) is
+   procedure Set_Public_Key_URL_Byte_Count (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Byte_Count := Value;
+      B.Get_Block_Header_Leading_Ptr.Public_Key_URL_Byte_Count := Value;
    end Set_Public_Key_URL_Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Public_Key_URL_Offset (S: Store) return Unsigned_16 is
+   function Get_Public_Key_URL_Offset (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Offset;
+      return B.Get_Block_Header_Leading_Ptr.Public_Key_URL_Offset;
    end Get_Public_Key_URL_Offset;
 
-   procedure Set_Public_Key_URL_Offset (S: Store; Value: Unsigned_16) is
+   procedure Set_Public_Key_URL_Offset (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Public_Key_URL_Offset := Value;
+      B.Get_Block_Header_Leading_Ptr.Public_Key_URL_Offset := Value;
    end Set_Public_Key_URL_Offset;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Creation_Timestamp (S: Store) return Timestamp is
+   function Get_Creation_Timestamp (B: Block_Record) return Timestamp is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Creation_Timestamp;
+      return B.Get_Block_Header_Leading_Ptr.Creation_Timestamp;
    end Get_Creation_Timestamp;
 
-   procedure Set_Creation_Timestamp (S: Store; Value: Timestamp) is
+   procedure Set_Creation_Timestamp (B: Block_Record; Value: Timestamp) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Creation_Timestamp := Value;
+      B.Get_Block_Header_Leading_Ptr.Creation_Timestamp := Value;
    end Set_Creation_Timestamp;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Modification_Timestamp (S: Store) return Timestamp is
+   function Get_Modification_Timestamp (B: Block_Record) return Timestamp is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Modification_Timestamp;
+      return B.Get_Block_Header_Leading_Ptr.Modification_Timestamp;
    end Get_Modification_Timestamp;
 
-   procedure Set_Modification_Timestamp (S: Store; Value: Timestamp) is
+   procedure Set_Modification_Timestamp (B: Block_Record; Value: Timestamp) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Modification_Timestamp := Value;
+      B.Get_Block_Header_Leading_Ptr.Modification_Timestamp := Value;
    end Set_Modification_Timestamp;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Expiry_Timestamp (S: Store) return Timestamp is
+   function Get_Expiry_Timestamp (B: Block_Record) return Timestamp is
    begin
-      return Get_Block_Header_Leading_Ptr (S).Expiry_Timestamp;
+      return B.Get_Block_Header_Leading_Ptr.Expiry_Timestamp;
    end Get_Expiry_Timestamp;
 
-   procedure Set_Expiry_Timestamp (S: Store; Value: Timestamp) is
+   procedure Set_Expiry_Timestamp (B: Block_Record; Value: Timestamp) is
    begin
-      Get_Block_Header_Leading_Ptr (S).Expiry_Timestamp := Value;
+      B.Get_Block_Header_Leading_Ptr.Expiry_Timestamp := Value;
    end Set_Expiry_Timestamp;
 
 
@@ -542,203 +540,203 @@ package body BRBON.Block is
    -- ==========================================================================
 
 
-   procedure Set_Origin (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Origin (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 255 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified origin string is too long, expected < 255, found: " & Value'Length'Image);
       end if;
       FSS.Origin := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new origin string cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Origin;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Origin (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Origin_Byte_Count (S));
+   function Get_Origin (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Origin_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Origin_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Origin_Offset), Byte_Count);
       end if;
    end Get_Origin;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Identifier (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Identifier (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 255 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified identifier string is too long, expected < 255, found: " & Value'Length'Image);
       end if;
       FSS.Identifier := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new identifier string cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Identifier;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Identifier (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Identifier_Byte_Count (S));
+   function Get_Identifier (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Identifier_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Identifier_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Identifier_Offset), Byte_Count);
       end if;
    end Get_Identifier;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Extension (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Extension (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 255 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified extension string is too long, expected < 255, found: " & Value'Length'Image);
       end if;
       FSS.Extension := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new extension string cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Extension;
 
 
 -- -----------------------------------------------------------------------------
 
-   function Get_Extension (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Extension_Byte_Count (S));
+   function Get_Extension (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Extension_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Extension_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Extension_Offset), Byte_Count);
       end if;
    end Get_Extension;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Path_Prefix (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Path_Prefix (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 255 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified path prefix string is too long, expected < 255, found: " & Value'Length'Image);
       end if;
       FSS.Path_Prefix := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new extension path prefix cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Path_Prefix;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Path_Prefix (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Path_Prefix_Byte_Count (S));
+   function Get_Path_Prefix (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Path_Prefix_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Path_Prefix_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Path_Prefix_Offset), Byte_Count);
       end if;
    end Get_Path_Prefix;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Acquisition_URL (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Acquisition_URL (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 2550 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified acquisition url is too long, expected < 2550, found: " & Value'Length'Image);
       end if;
       FSS.Acquisition_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new extension acquisition url cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Acquisition_URL;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Acquisition_URL (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Acquisition_URL_Byte_Count (S));
+   function Get_Acquisition_URL (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Acquisition_URL_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Acquisition_URL_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Acquisition_URL_Offset), Byte_Count);
       end if;
    end Get_Acquisition_URL;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Target_List (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Target_List (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 2550 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified public key url is too long, expected < 2550, found: " & Value'Length'Image);
       end if;
       FSS.Target_List := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new extension public key url cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Target_List;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Target_List (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Target_List_Byte_Count (S));
+   function Get_Target_List (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Target_List_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Target_List_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Target_List_Offset), Byte_Count);
       end if;
    end Get_Target_List;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Public_Key_URL (S: Store; Value: String) is
-      FSS: Field_Storage_Strings := Read_Field_Storage_Strings (S);
+   procedure Set_Public_Key_URL (B: Block_Record; Value: String) is
+      FSS: Field_Storage_Strings := B.Read_Field_Storage_Strings;
    begin
       if Value'Length > 2550 then
          Ada.Exceptions.Raise_Exception (String_Too_Long'Identity, "The specified public key url is too long, expected < 2550, found: " & Value'Length'Image);
       end if;
       FSS.Public_Key_URL := Ada.Strings.Unbounded.To_Unbounded_String (Value);
-      if Byte_Count (FSS) > FSS_Upper_Limit (S) then
+      if Byte_Count (FSS) > B.FSS_Upper_Limit then
          Ada.Exceptions.Raise_Exception (Storage_Warning'Identity, "The new extension public key url cannot be fitted into the available space");
       end if;
-      Write_Field_Storage_Strings (S, FSS);
+      B.Write_Field_Storage_Strings (FSS);
    end Set_Public_Key_URL;
 
 
    -----------------------------------------------------------------------------
 
-   function Get_Public_Key_URL (S: Store) return String is
-      Byte_Count: Unsigned_32 := Unsigned_32 (Get_Public_Key_URL_Byte_Count (S));
+   function Get_Public_Key_URL (B: Block_Record) return String is
+      Byte_Count: Unsigned_32 := Unsigned_32 (B.Get_Public_Key_URL_Byte_Count);
    begin
       if Byte_Count = 0 then
          return "";
       else
-         return Container.Get_String (S, Unsigned_32 (Get_Public_Key_URL_Offset (S)), Byte_Count);
+         return Container.Get_String (B, Unsigned_32 (B.Get_Public_Key_URL_Offset), Byte_Count);
       end if;
    end Get_Public_Key_URL;
 
@@ -746,7 +744,7 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   function Get_Header_CRC (S: Store) return Unsigned_16 is
+   function Get_Header_CRC (B: Block_Record) return Unsigned_16 is
    begin
       raise Implementation;
       return 0;
@@ -755,7 +753,7 @@ package body BRBON.Block is
 
    -----------------------------------------------------------------------------
 
-   procedure Update_Header_CRC (S: Store) is
+   procedure Update_Header_CRC (B: Block_Record) is
    begin
       raise Implementation;
    end Update_Header_CRC;
@@ -763,8 +761,8 @@ package body BRBON.Block is
 
    -- --------------------------------------------------------------------------
 
-   function Verify_Header_Synchronization_Bytes (S: Store) return Boolean is
-      HPtr: Block_Header_Leading_Ptr := Get_Block_Header_Leading_Ptr (S);
+   function Verify_Header_Synchronization_Bytes (B: Block_Record) return Boolean is
+      HPtr: Block_Header_Leading_Ptr := B.Get_Block_Header_Leading_Ptr;
    begin
       if HPtr.Synchronization_Byte_1 /= Synch_Byte_1_Expected_Value then return false; end if;
       if HPtr.Synchronization_Byte_2 /= Synch_Byte_2_Expected_Value then return false; end if;
@@ -781,7 +779,7 @@ package body BRBON.Block is
 
 
 
-   procedure Setup (S: Store; For_Byte_Storage_Order: Byte_Storage_Order; With_Field_Storage_Byte_Count: Unsigned_16) is
+   procedure Setup (B: Block_Record; For_Byte_Storage_Order: Byte_Storage_Order; With_Field_Storage_Byte_Count: Unsigned_16) is
    begin
       raise Implementation;
    end Setup;
@@ -793,7 +791,7 @@ package body BRBON.Block is
 
    procedure Create_Single_Item_Block_Header
      (
-      In_Store: Store;
+      In_Block: Block_Record;
       Field_Storage_Byte_Count: Unsigned_16;
       Header_Byte_Count: Unsigned_16;
       Options: Block_Options;
@@ -808,7 +806,7 @@ package body BRBON.Block is
       Expiry_Timestamp: Timestamp
      ) is
 
-      S: Store renames In_Store;
+      B: Block_Record renames In_Block;
 
       FS: Field_Storage_Strings :=
         (
@@ -823,86 +821,86 @@ package body BRBON.Block is
 
    begin
 
-      Set_Header_Synchronization_Bytes (S);
-      Set_Block_Type (S, Single_Item_Block);
-      Set_Block_Options (S, No_Block_Options);
+      B.Set_Header_Synchronization_Bytes;
+      B.Set_Block_Type (Single_Item_Block);
+      B.Set_Block_Options (No_Block_Options);
 
-      Set_Block_Byte_Count (S, S.Data.all'Length);
-      Set_Header_Byte_Count (S, Header_Byte_Count);
-      Set_Encrypted_Header_Byte_Count (S, 0);
+      B.Set_Block_Byte_Count (B.Data.all'Length);
+      B.Set_Header_Byte_Count (Header_Byte_Count);
+      B.Set_Encrypted_Header_Byte_Count (0);
 
-      Write_Field_Storage_Strings (S, FS);
+      B.Write_Field_Storage_Strings (FS);
 
-      Set_Creation_Timestamp (S, Creation_Timestamp);
-      Set_Modification_Timestamp (S, Creation_Timestamp);
-      Set_Expiry_Timestamp (S, Expiry_Timestamp);
+      B.Set_Creation_Timestamp (Creation_Timestamp);
+      B.Set_Modification_Timestamp (Creation_Timestamp);
+      B.Set_Expiry_Timestamp (Expiry_Timestamp);
 
-      Set_Block_Header_Trailing_Reserved_1 (S, 0);
-      Set_Block_Header_Trailing_Reserved_1 (S, 0);
-      Update_Header_CRC (S);
+      B.Set_Block_Header_Trailing_Reserved_1 (0);
+      B.Set_Block_Header_Trailing_Reserved_1 (0);
+      B.Update_Header_CRC;
 
    end Create_Single_Item_Block_Header;
 
 
-   function Get_Block_Header_Trailing_Reserved_1 (S: Store) return Unsigned_32 is
+   function Get_Block_Header_Trailing_Reserved_1 (B: Block_Record) return Unsigned_32 is
    begin
-      return Get_Block_Header_Trailing_Ptr (S).Reserved_1;
+      return B.Get_Block_Header_Trailing_Ptr.Reserved_1;
    end Get_Block_Header_Trailing_Reserved_1;
 
 
-   function Get_Block_Header_Trailing_Reserved_2 (S: Store) return Unsigned_16 is
+   function Get_Block_Header_Trailing_Reserved_2 (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Trailing_Ptr (S).Reserved_2;
+      return B.Get_Block_Header_Trailing_Ptr.Reserved_2;
    end Get_Block_Header_Trailing_Reserved_2;
 
 
-   function Get_Block_Header_CRC (S: Store) return Unsigned_16 is
+   function Get_Block_Header_CRC (B: Block_Record) return Unsigned_16 is
    begin
-      return Get_Block_Header_Trailing_Ptr (S).CRC;
+      return B.Get_Block_Header_Trailing_Ptr.CRC;
    end Get_Block_Header_CRC;
 
 
-   procedure Set_Block_Header_Trailing_Reserved_1 (S: Store; Value: Unsigned_32) is
+   procedure Set_Block_Header_Trailing_Reserved_1 (B: Block_Record; Value: Unsigned_32) is
    begin
-      Get_Block_Header_Trailing_Ptr (S).Reserved_1 := Value;
+      B.Get_Block_Header_Trailing_Ptr.Reserved_1 := Value;
    end Set_Block_Header_Trailing_Reserved_1;
 
 
-   procedure Set_Block_Header_Trailing_Reserved_2 (S: Store; Value: Unsigned_16) is
+   procedure Set_Block_Header_Trailing_Reserved_2 (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Trailing_Ptr (S).Reserved_2 := Value;
+      B.Get_Block_Header_Trailing_Ptr.Reserved_2 := Value;
    end Set_Block_Header_Trailing_Reserved_2;
 
 
-   procedure Set_Block_Header_CRC (S: Store; Value: Unsigned_16) is
+   procedure Set_Block_Header_CRC (B: Block_Record; Value: Unsigned_16) is
    begin
-      Get_Block_Header_Trailing_Ptr (S).CRC := Value;
+      B.Get_Block_Header_Trailing_Ptr.CRC := Value;
    end Set_Block_Header_CRC;
 
 
    -- footer
 
-   function Get_Block_Footer_Reserved (S: Store) return Unsigned_32 is
+   function Get_Block_Footer_Reserved (B: Block_Record) return Unsigned_32 is
    begin
-      return Get_Block_Footer_Ptr (S).Reserved;
+      return B.Get_Block_Footer_Ptr.Reserved;
    end Get_Block_Footer_Reserved;
 
 
-   function Get_Block_Footer_CRC (S: Store) return Unsigned_32 is
+   function Get_Block_Footer_CRC (B: Block_Record) return Unsigned_32 is
    begin
-      return Get_Block_Footer_Ptr (S).CRC;
+      return B.Get_Block_Footer_Ptr.CRC;
    end Get_Block_Footer_CRC;
 
 
-   procedure Set_Block_Footer_Reserved (S: Store; Value: Unsigned_32) is
+   procedure Set_Block_Footer_Reserved (B: Block_Record; Value: Unsigned_32) is
    begin
-      Get_Block_Footer_Ptr (S).Reserved := Value;
+      B.Get_Block_Footer_Ptr.Reserved := Value;
    end Set_Block_Footer_Reserved;
 
 
-   procedure Set_Block_Footer_CRC (S: Store; Value: Unsigned_32) is
+   procedure Set_Block_Footer_CRC (B: Block_Record; Value: Unsigned_32) is
    begin
-      Get_Block_Footer_Ptr (S).CRC := Value;
+      B.Get_Block_Footer_Ptr.CRC := Value;
    end Set_Block_Footer_CRC;
 
 
@@ -911,11 +909,11 @@ package body BRBON.Block is
    -- ======================================================
 
 
-   function Test_Support_Serializer (S: Store) return Serializable.Instance is
+   function Test_Support_Serializer (B: Block_Record) return Serializable.Instance is
    begin
-      return Serializable.Create_Without_Copy (Use_In_Place => S.Data,
-                                               First        => S.Data'First,
-                                               Last         => S.Data'Last);
+      return Serializable.Create_Without_Copy (Use_In_Place => B.Data,
+                                               First        => B.Data'First,
+                                               Last         => B.Data'Last);
    end Test_Support_Serializer;
 
 --   procedure Ensure_Block_Consistency (I: in out Instance) is
