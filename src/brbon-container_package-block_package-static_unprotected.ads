@@ -4,22 +4,21 @@ with Ada.Finalization;
 
 
 with BRBON.Utils;
-private with BRBON.Container; use BRBON.Container;
-with BRBON.Block;
-with BRBON.Portal.Static_Unprotected; use BRBON.Portal.Static_Unprotected;
+with BRBON.Container_Package.Block_Package; use BRBON.Container_Package.Block_Package;
+with BRBON.Portal_Package.Static_Unprotected; use BRBON.Portal_Package.Static_Unprotected;
 
 with Serializable;
 with UUID_Package;
 with Color_Package;
 
 
-package BRBON.Block.Static_Unprotected is
+package BRBON.Container_Package.Block_Package.Static_Unprotected is
 
 
    -- The store that contains a static BRBON hierarchy on which unprotected access is possible.
    -- This is the fasted possible acces to items in a BRBON store.
    --
-   type Static_Unprotected_Block is new Block_Record with null record;
+   type Static_Unprotected_Block is new Block with null record;
 
 
    -- Creates a new instance with a header of the requested type.
@@ -76,4 +75,4 @@ package BRBON.Block.Static_Unprotected is
    function Get_Root_Item (S: Static_Unprotected_Block) return Static_Unprotected_Portal;
 
 
-end BRBON.Block.Static_Unprotected;
+end BRBON.Container_Package.Block_Package.Static_Unprotected;

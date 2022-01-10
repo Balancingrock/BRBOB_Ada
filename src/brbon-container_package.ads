@@ -68,7 +68,13 @@ package BRBON.Container_Package is
 
    -- Use this operation to initialize a container which is not created through one of the factory methods.
    --
-   procedure Setup (C: in out Container; Memory_Ptr: Unsigned_8_Array_Ptr; Byte_Order: Byte_Storage_Order);
+   procedure Setup
+     (
+      C: in out Container;
+      Memory_Ptr: Unsigned_8_Array_Ptr;
+      Byte_Order: Byte_Storage_Order;
+      Deallocate_On_Finalization: Boolean
+     );
 
 
    -- Create a container using the provided memory area. The memory area will be zeroed if the BRBON.Zero_Storage is set to True.
@@ -79,11 +85,15 @@ package BRBON.Container_Package is
    function Factory (Memory_Ptr: Unsigned_8_Array_Ptr; Byte_Order: Byte_Storage_Order) return Container;
 
 
+   -- Create a container with the specified byte count.
+   --
+   function Factory (Byte_Count: Unsigned_32; Byte_Order: Byte_Storage_Order) return Container;
+
+
    -- Read the contents of the file into the given buffer, then use this as the new Block.
-   -- @param Byte_Order: Note that this value is suggestive only, the true byte order will be determined by the bytes in the source.
    -- @param Filepath: The path to a file on the local filesystem that will be read.
    --
-   function Factory (Memory_Ptr: in out Unsigned_8_Array_Ptr; Filepath: String; Byte_Order: Byte_Storage_Order) return Container;
+   function Factory (Filepath: String) return Container;
 
 
    -- Save the content of the block to file.
@@ -313,12 +323,15 @@ package BRBON.Container_Package is
 
 private
 
+
    type Container is new Ada.Finalization.Controlled with
       record
          MPtr: Unsigned_8_Array_Ptr;
          Swap: Boolean;
+         Deallocate_On_Finalization: Boolean;
       end record;
 
    procedure Set_Data_Byte_Order (C: in out Container; Value: Byte_Storage_Order);
+
 
 end BRBON.Container_Package;

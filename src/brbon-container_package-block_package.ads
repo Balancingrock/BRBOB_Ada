@@ -12,9 +12,22 @@ package BRBON.Container_Package.Block_Package is
    --
    type Block is new Container with private;
    
+   
+   -- Create a new block in the given memory area.
+   --
    function Factory (Memory_Ptr: Unsigned_8_Array_Ptr; Byte_Order: Byte_Storage_Order) return Block;
    
-   function Factory (Memory_Ptr: in out Unsigned_8_Array_Ptr; Filepath: String; Byte_Order: Byte_Storage_Order) return Block;
+   
+   -- Create a new block of the given size.
+   --
+   function Factory (Byte_Count: Unsigned_32; Byte_Order: Byte_Storage_Order) return Block;
+   
+   
+   -- Create a new block with the content from the referenced file.
+   -- Will raise an exception if the file does not contain a BRBON block.
+   --
+   function Factory (Filepath: String) return Block;
+   
    
    -- Returns the byte order (endianness) of the block.
    --
@@ -281,10 +294,10 @@ private
    --
    type Block is new Container with
       record
-         Start_Of_Header_Field_Storage: Unsigned_16; -- constant (for now)
-         Start_Of_Payload: Unsigned_32; -- quasi constant
-         First_Free_Byte_In_Payload: Unsigned_32; -- range self.Start_Of_Payload .. self.Last_Free_Byte_In_Payload + 1
-         Last_Free_Byte_In_Payload: Unsigned_32; -- will never decrease, may increase for some child classes
+         Start_Of_Header_Field_Storage: Unsigned_16 := 0; -- constant (for now)
+         Start_Of_Payload: Unsigned_32 := 0; -- quasi constant
+         First_Free_Byte_In_Payload: Unsigned_32 := 0; -- range self.Start_Of_Payload .. self.Last_Free_Byte_In_Payload + 1
+         Last_Free_Byte_In_Payload: Unsigned_32 := 0; -- will never decrease, may increase for some child classes
       end record;
    
 

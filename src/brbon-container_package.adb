@@ -66,13 +66,15 @@ package body BRBON.Container_Package is
      (
       C: in out Container;
       Memory_Ptr: Unsigned_8_Array_Ptr;
-      Byte_Order: Byte_Storage_Order
+      Byte_Order: Byte_Storage_Order;
+      Deallocate_On_Finalization: Boolean
      ) is
    
    begin
       
       C.MPtr := Memory_Ptr;
       C.Swap := Byte_Order /= Machine_Byte_Storage_Order;
+      C.Deallocate_On_Finalization := Deallocate_On_Finalization;
       
       if Zero_Storage then
          C.MPtr.all := (others => 0);
@@ -89,7 +91,13 @@ package body BRBON.Container_Package is
    
    begin
       
-      Setup (C, Memory_Ptr, Byte_Order);
+      C.MPtr := Memory_Ptr;
+      C.Swap := Byte_Order /= Machine_Byte_Storage_Order;
+      C.Deallocate_On_Finalization := False;
+      
+      if Zero_Storage then
+         C.MPtr.all := (others => 0);
+      end if;
       
       return C;
       
@@ -97,13 +105,32 @@ package body BRBON.Container_Package is
 
    
    -----------------------------------------------------------------------------
+   
+   function Factory (Byte_Count: Unsigned_32; Byte_Order: Byte_Storage_Order) return Container is
+   
+      Memory_Ptr: Unsigned_8_Array_Ptr;
+      Length: Unsigned_32 := Utils.Round_Up_To_Nearest_Multiple_of_8 (Byte_Count);
+      C: Container;
+   
+   begin
+      
+      Memory_Ptr := new Unsigned_8_Array (0 .. Length - 1);
+      C := Factory (Memory_Ptr, Byte_Order);
+      C.Deallocate_On_Finalization := True;
+      return C;
+      
+   end Factory;
+   
+   
+   -----------------------------------------------------------------------------
 
-   function Factory (Memory_Ptr: in out Unsigned_8_Array_Ptr; Filepath: String; Byte_Order: Byte_Storage_Order) return Container is
+   function Factory (Filepath: String) return Container is
 
       File: Ada.Streams.Stream_IO.File_Type;
       File_Size: Unsigned_64;
       In_Stream: Stream_Access;
       C: Container;
+      Buffer_Ptr: Unsigned_8_Array_Ptr;
 
    begin
    
@@ -115,17 +142,13 @@ package body BRBON.Container_Package is
    
       In_Stream := Stream (File);
    
-      if File_Size > Memory_Ptr.all'Length then
-         raise Storage_Warning with "File too large for buffer";
-      end if;
-   
-      Unsigned_8_Array'Read (In_Stream, Memory_Ptr.all); -- Filling to less than the upper limit is possible/expected
-   
+      Buffer_Ptr := new Unsigned_8_Array (0 .. Unsigned_32 (File_Size - 1));
       
-      -- If a BRBON block was read the byte storage order may be wrong, that must be corrected later
-      --
-      C.MPtr := Memory_Ptr;
-      C.Swap := Byte_Order /= Machine_Byte_Storage_Order;
+      Unsigned_8_Array'Read (In_Stream, Buffer_Ptr.all);      
+
+      C := Factory (Buffer_Ptr, Machine_Byte_Storage_Order);
+      
+      C.Deallocate_On_Finalization := True;
      
       return C;
       

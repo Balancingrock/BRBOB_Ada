@@ -1,4 +1,3 @@
--- with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 
 with Ada.Unchecked_Conversion;
@@ -13,7 +12,7 @@ with CRC_Package;
 
 
 
-package body BRBON.Block.Static_Unprotected is
+package body BRBON.Container_Package.Block_Package.Static_Unprotected is
 
 
    -- Body internals
@@ -244,4 +243,4 @@ package body BRBON.Block.Static_Unprotected is
    end Get_Root_Item;
 
 
-end BRBON.Block.Static_Unprotected;
+end BRBON.Container_Package.Block_Package.Static_Unprotected;
