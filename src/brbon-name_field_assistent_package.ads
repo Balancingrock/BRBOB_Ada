@@ -6,33 +6,53 @@ with Ada.Unchecked_Conversion;
 with CRC_Package; use CRC_Package;
 
 with BRBON; use BRBON;
+with BRBON.Container_Package; use BRBON.Container_Package;
 
 
+package BRBON.Name_Field_Assistent_Package is
 
-private package BRBON.Name_Field_Assistent_Package is
 
-   subtype Quick_Check_Value is Unsigned_32;
+   -- Internally in BRBON all name searches/lookups are made using a name field assistent.
+   -- When the API user creates a name field assistent this obliviates the need to create a new
+   -- name field assistent every time a certain name is used.
+   --
+   type Name_Field_Assistent is private;
 
-   type Quick_Check_Value_Ptr is access Quick_Check_Value;
 
-   function Swap_Status (NFA: Name_Field_Assistent) return Boolean;
+   -- Returns a name field assistent that can be used to speed up access to items.
+   --
+   -- Note that assistents are byte-order sensitive and can only be used on blocks with the same byte-order.
+   -- An exception will be raised when the block is not compatible with the assistent.
+   --
+   function Name_Field_Assistent_Factory (Name: String; C: Container) return Name_Field_Assistent;
+
+
+   -- Returns the swap status for this assistent (must be equal to the swap status of the block)
+   --
+   function Swap_Status (N: Name_Field_Assistent) return Boolean;
    pragma Inline (Swap_Status);
 
-   function Quick_Check (NFA: Name_Field_Assistent) return Quick_Check_Value;
-   pragma Inline (Quick_Check);
 
-   function CRC (NFA: Name_Field_Assistent) return CRC_16;
+   -- Compares the quick check value to the name field assistent
+   --
+   function Quick_Check_Passes (N: Name_Field_Assistent; Ptr: Quick_Check_Value_Ptr) return Boolean;
 
-   function Name_Byte_Count (NFA: Name_Field_Assistent) return Unsigned_8;
 
-   function Field_Byte_Count (NFA: Name_Field_Assistent) return Unsigned_8;
+   -- Compares the name to the name in the name field assistent
+   --
+   function Name_Check_Passes (N: Name_Field_Assistent; Name: Item_Name) return Boolean;
 
-   function Name (NFA: Name_Field_Assistent) return String;
 
-   function Compare_Quick_Check (NFA: Name_Field_Assistent; Ptr: Quick_Check_Value_Ptr) return Boolean;
+private
 
-   function Compare_String (NFA: Name_Field_Assistent; Ptr: BRBON.Unsigned_8_Ptr; Byte_Count: Unsigned_8) return Boolean;
-
-   function To_Quick_Check_Value is new Ada.Unchecked_Conversion (Quick_Check_Value, Unsigned_32);
+   type Name_Field_Assistent is
+      record
+         Quick_Check: Quick_Check_Value;
+         Field_Byte_Count: Unsigned_8;
+         Swap: Boolean;
+         CRC: Unsigned_16;
+         Name_Byte_Count: Unsigned_8;
+         Name: Item_Name;
+      end record;
 
 end BRBON.Name_Field_Assistent_Package;

@@ -48,10 +48,12 @@
 
 with Interfaces; use Interfaces;
 
-private with BRBON;
+
+with BRBON; use BRBON;
+with BRBON.Container_Package; use BRBON.Container_Package;
 
 
-package BRBON.Portal is
+package BRBON.Portal_Package is
 
 
    -- This exception is raised when an invalid portal is used.
@@ -64,34 +66,50 @@ package BRBON.Portal is
    Null_Portal_Error: exception;
 
 
+   -- A portal can be used to access items in a block without needing the seach/lookup mechanism provided by the block managers
+   --
+   type portal is tagged private;
+
+
    -- Returns true if the portal is valid. Once invalid, a portal will never become valid again.
    -- Once a portal is invalid, any attempt to access values in the item will raise the excpetion Invalid_Portal_Error.
    -- Note: Only dynamic block functions can invalidate a portal.
    --
-   function Is_Valid_Portal (P: Portal_Record) return Boolean;
+   function Is_Valid_Portal (P: Portal) return Boolean;
 
 
    -- The null portal may be returned if a (look-up or search) operation does not produce a result.
    -- A null-portal is always invalid and will raise the Null_Portal_Error when tried.
    -- However any portal (including invalid portals) can be tested for beiing a null portal.
    --
-   function Is_Null_Portal (P: Portal_Record) return Boolean;
+   function Is_Null_Portal (P: Portal) return Boolean;
 
 
-   -- Return the portal value as a bool
+   -- Return the type of item this portal refers to
    --
-   function Get_Bool (P: Portal_Record) return Boolean;
+   function Get_Item_Type (P: Portal) return Item_Type;
 
 
 private
 
-   function Factory
-     (
-      Store_Ptr: Store_Pointer;
-      Item_Ptr: Item_Header_Ptr;
-      Element_Index: Unsigned_32 := Unsigned_32'Last;
-      Column_Index: Unsigned_32 := Unsigned_32'Last
-     ) return Portal_Record;
+   -- The different types of portal
+   --
+   type Portal_Type is (Null_Portal, Normal, Element, Field);
 
 
-end BRBON.Portal;
+   -- The portal type
+   --
+   type Portal is tagged
+      record
+         BPtr: Container_Ptr;
+         --
+         Is_Type: Portal_Type;
+         Is_Valid: Boolean := True;
+         --
+         Item_Ptr: Item_Header_Ptr;
+         Element_Index: Unsigned_32 := 0;
+         Column_Index: Unsigned_32 := 0;
+      end record;
+
+
+end BRBON.Portal_Package;

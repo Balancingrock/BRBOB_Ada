@@ -45,7 +45,7 @@ with BRBON.Types;
 with CRC_Package;
 
 
-package body BRBON.Container is
+package body BRBON.Container_Package is
 
 
    -- Swap functions
@@ -64,18 +64,18 @@ package body BRBON.Container is
    
    procedure Setup
      (
-      S: in out BRBON.Store'Class;
-      In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr;
-      For_Byte_Order: BRBON.Byte_Storage_Order
+      C: in out Container;
+      Memory_Ptr: Unsigned_8_Array_Ptr;
+      Byte_Order: Byte_Storage_Order
      ) is
    
    begin
       
-      S.Data := In_Buffer_Ptr;
-      S.Swap := For_Byte_Order /= Machine_Byte_Storage_Order;
+      C.MPtr := Memory_Ptr;
+      C.Swap := Byte_Order /= Machine_Byte_Storage_Order;
       
       if Zero_Storage then
-         S.Data.all := (others => 0);
+         C.MPtr.all := (others => 0);
       end if;
    
    end Setup;
@@ -83,194 +83,158 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Factory (In_Buffer_Ptr: BRBON.Unsigned_8_Array_Ptr; For_Byte_Order: BRBON.Byte_Storage_Order) return Store is
+   function Factory (Memory_Ptr: Unsigned_8_Array_Ptr; Byte_Order: Byte_Storage_Order) return Container is
    
-      S: Store;
+      C: Container;
    
    begin
       
-      Initialize (S);
+      Setup (C, Memory_Ptr, Byte_Order);
       
-      return S;
+      return C;
       
    end Factory;
 
    
    -----------------------------------------------------------------------------
 
-   function Factory (In_Buffer_Ptr: Unsigned_8_Array_Ptr; At_Path: String; For_Byte_Order: Byte_Storage_Order) return Store is
+   function Factory (Memory_Ptr: in out Unsigned_8_Array_Ptr; Filepath: String; Byte_Order: Byte_Storage_Order) return Container is
 
       File: Ada.Streams.Stream_IO.File_Type;
       File_Size: Unsigned_64;
       In_Stream: Stream_Access;
-      S: Store;
+      C: Container;
 
    begin
    
       Open (File => File,
             Mode => In_File,
-            Name => At_Path);
+            Name => Filepath);
    
       File_Size := Unsigned_64 (Size (File));
    
-      In_Stream := Stream(File);
+      In_Stream := Stream (File);
    
-      if File_Size > In_Buffer_Ptr.all'Length then
-         raise BRBON.Storage_Warning with "File too large for buffer";
+      if File_Size > Memory_Ptr.all'Length then
+         raise Storage_Warning with "File too large for buffer";
       end if;
    
-      Unsigned_8_Array'Read (In_Stream, In_Buffer_Ptr.all); -- Filling to less than the upper limit is possible/expected
+      Unsigned_8_Array'Read (In_Stream, Memory_Ptr.all); -- Filling to less than the upper limit is possible/expected
    
-      Initialize (S, In_Buffer_Ptr, For_Byte_Order);
       
-      -- S.Data := In_Buffer_Ptr;
-      -- S.Swap := For_Byte_Order /= Machine_Byte_Storage_Order;
+      -- If a BRBON block was read the byte storage order may be wrong, that must be corrected later
+      --
+      C.MPtr := Memory_Ptr;
+      C.Swap := Byte_Order /= Machine_Byte_Storage_Order;
      
-      return S;
+      return C;
       
    end Factory;
 
 
    -----------------------------------------------------------------------------
 
-   procedure Write_to_File (S: Store'Class; Path: String) is
+   procedure Write_To_File (C: Container; Filepath: String) is
    
       File: Ada.Streams.Stream_IO.File_Type;
-      subtype T is Unsigned_8_Array (S.Data'First .. S.Data'Last);
+      subtype T is Unsigned_8_Array (C.MPtr'First .. C.MPtr'Last);
       Out_Stream: Stream_Access;
       
    begin
    
       Create (File => File,
               Mode => Out_File,
-              Name => Path);
+              Name => Filepath);
    
       Out_Stream := Stream (File);
    
-      T'Write (Out_Stream, S.Data.all);
+      T'Write (Out_Stream, C.MPtr.all);
    
       Close (File);
    
-   end Write_to_File;
+   end Write_To_File;
 
 
    -----------------------------------------------------------------------------
 
-   function Storage_Byte_Count (S: Store'Class) return Unsigned_32 is
+   function Byte_Count (C: Container) return Unsigned_32 is
    
    begin
    
-      return Unsigned_32 (S.Data'Length);
+      return Unsigned_32 (C.MPtr'Length);
    
-   end Storage_Byte_Count;
+   end Byte_Count;
 
 
    -----------------------------------------------------------------------------
 
-   function Storage_Byte_Order (S: Store'Class) return Byte_Storage_Order is
+   function Swap_Status (C: Container) return Boolean is
    
    begin
    
-      if Machine_Byte_Storage_Order = MSB_First then
-         if S.Swap then
-            return LSB_First;
-         else
-            return MSB_First;
-         end if;
-      else
-         if S.Swap then
-            return MSB_First;
-         else
-            return LSB_First;
-         end if;
-      end if;
-   end Storage_Byte_Order;
+      return C.Swap;
+
+   end Swap_Status;
+
 
 
    -----------------------------------------------------------------------------
 
-   procedure Test_Support_Get_Bytes (S: Store'Class; Start: Unsigned_32; Dest: out Unsigned_8_Array) is
-   
-      Index: Unsigned_32 := Start;
+   procedure Set_Bool (C: Container; Offset: Unsigned_32; Value: Boolean) is
    
    begin
    
-      if Dest'Length > 0 then
-   
-         for I in Dest'Range loop
-   
-            if Index <= S.Data'Last then
-               Dest (I) := S.Data (Index);
-            else
-               Dest (I) := 0;
-            end if;
-   
-            Index := Index + 1;
-   
-         end loop;
-   
-      end if;
-   
-   end Test_Support_Get_Bytes;
-
-   
-   -----------------------------------------------------------------------------
-
-   procedure Set_Bool (S: Store'Class; Offset: Unsigned_32; Value: Boolean) is
-   
-   begin
-   
-      S.Data (Offset) := (if Value then 1 else 0);
+      C.MPtr (Offset) := (if Value then 1 else 0);
    
    end Set_Bool;
 
    
    -----------------------------------------------------------------------------
 
-   function Get_Bool (S: Store'Class; Offset: Unsigned_32) return Boolean is
+   function Get_Bool (C: Container; Offset: Unsigned_32) return Boolean is
    
    begin
    
-      return S.Data (Offset) /= 0;
+      return C.MPtr (Offset) /= 0;
    
    end Get_Bool;
 
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_8 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_8) is
+   procedure Set_Unsigned_8 (C: Container; Offset: Unsigned_32; Value: Unsigned_8) is
    
    begin
       
-      S.Data (Offset) := Value;
+      C.MPtr (Offset) := Value;
    
    end Set_Unsigned_8;
 
    
    -----------------------------------------------------------------------------
 
-   function Get_Unsigned_8 (S: Store'Class; Offset: Unsigned_32) return Unsigned_8 is
+   function Get_Unsigned_8 (C: Container; Offset: Unsigned_32) return Unsigned_8 is
    
    begin
    
-      return S.Data (Offset);
+      return C.MPtr (Offset);
       
    end Get_Unsigned_8;
 
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_16 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_16) is
+   procedure Set_Unsigned_16 (C: Container; Offset: Unsigned_32; Value: Unsigned_16) is
    
    begin
    
-      if S.Swap then
+      if C.Swap then
       
-         S.Data (Offset .. Offset + 1) := Types.To_Two_Bytes (Swap_Unsigned_16 (Value));
+         C.MPtr (Offset .. Offset + 1) := Types.To_Two_Bytes (Swap_Unsigned_16 (Value));
       
       else
       
-         S.Data (Offset .. Offset + 1) := Types.To_Two_Bytes (Value);
+         C.MPtr (Offset .. Offset + 1) := Types.To_Two_Bytes (Value);
       
       end if;
       
@@ -279,13 +243,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Unsigned_16 (S: Store'Class; Offset: Unsigned_32) return Unsigned_16 is
+   function Get_Unsigned_16 (C: Container; Offset: Unsigned_32) return Unsigned_16 is
    
-      Value: Unsigned_16 := Types.To_Unsigned_16 (S.Data (Offset .. Offset + 1));
+      Value: Unsigned_16 := Types.To_Unsigned_16 (C.MPtr (Offset .. Offset + 1));
    
    begin
    
-      if S.Swap then
+      if C.Swap then
       
          return Swap_Unsigned_16 (Value);
       
@@ -300,17 +264,17 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_32 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_32) is
+   procedure Set_Unsigned_32 (C: Container; Offset: Unsigned_32; Value: Unsigned_32) is
    
    begin
    
-      if S.Swap then
+      if C.Swap then
       
-         S.Data (Offset .. Offset + 3) := Types.To_Four_Bytes (Swap_Unsigned_32 (Value));
+         C.MPtr (Offset .. Offset + 3) := Types.To_Four_Bytes (Swap_Unsigned_32 (Value));
       
       else
       
-         S.Data (Offset .. Offset + 3) := Types.To_Four_Bytes (Value);
+         C.MPtr (Offset .. Offset + 3) := Types.To_Four_Bytes (Value);
       
       end if;
       
@@ -319,13 +283,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Unsigned_32 (S: Store'Class; Offset: Unsigned_32) return Unsigned_32 is
+   function Get_Unsigned_32 (C: Container; Offset: Unsigned_32) return Unsigned_32 is
    
-      Value: Unsigned_32 := Types.To_Unsigned_32 (S.Data (Offset .. Offset + 3));
+      Value: Unsigned_32 := Types.To_Unsigned_32 (C.MPtr (Offset .. Offset + 3));
    
    begin
    
-      if S.Swap then
+      if C.Swap then
       
          return Swap_Unsigned_32 (Value);
       
@@ -340,17 +304,17 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_64 (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_64) is
+   procedure Set_Unsigned_64 (C: Container; Offset: Unsigned_32; Value: Unsigned_64) is
    
    begin
       
-      if S.Swap then
+      if C.Swap then
       
-         S.Data (Offset .. Offset + 7) := Types.To_Eight_Bytes (Swap_Unsigned_64 (Value));
+         C.MPtr (Offset .. Offset + 7) := Types.To_Eight_Bytes (Swap_Unsigned_64 (Value));
       
       else
       
-         S.Data (Offset .. Offset + 7) := Types.To_Eight_Bytes (Value);
+         C.MPtr (Offset .. Offset + 7) := Types.To_Eight_Bytes (Value);
       
       end if;
       
@@ -359,13 +323,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Unsigned_64 (S: Store'Class; Offset: Unsigned_32) return Unsigned_64 is
+   function Get_Unsigned_64 (C: Container; Offset: Unsigned_32) return Unsigned_64 is
 
-      Value: Unsigned_64 := Types.To_Unsigned_64 (S.Data (Offset .. Offset + 7));
+      Value: Unsigned_64 := Types.To_Unsigned_64 (C.MPtr (Offset .. Offset + 7));
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
          return Swap_Unsigned_64 (Value);
 
@@ -380,39 +344,39 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Integer_8 (S: Store'Class; Offset: Unsigned_32; Value: Integer_8) is
+   procedure Set_Integer_8 (C: Container; Offset: Unsigned_32; Value: Integer_8) is
    
    begin
    
-      S.Data (Offset) := Types.To_Unsigned_8 (Value);
+      C.MPtr (Offset) := Types.To_Unsigned_8 (Value);
    
    end Set_Integer_8;
 
    
    -----------------------------------------------------------------------------
 
-   function Get_Integer_8 (S: Store'Class; Offset: Unsigned_32) return Integer_8 is
+   function Get_Integer_8 (C: Container; Offset: Unsigned_32) return Integer_8 is
    
    begin
    
-        return Types.To_Integer_8 (S.Data (Offset));
+        return Types.To_Integer_8 (C.MPtr (Offset));
    
    end Get_Integer_8;
 
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Integer_16 (S: Store'Class; Offset: Unsigned_32; Value: Integer_16) is
+   procedure Set_Integer_16 (C: Container; Offset: Unsigned_32; Value: Integer_16) is
    
    begin
    
-      if S.Swap then
+      if C.Swap then
    
-         S.Data (Offset .. Offset + 1) := Types.To_Two_Bytes (Swap_Integer_16 (Value));
+         C.MPtr (Offset .. Offset + 1) := Types.To_Two_Bytes (Swap_Integer_16 (Value));
    
       else
    
-         S.Data (Offset .. Offset + 1) := Types.To_Two_Bytes (Value);
+         C.MPtr (Offset .. Offset + 1) := Types.To_Two_Bytes (Value);
    
       end if;
    
@@ -421,13 +385,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Integer_16 (S: Store'Class; Offset: Unsigned_32) return Integer_16 is
+   function Get_Integer_16 (C: Container; Offset: Unsigned_32) return Integer_16 is
    
-      Value: Integer_16 := Types.To_Integer_16 (S.Data (Offset .. Offset + 1));
+      Value: Integer_16 := Types.To_Integer_16 (C.MPtr (Offset .. Offset + 1));
    
    begin
    
-      if S.Swap then
+      if C.Swap then
    
          return Swap_Integer_16 (Value);
    
@@ -442,17 +406,17 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Integer_32 (S: Store'Class; Offset: Unsigned_32; Value: Integer_32) is
+   procedure Set_Integer_32 (C: Container; Offset: Unsigned_32; Value: Integer_32) is
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
-         S.Data (Offset .. Offset + 3) := Types.To_Four_Bytes (Swap_Integer_32 (Value));
+         C.MPtr (Offset .. Offset + 3) := Types.To_Four_Bytes (Swap_Integer_32 (Value));
 
       else
 
-         S.Data (Offset .. Offset + 3) :=Types. To_Four_Bytes (Value);
+         C.MPtr (Offset .. Offset + 3) :=Types. To_Four_Bytes (Value);
 
       end if;
 
@@ -461,13 +425,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Integer_32 (S: Store'Class; Offset: Unsigned_32) return Integer_32 is
+   function Get_Integer_32 (C: Container; Offset: Unsigned_32) return Integer_32 is
 
-      Value: Integer_32 := Types.To_Integer_32 (S.Data (Offset .. Offset + 3));
+      Value: Integer_32 := Types.To_Integer_32 (C.MPtr (Offset .. Offset + 3));
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
          return Swap_Integer_32 (Value);
 
@@ -482,17 +446,17 @@ package body BRBON.Container is
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Integer_64 (S: Store'Class; Offset: Unsigned_32; Value: Integer_64) is
+   procedure Set_Integer_64 (C: Container; Offset: Unsigned_32; Value: Integer_64) is
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
-         S.Data (Offset .. Offset + 7) := Types.To_Eight_Bytes (Swap_Integer_64 (Value));
+         C.MPtr (Offset .. Offset + 7) := Types.To_Eight_Bytes (Swap_Integer_64 (Value));
 
       else
 
-         S.Data (Offset .. Offset + 7) := Types.To_Eight_Bytes (Value);
+         C.MPtr (Offset .. Offset + 7) := Types.To_Eight_Bytes (Value);
 
       end if;
 
@@ -501,13 +465,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Integer_64 (S: Store'Class; Offset: Unsigned_32) return Integer_64 is
+   function Get_Integer_64 (C: Container; Offset: Unsigned_32) return Integer_64 is
 
-      Value: Integer_64 := Types.To_Integer_64 (S.Data (Offset .. Offset + 7));
+      Value: Integer_64 := Types.To_Integer_64 (C.MPtr (Offset .. Offset + 7));
 
    begin
 
-      if S.Swap then
+      if C.Swap then
       
        return Swap_Integer_64 (Value);
       
@@ -522,17 +486,17 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Float_32 (S: Store'Class; Offset: Unsigned_32; Value: IEEE_Float_32) is
+   procedure Set_Float_32 (C: Container; Offset: Unsigned_32; Value: IEEE_Float_32) is
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
-         S.Data (Offset .. Offset + 3) := Types.To_Four_Bytes (Swap_Float_32 (Value));
+         C.MPtr (Offset .. Offset + 3) := Types.To_Four_Bytes (Swap_Float_32 (Value));
 
       else
 
-         S.Data (Offset .. Offset + 3) := Types.To_Four_Bytes (Value);
+         C.MPtr (Offset .. Offset + 3) := Types.To_Four_Bytes (Value);
 
       end if;
 
@@ -541,13 +505,13 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Float_32 (S: Store'Class; Offset: Unsigned_32) return IEEE_Float_32 is
+   function Get_Float_32 (C: Container; Offset: Unsigned_32) return IEEE_Float_32 is
 
-      Value: IEEE_Float_32 := Types.To_Float_32 (S.Data (Offset .. Offset + 3));
+      Value: IEEE_Float_32 := Types.To_Float_32 (C.MPtr (Offset .. Offset + 3));
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
          return Swap_Float_32 (Value);
 
@@ -562,17 +526,17 @@ package body BRBON.Container is
 
    -----------------------------------------------------------------------------
 
-   procedure Set_Float_64 (S: Store'Class; Offset: Unsigned_32; Value: IEEE_Float_64) is
+   procedure Set_Float_64 (C: Container; Offset: Unsigned_32; Value: IEEE_Float_64) is
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
-         S.Data (Offset .. Offset + 7) := Types.To_Eight_Bytes (Swap_Float_64 (Value));
+         C.MPtr (Offset .. Offset + 7) := Types.To_Eight_Bytes (Swap_Float_64 (Value));
 
       else
 
-         S.Data (Offset .. Offset + 7) := Types.To_Eight_Bytes (Value);
+         C.MPtr (Offset .. Offset + 7) := Types.To_Eight_Bytes (Value);
 
       end if;
 
@@ -581,13 +545,13 @@ package body BRBON.Container is
 
    -----------------------------------------------------------------------------
 
-   function Get_Float_64 (S: Store'Class; Offset: Unsigned_32) return IEEE_Float_64 is
+   function Get_Float_64 (C: Container; Offset: Unsigned_32) return IEEE_Float_64 is
 
-      Value: IEEE_Float_64 := Types.To_Float_64 (S.Data (Offset .. Offset + 7));
+      Value: IEEE_Float_64 := Types.To_Float_64 (C.MPtr (Offset .. Offset + 7));
 
    begin
 
-      if S.Swap then
+      if C.Swap then
 
          return Swap_Float_64 (Value);
 
@@ -602,7 +566,7 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_String (S: Store'Class; Offset: Unsigned_32; Length: Unsigned_32) return String is
+   function Get_String (C: Container; Offset: Unsigned_32; Length: Unsigned_32) return String is
 
       subtype Str_T is String (1 .. Integer (Length));
       subtype Arr_T is Unsigned_8_Array (1 .. Unsigned_32 (Length));
@@ -610,14 +574,14 @@ package body BRBON.Container is
 
    begin
 
-      return To_Str_T (Arr_T (S.Data (Offset .. Offset + Length - 1)));
+      return To_Str_T (Arr_T (C.MPtr (Offset .. Offset + Length - 1)));
 
    end Get_String;
 
    
    -----------------------------------------------------------------------------
 
-   procedure Set_String (S: Store'Class; Offset: Unsigned_32; Value: String) is
+   procedure Set_String (C: Container; Offset: Unsigned_32; Value: String) is
    
       subtype Arr_T is Unsigned_8_Array (1 .. Value'Length);
       subtype Str_T is String (1 .. Value'Length);
@@ -627,7 +591,7 @@ package body BRBON.Container is
    
       if Value'Length > 0 then
    
-         S.Data (Offset .. Offset + Value'Length - 1) := To_Arr_T (Value);
+         C.MPtr (Offset .. Offset + Value'Length - 1) := To_Arr_T (Value);
    
       end if;
    
@@ -636,58 +600,99 @@ package body BRBON.Container is
    
    -----------------------------------------------------------------------------
 
-   function Get_Unsigned_8_Array (S: Store'Class; Offset: Unsigned_32; Length: Unsigned_32) return Unsigned_8_Array is
+   function Get_Unsigned_8_Array (C: Container; Offset: Unsigned_32; Length: Unsigned_32) return Unsigned_8_Array is
 
    begin
 
-      return S.Data (Offset .. Offset + Length - 1);
+      return C.MPtr (Offset .. Offset + Length - 1);
 
    end Get_Unsigned_8_Array;
 
    
    -----------------------------------------------------------------------------
 
-   procedure Set_Unsigned_8_Array (S: Store'Class; Offset: Unsigned_32; Value: Unsigned_8_Array) is
+   procedure Set_Unsigned_8_Array (C: Container; Offset: Unsigned_32; Value: Unsigned_8_Array) is
    
    begin
    
       if Value'Length > 0 then
    
-         S.Data (Offset .. Offset + Value'Length - 1) := Value;
+         C.MPtr (Offset .. Offset + Value'Length - 1) := Value;
    
       end if;
    
    end Set_Unsigned_8_Array;
 
+   
    -----------------------------------------------------------------------------
 
-   function Get_CRC_16_Over_Range (S: Store'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16 is
+   function Get_CRC_16_Over_Range (C: Container; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_16 is
 
    begin
 
-      return CRC_Package.Calculate_CRC_16 (Arr => S.Data (Start .. (Start + Count - 1)));
+      return CRC_Package.Calculate_CRC_16 (Arr => C.MPtr (Start .. (Start + Count - 1)));
 
    end Get_CRC_16_Over_Range;
 
+   
    -----------------------------------------------------------------------------
 
-   function Get_CRC_32_Over_Range (S: Store'Class; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32 is
+   function Get_CRC_32_Over_Range (C: Container; Start: Unsigned_32; Count: Unsigned_32) return Unsigned_32 is
 
    begin
 
-      return CRC_Package.Calculate_CRC_32 (Arr => S.Data (Start .. (Start + Count - 1)));
+      return CRC_Package.Calculate_CRC_32 (Arr => C.MPtr (Start .. (Start + Count - 1)));
 
    end Get_CRC_32_Over_Range;
 
+   
    -----------------------------------------------------------------------------
 
-   procedure Test_Support_Hex_Dump (S: Store'Class) is
+   procedure Test_Support_Hex_Dump (C: Container) is
 
    begin
 
-      Utils.Put_Hex (S.Data.all);
+      Utils.Put_Hex (C.MPtr.all);
 
    end Test_Support_Hex_Dump;
 
+   
+   -----------------------------------------------------------------------------
 
-end BRBON.Container;
+   procedure Test_Support_Get_Bytes (C: Container; Start: Unsigned_32; Dest: out Unsigned_8_Array) is
+   
+      Index: Unsigned_32 := Start;
+   
+   begin
+   
+      if Dest'Length > 0 then
+   
+         for I in Dest'Range loop
+   
+            if Index <= C.MPtr'Last then
+               Dest (I) := C.MPtr (Index);
+            else
+               Dest (I) := 0;
+            end if;
+   
+            Index := Index + 1;
+   
+         end loop;
+   
+      end if;
+   
+   end Test_Support_Get_Bytes;
+
+   
+   -----------------------------------------------------------------------------
+   
+   procedure Set_Data_Byte_Order (C: in out Container; Value: Byte_Storage_Order) is
+   
+   begin
+   
+      C.Swap := Value /= BRBON.Machine_Byte_Storage_Order;
+   
+   end Set_Data_Byte_Order;
+
+   
+end BRBON.Container_Package;

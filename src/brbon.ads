@@ -112,26 +112,26 @@ package BRBON is
    
    -- Maximum length of names used to locate items or columns.
    --
-   Max_Name_Length: constant := 245;
+   Maximum_Item_Name_Length: constant := 245;
    
    
    -- ==========================================================================
    -- Configurable part starts                                                 =
    --                                                                          =
 
-
-   -- Change this to the storage order of the platform the code will be used on.
+   
+   -- Change this to the storage order of the platform this code will be used
+   -- on.
    --
    Machine_Byte_Storage_Order: constant Byte_Storage_Order := LSB_First;
 
-
+   
    -- To initialize all empty space to zero set the following flag to true.
-   -- Note: This is usefull during testing, but is not needed during deployment.
+   -- Note: This is usefull during testing, but unnesessary for deployment.
    --
    Zero_Storage: constant Boolean := True;
 
-
-   --                                                                          =
+   
    -- Configurable part ends                                                   =
    -- ==========================================================================
 
@@ -215,6 +215,7 @@ package BRBON is
    
    No_Item_Options: constant Item_Options := (false, false, false, false, false, false, false, false);
    
+   
    -- Possible item flags
    
    type Item_Flags is
@@ -246,7 +247,7 @@ package BRBON is
    No_Item_Flags: constant Item_Flags := (false, false, false, false, false, false, false, false);
 
 
-   -- For blocks
+   -- Possible block types
 
    type Block_Type is
      (
@@ -263,6 +264,8 @@ package BRBON is
      );
 
 
+   -- Possible block options
+   
    type Block_Options is
       record
          Reacquisition_Possible: Boolean;
@@ -294,35 +297,9 @@ package BRBON is
    No_Block_Options: constant Block_Options := (False, False, False, False, False, False, False, False, 0);
    
    
-   -- This type may be used to quickly access an item in storage without having
-   -- to perform a lookup or search.
-   --
-   type Portal_Record is tagged private;
-
-   
-   -- This is root class of all blocks.
-   --
-   type Store is new Ada.Finalization.Controlled with private;
-   
-   
-   -- Use name field assistents if a name must be used mutliple times in a call to a BRBON API.
-   -- This will speed up access to the designated item.
-   --
-   type Name_Field_Assistent is private;
-   
-   Maximum_Item_Name_Length: constant := 245;
-   
    package Item_Name_Bounded_String_Package is new Ada.Strings.Bounded.Generic_Bounded_Length (Maximum_Item_Name_Length);
    
    subtype Item_Name is Item_Name_Bounded_String_Package.Bounded_String;
-   
-   
-   -- Returns a name field assistent that can be used to speed up access to items.
-   --
-   -- Note that assistents are tied to a store and should not be used with different stores.
-   -- An exception will be raised if used between incompatible stores.
-   --
-   function Name_Field_Assistent_Factory (Name: String; S: Store) return Name_Field_Assistent;
    
    
    -- The type of array all items are stored in.
@@ -333,6 +310,12 @@ package BRBON is
    -- All data storage should be allocated dynamically.
    --
    type Unsigned_8_Array_Ptr is access Unsigned_8_Array;
+   
+   
+   -- Used to short cut item name comparisons
+   --
+   subtype Quick_Check_Value is Unsigned_32;
+   type Quick_Check_Value_Ptr is access Quick_Check_Value;
    
    
    -- To release allocated storage.
@@ -440,65 +423,5 @@ private
    
    function To_Item_Header_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Item_Header_Ptr);
 
-      
-   -- Block
-   
-   type Store is new Ada.Finalization.Controlled with
-      record
-         Data: Unsigned_8_Array_Ptr;
-         Swap: Boolean;
-      end record;
-   
-   type Store_Pointer is access all Store;
-   
-   
-   -- Portal
-   
-   type Portal_Type is (Null_Portal, Normal, Element, Field);
-
-   type Portal_Record is tagged
-      record
-         SPtr: Store_Pointer;
-         --
-         Is_Type: Portal_Type;
-         Is_Valid: Boolean := True;
-         --
-         Item_Ptr: Item_Header_Ptr;
-         Element_Index: Unsigned_32 := 0;
-         Column_Index: Unsigned_32 := 0;
-      end record;
-
-
-   type Quick_Check_Value is
-      record
-         CRC: Unsigned_16;
-         Count: Unsigned_8;
-         Char: Unsigned_8;
-      end record;
-
-   for Quick_Check_Value'Size use 32;
-
-   for Quick_Check_Value use
-      record
-         CRC at 0 range 0..15;
-         Count at 2 range 0..7;
-         Char at 3 range 0..7;
-      end record;
-
-
-   type Name_Field_Assistent is
-      record
-         Quick_Check: Quick_Check_Value;
-         Field_Byte_Count: Unsigned_8;
-         Swap: Boolean;
-         CRC: Unsigned_16;
-         Name_Byte_Count: Unsigned_8;
-         Name: Item_Name;
-      end record;
-   
-   
-   -- Block operations
-   
-   procedure Set_Data_Byte_Order (B: in out Store; Value: Byte_Storage_Order);
 
 end BRBON;

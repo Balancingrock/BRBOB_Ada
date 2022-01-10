@@ -2,56 +2,59 @@ with Interfaces; use Interfaces;
 
 with Serializable;
 
-with BRBON.Container;
+with BRBON.Container_Package;
 
 
-package BRBON.Block is
+package BRBON.Container_Package.Block_Package is
    
    
    -- The block type
    --
-   type Block_Record is new Store with private;
+   type Block is new Container with private;
    
+   function Factory (Memory_Ptr: Unsigned_8_Array_Ptr; Byte_Order: Byte_Storage_Order) return Block;
+   
+   function Factory (Memory_Ptr: in out Unsigned_8_Array_Ptr; Filepath: String; Byte_Order: Byte_Storage_Order) return Block;
    
    -- Returns the byte order (endianness) of the block.
    --
-   function Get_Byte_Storage_Order (B: Block_Record) return BRBON.Byte_Storage_Order;
+   function Get_Byte_Storage_Order (B: Block) return Byte_Storage_Order;
    pragma inline (Get_Byte_Storage_Order);
 
 
    -- Returns the block type.
    --
-   function Get_Block_Type (B: Block_Record) return BRBON.Block_Type;
+   function Get_Block_Type (B: Block) return Block_Type;
    pragma inline (Get_Block_Type);
 
 
    -- Set the block options value.
    --
-   procedure Set_Block_Options (B: Block_Record; Value: BRBON.Block_Options);
+   procedure Set_Block_Options (B: Block; Value: Block_Options);
    pragma inline (Set_Block_Options);
 
 
    -- Returns the block options value.
    --
-   function Get_Block_Options (B: Block_Record) return BRBON.Block_Options;
+   function Get_Block_Options (B: Block) return Block_Options;
    pragma inline (Get_Block_Options);
 
 
    -- Returns the value of the block byte count.
    --
-   function Get_Block_Byte_Count (B: Block_Record) return Unsigned_32;
+   function Get_Block_Byte_Count (B: Block) return Unsigned_32;
    pragma inline (Get_Block_Byte_Count);
 
 
    -- Returns the block header byte count.
    --
-   function Get_Header_Byte_Count (B: Block_Record) return Unsigned_16;
+   function Get_Header_Byte_Count (B: Block) return Unsigned_16;
    pragma inline (Get_Header_Byte_Count);
 
 
    -- Returns the block encrypted header byte count.
    --
-   function Get_Encrypted_Header_Byte_Count (B: Block_Record) return Unsigned_16;
+   function Get_Encrypted_Header_Byte_Count (B: Block) return Unsigned_16;
    pragma inline (Get_Encrypted_Header_Byte_Count);
 
 
@@ -61,24 +64,24 @@ package BRBON.Block is
    -- Raises the String_To_Long error if there are more than 255 characters.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Origin (B: Block_Record; Value: String);
+   procedure Set_Origin (B: Block; Value: String);
 
 
    -- Returns the value of the origin field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Origin (B: Block_Record) return String;
+   function Get_Origin (B: Block) return String;
 
 
    -- Returns the CRC (ARC) value of the origin-field in the block header.
    --
-   function Get_Origin_CRC (B: Block_Record) return Unsigned_16;
+   function Get_Origin_CRC (B: Block) return Unsigned_16;
    pragma inline (Get_Origin_CRC);
 
 
    -- Returns the byte count of the origin-field in the block header.
    --
-   function Get_Origin_Byte_Count (B: Block_Record) return Unsigned_8;
+   function Get_Origin_Byte_Count (B: Block) return Unsigned_8;
    pragma inline (Get_Origin_Byte_Count);
 
 
@@ -88,24 +91,24 @@ package BRBON.Block is
    -- Raises the String_To_Long error if there are more than 255 characters.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Identifier (B: Block_Record; Value: String);
+   procedure Set_Identifier (B: Block; Value: String);
 
 
    -- Returns the value of the identifier field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Identifier (B: Block_Record) return String;
+   function Get_Identifier (B: Block) return String;
 
 
    -- Returns the CRC (ARC) value of the identifier-field in the block header.
    --
-   function Get_Identifier_CRC (B: Block_Record) return Unsigned_16;
+   function Get_Identifier_CRC (B: Block) return Unsigned_16;
    pragma inline (Get_Identifier_CRC);
 
 
    -- Returns the byte count of the identifier-field in the block header.
    --
-   function Get_Identifier_Byte_Count (B: Block_Record) return Unsigned_8;
+   function Get_Identifier_Byte_Count (B: Block) return Unsigned_8;
    pragma inline (Get_Identifier_Byte_Count);
 
 
@@ -115,24 +118,24 @@ package BRBON.Block is
    -- Raises the String_To_Long error if there are more than 255 characters.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Extension (B: Block_Record; Value: String);
+   procedure Set_Extension (B: Block; Value: String);
 
 
    -- Returns the value of the extension field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Extension (B: Block_Record) return String;
+   function Get_Extension (B: Block) return String;
 
 
    -- Returns the CRC (ARC) value of the extension-field in the block header.
    --
-   function Get_Extension_CRC (B: Block_Record) return Unsigned_16;
+   function Get_Extension_CRC (B: Block) return Unsigned_16;
    pragma inline (Get_Extension_CRC);
 
 
    -- Returns the byte count of the extension-field in the block header.
    --
-   function Get_Extension_Byte_Count (B: Block_Record) return Unsigned_8;
+   function Get_Extension_Byte_Count (B: Block) return Unsigned_8;
    pragma inline (Get_Extension_Byte_Count);
 
 
@@ -142,24 +145,24 @@ package BRBON.Block is
    -- Raises the String_To_Long error if there are more than 255 characters.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Path_Prefix (B: Block_Record; Value: String);
+   procedure Set_Path_Prefix (B: Block; Value: String);
 
 
    -- Returns the value of the path prefix field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Path_Prefix (B: Block_Record) return String;
+   function Get_Path_Prefix (B: Block) return String;
 
 
    -- Returns the CRC (ARC) value of the path-prefix-field in the block header.
    --
-   function Get_Path_Prefix_CRC (B: Block_Record) return Unsigned_16;
+   function Get_Path_Prefix_CRC (B: Block) return Unsigned_16;
    pragma inline (Get_Path_Prefix_CRC);
 
 
    -- Returns the byte count of the path-prefix-field in the block header.
    --
-   function Get_Path_Prefix_Byte_Count (B: Block_Record) return Unsigned_8;
+   function Get_Path_Prefix_Byte_Count (B: Block) return Unsigned_8;
    pragma inline (Get_Path_Prefix_Byte_Count);
 
 
@@ -168,18 +171,18 @@ package BRBON.Block is
    -- Sets the value of the acquisition URL field.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Acquisition_URL (B: Block_Record; Value: String);
+   procedure Set_Acquisition_URL (B: Block; Value: String);
 
 
    -- Returns the value of the acquisition URL field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Acquisition_URL (B: Block_Record) return String;
+   function Get_Acquisition_URL (B: Block) return String;
 
 
    -- Returns the byte count of the acquisition_URL-field in the block header.
    --
-   function Get_Acquisition_URL_Byte_Count (B: Block_Record) return Unsigned_16;
+   function Get_Acquisition_URL_Byte_Count (B: Block) return Unsigned_16;
    pragma inline (Get_Acquisition_URL_Byte_Count);
 
 
@@ -188,18 +191,18 @@ package BRBON.Block is
    -- Sets the value of the target list field.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Target_List (B: Block_Record; Value: String);
+   procedure Set_Target_List (B: Block; Value: String);
 
 
    -- Returns the value of the extension field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Target_List (B: Block_Record) return String;
+   function Get_Target_List (B: Block) return String;
 
 
    -- Returns the byte count of the extension-field in the block header.
    --
-   function Get_Target_List_Byte_Count (B: Block_Record) return Unsigned_16;
+   function Get_Target_List_Byte_Count (B: Block) return Unsigned_16;
    pragma inline (Get_Target_List_Byte_Count);
 
 
@@ -208,67 +211,67 @@ package BRBON.Block is
    -- Sets the value of the public key URL field.
    -- Raises the Header_Field_Error if the value cannot be fitted into the header field.
    --
-   procedure Set_Public_Key_URL (B: Block_Record; Value: String);
+   procedure Set_Public_Key_URL (B: Block; Value: String);
 
 
    -- Returns the value of the public key URL field
    -- Returns an empty string if the value is not set.
    --
-   function Get_Public_Key_URL (B: Block_Record) return String;
+   function Get_Public_Key_URL (B: Block) return String;
 
 
    -- Returns the byte count of the Public_Key_URL-field in the block header.
    --
-   function Get_Public_Key_URL_Byte_Count (B: Block_Record) return Unsigned_16;
+   function Get_Public_Key_URL_Byte_Count (B: Block) return Unsigned_16;
    pragma inline (Get_Public_Key_URL_Byte_Count);
 
 
    -- Set the block creation timestamp
    --
-   procedure Set_Creation_Timestamp (B: Block_Record; Value: Timestamp);
+   procedure Set_Creation_Timestamp (B: Block; Value: Timestamp);
    pragma inline (Set_Creation_Timestamp);
 
 
    -- Return the block creation timestamp
    --
-   function Get_Creation_Timestamp (B: Block_Record) return Timestamp;
+   function Get_Creation_Timestamp (B: Block) return Timestamp;
    pragma inline (Get_Creation_Timestamp);
 
 
    -- Set the block modification timestamp
    --
-   procedure Set_Modification_Timestamp (B: Block_Record; Value: Timestamp);
+   procedure Set_Modification_Timestamp (B: Block; Value: Timestamp);
    pragma inline (Set_Modification_Timestamp);
 
 
    -- Return the block modification timestamp
    --
-   function Get_Modification_Timestamp (B: Block_Record) return Timestamp;
+   function Get_Modification_Timestamp (B: Block) return Timestamp;
    pragma inline (Get_Modification_Timestamp);
 
 
    -- Set the block expiry timestamp
    --
-   procedure Set_Expiry_Timestamp (B: Block_Record; Value: Timestamp);
+   procedure Set_Expiry_Timestamp (B: Block; Value: Timestamp);
    pragma inline (Set_Expiry_Timestamp);
 
 
    -- Return the block expiry timestamp
    --
-   function Get_Expiry_Timestamp (B: Block_Record) return Timestamp;
+   function Get_Expiry_Timestamp (B: Block) return Timestamp;
    pragma inline (Get_Expiry_Timestamp);
 
 
    -- Return the stored CRC (ARC) value for the complete block header.
    --
-   function Get_Header_CRC (B: Block_Record) return Unsigned_16;
+   function Get_Header_CRC (B: Block) return Unsigned_16;
    pragma inline (Get_Header_CRC);
 
 
    -- Update the header CRC value.
    -- Note: Updates to the header after calling this operation will invalidate the CRC.
    --
-   procedure Update_Header_CRC (B: Block_Record);
+   procedure Update_Header_CRC (B: Block);
 
 
 private
@@ -276,7 +279,7 @@ private
    
    -- The block descriptor
    --
-   type Block_Record is new Store with
+   type Block is new Container with
       record
          Start_Of_Header_Field_Storage: Unsigned_16; -- constant (for now)
          Start_Of_Payload: Unsigned_32; -- quasi constant
@@ -392,7 +395,7 @@ private
 
    function To_Block_Header_Leading_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Header_Leading_Ptr);
 
-   function Get_Block_Header_Leading_Ptr (B: Block_Record) return Block_Header_Leading_Ptr is ( To_Block_Header_Leading_Ptr (B.Data (0)'Access));
+   function Get_Block_Header_Leading_Ptr (B: Block) return Block_Header_Leading_Ptr is ( To_Block_Header_Leading_Ptr (B.MPtr (0)'Access));
    pragma inline (Get_Block_Header_Leading_Ptr);
    
    Start_Of_Header_Field_Storage: constant array (Block_Type) of Unsigned_16 := (0, Block_Header_Leading_Byte_Count);
@@ -400,56 +403,56 @@ private
 
    -- Private header access function
    
-   procedure Set_Block_Type (B: Block_Record; Value: BRBON.Block_Type);
+   procedure Set_Block_Type (B: Block; Value: BRBON.Block_Type);
    
-   function Get_Origin_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Origin_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Origin_Offset (B: Block) return Unsigned_16;
+   procedure Set_Origin_Offset (B: Block; Value: Unsigned_16);
 
-   procedure Set_Origin_Byte_Count (B: Block_Record; Value: Unsigned_8);
-   procedure Set_Origin_CRC (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Origin_Byte_Count (B: Block; Value: Unsigned_8);
+   procedure Set_Origin_CRC (B: Block; Value: Unsigned_16);
    
-   function Get_Extension_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Extension_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Extension_Offset (B: Block) return Unsigned_16;
+   procedure Set_Extension_Offset (B: Block; Value: Unsigned_16);
 
-   procedure Set_Extension_Byte_Count (B: Block_Record; Value: Unsigned_8);
-   procedure Set_Extension_CRC (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Extension_Byte_Count (B: Block; Value: Unsigned_8);
+   procedure Set_Extension_CRC (B: Block; Value: Unsigned_16);
    
-   function Get_Identifier_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Identifier_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Identifier_Offset (B: Block) return Unsigned_16;
+   procedure Set_Identifier_Offset (B: Block; Value: Unsigned_16);
    
-   procedure Set_Identifier_Byte_Count (B: Block_Record; Value: Unsigned_8);
-   procedure Set_Identifier_CRC (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Identifier_Byte_Count (B: Block; Value: Unsigned_8);
+   procedure Set_Identifier_CRC (B: Block; Value: Unsigned_16);
    
-   function Get_Path_Prefix_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Path_Prefix_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Path_Prefix_Offset (B: Block) return Unsigned_16;
+   procedure Set_Path_Prefix_Offset (B: Block; Value: Unsigned_16);
    
-   procedure Set_Path_Prefix_Byte_Count (B: Block_Record; Value: Unsigned_8);
-   procedure Set_Path_Prefix_CRC (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Path_Prefix_Byte_Count (B: Block; Value: Unsigned_8);
+   procedure Set_Path_Prefix_CRC (B: Block; Value: Unsigned_16);
    
-   function Get_Acquisition_URL_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Acquisition_URL_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Acquisition_URL_Offset (B: Block) return Unsigned_16;
+   procedure Set_Acquisition_URL_Offset (B: Block; Value: Unsigned_16);
    
-   procedure Set_Acquisition_URL_Byte_Count (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Acquisition_URL_Byte_Count (B: Block; Value: Unsigned_16);
    
-   function Get_Target_List_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Target_List_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Target_List_Offset (B: Block) return Unsigned_16;
+   procedure Set_Target_List_Offset (B: Block; Value: Unsigned_16);
    
-   procedure Set_Target_List_Byte_Count (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Target_List_Byte_Count (B: Block; Value: Unsigned_16);
    
-   function Get_Public_Key_URL_Offset (B: Block_Record) return Unsigned_16;
-   procedure Set_Public_Key_URL_Offset (B: Block_Record; Value: Unsigned_16);
+   function Get_Public_Key_URL_Offset (B: Block) return Unsigned_16;
+   procedure Set_Public_Key_URL_Offset (B: Block; Value: Unsigned_16);
    
-   procedure Set_Public_Key_URL_Byte_Count (B: Block_Record; Value: Unsigned_16);
+   procedure Set_Public_Key_URL_Byte_Count (B: Block; Value: Unsigned_16);
    
    
    -- Initialises a type 1 block (single item).
    -- Note that the type 1 block is very much the default header structure without any additional data.
    --
-   procedure Setup (B: Block_Record; For_Byte_Storage_Order: Byte_Storage_Order; With_Field_Storage_Byte_Count: Unsigned_16);
+   procedure Setup (B: Block; For_Byte_Storage_Order: Byte_Storage_Order; With_Field_Storage_Byte_Count: Unsigned_16);
    
    procedure Create_Single_Item_Block_Header
      (
-      In_Block: Block_Record;
+      In_Block: Block;
       Field_Storage_Byte_Count: Unsigned_16;
       Header_Byte_Count: Unsigned_16;
       Options: Block_Options;
@@ -489,14 +492,14 @@ private
 
    function To_Block_Header_Trailing_Ptr is new Ada.Unchecked_Conversion (Unsigned_8_Ptr, Block_Header_Trailing_Ptr);
 
-   function Get_Block_Header_Trailing_Ptr (B: Block_Record) return Block_Header_Trailing_Ptr is (To_Block_Header_Trailing_Ptr (B.Data (Unsigned_32 (B.Get_Header_Byte_Count - Block_Header_Trailing_Byte_Count))'Access));
+   function Get_Block_Header_Trailing_Ptr (B: Block) return Block_Header_Trailing_Ptr is (To_Block_Header_Trailing_Ptr (B.MPtr (Unsigned_32 (B.Get_Header_Byte_Count - Block_Header_Trailing_Byte_Count))'Access));
 
-   function Get_Block_Header_Trailing_Reserved_1 (B: Block_Record) return Unsigned_32;
-   function Get_Block_Header_Trailing_Reserved_2 (B: Block_Record) return Unsigned_16;
-   function Get_Block_Header_CRC (B: Block_Record) return Unsigned_16;
-   procedure Set_Block_Header_Trailing_Reserved_1 (B: Block_Record; Value: Unsigned_32);
-   procedure Set_Block_Header_Trailing_Reserved_2 (B: Block_Record; Value: Unsigned_16);
-   procedure Set_Block_Header_CRC (B: Block_Record; Value: Unsigned_16);
+   function Get_Block_Header_Trailing_Reserved_1 (B: Block) return Unsigned_32;
+   function Get_Block_Header_Trailing_Reserved_2 (B: Block) return Unsigned_16;
+   function Get_Block_Header_CRC (B: Block) return Unsigned_16;
+   procedure Set_Block_Header_Trailing_Reserved_1 (B: Block; Value: Unsigned_32);
+   procedure Set_Block_Header_Trailing_Reserved_2 (B: Block; Value: Unsigned_16);
+   procedure Set_Block_Header_CRC (B: Block; Value: Unsigned_16);
 
       
    -- Footer
@@ -525,32 +528,32 @@ private
       Single_Item_Block => 8
      );
    
-   function Get_Block_Footer_Ptr (B: Block_Record) return Block_Footer_Ptr is (To_Block_Footer_Ptr (B.Data (Unsigned_32 (B.Get_Block_Byte_Count - Block_Footer_Byte_Count (B.Get_Block_Type)))'Access));
+   function Get_Block_Footer_Ptr (B: Block) return Block_Footer_Ptr is (To_Block_Footer_Ptr (B.MPtr (Unsigned_32 (B.Get_Block_Byte_Count - Block_Footer_Byte_Count (B.Get_Block_Type)))'Access));
    
-   function Get_Block_Footer_Reserved (B: Block_Record) return Unsigned_32;
-   function Get_Block_Footer_CRC (B: Block_Record) return Unsigned_32;
-   procedure Set_Block_Footer_Reserved (B: Block_Record; Value: Unsigned_32);
-   procedure Set_Block_Footer_CRC (B: Block_Record; Value: Unsigned_32);
+   function Get_Block_Footer_Reserved (B: Block) return Unsigned_32;
+   function Get_Block_Footer_CRC (B: Block) return Unsigned_32;
+   procedure Set_Block_Footer_Reserved (B: Block; Value: Unsigned_32);
+   procedure Set_Block_Footer_CRC (B: Block; Value: Unsigned_32);
    
    
    -- Signatures
 
-   type U32_Getter is access function (B: Block_Record) return Unsigned_32;
+   type U32_Getter is access function (B: Block) return Unsigned_32;
    
-   type U16_Getter is access function (B: Block_Record) return Unsigned_16;
+   type U16_Getter is access function (B: Block) return Unsigned_16;
    
-   type U8_Getter is access function (B: Block_Record) return Unsigned_8;
+   type U8_Getter is access function (B: Block) return Unsigned_8;
    
-   type U32_Setter is access procedure (B: Block_Record; Value: Unsigned_32);
+   type U32_Setter is access procedure (B: Block; Value: Unsigned_32);
    
-   type U16_Setter is access procedure (B: Block_Record; Value: Unsigned_16);
+   type U16_Setter is access procedure (B: Block; Value: Unsigned_16);
    
-   type U8_Setter is access procedure (B: Block_Record; Value: Unsigned_8);
+   type U8_Setter is access procedure (B: Block; Value: Unsigned_8);
 
       
    -- Internal access and construction operations of/for the header
    --
-   procedure Set_Header_Synchronization_Bytes (B: Block_Record);
+   procedure Set_Header_Synchronization_Bytes (B: Block);
    
    
    -- =================================================================
@@ -560,7 +563,7 @@ private
    
    -- Undocumented, for testing only, do not use!
    --
-   function Test_Support_Serializer (B: Block_Record) return Serializable.Instance;
+   function Test_Support_Serializer (B: Block) return Serializable.Instance;
 
 
-end BRBON.Block;
+end BRBON.Container_Package.Block_Package;
