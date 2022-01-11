@@ -6,7 +6,7 @@ with BRBON.Item_Access;
 package body BRBON.Portal_Package is
 
 
-   Static_Null_Portal: Portal := (null, Null_Portal, false, null, 0, 0);
+   Static_Null_Portal: Portal := (Null_Portal, false, null, 0, 0);
 
 
    -----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ package body BRBON.Portal_Package is
 
    function Is_Null_Portal (P: Portal) return Boolean is
    begin
-      return P.BPtr = null;
+      return P.Is_Type = Null_Portal;
    end Is_Null_Portal;
 
 
@@ -66,14 +66,6 @@ package body BRBON.Portal_Package is
 --      return New_Portal;
 --
 --   end Factory;
-
-
-   -----------------------------------------------------------------------------
-
-   function Get_Item_Type (P: Portal) return Item_Type is
-   begin
-      return P.Item_Ptr.Type_Field;
-   end Get_Item_Type;
 
 
 end BRBON.Portal_Package;

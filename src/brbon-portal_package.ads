@@ -50,7 +50,6 @@ with Interfaces; use Interfaces;
 
 
 with BRBON; use BRBON;
-with BRBON.Container_Package; use BRBON.Container_Package;
 
 
 package BRBON.Portal_Package is
@@ -68,7 +67,7 @@ package BRBON.Portal_Package is
 
    -- A portal can be used to access items in a block without needing the seach/lookup mechanism provided by the block managers
    --
-   type portal is tagged private;
+   type Portal is tagged private;
 
 
    -- Returns true if the portal is valid. Once invalid, a portal will never become valid again.
@@ -82,12 +81,10 @@ package BRBON.Portal_Package is
    -- A null-portal is always invalid and will raise the Null_Portal_Error when tried.
    -- However any portal (including invalid portals) can be tested for beiing a null portal.
    --
-   function Is_Null_Portal (P: Portal) return Boolean;
-
-
-   -- Return the type of item this portal refers to
+   -- If a portal identifies as a null portal, it can be deleted as it is not usable for anything else
+   -- but finding out that it is a null portal.
    --
-   function Get_Item_Type (P: Portal) return Item_Type;
+   function Is_Null_Portal (P: Portal) return Boolean;
 
 
 private
@@ -101,8 +98,6 @@ private
    --
    type Portal is tagged
       record
-         BPtr: Container_Ptr;
-         --
          Is_Type: Portal_Type;
          Is_Valid: Boolean := True;
          --

@@ -5,11 +5,14 @@ with Ada.Finalization;
 
 with BRBON.Utils;
 with BRBON.Container_Package.Block_Package; use BRBON.Container_Package.Block_Package;
-with BRBON.Portal_Package.Static_Unprotected; use BRBON.Portal_Package.Static_Unprotected;
+
 
 with Serializable;
 with UUID_Package;
 with Color_Package;
+
+
+with BRBON.Portal_Package.Static_Unprotected; use BRBON.Portal_Package.Static_Unprotected;
 
 
 package BRBON.Container_Package.Block_Package.Static_Unprotected is

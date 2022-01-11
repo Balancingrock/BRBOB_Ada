@@ -4,18 +4,26 @@ with Ada.Unchecked_Conversion;
 with Ada.Exceptions;
 
 with BRBON.Utils;
-with BRBON.Block; use BRBON.Block;
-private with BRBON.Portal;
 
 with UUID_Package;
 with CRC_Package;
 
+with BRBON; use BRBON;
+
+private with BRBON.Portal_Package;
 
 
 package body BRBON.Container_Package.Block_Package.Static_Unprotected is
 
 
    -- Body internals
+
+   function A_Test (B: in out Static_Unprotected_Block; Offset: Unsigned_32) return Static_Unprotected_Portal is
+      IPtr: Item_Header_Ptr := To_Item_Header_Ptr (B.MPtr (Offset)'access);
+      P: Portal_Package.Portal := (BRBON.Portal_Package.Normal, True, IPtr, 0, 0);
+   begin
+      return BRBON.Portal_Package.Static_Unprotected.Static_Unprotected_Portal (P);
+   end A_Test;
 
 
    -- Implement API
@@ -106,7 +114,10 @@ package body BRBON.Container_Package.Block_Package.Static_Unprotected is
       begin
          Setup (B                             => Memory_Ptr,
                 For_Byte_Storage_Order        => Using_Endianness,
-                With_Field_Storage_Byte_Count => )
+                With_Field_Storage_Byte_Count => 323232 );
+         raise Implementation;
+      end;
+
       Container.Setup (New_Block, new Unsigned_8_Array (0 .. Block_Byte_Count - 1), Using_Endianness);
 
 

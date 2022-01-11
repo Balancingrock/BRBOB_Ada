@@ -13,6 +13,11 @@ package BRBON.Container_Package.Block_Package is
    type Block is new Container with private;
    
    
+   -- A pointer to a block
+   --
+   type Block_Ptr is access Block;
+   
+   
    -- Create a new block in the given memory area.
    --
    function Factory (Memory_Ptr: Unsigned_8_Array_Ptr; Byte_Order: Byte_Storage_Order) return Block;
