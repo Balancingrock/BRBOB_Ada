@@ -10,20 +10,14 @@ with CRC_Package;
 
 with BRBON; use BRBON;
 
-private with BRBON.Portal_Package;
+with Portal_Package;
 
 
-package body BRBON.Container_Package.Block_Package.Static_Unprotected is
+package body Container_Package.Block_Package.Static_Unprotected is
 
 
    -- Body internals
 
-   function A_Test (B: in out Static_Unprotected_Block; Offset: Unsigned_32) return Static_Unprotected_Portal is
-      IPtr: Item_Header_Ptr := To_Item_Header_Ptr (B.MPtr (Offset)'access);
-      P: Portal_Package.Portal := (BRBON.Portal_Package.Normal, True, IPtr, 0, 0);
-   begin
-      return BRBON.Portal_Package.Static_Unprotected.Static_Unprotected_Portal (P);
-   end A_Test;
 
 
    -- Implement API
@@ -42,8 +36,8 @@ package body BRBON.Container_Package.Block_Package.Static_Unprotected is
        Acquisition_URL: String := "";
        Target_List: String := "";
        Public_Key_URL: String := "";
-       Creation_Timestamp: Unsigned_64 := Utils.Milli_Sec_Since_Jan_1_1970;
-       Expiry_Timestamp: Unsigned_64 := Unsigned_64'Last
+       Creation_Timestamp: Timestamp := Utils.Milli_Sec_Since_Jan_1_1970;
+       Expiry_Timestamp: Timestamp := Timestamp'Last
       ) return Static_Unprotected_Block is
 
 
@@ -112,20 +106,17 @@ package body BRBON.Container_Package.Block_Package.Static_Unprotected is
       declare
          Memory_Ptr: Unsigned_8_Array_Ptr := new Unsigned_8_Array (0 .. Block_Byte_Count - 1);
       begin
-         Setup (B                             => Memory_Ptr,
-                For_Byte_Storage_Order        => Using_Endianness,
-                With_Field_Storage_Byte_Count => 323232 );
-         raise Implementation;
+         New_Block.Setup (Memory_Ptr                 => Memory_Ptr,
+                          Byte_Order                 => Using_Endianness,
+                          Deallocate_On_Finalization => True);
+--         raise Implementation;
       end;
-
-      Container.Setup (New_Block, new Unsigned_8_Array (0 .. Block_Byte_Count - 1), Using_Endianness);
 
 
       -- Create the block header
       --
-      Block.Create_Single_Item_Block_Header
+      New_Block.Create_Single_Item_Block_Header
         (
-         In_Block           => New_Block,
          Field_Storage_Byte_Count => Field_Storage_Byte_Count,
          Header_Byte_Count  => Header_Byte_Count,
          Options            => Options,
@@ -254,4 +245,4 @@ package body BRBON.Container_Package.Block_Package.Static_Unprotected is
    end Get_Root_Item;
 
 
-end BRBON.Container_Package.Block_Package.Static_Unprotected;
+end Container_Package.Block_Package.Static_Unprotected;

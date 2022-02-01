@@ -1,4 +1,4 @@
-package body BRBON.Portal_Package.Static_Unprotected is
+package body Portal_Package.Static_Unprotected is
 
 
    -----------------------------------------------------------------------------
@@ -44,4 +44,4 @@ package body BRBON.Portal_Package.Static_Unprotected is
    end Get_Bool;
 
 
-end BRBON.Portal_Package.Static_Unprotected;
+end Portal_Package.Static_Unprotected;

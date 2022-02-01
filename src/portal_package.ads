@@ -48,11 +48,11 @@
 
 with Interfaces; use Interfaces;
 
+with Container_Package; use Container_Package;
+with Item_Package; use Item_Package;
 
-with BRBON; use BRBON;
 
-
-package BRBON.Portal_Package is
+package Portal_Package is
 
 
    -- This exception is raised when an invalid portal is used.
@@ -67,7 +67,7 @@ package BRBON.Portal_Package is
 
    -- A portal can be used to access items in a block without needing the seach/lookup mechanism provided by the block managers
    --
-   type Portal is tagged private;
+   type Portal is tagged limited private;
 
 
    -- Returns true if the portal is valid. Once invalid, a portal will never become valid again.
@@ -89,6 +89,7 @@ package BRBON.Portal_Package is
 
 private
 
+
    -- The different types of portal
    --
    type Portal_Type is (Null_Portal, Normal, Element, Field);
@@ -96,15 +97,18 @@ private
 
    -- The portal type
    --
-   type Portal is tagged
+   type Portal is tagged limited
       record
          Is_Type: Portal_Type;
          Is_Valid: Boolean := True;
          --
-         Item_Ptr: Item_Header_Ptr;
+         CPtr: Container_Package.Container_Ptr;
+         IPtr: Item_Header_Ptr;
+         --
+         Item_Offset: Unsigned_32;
          Element_Index: Unsigned_32 := 0;
          Column_Index: Unsigned_32 := 0;
       end record;
 
 
-end BRBON.Portal_Package;
+end Portal_Package;

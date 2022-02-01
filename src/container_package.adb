@@ -41,11 +41,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.Byte_Swapping;
 
 with BRBON.Utils;
-with BRBON.Types;
+--with BRBON.Types;
 with CRC_Package;
 
+with BRBON; use BRBON;
 
-package body BRBON.Container_Package is
+
+package body Container_Package is
 
 
    -- Swap functions
@@ -64,7 +66,7 @@ package body BRBON.Container_Package is
    
    procedure Setup
      (
-      C: in out Container;
+      C: in out Container'Class;
       Memory_Ptr: Unsigned_8_Array_Ptr;
       Byte_Order: Byte_Storage_Order;
       Deallocate_On_Finalization: Boolean
@@ -718,4 +720,9 @@ package body BRBON.Container_Package is
    end Set_Data_Byte_Order;
 
    
-end BRBON.Container_Package;
+   -----------------------------------------------------------------------------
+   
+   function Get_Unsigned_8_Ptr (C: Container; Offset: Unsigned_32) return Unsigned_8_Ptr is (C.MPtr (Offset)'Access);
+   
+   
+end Container_Package;

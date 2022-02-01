@@ -39,6 +39,8 @@
 -- =====================================================================================================================
 
 with Interfaces; use Interfaces;
+
+with Ada.Finalization;
 with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 
 with BRBON; use BRBON;
@@ -51,7 +53,7 @@ with BRBON; use BRBON;
 -- Access to byte and multi-byte data in a memory image. While the access is endianness aware, at this level the API user
 -- has to specify the endianness of the data. At the higher levels APIs this will be set automatically where possible.
 --
-package BRBON.Container_Package is
+package Container_Package is
 
 
    -- The root type for all type of blocks.
@@ -70,7 +72,7 @@ package BRBON.Container_Package is
    --
    procedure Setup
      (
-      C: in out Container;
+      C: in out Container'Class;
       Memory_Ptr: Unsigned_8_Array_Ptr;
       Byte_Order: Byte_Storage_Order;
       Deallocate_On_Finalization: Boolean
@@ -308,6 +310,12 @@ package BRBON.Container_Package is
    pragma Inline (Get_CRC_32_Over_Range);
 
 
+   -- Return a pointer to an array element
+   --
+   function Get_Unsigned_8_Ptr (C: Container; Offset: Unsigned_32) return Unsigned_8_Ptr;
+   pragma Inline (Get_Unsigned_8_Ptr);
+
+
    -- ==========================================================================
    -- For testing purposes
    -- ==========================================================================
@@ -334,4 +342,4 @@ private
    procedure Set_Data_Byte_Order (C: in out Container; Value: Byte_Storage_Order);
 
 
-end BRBON.Container_Package;
+end Container_Package;

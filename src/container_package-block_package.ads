@@ -1,12 +1,63 @@
 with Interfaces; use Interfaces;
 
+with Ada.Unchecked_Conversion;
+
 with Serializable;
+with Container_Package;
 
-with BRBON.Container_Package;
 
-
-package BRBON.Container_Package.Block_Package is
+package Container_Package.Block_Package is
    
+   
+   type Block_Type is (Illegal, Single_Item_Block);
+   
+   for Block_Type'Size use 16;
+   
+   for Block_Type use (16#0000#, 16#0001#);
+   
+   type Block_Options is
+      record
+         Option_0: Boolean;
+         Option_1: Boolean;
+         Option_2: Boolean;
+         Option_3: Boolean;
+         Option_4: Boolean;
+         Option_5: Boolean;
+         Option_6: Boolean;
+         Option_7: Boolean;
+         Option_8: Boolean;
+         Option_9: Boolean;
+         Option_10: Boolean;
+         Option_11: Boolean;
+         Option_12: Boolean;
+         Option_13: Boolean;
+         Option_14: Boolean;
+         Option_15: Boolean;
+      end record;
+   
+   for Block_Options use
+      record
+         Option_0 at 0 range 0..0;
+         Option_1 at 0 range 1..1;
+         Option_2 at 0 range 2..2;
+         Option_3 at 0 range 3..3;
+         Option_4 at 0 range 4..4;
+         Option_5 at 0 range 5..5;
+         Option_6 at 0 range 6..6;
+         Option_7 at 0 range 7..7;
+         Option_8 at 1 range 0..0;
+         Option_9 at 1 range 1..1;
+         Option_10 at 1 range 2..2;
+         Option_11 at 1 range 3..3;
+         Option_12 at 1 range 4..4;
+         Option_13 at 1 range 5..5;
+         Option_14 at 1 range 6..6;
+         Option_15 at 1 range 7..7;
+      end record;
+   
+   for Block_Options'Size use 16;
+   
+   No_Block_Options: constant Block_Options := (False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False);
    
    -- The block type
    --
@@ -421,7 +472,7 @@ private
 
    -- Private header access function
    
-   procedure Set_Block_Type (B: Block; Value: BRBON.Block_Type);
+   procedure Set_Block_Type (B: Block; Value: Block_Type);
    
    function Get_Origin_Offset (B: Block) return Unsigned_16;
    procedure Set_Origin_Offset (B: Block; Value: Unsigned_16);
@@ -584,4 +635,4 @@ private
    function Test_Support_Serializer (B: Block) return Serializable.Instance;
 
 
-end BRBON.Container_Package.Block_Package;
+end Container_Package.Block_Package;

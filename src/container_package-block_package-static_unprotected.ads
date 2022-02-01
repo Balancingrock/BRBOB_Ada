@@ -4,18 +4,18 @@ with Ada.Finalization;
 
 
 with BRBON.Utils;
-with BRBON.Container_Package.Block_Package; use BRBON.Container_Package.Block_Package;
+with Container_Package.Block_Package; use Container_Package.Block_Package;
 
 
 with Serializable;
 with UUID_Package;
 with Color_Package;
 
+with Portal_Package.Static_Unprotected; use Portal_Package.Static_Unprotected;
+with Item_Package; use Item_Package;
 
-with BRBON.Portal_Package.Static_Unprotected; use BRBON.Portal_Package.Static_Unprotected;
 
-
-package BRBON.Container_Package.Block_Package.Static_Unprotected is
+package Container_Package.Block_Package.Static_Unprotected is
 
 
    -- The store that contains a static BRBON hierarchy on which unprotected access is possible.
@@ -52,8 +52,8 @@ package BRBON.Container_Package.Block_Package.Static_Unprotected is
        Acquisition_URL: String := "";
        Target_List: String := "";
        Public_Key_URL: String := "";
-       Creation_Timestamp: Unsigned_64 := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
-       Expiry_Timestamp: Unsigned_64 := Unsigned_64'Last
+       Creation_Timestamp: Timestamp := BRBON.Utils.Milli_Sec_Since_Jan_1_1970;
+       Expiry_Timestamp: Timestamp := Timestamp'Last
       ) return Static_Unprotected_Block;
 
 
@@ -65,12 +65,12 @@ package BRBON.Container_Package.Block_Package.Static_Unprotected is
    -- Add a new root item and returns a portal for it.
    -- Use one of the specific container functions to create a fully functional container item.
    --
-   function Add_Root_Item (S: Static_Unprotected_Block; Of_Type: BRBON.Item_Type; With_Byte_Count: Unsigned_32; With_Name: BRBON.Item_Name) return Static_Unprotected_Portal;
+   function Add_Root_Item (S: Static_Unprotected_Block; Of_Type: Item_Type; With_Byte_Count: Unsigned_32; With_Name: Item_Name_Package.Bounded_String) return Static_Unprotected_Portal;
 
 
    -- Add an Array_Type container item at root level and return the portal for it.
    --
-   function Add_Root_Item_Array_Type (S: Static_Unprotected_Block; With_Name: BRBON.Item_Name; Element_Type: BRBON.Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Static_Unprotected_Portal;
+   function Add_Root_Item_Array_Type (S: Static_Unprotected_Block; With_Name: Item_Name_Package.Bounded_String; Element_Type: Item_Type; Element_Byte_Count: Unsigned_32; Max_Element_Count: Unsigned_32) return Static_Unprotected_Portal;
 
 
    -- Return a portal referencing the root item.
@@ -78,4 +78,4 @@ package BRBON.Container_Package.Block_Package.Static_Unprotected is
    function Get_Root_Item (S: Static_Unprotected_Block) return Static_Unprotected_Portal;
 
 
-end BRBON.Container_Package.Block_Package.Static_Unprotected;
+end Container_Package.Block_Package.Static_Unprotected;

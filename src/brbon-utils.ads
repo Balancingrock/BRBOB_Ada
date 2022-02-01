@@ -1,7 +1,5 @@
 with Interfaces; use Interfaces;
 
-with Ada.Calendar;
-
 
 package BRBON.Utils is
 
@@ -33,7 +31,7 @@ package BRBON.Utils is
    -- Returns the number of milli seconds since 1 jan 1970.
    -- This corresponds to a JAVA timestamp
    --
-   function Milli_Sec_Since_Jan_1_1970 return Unsigned_64;
+   function Milli_Sec_Since_Jan_1_1970 return BRBON.Timestamp;
    pragma Inline (Milli_Sec_Since_Jan_1_1970);
 
 

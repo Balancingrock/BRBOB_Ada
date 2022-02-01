@@ -6,10 +6,10 @@ with Ada.Strings.Unbounded;
 with CRC_Package;
 
 with BRBON; use BRBON;
-with BRBON.Container_Package; use BRBON.Container_Package;
+with Container_Package; use Container_Package;
 
 
-package body BRBON.Container_Package.Block_Package is
+package body Container_Package.Block_Package is
 
 
    -- ==========================================================================
@@ -949,4 +949,4 @@ package body BRBON.Container_Package.Block_Package is
    end Test_Support_Serializer;
 
 
-end BRBON.Container_Package.Block_Package;
+end Container_Package.Block_Package;

@@ -1,8 +1,9 @@
-with BRBON.Portal_Package; use BRBON.Portal_Package;
-with BRBON.Container_Package; use BRBON.Container_Package;
+with Portal_Package; use Portal_Package;
+with Container_Package; use Container_Package;
+with Item_Package; use Item_Package;
 
 
-package BRBON.Portal_Package.Static_Unprotected is
+package Portal_Package.Static_Unprotected is
 
 
    type Static_Unprotected_Portal is new Portal with null record;
@@ -50,7 +51,7 @@ package BRBON.Portal_Package.Static_Unprotected is
    -- Array elements return the name of the array (if any).
    -- Table fields return the name of the table (if any).
    --
-   function Get_Item_Name (P: Portal) return Item_Name;
+   function Get_Item_Name (P: Portal) return Item_Name_Package.Bounded_String;
 
 
    -- ==========================================================================
@@ -60,4 +61,4 @@ package BRBON.Portal_Package.Static_Unprotected is
    function Get_Bool (P: Static_Unprotected_Portal) return Boolean;
 
 
-end BRBON.Portal_Package.Static_Unprotected;
+end Portal_Package.Static_Unprotected;

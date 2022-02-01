@@ -1,7 +1,6 @@
 with Ada.Unchecked_Conversion;
 with Ada.Text_IO; use Ada.Text_IO;
-
-with BRBON.Types; use BRBON.Types;
+with Ada.Calendar;
 
 package body BRBON.Utils is
 
@@ -24,10 +23,10 @@ package body BRBON.Utils is
 
 
 
-   function Milli_Sec_Since_Jan_1_1970 return Unsigned_64 is
+   function Milli_Sec_Since_Jan_1_1970 return BRBON.Timestamp is
       Now: constant Integer_64 := To_Integer_64 (Ada.Calendar.Clock);
       Nano_Sec_Since_Jan_1_1970: constant Integer_64 := Now - Jan_1_1970;
-      Milli_Sec: constant Unsigned_64 := To_Unsigned_64 (Nano_Sec_Since_Jan_1_1970 / 1_000_000);
+      Milli_Sec: constant Timestamp := Timestamp (Nano_Sec_Since_Jan_1_1970 / 1_000_000);
    begin
       return Milli_Sec;
    end Milli_Sec_Since_Jan_1_1970;
